@@ -70,7 +70,6 @@
     "stripKicker": "",
     "headline": "",
     "subhead": "",
-    "subheadWithCount": "",
     "ariaLabel": "",
     "names": {
       "c1": "",
@@ -303,7 +302,9 @@
     "close": "",
     "privacy": "",
     "successTitle": "",
-    "successBody": ""
+    "successBody": "",
+    "notLiveTitle": "",
+    "notLiveBody": ""
   },
   "whoWeServe": {
     "eyebrow": "Para quiénes trabajamos",
@@ -321,7 +322,7 @@
       },
       "c2": {
         "title": "Nunca atados a una sola aseguradora",
-        "b1": "Contratos con aseguradoras calificadas A o superior por AM Best",
+        "b1": "",
         "b2": "Opciones comparadas lado a lado, en lenguaje claro",
         "b3": "Lo que encaja con su hogar, no la póliza más fácil de colocar",
         "cta": "Comparar mis opciones"

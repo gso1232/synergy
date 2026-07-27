@@ -61,7 +61,7 @@
     "agents": {
       "label": "For agents",
       "title": "Build your career with us.",
-      "body": "Licensed agents get high-intent leads, multiple A-rated carriers, proven training, and real support. Bring your license. We handle the rest.",
+      "body": "Synergy Insurance Group protects families and builds careers.",
       "cta": "Join the team"
     }
   },
@@ -69,8 +69,7 @@
     "eyebrow": "Our carriers",
     "stripKicker": "Partnered with the nation's top-rated carriers",
     "headline": "The strength behind every policy.",
-    "subhead": "We place coverage only with carriers rated A or better by AM Best, then compare them side by side — so the same protection never costs you more.",
-    "subheadWithCount": "{count} A-rated carriers, compared side by side — so the same protection never costs you more.",
+    "subhead": "Our access to multiple top-rated carriers means we are never limited to one solution. We find what is right for your family — not what is easiest to sell.",
     "ariaLabel": "Our carrier partners",
     "names": {
       "c1": "Mutual of Omaha",
@@ -303,7 +302,9 @@
     "close": "Close",
     "privacy": "We use this only to reach you about your numbers. No spam, ever.",
     "successTitle": "Thanks — we'll be in touch.",
-    "successBody": "A licensed advisor will call you shortly to walk through your numbers."
+    "successBody": "A licensed advisor will call you shortly to walk through your numbers.",
+    "notLiveTitle": "This form isn't connected yet.",
+    "notLiveBody": "Your details won't be sent anywhere and no one will be contacted. Call 407-434-0400 to speak with a licensed advisor in the meantime."
   },
   "whoWeServe": {
     "eyebrow": "Who we're here for",
@@ -321,7 +322,7 @@
       },
       "c2": {
         "title": "Never tied to one carrier",
-        "b1": "Appointments with carriers rated A or better by AM Best",
+        "b1": "Appointments with multiple top-rated carriers",
         "b2": "Options set side by side, in plain language",
         "b3": "The fit for your household, not the policy that places easiest",
         "cta": "Compare my options"

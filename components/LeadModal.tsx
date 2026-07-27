@@ -108,31 +108,50 @@ export default function LeadModal({
               {t("intro")}
             </p>
 
+            {/* NOT WIRED. There is no endpoint, no webhook and no POST behind
+                this form — the GHL integration is unbuilt. It previously ran
+                `preventDefault(); setSent(true)`, which showed "Thanks — we'll
+                be in touch" and sent nothing anywhere. A fake success is worse
+                than a visibly broken form: the client believes a lead was
+                captured and it silently was not.
+
+                So: the fields stay VISIBLE (they show what will be collected)
+                but are inert inside a disabled <fieldset>, the submit is
+                disabled, and the notice below says so plainly.
+
+                TO RESTORE: wire the POST, drop the `disabled` on the fieldset
+                and the button, restore the onSubmit handler, and swap the
+                notice back to `leadModal.privacy` (still in both message
+                files, untouched). */}
             <form
               className="mt-6 flex flex-col gap-4"
-              onSubmit={(e) => {
-                e.preventDefault();
-                setSent(true);
-              }}
+              onSubmit={(e) => e.preventDefault()}
             >
-              <Field id="lead-name" label={t("name")} type="text" required autoFocus />
-              <div className="grid gap-4 sm:grid-cols-2">
-                <Field id="lead-phone" label={t("phone")} type="tel" required />
-                <Field id="lead-email" label={t("email")} type="email" />
-              </div>
-              <Field
-                id="lead-message"
-                label={t("message")}
-                type="textarea"
-              />
+              <fieldset disabled className="flex flex-col gap-4 border-0 p-0">
+                <Field id="lead-name" label={t("name")} type="text" required />
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field id="lead-phone" label={t("phone")} type="tel" required />
+                  <Field id="lead-email" label={t("email")} type="email" />
+                </div>
+                <Field
+                  id="lead-message"
+                  label={t("message")}
+                  type="textarea"
+                />
+              </fieldset>
               <button
                 type="submit"
-                className="mt-1 inline-flex h-12 items-center justify-center rounded-full bg-gold px-7 text-[14px] font-medium text-navy transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:hover:translate-y-0"
+                disabled
+                className="mt-1 inline-flex h-12 cursor-not-allowed items-center justify-center rounded-full bg-navy/10 px-7 text-[14px] font-medium text-ink/45"
               >
                 {t("submit")}
               </button>
-              <p className="text-[12px] leading-relaxed text-ink/55">
-                {t("privacy")}
+              <p
+                role="note"
+                className="rounded-r border-l-2 border-amber bg-amber/[0.12] py-3 pl-4 pr-3 text-[13px] leading-relaxed text-ink"
+              >
+                <strong className="font-semibold">{t("notLiveTitle")}</strong>{" "}
+                {t("notLiveBody")}
               </p>
             </form>
           </>

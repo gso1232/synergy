@@ -154,7 +154,12 @@ export default function Carriers() {
           {t("headline")}
         </h2>
         <p className="mx-auto mt-4 max-w-[640px] text-[16px] font-normal leading-[1.65] text-ink/70">
-          {count >= 15 ? t("subheadWithCount", { count }) : t("subhead")}
+          {/* One string, unconditionally. The old `count >= 15` branch used
+              `subheadWithCount`, which was unreachable (there are 12 carriers)
+              AND carried an "A-rated" claim — banned, and readable in
+              view-source on every route because next-intl serialises the whole
+              catalogue. Key and branch both deleted. */}
+          {t("subhead")}
         </p>
       </FadeUp>
 
