@@ -353,40 +353,47 @@ header can be the `h1` on its own page. Keep it.
 
 ## 9. Open items
 
-### 🔴 Compliance — four contaminated strings, **still live**
+### ✅ Compliance — four contaminated strings, DONE (`9db65f1`)
 
-A catalogue scan found **four**, not three. `carriers.subheadWithCount` is the
-one people miss, and it is the branch `Carriers.tsx:157` uses once the carrier
-count reaches 15.
+A catalogue scan found **four**, not three. `carriers.subheadWithCount` was the
+one people miss — the branch `Carriers.tsx` used once the carrier count reached
+15. **`next-intl` serialises the entire message catalogue into every page's
+HTML**, so all four were readable in view-source on every route even though only
+one painted.
 
-| key | status |
+| key | resolution |
 |---|---|
-| `whoWeServe.families.c2.b1` | **RENDERING VISIBLY** on the homepage — "Appointments with carriers rated A or better by AM Best" |
-| `carriers.subhead` | in HTML source, not visible (Carriers stashed) |
-| `carriers.subheadWithCount` | in HTML source, not visible |
-| `two.agents.body` | in HTML source, not visible (TwoWaysIn stashed) |
+| `whoWeServe.families.c2.b1` | → "Appointments with multiple top-rated carriers" |
+| `carriers.subhead` | → fflsynergy "Built on Trust" block, verbatim. Also removed a paraphrase of Checkmate's *"we shop them so you don't overpay"* |
+| `carriers.subheadWithCount` | **key and `count >= 15` branch deleted** |
+| `two.agents.body` | 🟡 **INTERIM** — was near-verbatim Checkmate, ending *"Bring your license. We handle the rest."*, their sentence exactly. Now the fflsynergy footer line |
 
-**`next-intl` serialises the entire message catalogue into every page's HTML**,
-so all four are readable in view-source on every route even though only one
-paints. Two are also near-verbatim Checkmate copy — `two.agents.body` ends
-*"Bring your license. We handle the rest."*, which is Checkmate's sentence
-exactly.
+**Verified: zero occurrences in the rendered page AND zero in the full HTML
+source.**
 
-**Proposed and awaiting approval:**
-- `whoWeServe.families.c2.b1` → *"Appointments with multiple top-rated carriers"*
-- `carriers.subhead` → *"Our access to multiple top-rated carriers means we are never limited to one solution. We find what is right for your family — not what is easiest to sell."* (fflsynergy homepage, verbatim)
-- `carriers.subheadWithCount` → **delete the key and the `count >= 15` ternary** — unreachable dead code carrying a banned claim
-- `two.agents.body` → **blocked.** fflsynergy has no agent-recruiting copy at all. Interim option: *"Synergy Insurance Group protects families and builds careers."* (footer, verbatim). **Open question for Ziad: is `join.fflsynergy.com` in scope as a copy source?**
+🟡 **Still owed:** `two.agents.body` is a placeholder. fflsynergy has **no
+agent-recruiting copy anywhere**. Real copy is needed from the client.
+**Open question for Ziad: is `join.fflsynergy.com` in scope as a copy source?**
 
-### 🔴 Lead form is a silent stub
+### ✅ Lead form — disabled, no longer lies (`9db65f1`)
 
-`components/LeadModal.tsx:113` — `onSubmit={(e) => { e.preventDefault(); setSent(true); }}`.
-It shows "Thanks — we'll be in touch" and **sends nothing anywhere**. Worse than
-a visibly broken form. Approved plan: disable submit, keep fields visible and
-inert, replace the privacy line with a notice. **Wording proposed, not written:**
+It previously ran `preventDefault(); setSent(true)` — showing "Thanks — we'll be
+in touch" while **sending nothing anywhere**. A fake success is worse than a
+visibly broken form: the client believes a lead was captured and it silently was
+not.
+
+Now: fields stay **visible** (they show what will be collected) inside a
+`<fieldset disabled>`, submit is disabled, and an honest notice replaces the
+privacy line. Verified — all four fields match `:disabled` and refuse focus,
+submit fires no submit event, no success state is reachable, and `Close` is the
+only focusable element so focus cannot strand.
 
 > "This form isn't connected yet."
 > "Your details won't be sent anywhere and no one will be contacted. Call 407-434-0400 to speak with a licensed advisor in the meantime."
+
+**To restore:** wire the POST, drop `disabled` from the fieldset and the button,
+restore the `onSubmit` handler, swap the notice back to `leadModal.privacy` —
+which is retained untouched in both message files.
 
 ### 🟡 Placeholder strings — hidden, not fixed
 
