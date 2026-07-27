@@ -1,0 +1,1106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:focus-visible {
+  outline: 2px solid #c9a84c;
+  outline-offset: 2px;
+}
+
+/* Reserve the scrollbar track permanently. The splash locks body scroll while
+   it covers the page and releases it on lift; without a stable gutter the
+   scrollbar reappears at that moment, the viewport narrows by ~15px and every
+   right-aligned element jumps. That was the only layout shift on the page
+   (CLS 0.00244, sourced to the header's right-hand group). */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* ---------------------------------------------------------------------------
+   Global shell metrics.
+
+   HEADER
+   Two heights, matching lemonade.com's measured behaviour: a tall bar at the
+   top of the page that compacts on scroll. Theirs is 100px → 70px above
+   1025px, and a flat 70px below it (no tall state on mobile at all). Ours is
+   104 → 72 desktop (same 1.44 ratio, a clean 32px delta on our 8px scale) and
+   a flat 64px on mobile.
+
+   The bar floats OVER the hero photo and occupies no layout space, so nothing
+   below it is offset for it and the card is not shortened by it. The two
+   heights only drive the bar's own compaction.
+
+   GUTTER / RADIUS
+   A slim cream border, not a margin. Measured off the reference screenshot: the
+   frame there is ~12px on a ~905px-wide screen, i.e. 1.33% of viewport width.
+   The previous ramp was 3.5% and read as a wide margin.
+
+     gutter  clamp(8px, 1.1vw + 3px, 26px)
+             390 → 8.0   768 → 11.4   1024 → 14.3   1425 → 18.7   1920 → 24.1
+     radius  clamp(18px, 12px + 1.5vw, 36px)     (unchanged)
+             390 → 18.0   768 → 23.5   1024 → 27.4   1425 → 35.0   ≥1600 → 36
+
+   18.7px at 1425 is 1.31% of viewport — the reference proportion. Tablet and
+   phone scale down further in absolute terms so the frame stays a hairline
+   instead of eating usable width on a small screen.
+
+   The radius is now larger than the gutter at every width (2.25× on phone),
+   because the radius was held while the gutter came in.
+
+   The card is inset by the SAME gutter on all four sides, top included — there
+   is no cream band above it any more.
+--------------------------------------------------------------------------- */
+:root {
+  --header-h-tall: 64px;
+  --header-h-compact: 64px;
+  --hero-gutter: clamp(6px, 0.75vw + 1px, 18px);
+  --hero-radius: clamp(18px, 12px + 1.5vw, 36px);
+
+  /* The hero copy's inset FROM THE CARD EDGE. These are exactly the values the
+     copy block's own `px-6 md:px-12 lg:px-16` resolves to at Tailwind's md
+     (768) and lg (1024) breakpoints — the copy is unchanged; this simply names
+     the same numbers so the navbar can align to them. */
+  --copy-inset: 24px;
+
+  /* The navbar lives in the CARD's coordinate space, not the viewport's: it is
+     inset by the gutter (to reach the card edge) plus the copy inset (to reach
+     the headline's left edge). Nav left edge === headline left edge, exactly. */
+  --nav-inset: calc(var(--hero-gutter) + var(--copy-inset));
+}
+
+@media (min-width: 768px) {
+  :root {
+    --copy-inset: 48px;
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --copy-inset: 64px;
+  }
+}
+
+@media (min-width: 900px) {
+  :root {
+    --header-h-tall: 104px;
+    --header-h-compact: 72px;
+  }
+}
+
+/* Top offset for any page that does NOT open with a full-bleed hero.
+
+   SiteHeader is position:fixed with no layout offset, by design — it floats on
+   the hero photograph. On a page like /[locale]/calculator the first content
+   would otherwise sit underneath it.
+
+   The lengths are the header's REAL solid-state heights, taken from the
+   concrete values on `.site-header[data-compact="true"]` below (64 / 76), NOT
+   from --header-h-compact. That variable still reads 64/72 and is now only used
+   by the mobile menu panel; the bar itself went to concrete lengths when the
+   var() indirection broke the height transition. Reserving 72 against a 76px
+   bar would slide 4px of heading under it at desktop. */
+.page-header-offset {
+  padding-top: 64px;
+}
+
+@media (min-width: 900px) {
+  .page-header-offset {
+    padding-top: 76px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Header compaction. Two animated properties, both 200ms `ease` — the exact
+   duration and (default) timing function lemonade uses on their own header and
+   logo. The state is a binary class flip at scrollY > 60, their measured
+   threshold; the transition, not the scroll position, does the smoothing.
+
+     bar   height 104 → 72
+     logo  translateY(28px) scale(1.25) → translateY(0) scale(1)
+           i.e. it rises 28px and settles from 50px tall to 40px
+
+   The logo's transform-origin is its own centre, and the link row it sits in
+   is a fixed-height box at the top of the bar, so the links never move.
+--------------------------------------------------------------------------- */
+/* Heights are concrete lengths here rather than `height: var(--header-h-tall)`
+   on the element. With the var() indirection the *specified* value never
+   changes when the breakpoint flips it (the string is still "var(...)"), so
+   Chrome does not invalidate the transitioned `height` and the bar stays stuck
+   at its previous value — rotating a tablet from landscape to portrait left a
+   104px bar on a 64px layout. Concrete values invalidate correctly. */
+.site-header {
+  height: 64px;
+  /* Surface cross-fade runs slightly longer than the compaction so the cream
+     arrives softly instead of snapping in under the moving logo. Both are
+     `ease`, both are two-way — the state is recomputed from window.scrollY on
+     every scroll event, so it is not a one-shot. */
+  transition:
+    height 200ms ease,
+    background-color 280ms ease,
+    box-shadow 280ms ease,
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  background-color: transparent;
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+/* ---------------------------------------------------------------------------
+   Hide on scroll down / reveal on scroll up.
+
+   TRANSFORM ONLY. The bar stays position:fixed with no layout offset, so
+   nothing below it moves and no page reflows — the hero card still starts at
+   the very top and .page-header-offset still reserves the bar's height on
+   routes that need it, whether the bar is on screen or not. Content must not
+   jump because a bar slid away.
+
+   SURFACE AND VISIBILITY ARE ORTHOGONAL. `data-compact` (position-driven, any
+   y > 60) keeps owning background, ink, height and logo scale; `data-hidden`
+   (direction-driven, only past y > 160) owns nothing but the transform. That
+   is why a bar revealed mid-page is always readable: mid-page is always past
+   60, so it is always already solid. Nothing about the cross-fade changed.
+
+   Easing is our `out-expo` token — the same curve FadeUp uses — so the reveal
+   decelerates into place rather than arriving linearly. */
+.site-header[data-hidden="true"] {
+  transform: translateY(-100%);
+}
+
+/* NOTE — the containing-block trap, and why there is no CSS workaround here.
+   `transform` makes an element the containing block for its position:fixed
+   DESCENDANTS, so a `fixed inset-0` panel nested in this bar sizes to the bar
+   (measured: 753x64 instead of 768x1024). Overriding to `transform: none`
+   while the panel is open does NOT work, because `transform` is in the
+   transition list above and therefore resolves to an identity MATRIX rather
+   than the keyword `none` — and an identity matrix still creates the block.
+   The fix lives in the markup: the mobile panel is rendered as a SIBLING of
+   <header>, not a child. Do not move it back inside. */
+
+/* At the top of the page the bar is a pure overlay: no background, no blur, no
+   border, no scrim of its own. Legibility over the photo is handled inside the
+   card by .hero-veil-top, which is part of the image treatment. */
+.site-header[data-compact="true"] {
+  background-color: #f8f4ee;
+  box-shadow:
+    0 1px 0 rgba(13, 27, 42, 0.1),
+    0 6px 20px -14px rgba(13, 27, 42, 0.35);
+}
+
+/* Nav ink cross-fades with the surface: cream over the photo, navy on cream.
+   Driven by a custom property so the links, the hamburger and the logo all
+   follow one value. */
+/* Pure white over the photo rather than cream: white is luminance 1.000 against
+   cream's 0.897, which is a free 1.11× on every contrast ratio in the
+   transparent state and was the difference between 4.41 (fail) and clearing
+   4.5. It reverts to navy on the cream bar. */
+.site-header {
+  --nav-ink: #ffffff;
+}
+.site-header[data-compact="true"] {
+  --nav-ink: #0d1b2a;
+}
+
+/* The Join pill INVERTS between states. A navy pill sat on the darkened top of
+   the photo measured 1.00:1 against its own backdrop — the control simply
+   disappeared (WCAG 1.4.11 wants 3:1 for a component boundary). Cream-on-photo
+   at the top, navy-on-cream once the bar solidifies. The label rides its own
+   opaque fill either way, so it is 15.87:1 in both states regardless of the
+   image behind it. */
+.site-header .nav-pill {
+  background-color: #f8f4ee;
+  color: #0d1b2a;
+  transition:
+    background-color 280ms ease,
+    color 280ms ease;
+}
+.site-header[data-compact="true"] .nav-pill {
+  background-color: #0d1b2a;
+  color: #f8f4ee;
+}
+.site-header .nav-pill:hover {
+  background-color: #7d641f;
+  color: #f8f4ee;
+}
+.site-header .nav-ink {
+  color: var(--nav-ink);
+  transition: color 280ms ease;
+}
+
+@media (min-width: 900px) {
+  .site-header {
+    height: 116px;
+  }
+  .site-header[data-compact="true"] {
+    height: 76px;
+  }
+}
+
+/* Links sit on a busy photograph in the transparent state, so they carry a soft
+   shadow as well as the top gradient. Dropped entirely once the bar is cream —
+   a shadow on cream just looks smudged. */
+.site-header .nav-ink {
+  text-shadow: 0 1px 14px rgba(13, 27, 42, 0.6);
+  transition:
+    color 280ms ease,
+    text-shadow 280ms ease;
+}
+.site-header[data-compact="true"] .nav-ink {
+  text-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header .nav-ink {
+    transition: none;
+  }
+  /* STAY PUT, not snap. The hide/reveal is purely a motion affordance; with the
+     animation removed, snapping a bar in and out of existence is a jump-cut,
+     which is worse for the people who asked for less motion than simply leaving
+     it in place. The JS also never sets data-hidden under this query, so this
+     rule is the belt to that braces — it holds even if the state leaks. */
+  .site-header,
+  .site-header[data-hidden="true"] {
+    transform: none;
+  }
+}
+
+.site-header__logo {
+  transform-origin: 50% 50%;
+  transition: transform 200ms ease;
+}
+
+/* The row is now full-bar-height with everything vertically centred, so the
+   logo's rise comes from the bar's own height change (centre 58 → 38, a 20px
+   rise) rather than from a translate. Only the scale is animated. */
+@media (min-width: 900px) {
+  .site-header[data-compact="false"] .site-header__logo {
+    transform: scale(1.3333);
+  }
+  .site-header[data-compact="true"] .site-header__logo {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header__logo {
+    transition: none;
+  }
+}
+
+/* The hero card. overflow:hidden + border-radius clips the photo, and
+   translateZ(0) promotes this element to its own layer — without it Safari
+   (and iOS WebKit generally) fails to apply the rounded clip to transformed or
+   composited children, so the image corners punch square through the radius. */
+.hero-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--hero-radius);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  isolation: isolate;
+  /* Fill the viewport, inset by the gutter top and bottom. The header floats
+     over the photo now, so nothing is subtracted for it.
+
+     svh, not vh: on mobile `vh` is pinned to the LARGEST viewport, so the card
+     would be taller than the visible area while the URL bar is showing and the
+     layout would jump the moment it collapsed.
+
+     The ceiling was 880px, which would have stopped the card filling a 1080-
+     tall screen (1080 − 48 = 1032). Raised to 1100px so it genuinely fills
+     every ordinary display while still capping an absurdly tall one. Floor at
+     520px keeps it usable on a short landscape phone. */
+  height: min(calc(100svh - (var(--hero-gutter) * 2)), 1100px);
+  min-height: 520px;
+}
+
+/* Legibility gradient — lives INSIDE the card so it is clipped by the same
+   radius. Bottom-to-top, navy, fully transparent well before the top edge, with
+   a monotonic ramp so there is no band and no visible edge anywhere. Tuned
+   against the composited pixels under each text element; see the AA table in
+   the handover notes. */
+/* Shaped from the measured requirement, not by eye. For each text element, at
+   each of the three widths, the worst (brightest) composited pixel under its
+   real glyph boxes was solved for the navy alpha that would lift it to its AA
+   threshold. The envelope of those requirements:
+
+     t (0 = card bottom)   desktop  tablet  phone   max
+     0.03–0.08  ITIN         0.430   0.541  0.518   0.541
+     0.10–0.15  ghost CTA    0.387   0.510  0.510   0.510
+     0.16–0.33  sub-head     0.383   0.564  0.590   0.590
+     0.26–0.48  headline     0.404   0.458  0.461   0.461
+
+   The peak demand is NOT at the bottom — it sits at t≈0.16–0.33, where the
+   photo's blown-out sun flare lands once object-cover crops to a narrow phone
+   aspect (maxL 1.000, i.e. literally clipped white). So the ramp has to hold
+   high through the lower third before it falls; a conventional
+   heaviest-at-the-very-bottom curve fails the sub-headline on phone.
+
+   Held at 0.68 to t=0.22 and 0.66 to t=0.32, then monotonically down to clear
+   by t=0.96. Monotonic non-increasing throughout with an even slope (no
+   segment steeper than 0.12 per 10%), so there is no edge and nothing to read
+   as a band. Worst-case margin over requirement is +0.06 at t=0.33. */
+/* Top-down counterpart to .hero-veil, carrying the transparent-state navbar.
+   Same principle as the bottom one: anchored to the edge, monotonic, fully
+   clear well before it ends, so there is no band and no visible boundary.
+   Values are set from the measured requirement — see the AA table in the
+   handover notes. */
+.hero-veil-top {
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 27, 42, 0.66) 0%,
+    rgba(13, 27, 42, 0.62) 18%,
+    rgba(13, 27, 42, 0.51) 34%,
+    rgba(13, 27, 42, 0.36) 50%,
+    rgba(13, 27, 42, 0.21) 66%,
+    rgba(13, 27, 42, 0.09) 80%,
+    transparent 100%
+  );
+}
+
+.hero-veil {
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(13, 27, 42, 0.68) 0%,
+    rgba(13, 27, 42, 0.68) 22%,
+    rgba(13, 27, 42, 0.66) 32%,
+    rgba(13, 27, 42, 0.6) 40%,
+    rgba(13, 27, 42, 0.5) 50%,
+    rgba(13, 27, 42, 0.38) 60%,
+    rgba(13, 27, 42, 0.26) 70%,
+    rgba(13, 27, 42, 0.15) 80%,
+    rgba(13, 27, 42, 0.06) 88%,
+    transparent 96%
+  );
+}
+
+/* Hero Ken Burns — scale 1 → 1.08 over 20s, disabled under reduced motion */
+@keyframes kenburns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.kenburns {
+  animation: kenburns 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kenburns {
+    animation: none;
+  }
+}
+
+/* Background textures (dot-grid / graph-paper / tx-hatch) removed — the page
+   is one flat cream (#F8F4EE, reyou.life's measured page color) with no
+   patterns anywhere. */
+
+/* Two Ways In — photographic cards (risksolved.com treatment). A warm,
+   consistently-graded photo fills the card; a bottom-weighted navy scrim
+   darkens the lower half enough that white text and the gold eyebrow clear AA
+   while the photograph still reads clearly up top. */
+.tw-photo {
+  filter: saturate(1.07) contrast(1.02) brightness(0.9);
+}
+.tw-scrim {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 27, 42, 0.05) 0%,
+    rgba(13, 27, 42, 0.12) 30%,
+    rgba(12, 23, 36, 0.42) 44%,
+    rgba(11, 20, 31, 0.88) 53%,
+    rgba(10, 18, 28, 0.95) 72%,
+    rgba(9, 16, 25, 0.97) 100%
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Calculator sliders.
+
+   BeeToGreen use a bare native <input type="range"> with nothing but
+   `accent-color` — no custom track, no custom thumb, no pseudo-elements. We
+   keep that approach (the platform control means arrows, Home/End and
+   PageUp/PageDown work for free and can never drift out of sync with the
+   visual) and add only the two things it does not give us: a 44px pointer
+   target, and a focus ring that is actually visible on the thumb.
+--------------------------------------------------------------------------- */
+.calc-slider {
+  accent-color: #0d1b2a;
+  cursor: pointer;
+  height: 44px; /* touch target; the control still paints at its native size */
+  background: transparent;
+}
+
+.calc-slider:focus {
+  outline: none;
+}
+.calc-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 4px rgba(125, 100, 31, 0.55);
+}
+.calc-slider:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 4px rgba(125, 100, 31, 0.55);
+}
+
+/* Custom range sliders: 2px ink-10% track, gold fill left of thumb,
+   20px white thumb with 2px gold border. --fill is set inline per slider. */
+input[type="range"].slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px; /* minimum touch target; thumb stays 20px visually */
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"].slider::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 1px;
+  background: linear-gradient(
+    to right,
+    #c9a84c var(--fill, 50%),
+    rgba(26, 26, 26, 0.1) var(--fill, 50%)
+  );
+}
+
+input[type="range"].slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin-top: -9px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #c9a84c;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.18);
+}
+
+input[type="range"].slider::-moz-range-track {
+  height: 2px;
+  border-radius: 1px;
+  background: rgba(26, 26, 26, 0.1);
+}
+
+input[type="range"].slider::-moz-range-progress {
+  height: 2px;
+  border-radius: 1px;
+  background: #c9a84c;
+}
+
+input[type="range"].slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #fff;
+  border: 2px solid #c9a84c;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.18);
+}
+
+/* Visible keyboard focus — a gold-deep ring on the thumb (AA on the light
+   surface), suppressing the default focus outline the browser would draw. */
+input[type="range"].slider:focus {
+  outline: none;
+}
+input[type="range"].slider:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 2px 8px rgba(13, 27, 42, 0.18),
+    0 0 0 4px rgba(125, 100, 31, 0.4);
+}
+input[type="range"].slider:focus-visible::-moz-range-thumb {
+  box-shadow:
+    0 2px 8px rgba(13, 27, 42, 0.18),
+    0 0 0 4px rgba(125, 100, 31, 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+   Testimonials — reyou's "What Patients Share" card over the Coverage parallax.
+
+   Their card is rgba(37,37,37,0.5) + backdrop-filter: blur(12px) on a dark
+   moody photograph. Ours sits on a warm lamplit interior, so the tint is
+   re-derived rather than copied — see CREDITS.md for the measurement, which
+   samples the composite ACROSS THE PARALLAX TRAVEL rather than at one scroll
+   position, because the crop moves under the text as the section scrolls.
+
+   Card radius 4, padding 32 and the 64px gap between attribution and quote are
+   theirs unchanged.
+--------------------------------------------------------------------------- */
+.ts-photo {
+  filter: sepia(0.1) saturate(1.05) brightness(0.96);
+}
+
+/* Scrim — a TOP-ANCHORED gradient that clears completely, replacing the flat
+   veil the dark photograph used. The image is now a bright, high-key family
+   interior, and the whole point of it is that it reads: a flat veil heavy
+   enough to carry the header would have dimmed the entire frame, which is the
+   opposite of what was wanted.
+
+   So the scrim covers only the header band and is gone by 35% of the section
+   height — before the cards begin at every width. Below that line the
+   photograph is bare and at full brightness, which is where it shows: AROUND
+   the cards, not through them.
+
+   Shaped from measurement, not by eye. The header sits between 5% and 18% of
+   the section depending on width (the disclaimer is the lowest box and sets the
+   phone case), so the plateau has to hold to 16% before it can fall. Sampled at
+   15 scroll positions x 3 widths x 3 header boxes.
+
+   Peak came DOWN from 0.76 to 0.70 when the parallax travel was reduced from
+   ±16% to ±10%: a shorter travel sweeps less of the photograph's blown window
+   highlight through the header band, so less scrim buys the same ratio. 0.58
+   was tested and fails (3.79:1 at tablet); 0.66 passes but leaves only +0.40
+   at tablet, so 0.70 is the shipped value. Monotonic, no segment steeper than
+   0.21 per 5% of height, ending at transparent rather than a step — no band,
+   no edge. */
+.ts-veil {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 27, 42, 0.7) 0%,
+    rgba(13, 27, 42, 0.66) 16%,
+    rgba(13, 27, 42, 0.45) 22%,
+    rgba(13, 27, 42, 0.24) 27%,
+    rgba(13, 27, 42, 0.09) 31%,
+    transparent 35%
+  );
+}
+
+.ts-card {
+  /* a0.66 — heavier than reyou's a0.50, and heavier than the a0.62 floor the
+     measurement returned. The card text now sits on the BARE bright photograph
+     (the scrim has cleared by the time the cards start), so the tint carries all
+     of it alone. Taking the floor would have left +0.23 of margin; 0.66 leaves
+     ~+1.0 and costs only visibility THROUGH the cards, which is not where the
+     photograph is supposed to show. */
+  background-color: rgba(13, 27, 42, 0.66);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 16px rgba(248, 244, 238, 0.1),
+    inset 1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 1px 1px rgba(248, 244, 238, 0.65),
+    inset -1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 -1px 1px rgba(248, 244, 238, 0.65);
+}
+
+/* How It Works — one shared grade over the three step photographs. They are the
+   same register (figure low, open sky, dusk) but not the same white balance:
+   step 01 is warm gold, step 02 cooler green-teal, step 03 pale daylight. A
+   light sepia pulls all three toward a common amber, +6% saturation stops the
+   sepia flattening them, and a 6% brightness cut seats the sky on the navy
+   panel. Deliberately gentle — the frames are close enough that anything
+   heavier reads as a filter rather than a grade.
+
+   NOTE: this grade is part of the contrast measurement, not decoration applied
+   after it. The AA table in public/synergy/CREDITS.md was measured by running
+   these exact CSS filter formulas per pixel, then the 12px blur, then the
+   navy tint — in that order, because that is the order the browser composites
+   them (element filter, then the panel's backdrop-filter, then its background). */
+.hiw-photo {
+  filter: sepia(0.16) saturate(1.06) brightness(0.94) contrast(1.03);
+}
+
+/* ---------------------------------------------------------------------------
+   CAP-HEIGHT TRIM.
+
+   reyou do not lay text out on its line box — they lay it out on its CAP BAND.
+   Every text style on their site carries a pair of table pseudo-elements with
+   negative margins that crop the half-leading and the descender space away, so
+   a heading's box is exactly its capital letters and nothing else. Measured on
+   their "How to Get Started" heading (Kufam 34px / lh 1.2):
+
+     ::before  margin-bottom  -4.42px      element box 24.49px
+     ::after   margin-bottom -11.90px      glyph line box 44px
+
+   That is the mechanism behind BOTH problems reported here. The dead space is
+   the leading nobody asked for, and the eyebrow/heading misalignment is two
+   different line boxes being top-aligned when what should align is the cap
+   bands. reyou's own rule, read off their layout: the eyebrow wrap STRETCHES to
+   the heading's trimmed height and centres its content, so the two cap bands
+   share a centre line — not a baseline, not a top edge.
+
+   We use the same fonts they do (Kufam display, Overpass body), so the trim
+   ratios are derived from our own loaded font metrics rather than copied:
+
+     cap  = actualBoundingBoxAscent('H') / fontSize
+     trim-top    = (lineHeight - (fbAscent + fbDescent)) / 2 + (fbAscent - cap)
+     trim-bottom = (lineHeight - (fbAscent + fbDescent)) / 2 + fbDescent
+
+     Kufam    cap 0.7188  fbAsc 0.9000  fbDesc 0.4000   @lh 1.2 -> 0.1312 / 0.35
+     Overpass cap 0.7031  fbAsc 0.8825  fbDesc 0.3825   @lh 1.5 -> 0.2969 / 0.50
+
+   Those land within 0.04px of reyou's shipped values at the same sizes, which
+   is the confirmation that the mechanism was read correctly. Expressed in em so
+   they hold through every clamp() step of the fluid type.
+--------------------------------------------------------------------------- */
+.cap-trim {
+  display: flow-root;
+}
+.cap-trim::before,
+.cap-trim::after {
+  content: "";
+  display: table;
+}
+.cap-trim::before {
+  margin-bottom: calc(-1 * var(--cap-t));
+}
+.cap-trim::after {
+  margin-top: calc(-1 * var(--cap-b));
+}
+/* Kufam, line-height 1.2 — the section heading */
+.cap-display {
+  --cap-t: 0.1312em;
+  --cap-b: 0.35em;
+}
+/* Overpass, line-height 1.5 — the eyebrow and the step title row */
+.cap-body {
+  --cap-t: 0.2969em;
+  --cap-b: 0.5em;
+}
+
+/* ---------------------------------------------------------------------------
+   How It Works — reyou.life's "How to Get Started" step card, measured live at
+   1536. Their anatomy is kept exactly: a 4:5 photo card at radius 8, padding 32,
+   carrying a top-anchored natural-height panel at radius 4, padding 32, with a
+   48px gap between its heading and body, a 12px backdrop blur, four 1px inset
+   hairlines and a soft outer glow.
+
+   THE ONE DEVIATION IS THE TINT, and it is forced. Their panel is CREAM at 5%
+   over their own photographs, which are dark and moody. Ours are white-walled
+   office interiors. Measured against the real composited pixels — each crop
+   blurred by the same 12px (scaled to source resolution: 25.6px on the 1000px
+   crops, 28.1px on the 1100px one), sampled across the whole panel footprint —
+   their 5% cream gives:
+
+     process-02  1.28:1        process-01  1.12:1        process-03  0.99:1
+
+   i.e. cream text on cream glass on a bright wall: invisible. Solving for the
+   navy alpha that lifts the WORST pixel in each footprint to 4.5:1 gives
+   α0.55 / α0.58 / α0.61. Shipped at a single α0.62 so all three panels are
+   visually identical and the worst case still clears with margin.
+
+   0.62 deliberately lands beside the α0.60 already on .cover-card, so the two
+   translucent treatments on the page read as one system.
+
+   No colour grade is applied to these photographs. reyou grade theirs not at
+   all, the three frames are the same office under the same light, and every
+   filter added here is another variable in the contrast measurement above. */
+.hiw-glass {
+  background-color: rgba(13, 27, 42, 0.62);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  /* Their exact edge: a soft cream glow outside, four 1px cream hairlines
+     inside. Drawn as one box-shadow list, same as theirs. */
+  box-shadow:
+    0 0 16px rgba(248, 244, 238, 0.1),
+    inset 1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 1px 1px rgba(248, 244, 238, 0.65),
+    inset -1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 -1px 1px rgba(248, 244, 238, 0.65);
+}
+
+/* The hairline rule between the "Step" label and its numeral. Theirs is an
+   inline SVG path; ours is a border on a flex-1 span plus a CSS arrowhead, so
+   it costs no markup and inherits currentColor. */
+/* Opacity 0.75, not the 0.45 this started at. The rule inherits currentColor
+   from a text-ink/70 parent, so 0.45 composited to an effective alpha of 0.315
+   over cream — 1.99:1, under the 3:1 non-text floor. It is decorative (the row
+   is aria-hidden and the <ol> carries the order), so 1.4.11 arguably does not
+   bind, but a hairline that clears the threshold on its own is cheaper than the
+   argument: 0.75 lands at 3.52:1 and still reads as a hairline. */
+.hiw-rule {
+  height: 1px;
+  background-color: currentColor;
+  opacity: 0.75;
+}
+
+/* ---------------------------------------------------------------------------
+   Consultation panel — reyou.life's `.cta-primary_card_wrap`, rebuilt.
+
+   Their edge is reproduced exactly: no border at all, a 16px cream outer glow
+   at 0.10, and four SEPARATE 1px inset cream hairlines at 0.65. That is the
+   same five-part shadow already shipped on .hiw-glass and .ts-card, so the
+   three translucent surfaces on this site read as one system.
+
+   THE TINT IS THE DEVIATION, and it is forced. Theirs is #F8F4EE at α0.05 — a
+   LIGHTENING tint over their own dark, moody photography. Ours is navy.
+
+   ALPHA, SOLVED — not chosen by eye.
+   The browser composites in this order, and so did the measurement: photograph
+   → object-cover into the 130% parallax box → extract the section window at a
+   scroll position → Gaussian blur σ12 (CSS `blur(12px)` defines the length as
+   the standard deviation) → source-over the navy IN sRGB, because that is
+   where browsers composite alpha → relative luminance per pixel → contrast
+   against cream #F8F4EE.
+
+   Sampled at THREE scroll positions (start / mid / end), at 1440 / 768 / 390,
+   taking the worst pixel inside each text element's own box. The backdrop
+   moves under the copy, so a single-position reading would have been fiction.
+
+     α0.00   3.77:1   fails  (paragraph @768, scroll start)
+     α0.05   4.04:1   fails
+     α0.10   4.34:1   fails
+     α0.15   4.67:1   PASSES — the floor
+     α0.30   5.85:1   shipped
+
+   Shipped at DOUBLE the floor. Three reasons: the worst case sits at scroll
+   START, where the backdrop is brightest, so the extra alpha buys evenness
+   across the travel rather than headroom at one position; the solver models
+   text boxes rather than real glyph coverage, so its floor is an estimate and
+   not a guarantee; and every other translucent surface here ships above its
+   measured floor (.cover-card 0.17→0.19, .ts-card 0.62→0.66, .hiw-glass
+   0.61→0.62).
+
+   0.30 is still less than HALF of .hiw-glass's 0.62, because this photograph
+   is genuinely dark where the panel sits — worst-case panel-region mean
+   luminance 0.072 across the whole travel, against 0.4–0.5 for the office
+   interiors that forced 0.62. A lighter tint is not a shortcut here; it is
+   what the image earned.
+
+   NO colour grade is applied to the photograph. The alpha above was solved
+   against ungraded pixels; a filter added afterwards would invalidate it.
+--------------------------------------------------------------------------- */
+.consult-glass {
+  background-color: rgba(13, 27, 42, 0.3);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 16px rgba(248, 244, 238, 0.1),
+    inset 1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 1px 1px rgba(248, 244, 238, 0.65),
+    inset -1px 0 1px rgba(248, 244, 238, 0.65),
+    inset 0 -1px 1px rgba(248, 244, 238, 0.65);
+}
+
+/* Their icon animates on hover behind `overflow: hidden` on the 32px circle.
+   Ours does the same trick — the arrow leaves right and a second copy arrives
+   from the left — but as a transform-only CSS transition rather than their JS.
+   Dropped entirely under reduced motion: the colour change alone then carries
+   the hover state. */
+.consult-arrow svg {
+  grid-area: 1 / 1;
+  transition: transform 200ms ease;
+}
+/* The trailing copy waits outside the clip to the left. */
+.consult-arrow svg + svg {
+  transform: translateX(-140%);
+}
+.consult-cta:hover .consult-arrow svg {
+  transform: translateX(140%);
+}
+.consult-cta:hover .consult-arrow svg + svg {
+  transform: translateX(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .consult-arrow svg,
+  .consult-cta:hover .consult-arrow svg {
+    transition: none;
+    transform: none;
+  }
+  /* With motion off the second copy must not sit on top of the first. */
+  .consult-arrow svg + svg,
+  .consult-cta:hover .consult-arrow svg + svg {
+    display: none;
+  }
+}
+
+/* Why Synergy — one shared warm grade unifies the mix of genuine team photos
+   (neutral office light) and matched family/worker stock into a single warm set
+   on the greige surface. */
+.why-photo {
+  filter: sepia(0.14) saturate(1.06) brightness(1) contrast(1.02);
+}
+
+/* Native dialog: no scroll-lock jump; centered by default margins above. */
+.lead-dialog {
+  border: none;
+}
+
+/* Hero — top-anchored graduated scrim. The clip is bright sky up top (where the
+   eyebrow + headline sit, worst frame ~0.97 luminance) easing to a dark
+   foreground below the horizon (~52%), where the sub/SSN/CTAs already sit on
+   near-black and need no help. So the darkening is strongest at the top edge and
+   fades monotonically to nothing by ~76% — a single-direction graduation that
+   reads as atmosphere in the sky, never as a mid-frame band or pool. Measured to
+   hold: eyebrow ≥4.5:1, headline ≥3:1 (large text) across every frame. */
+.hero-scrim {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 27, 42, 0.72) 0%,
+    rgba(13, 27, 42, 0.67) 22%,
+    rgba(13, 27, 42, 0.6) 34%,
+    rgba(13, 27, 42, 0.52) 47%,
+    rgba(13, 27, 42, 0.44) 56%,
+    rgba(13, 27, 42, 0.35) 66%,
+    rgba(13, 27, 42, 0.32) 100%
+  );
+}
+
+/* Liquid glass — the Velorah-style treatment, adapted to our palette. A low
+   white wash + real backdrop blur, a 1px inset highlight along the top edge,
+   and a gradient hairline border drawn with the padding-box/border-box mask
+   trick (no library, no extra element). Used on the hero eyebrow chip, the
+   ghost CTA, the nav Join button and the stat strip. */
+.liquid-glass {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  backdrop-filter: blur(14px) saturate(1.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    0 8px 28px -14px rgba(0, 0, 0, 0.55);
+}
+
+/* Filled variant for the primary CTA. Kept at 0.9 white so navy label text
+   holds ~12:1 over any video frame — a fully translucent primary would put
+   white-on-light-glass and fail AA. The glass reads through the border,
+   highlight and blur rather than through the fill. */
+.liquid-glass-solid {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    0 10px 30px -12px rgba(13, 27, 42, 0.6);
+}
+
+.liquid-glass::before,
+.liquid-glass-solid::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.62),
+    rgba(255, 255, 255, 0.1) 42%,
+    rgba(255, 255, 255, 0.3)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* VEX hero — navbar glass. The white-tinted `.liquid-glass` LIGHTENS its
+   backdrop, and the navbar sits over the brightest part of the clip: measured
+   1.62:1 (logo) and 1.41:1 (links), with 73% / 63% of pixels failing. A
+   navy-tinted glass is the localized fix — it is the navbar's own background,
+   so nothing outside the bar is darkened. Measured floor was α0.55; shipped at
+   0.58 for margin. */
+.vex-nav-glass {
+  position: relative;
+  background-color: rgba(13, 27, 42, 0.58);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  backdrop-filter: blur(14px) saturate(1.2);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 28px -14px rgba(0, 0, 0, 0.55);
+}
+.vex-nav-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: linear-gradient(
+    160deg,
+    rgba(255, 255, 255, 0.34),
+    rgba(255, 255, 255, 0.06) 42%,
+    rgba(255, 255, 255, 0.16)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* VEX hero — localized scrim behind the left copy column only. The first
+   headline line crosses a bright patch on some frames (1.58:1, 0.6% of its
+   pixels). This is a soft pool anchored under that copy, feathered to nothing
+   well inside the section, so it is not a full-frame overlay: the right half of
+   the frame, the tag card and the video around the copy stay untouched.
+   Measured floor was 0.35 uniform; shipped as a feathered pool peaking at 0.52
+   so the feathered edges still clear it. */
+.vex-copy-scrim {
+  position: relative;
+}
+
+/* The old localized radial pool read as a dark cloud sitting over the copy.
+   Replaced with a full-width bottom-up falloff — the standard cinematic
+   convention. It spans the entire frame so it has no left/right edge, and
+   fades to fully transparent by 58% height, so there is no boundary anywhere
+   to perceive as a shape. Measured against the un-cropped clip: without it the
+   headline hits 1.85:1, the tagline 3.42:1 (0.06% of pixels each); this lifts
+   both clear with the lightest ramp that does so. */
+.vex-bottom-fade {
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(13, 27, 42, 0.56) 0%,
+    rgba(13, 27, 42, 0.48) 18%,
+    rgba(13, 27, 42, 0.38) 36%,
+    rgba(13, 27, 42, 0.26) 52%,
+    rgba(13, 27, 42, 0.11) 68%,
+    transparent 82%
+  );
+}
+
+/* Localized lift behind the centred copy block only. Measured fix: on the
+   375px poster crop a brighter patch lands under the sub-headline and drops it
+   to 4.26:1 (needs 4.5) — the graduated top scrim is tuned for the sky and does
+   not reach there. A soft ellipse over the text column adds the margin without
+   touching the rest of the frame: it peaks at 0.10 dead centre and is fully
+   clear by 78%, so there is no band, no edge, and the photograph outside the
+   copy is completely unchanged. */
+.hero-text-scrim {
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 62% 42% at 50% 48%,
+    rgba(13, 27, 42, 0.2) 0%,
+    rgba(13, 27, 42, 0.15) 55%,
+    transparent 78%
+  );
+}
+
+/* Coverage — full-bleed parallax photograph: a sharp, premium family of five
+   (parents with three young children) in an autumn-gold field with mountains
+   behind (Pexels 30221605). A light warm grade (touch of sepia) pulls the cooler
+   sky toward the site's palette and gently deepens the frame so white text holds
+   while the crisp detail reads through the glass. */
+.cover-photo {
+  filter: sepia(0.12) saturate(1.1) brightness(0.94) contrast(1.05);
+}
+
+/* Legibility veil — navy anchored to the top and bottom edges (where the white
+   heading and the closing statement sit directly on the photograph), easing to
+   clear through the middle third where the cards sit and carry their own tint.
+   Edge-anchored, no mid-frame pool. */
+.cover-veil {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 27, 42, 0.9) 0%,
+    rgba(13, 27, 42, 0.85) 15%,
+    rgba(13, 27, 42, 0.74) 24%,
+    rgba(13, 27, 42, 0.55) 32%,
+    rgba(13, 27, 42, 0.22) 40%,
+    transparent 48%,
+    transparent 60%,
+    rgba(13, 27, 42, 0.32) 70%,
+    rgba(13, 27, 42, 0.58) 82%,
+    rgba(13, 27, 42, 0.82) 100%
+  );
+}
+
+/* Translucent cards — the reyou.life "treatments" treatment rebuilt in our
+   palette. Where they use a 5% BEIGE tint with white text over fog (which does
+   not clear AA), we use a NAVY tint so white text can — the alpha stepped down
+   empirically to the last value that holds 4.5:1. Same 12px backdrop blur, small
+   ~4px radius, a 1px bright inset rim, and a soft outer glow for the glass edge.
+   Floor measured ACROSS the full parallax travel (the background moves behind the
+   cards, so brighter frames scroll through): α0.17 was the last value where all
+   white card text held ≥4.5:1 at every scroll position (worst 4.62:1); landed one
+   step up at α0.19. (At rest alone the image is even enough for ~0.03, but the
+   moving background is what sets the honest floor.) */
+.cover-card {
+  background-color: rgba(13, 27, 42, 0.6);
+  box-shadow:
+    0 0 22px rgba(250, 250, 248, 0.06),
+    inset 0 0 0 1px rgba(250, 250, 248, 0.5);
+}
+.cover-card:hover {
+  background-color: rgba(13, 27, 42, 0.66);
+  box-shadow:
+    0 0 28px rgba(250, 250, 248, 0.1),
+    inset 0 0 0 1px rgba(250, 250, 248, 0.66);
+}
+
+/* Carrier marquee — transform-only keyframes, GPU-composited.
+   Track holds two identical set copies, so -50% is an invisible reset. */
+@keyframes marquee-left {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes marquee-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* One row of all 12 marks — slow enough to read a name without tracking it. */
+.marquee-left {
+  animation: marquee-left 64s linear infinite;
+}
+
+.marquee-right {
+  animation: marquee-right 75s linear infinite;
+}
+
+.marquee-row {
+  /* Alpha mask: marks dissolve into the section surface (now white) for the
+     first/last 80px. Background-independent — fades to whatever sits behind. */
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 80px,
+    #000 calc(100% - 80px),
+    transparent 100%
+  );
+}
+
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  .marquee-row {
+    overflow-x: auto;
+  }
+}
+
+/* Reduced motion: hover transforms become instant / no movement */
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-lift {
+    transition-property: border-color !important;
+  }
+  .motion-safe-lift:hover {
+    transform: none !important;
+  }
+}

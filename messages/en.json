@@ -1,0 +1,391 @@
+{
+  "meta": {
+    "title": "Synergy Insurance Group — Life Insurance & Tax-Free Retirement",
+    "description": "Life insurance and tax-free retirement plans from multiple top-rated carriers. Plain English guidance in English and Spanish. One free call."
+  },
+  "nav": {
+    "company": "Synergy Insurance Group",
+    "tagline": "Protecting Families. Building Futures.",
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "contact": "Contact",
+    "phone": "407-434-0400",
+    "phoneHref": "tel:+14074340400",
+    "join": "Join",
+    "ariaLabel": "Main navigation",
+    "servicesMenu": {
+      "term": "Term Life",
+      "iul": "IUL",
+      "taxfree": "Tax-Free Retirement",
+      "final": "Final Expense"
+    },
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "langLabel": "Language",
+    "langEn": "EN",
+    "langEs": "ES"
+  },
+  "hero": {
+    "eyebrow": "Licensed in all 50 states",
+    "headline": "Protecting Families. Building Futures.",
+    "headlineA": "Protecting Families.",
+    "headlineB": "Building Futures.",
+    "sub": "Life insurance and tax-free retirement from top-rated carriers. Plain-English guidance, in English or Spanish. One free call.",
+    "ssn": "No Social Security Number required.",
+    "ctaQuote": "Get a free quote",
+    "ctaCall": "Talk to an advisor",
+    "imageAlt": "A family outdoors together at golden hour",
+    "stats": {
+      "s1v": "50",
+      "s1l": "States Licensed",
+      "s2v": "ITIN",
+      "s2l": "Friendly",
+      "s3v": "EN / ES",
+      "s3l": "Bilingual",
+      "s4v": "407-434-0400",
+      "s4l": "Call us",
+      "s5v": "8am–7pm",
+      "s5l": "Mon–Sat"
+    },
+    "tagline": "Licensed. Bilingual. ITIN-friendly."
+  },
+  "two": {
+    "heading": "Two doors, one team.",
+    "families": {
+      "label": "For families",
+      "title": "Cover the ones you love.",
+      "body": "From term life to retirement income, we explain each option in words that make sense. Then we help you pick what actually fits your family.",
+      "cta": "Find my coverage"
+    },
+    "agents": {
+      "label": "For agents",
+      "title": "Build your career with us.",
+      "body": "Licensed agents get high-intent leads, multiple A-rated carriers, proven training, and real support. Bring your license. We handle the rest.",
+      "cta": "Join the team"
+    }
+  },
+  "carriers": {
+    "eyebrow": "Our carriers",
+    "stripKicker": "Partnered with the nation's top-rated carriers",
+    "headline": "The strength behind every policy.",
+    "subhead": "We place coverage only with carriers rated A or better by AM Best, then compare them side by side — so the same protection never costs you more.",
+    "subheadWithCount": "{count} A-rated carriers, compared side by side — so the same protection never costs you more.",
+    "ariaLabel": "Our carrier partners",
+    "names": {
+      "c1": "Mutual of Omaha",
+      "c2": "Transamerica",
+      "c3": "Americo",
+      "c4": "American Amicable",
+      "c5": "North American",
+      "c6": "Global Atlantic",
+      "c7": "Athene",
+      "c8": "Corebridge",
+      "c9": "Lincoln Financial",
+      "c10": "Nassau",
+      "c11": "Foresters",
+      "c12": "Liberty Bankers"
+    },
+    "ratings": {
+      "c1": "",
+      "c2": "",
+      "c3": "",
+      "c4": "",
+      "c5": "",
+      "c6": "",
+      "c7": "",
+      "c8": "",
+      "c9": "",
+      "c10": "",
+      "c11": "",
+      "c12": ""
+    }
+  },
+  "whatWeCover": {
+    "eyebrow": "What we do",
+    "heading": "Built around your family, your goals, and your future.",
+    "subhead": "Every plan is tailored. Every policy is explained. Nothing is rushed. From term life to tax-free retirement — protection matched to where your family is right now.",
+    "cta": "Learn more",
+    "ctaPrimary": "Get a free quote",
+    "ctaSecondary": "Talk to an advisor",
+    "closingLine": "Tomorrow is worth protecting.",
+    "cards": {
+      "term": {
+        "eyebrow": "Income protection",
+        "name": "Term Life",
+        "desc": "A large safety net for a small monthly premium, covering the years your family still leans on your paycheck. Ideal for income replacement, mortgage coverage, and family security.",
+        "alt": "A young family together outdoors at golden hour"
+      },
+      "iul": {
+        "eyebrow": "Protected growth",
+        "name": "IUL",
+        "desc": "Permanent coverage that builds real cash value — linked to a market index, with a floor that protects what you've built when markets fall.",
+        "alt": "A mid-life couple outdoors in warm autumn light"
+      },
+      "taxfree": {
+        "eyebrow": "Retirement wealth",
+        "name": "Tax-Free Retirement",
+        "desc": "Build retirement wealth outside the traditional system — tax-free growth, no SSN required, ITIN friendly.",
+        "alt": "A self-employed farmer working in a field at sunrise"
+      },
+      "final": {
+        "eyebrow": "Peace of mind",
+        "name": "Final Expense",
+        "desc": "A smaller policy that covers funerals and final costs, so your family is left with grief to process, not bills to pay. Simple approval, affordable premiums, lasting peace of mind.",
+        "alt": "An older couple smiling together outdoors at golden hour"
+      }
+    }
+  },
+  "calculator": {
+    "metaTitle": "Retirement calculator — Synergy Insurance Group",
+    "metaDescription": "Indexed Universal Life builds cash value linked to a market index. Move the sliders to compare an illustrative projection with a plain savings account.",
+    "eyebrow": "Retirement calculator",
+    "framingQuestion": "The same deposit, two very different futures.",
+    "subhead": "Move the sliders to see what a monthly contribution could grow into — in a plain savings account versus an indexed policy. No sign-up, no email, just the math.",
+    "sectionHeadline": "See how an indexed policy compares with a savings account.",
+    "sectionSupport": "Indexed Universal Life builds cash value linked to a market index. Move the sliders to compare an illustrative projection with a plain savings account.",
+    "resultUnit": "by age {age}",
+    "resultCaption": "Indexed policy value",
+    "equivLabel": "Where that number comes from",
+    "monthlyLabel": "Monthly contribution",
+    "ageLabel": "Current age",
+    "retireLabel": "Retirement age",
+    "monthlyValueText": "{value} per month",
+    "ageValueText": "{value} years old",
+    "retireValueText": "Retire at {value}",
+    "resultLabel": "Your IUL at {age}",
+    "bankLabel": "Savings account",
+    "diffLabel": "The difference",
+    "receipt": {
+      "putIn": "You put in",
+      "bankAdds": "Bank adds",
+      "iulAdds": "IUL adds"
+    },
+    "chips": {
+      "iulRate": "8.5%",
+      "iulNote": "assumed",
+      "bankRate": "0.5%",
+      "bankNote": "bank APY"
+    },
+    "shortRunway": "Short runway: indexed growth needs time. An advisor can walk you through whether this still fits.",
+    "verdict": {
+      "difference": "At an assumed 8.5%, the calculation shows a difference of {diff} — roughly {years} years of the same monthly contribution."
+    },
+    "disclaimer": "Illustrative projection using a hypothetical 8.5% annual rate. Indexed universal life returns are not guaranteed, vary with market index performance, and are subject to caps, participation rates, and policy charges. This is not an offer of insurance or a guarantee of results.",
+    "contributions": "What you put in",
+    "growth": "Growth",
+    "atRetire": "at {age}",
+    "cta": "Talk through my numbers",
+    "assumptionsLabel": "Illustrative assumptions"
+  },
+  "whySynergy": {
+    "eyebrow": "Why Synergy",
+    "headline": "Why families choose Synergy.",
+    "rows": {
+      "r1": {
+        "title": "We Work For You, Not One Carrier",
+        "body": "We're not tied to a single company, so no one carrier decides what your family is offered. We shop multiple top-rated carriers side by side and bring back the plan that fits your budget and your life — not the one that's easiest to sell."
+      },
+      "r2": {
+        "title": "Clear, Honest, No Pressure",
+        "body": "We take an education-first approach to every conversation. Your advisor explains how each option works — in plain English — before recommending anything, so every decision you make is informed, confident, and entirely yours."
+      },
+      "r3": {
+        "title": "A Partner for Life",
+        "body": "We don't disappear after the sale. Your advisor stays with your family through every policy review, every life change, and every new chapter — so your coverage keeps up with the life it protects."
+      },
+      "r4": {
+        "title": "ITIN-Friendly, No SSN Required",
+        "body": "You don't need a Social Security Number to protect your family or build a tax-free retirement plan. We specialize in ITIN coverage for the self-employed workers, construction workers, nurses, and truck drivers the traditional system overlooks."
+      },
+      "r5": {
+        "title": "English & Spanish",
+        "body": "Insurance is complicated enough in your first language. Work through every option with a licensed advisor in the language your family speaks best — English or Spanish — so nothing important gets lost in translation."
+      },
+      "r6": {
+        "title": "Licensed in All 50 States",
+        "body": "From our Orlando office we serve families coast to coast, with the same clarity and care in every state. Wherever life takes you, your coverage — and your advisor — go with you."
+      },
+      "r7": {
+        "title": "Built for the Overlooked",
+        "body": "The traditional system was never built for people who work for themselves or work with their hands. We build coverage and tax-free retirement plans for the workers who keep everything running — and got passed over anyway."
+      },
+      "r8": {
+        "title": "Your Advisor, Start to Finish",
+        "body": "The licensed advisor you speak with on day one is the one who builds your plan, walks you through it, and handles your case for as long as you hold it. No handoffs, no call centers, no starting over."
+      }
+    },
+    "intro": "An education-first brokerage based in Orlando, licensed across all fifty states. Every option gets explained before anything is recommended.",
+    "imageAlt": "A licensed advisor sitting with a family in their living room, going through options together",
+    "closing": "Not sure where to start? A licensed advisor reviews your situation in a free, no-obligation consultation.",
+    "cta": "Get a free quote",
+    "points": {
+      "p1": {
+        "title": "We work for you, not one carrier",
+        "b1": "Not tied to a single company, so no one carrier decides what you are shown",
+        "b2": "Multiple top-rated carriers compared, then the plan that suits your budget and your life"
+      },
+      "p2": {
+        "title": "Clear, honest, no pressure",
+        "b1": "Education first — how each option works, explained before anything is recommended",
+        "b2": "Every decision stays informed, unhurried, and yours"
+      },
+      "p3": {
+        "title": "A partner for life",
+        "b1": "We do not step away once the policy is placed",
+        "b2": "We stay with your family through each review, each life change, each new chapter"
+      },
+      "p4": {
+        "title": "ITIN-friendly, licensed in all fifty states",
+        "b1": "No Social Security Number needed to apply for coverage or a retirement plan",
+        "b2": "For self-employed workers, construction workers, nurses and truck drivers working on an ITIN"
+      }
+    }
+  },
+  "testimonials": {
+    "eyebrow": "[PLACEHOLDER — awaiting approval]",
+    "disclaimer": "[PLACEHOLDER — client to supply results disclaimer]",
+    "headline": "What Our Clients Say",
+    "quotes": {
+      "q1": {
+        "name": "Michael & Laura Adams",
+        "quote": "Synergy made the entire process easy to understand. They listened, explained everything clearly, and helped us choose the perfect plan. We have real peace of mind now."
+      },
+      "q2": {
+        "name": "Brian & Jessica Williams",
+        "quote": "They took time to walk us through every option. We know exactly what we have and why. They truly put our family first."
+      },
+      "q3": {
+        "name": "Mark",
+        "quote": "I never understood life insurance until I spoke with Synergy. They made it simple, affordable, and completely stress-free."
+      }
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "Education first",
+    "headline": "Nothing is rushed.",
+    "stepLabel": "Step",
+    "steps": {
+      "s1": {
+        "num": "01",
+        "title": "A free consultation",
+        "body": "Reach an advisor by phone, by email, or through the booking form. The first conversation is free, and it starts with your situation rather than a product.",
+        "imageAlt": "A mother and daughter walking together through a meadow at dusk"
+      },
+      "s2": {
+        "num": "02",
+        "title": "We shop the market",
+        "body": "Synergy is an independent brokerage, not tied to one company. Options are compared across multiple top-rated carriers, against your budget and your goals.",
+        "imageAlt": "A family walking a trail through open countryside at dusk"
+      },
+      "s3": {
+        "num": "03",
+        "title": "Explained before recommended",
+        "body": "Every option is explained in plain language by a licensed advisor. The decision stays yours.",
+        "imageAlt": "A parent and child walking hand in hand through a field under open sky"
+      }
+    }
+  },
+  "consultation": {
+    "paragraph": "Synergy Insurance Group offers a free no-obligation consultation where a licensed advisor reviews your specific situation and builds a plan around your budget.",
+    "ctaLabel": "Open the retirement calculator",
+    "headline": "Not Sure Where to Start?"
+  },
+  "leadModal": {
+    "title": "Let's talk through your numbers",
+    "summary": "Your scenario: <mono>{monthly}</mono> per month, age <mono>{age}</mono> to <mono>{retire}</mono>.",
+    "intro": "Share a few details and a licensed advisor will call to walk through what these numbers mean for you — no obligation.",
+    "name": "Full name",
+    "phone": "Phone",
+    "email": "Email",
+    "message": "Anything specific? (optional)",
+    "submit": "Request my call",
+    "close": "Close",
+    "privacy": "We use this only to reach you about your numbers. No spam, ever.",
+    "successTitle": "Thanks — we'll be in touch.",
+    "successBody": "A licensed advisor will call you shortly to walk through your numbers."
+  },
+  "whoWeServe": {
+    "eyebrow": "Who we're here for",
+    "heading": "Built for the people the system kept overlooking.",
+    "tablistLabel": "Choose families or agents",
+    "tabFamilies": "For Families",
+    "tabAgents": "For Agents",
+    "families": {
+      "c1": {
+        "title": "Advice before paperwork",
+        "b1": "A free consultation with a licensed agent, in English or Spanish",
+        "b2": "How each option works, explained before anything is recommended",
+        "b3": "Shaped around what your household can actually carry each month",
+        "cta": "Get a free quote"
+      },
+      "c2": {
+        "title": "Never tied to one carrier",
+        "b1": "Appointments with carriers rated A or better by AM Best",
+        "b2": "Options set side by side, in plain language",
+        "b3": "The fit for your household, not the policy that places easiest",
+        "cta": "Compare my options"
+      },
+      "c3": {
+        "title": "ITIN-friendly, all fifty states",
+        "b1": "No Social Security Number required to apply",
+        "b2": "Licensed nationwide, run out of Orlando",
+        "b3": "The same agent for policy reviews as your circumstances change",
+        "cta": "Speak with an agent"
+      }
+    },
+    "agents": {
+      "c1": {
+        "title": "A desk, not a shortcut",
+        "b1": "Leads generated in-house, not bought lists",
+        "b2": "Licensing and product training from your first week",
+        "b3": "A named mentor while you work your early cases",
+        "cta": "Apply to join"
+      },
+      "c2": {
+        "title": "A real office behind you",
+        "b1": "An Orlando team you can actually sit down with",
+        "b2": "Leadership you can reach directly",
+        "b3": "Regular carrier and product sessions",
+        "cta": "Meet the team"
+      },
+      "c3": {
+        "title": "Contracts you can read",
+        "b1": "Commission schedule shown in writing before you sign",
+        "b2": "Multiple carrier appointments under one contract",
+        "b3": "Advancement tied to production, reviewed in the open",
+        "cta": "See the opportunity"
+      }
+    }
+  },
+  "footer": {
+    "srTitle": "Footer",
+    "missionTitle": "Our Mission",
+    "mission": "Synergy Insurance Group protects families and builds careers. Licensed in all 50 states. Partnered with the nation's top carriers.",
+    "pullQuote": "Protect What Matters Most",
+    "contactTitle": "Contact",
+    "phone": "407-434-0400",
+    "phoneHref": "tel:+14074340400",
+    "email": "info@fflsynergy.com",
+    "emailHref": "mailto:info@fflsynergy.com",
+    "address": "5728 Major Blvd Suite 702, Orlando FL 32819",
+    "hours": "Mon–Sat 8am to 7pm",
+    "navTitle": "Navigation",
+    "nav": {
+      "home": "Home",
+      "about": "About",
+      "services": "Services",
+      "blog": "Blog",
+      "gallery": "Gallery",
+      "join": "Join Us",
+      "contact": "Contact"
+    },
+    "joinHref": "https://join.fflsynergy.com/",
+    "legalTitle": "Legal",
+    "legal": {
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
+    },
+    "copyright": "© {year} Synergy Insurance Group. All rights reserved."
+  }
+}

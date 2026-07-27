@@ -1,0 +1,391 @@
+{
+  "meta": {
+    "title": "",
+    "description": ""
+  },
+  "nav": {
+    "company": "Synergy Insurance Group",
+    "tagline": "Protegiendo familias. Construyendo futuros.",
+    "home": "Inicio",
+    "about": "Nosotros",
+    "services": "Servicios",
+    "contact": "Contacto",
+    "phone": "407-434-0400",
+    "phoneHref": "tel:+14074340400",
+    "join": "Únete",
+    "ariaLabel": "Navegación principal",
+    "servicesMenu": {
+      "term": "Seguro de Vida a Término",
+      "iul": "IUL",
+      "taxfree": "Retiro Libre de Impuestos",
+      "final": "Gastos Finales"
+    },
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "langLabel": "Idioma",
+    "langEn": "EN",
+    "langEs": "ES"
+  },
+  "hero": {
+    "eyebrow": "",
+    "headline": "",
+    "headlineA": "",
+    "headlineB": "",
+    "sub": "",
+    "ssn": "",
+    "ctaQuote": "",
+    "ctaCall": "",
+    "imageAlt": "",
+    "stats": {
+      "s1v": "",
+      "s1l": "",
+      "s2v": "",
+      "s2l": "",
+      "s3v": "",
+      "s3l": "",
+      "s4v": "",
+      "s4l": "",
+      "s5v": "",
+      "s5l": ""
+    },
+    "tagline": ""
+  },
+  "two": {
+    "heading": "",
+    "families": {
+      "label": "",
+      "title": "",
+      "body": "",
+      "cta": ""
+    },
+    "agents": {
+      "label": "",
+      "title": "",
+      "body": "",
+      "cta": ""
+    }
+  },
+  "carriers": {
+    "eyebrow": "",
+    "stripKicker": "",
+    "headline": "",
+    "subhead": "",
+    "subheadWithCount": "",
+    "ariaLabel": "",
+    "names": {
+      "c1": "",
+      "c2": "",
+      "c3": "",
+      "c4": "",
+      "c5": "",
+      "c6": "",
+      "c7": "",
+      "c8": "",
+      "c9": "",
+      "c10": "",
+      "c11": "",
+      "c12": ""
+    },
+    "ratings": {
+      "c1": "",
+      "c2": "",
+      "c3": "",
+      "c4": "",
+      "c5": "",
+      "c6": "",
+      "c7": "",
+      "c8": "",
+      "c9": "",
+      "c10": "",
+      "c11": "",
+      "c12": ""
+    }
+  },
+  "whatWeCover": {
+    "eyebrow": "",
+    "heading": "",
+    "subhead": "",
+    "cta": "",
+    "ctaPrimary": "",
+    "ctaSecondary": "",
+    "closingLine": "",
+    "cards": {
+      "term": {
+        "eyebrow": "",
+        "name": "",
+        "desc": "",
+        "alt": ""
+      },
+      "iul": {
+        "eyebrow": "",
+        "name": "",
+        "desc": "",
+        "alt": ""
+      },
+      "taxfree": {
+        "eyebrow": "",
+        "name": "",
+        "desc": "",
+        "alt": ""
+      },
+      "final": {
+        "eyebrow": "",
+        "name": "",
+        "desc": "",
+        "alt": ""
+      }
+    }
+  },
+  "calculator": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "eyebrow": "Calculadora de retiro",
+    "framingQuestion": "The same deposit, two very different futures.",
+    "subhead": "Move the sliders to see what a monthly contribution could grow into — in a plain savings account versus an indexed policy. No sign-up, no email, just the math.",
+    "sectionHeadline": "Vea cómo se compara una póliza indexada con una cuenta de ahorros.",
+    "sectionSupport": "El Seguro de Vida Universal Indexado acumula valor en efectivo vinculado a un índice del mercado. Mueva los controles para comparar una proyección ilustrativa con una cuenta de ahorros común.",
+    "resultUnit": "a los {age} años",
+    "resultCaption": "Valor de la póliza indexada",
+    "equivLabel": "De dónde sale esa cifra",
+    "monthlyLabel": "Aportación mensual",
+    "ageLabel": "Edad actual",
+    "retireLabel": "Edad de retiro",
+    "monthlyValueText": "{value} al mes",
+    "ageValueText": "{value} años",
+    "retireValueText": "Retiro a los {value}",
+    "resultLabel": "Su póliza indexada a los {age}",
+    "bankLabel": "Cuenta de ahorros",
+    "diffLabel": "La diferencia",
+    "receipt": {
+      "putIn": "Lo que usted aporta",
+      "bankAdds": "Lo que suma el banco",
+      "iulAdds": "Lo que suma la póliza indexada"
+    },
+    "chips": {
+      "iulRate": "8.5%",
+      "iulNote": "supuesto",
+      "bankRate": "0.5%",
+      "bankNote": "APY bancario"
+    },
+    "shortRunway": "Plazo corto: el crecimiento indexado necesita tiempo. Un asesor puede revisar con usted si esto sigue teniendo sentido.",
+    "verdict": {
+      "difference": "Con un supuesto de 8.5%, el cálculo muestra una diferencia de {diff}, aproximadamente {years} años de la misma aportación mensual."
+    },
+    "disclaimer": "Proyección ilustrativa con una tasa anual hipotética de 8.5%. Los rendimientos del seguro de vida universal indexado no están garantizados, varían según el desempeño del índice del mercado y están sujetos a topes, tasas de participación y cargos de la póliza. Esto no es una oferta de seguro ni una garantía de resultados.",
+    "contributions": "Lo que usted aporta",
+    "growth": "Crecimiento",
+    "atRetire": "a los {age}",
+    "cta": "Hablemos de mis números",
+    "assumptionsLabel": "Supuestos ilustrativos"
+  },
+  "whySynergy": {
+    "eyebrow": "Por qué Synergy",
+    "headline": "Por qué las familias eligen Synergy.",
+    "rows": {
+      "r1": {
+        "title": "",
+        "body": ""
+      },
+      "r2": {
+        "title": "",
+        "body": ""
+      },
+      "r3": {
+        "title": "",
+        "body": ""
+      },
+      "r4": {
+        "title": "",
+        "body": ""
+      },
+      "r5": {
+        "title": "",
+        "body": ""
+      },
+      "r6": {
+        "title": "",
+        "body": ""
+      },
+      "r7": {
+        "title": "",
+        "body": ""
+      },
+      "r8": {
+        "title": "",
+        "body": ""
+      }
+    },
+    "intro": "Una correduría con enfoque educativo, con sede en Orlando y licencia en los cincuenta estados. Cada opción se explica antes de recomendar nada.",
+    "imageAlt": "Una asesora licenciada sentada con una familia en su sala, repasando las opciones juntos",
+    "closing": "¿No sabe por dónde empezar? Un asesor licenciado revisa su situación en una consulta gratuita y sin compromiso.",
+    "cta": "Obtener una cotización gratis",
+    "points": {
+      "p1": {
+        "title": "Trabajamos para usted, no para una aseguradora",
+        "b1": "No estamos atados a una sola compañía, así que ninguna aseguradora decide lo que usted ve",
+        "b2": "Comparamos varias aseguradoras de primer nivel y elegimos el plan que se ajusta a su presupuesto y a su vida"
+      },
+      "p2": {
+        "title": "Claro, honesto, sin presión",
+        "b1": "Primero la educación: cómo funciona cada opción, explicado antes de recomendar nada",
+        "b2": "Cada decisión sigue siendo informada, sin prisas y suya"
+      },
+      "p3": {
+        "title": "Un socio de por vida",
+        "b1": "No nos apartamos una vez emitida la póliza",
+        "b2": "Acompañamos a su familia en cada revisión, cada cambio de vida, cada nueva etapa"
+      },
+      "p4": {
+        "title": "Aceptamos ITIN, con licencia en los cincuenta estados",
+        "b1": "No se necesita número de Seguro Social para solicitar cobertura o un plan de retiro",
+        "b2": "Para trabajadores independientes, de construcción, enfermeras y camioneros que trabajan con un ITIN"
+      }
+    }
+  },
+  "testimonials": {
+    "eyebrow": "[MARCADOR — pendiente de aprobación]",
+    "disclaimer": "[MARCADOR — el cliente debe proporcionar el aviso legal]",
+    "headline": "Lo Que Dicen Nuestros Clientes",
+    "quotes": {
+      "q1": {
+        "name": "Michael y Laura Adams",
+        "quote": "Synergy hizo que todo el proceso fuera fácil de entender. Escucharon, explicaron todo con claridad y nos ayudaron a elegir el plan perfecto. Ahora tenemos verdadera tranquilidad."
+      },
+      "q2": {
+        "name": "Brian y Jessica Williams",
+        "quote": "Se tomaron el tiempo de explicarnos cada opción. Sabemos exactamente lo que tenemos y por qué. Verdaderamente pusieron a nuestra familia primero."
+      },
+      "q3": {
+        "name": "Mark",
+        "quote": "Nunca entendí los seguros de vida hasta que hablé con Synergy. Lo hicieron simple, accesible y completamente sin estrés."
+      }
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "Enfoque educativo",
+    "headline": "Sin prisas.",
+    "stepLabel": "Paso",
+    "steps": {
+      "s1": {
+        "num": "01",
+        "title": "Una consulta gratuita",
+        "body": "Comuníquese con un asesor por teléfono, por correo electrónico o mediante el formulario. La primera conversación es gratuita y empieza por su situación, no por un producto.",
+        "imageAlt": "Una madre y su hija caminando juntas por un prado al atardecer"
+      },
+      "s2": {
+        "num": "02",
+        "title": "Buscamos en el mercado",
+        "body": "Synergy es una correduría independiente, no está atada a una sola compañía. Las opciones se comparan entre varias aseguradoras de primer nivel, frente a su presupuesto y sus objetivos.",
+        "imageAlt": "Una familia recorriendo un sendero por campo abierto al atardecer"
+      },
+      "s3": {
+        "num": "03",
+        "title": "Explicado antes de recomendado",
+        "body": "Un asesor licenciado le explica cada opción en lenguaje claro. La decisión sigue siendo suya.",
+        "imageAlt": "Una madre y su hija caminando de la mano por un campo bajo el cielo abierto"
+      }
+    }
+  },
+  "consultation": {
+    "paragraph": "",
+    "ctaLabel": "",
+    "headline": ""
+  },
+  "leadModal": {
+    "title": "",
+    "summary": "",
+    "intro": "",
+    "name": "",
+    "phone": "",
+    "email": "",
+    "message": "",
+    "submit": "",
+    "close": "",
+    "privacy": "",
+    "successTitle": "",
+    "successBody": ""
+  },
+  "whoWeServe": {
+    "eyebrow": "Para quiénes trabajamos",
+    "heading": "Creado para las personas que el sistema pasó por alto.",
+    "tablistLabel": "Elige familias o agentes",
+    "tabFamilies": "Para Familias",
+    "tabAgents": "Para Agentes",
+    "families": {
+      "c1": {
+        "title": "Asesoría antes que papeleo",
+        "b1": "Una consulta gratuita con un agente licenciado, en inglés o español",
+        "b2": "Cómo funciona cada opción, explicado antes de recomendar nada",
+        "b3": "Ajustado a lo que su hogar realmente puede cubrir cada mes",
+        "cta": "Obtener una cotización gratis"
+      },
+      "c2": {
+        "title": "Nunca atados a una sola aseguradora",
+        "b1": "Contratos con aseguradoras calificadas A o superior por AM Best",
+        "b2": "Opciones comparadas lado a lado, en lenguaje claro",
+        "b3": "Lo que encaja con su hogar, no la póliza más fácil de colocar",
+        "cta": "Comparar mis opciones"
+      },
+      "c3": {
+        "title": "Aceptamos ITIN, en los cincuenta estados",
+        "b1": "No se requiere número de Seguro Social para solicitar",
+        "b2": "Licenciados a nivel nacional, operando desde Orlando",
+        "b3": "El mismo agente para revisar su póliza cuando su situación cambie",
+        "cta": "Hablar con un agente"
+      }
+    },
+    "agents": {
+      "c1": {
+        "title": "Un escritorio, no un atajo",
+        "b1": "Prospectos generados internamente, no listas compradas",
+        "b2": "Capacitación en licencias y productos desde su primera semana",
+        "b3": "Un mentor asignado mientras trabaja sus primeros casos",
+        "cta": "Solicitar unirse"
+      },
+      "c2": {
+        "title": "Una oficina real detrás de usted",
+        "b1": "Un equipo en Orlando con el que puede sentarse de verdad",
+        "b2": "Liderazgo al que puede acceder directamente",
+        "b3": "Sesiones periódicas sobre aseguradoras y productos",
+        "cta": "Conocer al equipo"
+      },
+      "c3": {
+        "title": "Contratos que puede leer",
+        "b1": "Esquema de comisiones por escrito antes de firmar",
+        "b2": "Varios contratos de aseguradoras bajo un mismo acuerdo",
+        "b3": "Ascensos ligados a la producción, revisados abiertamente",
+        "cta": "Ver la oportunidad"
+      }
+    }
+  },
+  "footer": {
+    "srTitle": "",
+    "missionTitle": "",
+    "mission": "",
+    "pullQuote": "",
+    "contactTitle": "",
+    "phone": "",
+    "phoneHref": "",
+    "email": "",
+    "emailHref": "",
+    "address": "",
+    "hours": "",
+    "navTitle": "",
+    "nav": {
+      "home": "",
+      "about": "",
+      "services": "",
+      "blog": "",
+      "gallery": "",
+      "join": "",
+      "contact": ""
+    },
+    "joinHref": "",
+    "legalTitle": "",
+    "legal": {
+      "privacy": "",
+      "terms": ""
+    },
+    "copyright": ""
+  }
+}
