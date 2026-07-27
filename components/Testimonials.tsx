@@ -49,6 +49,24 @@ import { useParallax } from "./useParallax";
  * Rewording someone's testimonial to dodge a phrase collision is the exact
  * falsification the rule exists to prevent.
  */
+/**
+ * ONE-LINE REVERT — flip to `true` when the client sends the real wording.
+ *
+ * The header's eyebrow and results-disclaimer both still hold literal
+ * "[PLACEHOLDER — …]" strings in messages/en.json, and those were rendering on
+ * the deployed preview where a client would read them as a bug. They are
+ * hidden rather than deleted: the markup, the grid columns, the strings and
+ * their es.json mirrors are all untouched.
+ *
+ * The disclaimer wording is a legal results-disclaimer for a US insurance
+ * site. It comes from the client. Do not write one here.
+ *
+ * To restore: set this to `true`, replace `testimonials.eyebrow` and
+ * `testimonials.disclaimer` in messages/en.json (and mirror in es.json).
+ * Nothing else needs touching — the heading moves back to column 3 on its own.
+ */
+const HEADER_ASIDES_READY = false;
+
 const QUOTES = ["q1", "q2", "q3"] as const;
 
 export default function Testimonials() {
@@ -121,19 +139,32 @@ export default function Testimonials() {
           {/* HEADER ROW — reyou's three parts on one line: eyebrow cols 1-2,
               heading cols 3-7, disclaimer cols 10-12 hard right. items-center
               plus cap-trim puts all three cap bands on one centre line, the
-              same mechanism as Where to Start. */}
-          <div className="md:grid md:grid-cols-12 md:items-center md:gap-x-8">
-            <div className="flex md:col-span-2">
-              <p className="flex h-full items-center gap-2 text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-cream">
-                <span
-                  aria-hidden="true"
-                  className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream"
-                />
-                <span className="cap-trim cap-body">{t("eyebrow")}</span>
-              </p>
-            </div>
+              same mechanism as Where to Start.
 
-            <div className="mt-6 md:col-span-5 md:col-start-3 md:mt-0">
+              Two of the three are currently hidden — see HEADER_ASIDES_READY
+              at the top of this file. */}
+          <div className="md:grid md:grid-cols-12 md:items-center md:gap-x-8">
+            {HEADER_ASIDES_READY && (
+              <div className="flex md:col-span-2">
+                <p className="flex h-full items-center gap-2 text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-cream">
+                  <span
+                    aria-hidden="true"
+                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream"
+                  />
+                  <span className="cap-trim cap-body">{t("eyebrow")}</span>
+                </p>
+              </div>
+            )}
+
+            {/* With the asides hidden the heading takes the section's own left
+                edge instead of sitting indented against two empty columns. */}
+            <div
+              className={
+                HEADER_ASIDES_READY
+                  ? "mt-6 md:col-span-5 md:col-start-3 md:mt-0"
+                  : "mt-0 md:col-span-7 md:col-start-1"
+              }
+            >
               <h2
                 id="testimonials-heading"
                 className="cap-trim cap-display font-display font-medium text-[clamp(20px,2.35vw,34px)] leading-[1.2] tracking-[-0.0162em] text-cream"
@@ -148,11 +179,13 @@ export default function Testimonials() {
                 comes from the client, not from here and not from reyou's.
                 Hand the final line over as  testimonials.disclaimer  in
                 messages/en.json, with its mirror in es.json. */}
-            <div className="mt-4 md:col-span-3 md:col-start-10 md:mt-0">
-              <p className="cap-trim cap-body text-[15px] leading-[1.45] tracking-[0.016em] text-cream/85 md:text-right">
-                {t("disclaimer")}
-              </p>
-            </div>
+            {HEADER_ASIDES_READY && (
+              <div className="mt-4 md:col-span-3 md:col-start-10 md:mt-0">
+                <p className="cap-trim cap-body text-[15px] leading-[1.45] tracking-[0.016em] text-cream/85 md:text-right">
+                  {t("disclaimer")}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* THE THREE QUOTES — a real <ul>: three peer testimonials with no
