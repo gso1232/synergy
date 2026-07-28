@@ -2202,14 +2202,23 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    Expressed as ch so the character count holds at every width rather than one
    pixel value at one width. */
 .blog-prose {
-  /* 🔴 `ch` RESOLVES AGAINST THIS ELEMENT'S OWN FONT, and this element had no
-     font-size — so 65ch was measured in the inherited body face while the
-     paragraphs render up to 18.4px. The rendered measure came out at 83
-     characters at 820, well over the 45-75 band and over the 60 taken from the
-     reference. Setting the same size the paragraphs use makes `ch` mean what it
-     says. */
+  /* 🔴 THE MEASURE IS `em`, NOT `ch`, AND THAT IS THE SECOND FIX ON THIS LINE.
+     `ch` is not a character count — it is the advance width of the `0` glyph.
+     In Overpass at 18.4px that is 11.81px against an average prose character of
+     8.45px, a ratio of 1.40, so `65ch` rendered 91 real characters. Measured on
+     the deployed build, not reasoned about.
+
+     The first fix (keep the font-size below) was still necessary and is still
+     here: without it `ch`/`em` resolve against the inherited 16px body face
+     rather than the paragraphs' own size, which is what produced 83 characters
+     before. Fixing the font alone moved the number the wrong way, because the
+     unit was never going to land on the target.
+
+     30em = 552px at 18.4px = ~65 characters, which is the measure taken off
+     their article page (492px at 16.4px, ~60ch) expressed so it holds at every
+     width instead of at one. */
   font-size: clamp(16.5px, 0.32vw + 15px, 18.4px);
-  max-width: 65ch;
+  max-width: 30em;
   margin-top: clamp(32px, 4.3vw, 49.2px);
   color: #1a1a1a;
 }
