@@ -1825,3 +1825,435 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
     transition: none;
   }
 }
+
+/* ===========================================================================
+   /[locale]/services — the scroll-linked product sequence, the break band,
+   and the comparison table.
+   ===========================================================================
+
+   Modelled on restaurantsem.com/mindset, re-measured live at 1526 x 658.
+   Their numbers, our tokens. None of their CSS is copied and none of their
+   files are used.
+
+   THEIR §2 `.section_principles`:
+     grid `50% 50%`, gap 0, section height 2070
+     `.scroll-visual`    position sticky, top 0, height 658 (one viewport)
+     `.scroll_img-wrap`  492 x 576  ->  ratio 0.854, 64.5% of its 763 column
+     `.scroll_img-item`  position absolute, inset 0, `transition: opacity 0.3s`
+     `.scroll_text-item` padding 49.2px 0
+--------------------------------------------------------------------------- */
+
+/* The image frame. 0.854 is theirs (492/576) — not 2:3, which is what the
+   About page's value columns and their own §4 carousel use. */
+.services-frame {
+  aspect-ratio: 0.854;
+  box-shadow: 0 2px 5px rgba(13, 27, 42, 0.2);
+}
+
+/* Their 49.2px block padding is what sets the scroll distance between swaps,
+   so it is load-bearing for the RHYTHM of the effect, not just for spacing.
+   Below xl the sticky column is gone and each item carries its own image, so
+   the padding drops to a plain stack gap — 49.2 top and bottom between an
+   image and the previous body would read as a hole. */
+.services-copy-item {
+  padding-block: clamp(32px, 4.3vw, 49.2px);
+}
+/* The LAST item drops its bottom padding so the section ends flush. Without
+   this its 49.2px sat on top of the break band's full 130.8px section gap and
+   the seam measured 180 against a 130.8 rhythm. The item padding is INTERNAL
+   rhythm; the gap to the next section is the section's job. */
+.services-copy-item:last-child {
+  padding-bottom: 0;
+}
+@media (max-width: 1279px) {
+  .services-copy-item {
+    padding-block: 0;
+  }
+  .services-copy-item + .services-copy-item {
+    margin-top: clamp(48px, 8.6vw, 96px);
+  }
+  /* The list needs its OWN top gap below xl. Above xl the first item's 49.2px
+     block padding is what separates it from the "Our Insurance Products"
+     heading; with that padding zeroed here, the heading sat FLUSH on the first
+     product image — measured 0px at 390. */
+  .services-copy {
+    padding-top: clamp(40px, 8.6vw, 64px);
+  }
+}
+
+/* THE FULL-BLEED BREAK.
+   ---------------------------------------------------------------------------
+   Theirs is `.section_fw-parralax`: a fixed 460.312px band, no children, no
+   text, `background-attachment: fixed`.
+
+   🔴 WE DO NOT USE `background-attachment: fixed`, AND THAT IS DELIBERATE.
+   It repaints the whole band on every scroll frame, it is ignored outright by
+   iOS Safari (which is why their own <=991 rule swaps it back), and it cannot
+   be tuned — the travel is whatever the viewport height makes it. This project
+   already owns a scroll parallax that does not have those problems:
+   components/useParallax.ts, on the Testimonials pairing (130% layer, ±10),
+   which is the same pairing AboutParallaxImage uses. One parallax system.
+
+   HEIGHT — 🟡 NO LONGER THEIRS. Was `clamp(260px, 30vw, 460px)`, which is
+   their 460.312px band expressed fluidly. Raised on instruction to read as a
+   bigger, more cinematic band. Nothing else about this component changed: the
+   parallax pairing, the layer geometry and the image are untouched.
+
+   THE NUMBER IS AN ASPECT RATIO, NOT A HEIGHT. 40.8vw holds the band at
+   ~2.45:1 — scope — at every width wide enough to carry it, which is 1536 and
+   820 both. The 620px ceiling is what stops it becoming a hero: it caps the
+   band at 72% of an 864px viewport, so a section edge is always on screen
+   above or below it and the band can never fill the frame alone.
+
+   THE 340px FLOOR IS FOR THE PHONE, and it is not the ratio. 40.8vw at 390 is
+   159px, which is a stripe, not a band. 340 reads as 1.13:1 there — squarer
+   than the desktop crop, and deliberately so, because a scope band on a 390px
+   screen has no room to be cinematic. */
+.services-break {
+  height: clamp(340px, 40.8vw, 620px);
+}
+
+/* §4 — THE MIRRORED ESSAY (`.section_mindset-long`, column order flipped).
+   ---------------------------------------------------------------------------
+   THEIR NUMBERS, KEPT EXACTLY, with only the column ORDER reversed:
+
+     grid          1.75fr / 1fr, gap 131.2px      (theirs: visual first)
+     sticky top    8rem
+     frame         aspect-ratio 2 / 3
+     shadow        the `.services-frame` shadow, unchanged
+     image column  display:none at <= 991px
+
+   WHAT THAT RESOLVES TO AT 1536 (measured, not derived): the container is
+   1438.8 inside the 41px gutters, so the free track space is 1438.8 - 131.2 =
+   1307.6 and the columns land on 832.2 (essay) and 475.4 (frame). At 2/3 the
+   frame is 713.1 tall, and pinned at top 128 its bottom edge sits at 841.1 —
+   inside an 864px viewport with 23px to spare. That clearance is THEIRS and it
+   is thin: on a 768px-tall laptop the frame's foot is cut off. Their section
+   has the same property.
+
+   🔴 THE FRAME IS 2/3 HERE AND 0.854 IN §2, AND THAT IS NOT AN INCONSISTENCY.
+   0.854 is `.scroll_img-wrap` (492x576) in their §2; 2/3 is what their §4
+   carousel uses. Two different frames on their page, two here. */
+.essay-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+.essay-block {
+  padding-block: clamp(32px, 4.3vw, 49.2px);
+}
+/* The last block drops its bottom padding so the section ends on the section
+   rhythm rather than on the rhythm plus a block's own internal padding — the
+   same correction `.services-copy-item:last-child` carries in §2. */
+.essay-block:last-child {
+  padding-bottom: 0;
+}
+.essay-sticky {
+  display: none;
+}
+.essay-frame {
+  aspect-ratio: 2 / 3;
+  box-shadow: 0 2px 5px rgba(13, 27, 42, 0.2);
+}
+@media (min-width: 992px) {
+  .essay-grid {
+    grid-template-columns: 1.75fr 1fr;
+    gap: 131.2px;
+    align-items: start;
+  }
+  .essay-sticky {
+    display: block;
+    position: sticky;
+    top: 8rem;
+  }
+}
+/* Below 992 the sticky column is gone, so the block padding stops being the
+   swap rhythm and becomes plain stack spacing — 49.2 above and below between
+   two runs of body copy reads as a hole. Same treatment as §2. */
+@media (max-width: 991px) {
+  .essay-block {
+    padding-block: 0;
+  }
+  .essay-block + .essay-block {
+    margin-top: clamp(40px, 6.4vw, 65.6px);
+  }
+}
+
+/* THE COMPARISON TABLE — no equivalent on their page; the section is an
+   addition, the content is fflsynergy's own.
+
+   Cell padding is the body rhythm (16.4 / 24.6) rather than a new number.
+   Hairlines are `ink` at 12%, NOT gold: gold #C9A84C on cream is 2.09:1, which
+   fails the 3:1 of 1.4.11 — and a table rule is not decoration, it carries the
+   row/column structure. See the gold note further up this file. */
+.services-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16.4px;
+  line-height: 24.6px;
+  text-align: left;
+}
+.services-table th,
+.services-table td {
+  padding: 16.4px 12px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.12);
+  vertical-align: top;
+  color: #1a1a1a;
+}
+.services-table thead th {
+  font-weight: 600;
+  border-bottom-color: rgba(26, 26, 26, 0.28);
+  white-space: nowrap;
+}
+.services-table tbody th {
+  font-weight: 600;
+  padding-left: 0;
+}
+.services-table tbody tr:last-child th,
+.services-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* The <820 card rendering. A separate DOM branch, not a restyled table — see
+   the docblock in components/ServicesTable.tsx for why `display: block` on
+   table parts is not an option. */
+.services-card {
+  border-top: 1px solid rgba(26, 26, 26, 0.12);
+  padding-top: 20px;
+}
+.services-card-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding-block: 8px;
+  font-size: 16.4px;
+  line-height: 24.6px;
+}
+.services-card-row dt {
+  color: rgba(26, 26, 26, 0.72);
+}
+.services-card-row dd {
+  margin: 0;
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+/* h3 — the product name in the sequence. Between `.sem-h2` (57.4) and
+   `.sem-eyebrow` (21.32); theirs measures 49.2/59.04 w300 on the equivalent
+   block, so this is their size on our face at w400. */
+.sem-h3 {
+  font-size: 30px;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+@media (min-width: 768px) {
+  .sem-h3 {
+    font-size: clamp(38px, 0.73vw + 32.4px, 49.2px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   BLOG — for-living.it/work, re-measured live and rebuilt on cream.
+
+   THEIR NUMBERS AT 1536 x 710:
+     container   1312, gutter 104
+     grid        2 cols x 631, column gap 50, row gap 65-66
+     image       631 x 391  ->  ratio 1.615, overflow hidden, cover
+     img->title  19    title->tag  22
+     title       20.5/28.7, ls -0.205px      tag 12.3/13.53, ls +0.328px, upper
+     hover       image only, scale 1.0177, transition transform 0.8s ease
+   AT 820: 2 cols x 358, gaps 30 / 59, gutter 29 — ratio still 1.615
+   AT 390: 1 col x 352, row gap 46, gutter 19 — ratio still 1.615
+
+   The RATIO IS CONSTANT at all three widths, so it is an aspect box, not a
+   fluid one. That is the one number reproduced exactly.
+--------------------------------------------------------------------------- */
+.blog-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(40px, 6.4vw, 65.6px);
+}
+/* 🔴 768, NOT 992. The essay section on /services drops its sticky column at
+   991 because a sticky image column cannot survive a single-column layout.
+   A CARD GRID HAS NO SUCH CONSTRAINT, and the reference keeps two columns at
+   820 (measured: 2 x 358, gaps 30 / 59). Using 992 here would give tablet ONE
+   column and twelve rows instead of six — a different page from the one that
+   was measured and approved. */
+@media (min-width: 768px) {
+  .blog-grid {
+    grid-template-columns: 1fr 1fr;
+    column-gap: var(--sem-gap-logos, 49.2px);
+    row-gap: 65.6px;
+  }
+}
+
+.blog-card {
+  min-width: 0;
+}
+.blog-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* 1.615 is theirs, held at every width. */
+.blog-card-frame {
+  aspect-ratio: 1.615;
+  box-shadow: 0 2px 5px rgba(13, 27, 42, 0.2);
+}
+
+/* 🟡 Placeholder until a photograph is chosen. Greige on cream is a 1.10x
+   step — the quietest block that still reads as a filled box, not a hole. */
+.blog-card-ph {
+  background-color: #ece9e2;
+}
+
+/* 🔴 THE HOVER LIVES ON THE <img>; THE PARALLAX LIVES ON ITS WRAPPER. Two
+   transforms on two nested elements compose; on one element GSAP's write would
+   clobber this rule outright. See BlogCardImage.
+
+   THE HOVER — image only, 1.02, 0.8s ease. Theirs settles at 1.0177, which is
+   Webflow IX2 writing an inline transform, not a designed value; at 694.8px
+   wide the difference is 0.2 of a pixel. Duration and easing are theirs. */
+.blog-card-img {
+  transition: transform 0.8s ease;
+  will-change: transform;
+}
+.blog-card-link:hover .blog-card-img,
+.blog-card-link:focus-visible .blog-card-img {
+  transform: scale(1.02);
+}
+/* 🔴 An unbuilt card gets NO hover affordance of any kind. It is not a link,
+   so it must not behave like one. */
+.blog-card[data-unbuilt="true"] .blog-card-frame {
+  cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+  .blog-card-img {
+    transition: none;
+  }
+  .blog-card-link:hover .blog-card-img,
+  .blog-card-link:focus-visible .blog-card-img {
+    transform: none;
+  }
+}
+
+/* Their 19px image->title and 22px title->tag, kept. */
+.blog-card-title {
+  margin-top: 19px;
+  font-size: clamp(21px, 1.1vw + 16px, 26px);
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+/* 🔴 THE EXCERPT IS ITS OWN BLOCK, not a "Title · Excerpt" line. Theirs are
+   five to eight words; fflsynergy's run 30-38, which wraps four times and
+   turns the separator into nonsense. */
+.blog-card-excerpt {
+  margin-top: 10px;
+  font-size: clamp(15.5px, 0.3vw + 14px, 17.2px);
+  line-height: 1.65;
+  /* 🔴 NOT their 0.5. Ink at 0.5 over cream is 2.3:1 and this is a resting,
+     indefinitely-readable state. 0.78 measures 5.3:1 and still recedes from
+     the title. */
+  opacity: 0.78;
+}
+.blog-card-meta {
+  margin-top: 22px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.blog-tag {
+  font-size: 12.3px;
+  line-height: 1.1;
+  letter-spacing: 0.0267em; /* their +0.328px at 12.3 */
+  text-transform: uppercase;
+  padding: 5px 8px;
+  border-radius: 2px;
+  background-color: #ece9e2;
+  color: #1a1a1a;
+}
+.blog-read {
+  font-size: 12.3px;
+  line-height: 1.1;
+  letter-spacing: 0.0267em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+  opacity: 0.72; /* 6.1:1 on cream */
+}
+
+.blog-back {
+  font-size: 12.3px;
+  letter-spacing: 0.0267em;
+  text-transform: uppercase;
+}
+.blog-back a {
+  color: #1a1a1a;
+  opacity: 0.72;
+  text-underline-offset: 3px;
+}
+.blog-back a:hover,
+.blog-back a:focus-visible {
+  opacity: 1;
+}
+
+/* THE PROSE COLUMN. Their measure is 492px at 16.4px — about 60 characters.
+   Expressed as ch so the character count holds at every width rather than one
+   pixel value at one width. */
+.blog-prose {
+  /* 🔴 `ch` RESOLVES AGAINST THIS ELEMENT'S OWN FONT, and this element had no
+     font-size — so 65ch was measured in the inherited body face while the
+     paragraphs render up to 18.4px. The rendered measure came out at 83
+     characters at 820, well over the 45-75 band and over the 60 taken from the
+     reference. Setting the same size the paragraphs use makes `ch` mean what it
+     says. */
+  font-size: clamp(16.5px, 0.32vw + 15px, 18.4px);
+  max-width: 65ch;
+  margin-top: clamp(32px, 4.3vw, 49.2px);
+  color: #1a1a1a;
+}
+.blog-prose p {
+  font-size: clamp(16.5px, 0.32vw + 15px, 18.4px);
+  line-height: 1.62;
+  margin-top: 1.15em;
+}
+.blog-prose h2 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 1.3vw + 20px, 34px);
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  margin-top: clamp(40px, 5vw, 65.6px);
+}
+.blog-prose h3 {
+  font-size: clamp(18px, 0.5vw + 16px, 21px);
+  line-height: 1.3;
+  font-weight: 600;
+  margin-top: clamp(28px, 3vw, 40px);
+}
+.blog-prose ul {
+  margin-top: 1.15em;
+  padding-left: 1.15em;
+  list-style: disc;
+}
+.blog-prose li {
+  font-size: clamp(16.5px, 0.32vw + 15px, 18.4px);
+  line-height: 1.62;
+  margin-top: 0.5em;
+}
+.blog-prose strong {
+  font-weight: 600;
+}
+
+/* THE BLOG HERO SCRIM — flat, and flat is the derived answer.
+   Measured on the real composite at 1536 / 820 / 390, worst 1/14th strip:
+   nav 0.148 / 0.123 / 0.137 and copy 0.118 / 0.072 / 0.146. Both bands clear
+   AA on the BARE photograph (5.30:1 and 5.34:1 worst). /about's scrim is
+   shaped because its image failed in places and the shape is what rescued the
+   failing rows; nothing here needs rescuing, so a ramp would be a gradient
+   invented to match another page. 0.15 flat lifts both to ~7:1 as margin and
+   introduces no band and no edge. */
+.blog-hero-scrim {
+  background-color: rgba(0, 0, 0, 0.15);
+}

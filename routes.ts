@@ -20,12 +20,14 @@
  */
 
 /** Routes that are built, routed and reachable today. */
-export type RouteKey = "home" | "about" | "calculator";
+export type RouteKey = "home" | "about" | "services" | "blog" | "calculator";
 
 /** Path AFTER the locale segment. `home` is the locale root itself. */
 const PATHS: Record<RouteKey, string> = {
   home: "",
   about: "/about",
+  services: "/services",
+  blog: "/blog",
   calculator: "/calculator",
 };
 
@@ -66,10 +68,22 @@ export function isCurrentRoute(
  * links gone that omission became conspicuous. One line to remove if it is not
  * wanted.
  */
-export const HEADER_ROUTES: readonly RouteKey[] = ["home", "about", "calculator"];
+export const HEADER_ROUTES: readonly RouteKey[] = [
+  "home",
+  "about",
+  "services",
+  "blog",
+  "calculator",
+];
 
 /** Footer sitemap order. Same set — the footer is not a reduced nav. */
-export const FOOTER_ROUTES: readonly RouteKey[] = ["home", "about", "calculator"];
+export const FOOTER_ROUTES: readonly RouteKey[] = [
+  "home",
+  "about",
+  "services",
+  "blog",
+  "calculator",
+];
 
 /**
  * fflsynergy's own live recruiting site. The only external destination on the
@@ -87,12 +101,19 @@ export const JOIN_URL = "https://join.fflsynergy.com/";
    (`nav.*`, `footer.nav.*`, `footer.legal.*`) — nothing has to be re-authored
    or re-approved.
 
-     services   /[locale]/services    was in the header AND the footer
      contact    /[locale]/contact     was in the header AND the footer
-     blog       /[locale]/blog        was in the footer
      gallery    /[locale]/gallery     was in the footer
      privacy    /[locale]/privacy     was in the footer's Legal column
      terms      /[locale]/terms       was in the footer's Legal column
+
+   ✅ `blog` was on this list and is now BUILT — /[locale]/blog, twelve articles
+   from fflsynergy.com/blog. Note that only the articles with an approved body
+   are LINKED; the rest render as listing rows with no href, because a link is
+   a promise that a page exists.
+
+   ✅ `services` was on this list and is now BUILT — /[locale]/services, seven
+   products from fflsynergy.com/services. It is in HEADER_ROUTES and
+   FOOTER_ROUTES above.
 
    🔴 privacy and terms are not merely unbuilt, they are BLOCKED. A privacy
    policy and terms of service for a Florida life-insurance brokerage are legal

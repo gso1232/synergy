@@ -299,8 +299,10 @@ gap, 131px cap and centring are all on the `<li>`.
 
 ### 🔴 §8 Staff — AWAITING CLIENT
 
-**fflsynergy names the founder only in a meta description** — *"founded by Rula
-AlAryan"* — and that is the entire extent of it. No bio, no leadership section,
+**fflsynergy names the founder in a meta description AND — since the blog was
+published — in body copy.** `/blog/life-insurance-orlando` carries *"Founded by
+licensed insurance advisor Rula AlAryan."* That is the entire extent of it: one
+sentence, no bio, no photo, no leadership section. No bio, no leadership section,
 no founder photo, no team copy anywhere on the site.
 
 **DO NOT WRITE A FOUNDER BIO.** Checkmate's About page has four named leaders
@@ -1552,3 +1554,314 @@ earlier. Nothing in the build output would ever have mentioned it.
 10. **Measure §5's resting positions on the `<li>`, not the inner div.** The
    `<li>` is untransformed by design; the drift lives on its child. `offsetTop`
    is also transform-immune and is the cleaner read.
+
+---
+
+# §12 — /services §4, the mirrored essay: what shipped and what is still open
+
+Built as restaurantsem.com's `.section_mindset-long` with the columns
+**reversed** — essay left, sticky visual right. Every measurement is theirs
+(`1.75fr / 1fr`, gap `131.2`, sticky `top: 8rem`, frame `2/3`, image column
+`display:none` at ≤991); only the order is flipped. Components:
+`components/ServicesEssay.tsx`, `.essay-*` in `app/globals.css`.
+
+**Their image column is a 4-second autoplay carousel. Ours is not.** It runs
+the same `useSequenceSwap` §2 runs. Verified on the shipped copy: 1→2→3→4→5
+across the pin, back to 1 after a hard jump from the page bottom, and
+**unchanged after nine seconds parked without scrolling**.
+
+## The word count is load-bearing
+
+A block must be at least as tall as the frame beside it, or the last image
+never holds the screen for its own height of scroll. The frame grows until
+`.sem-inner` caps at 1476, topping out at 733.5px → **210 words per block** at
+the widest viewport (200 at 1536, 140 at 1280, 70 at 992, unconstrained below
+992 where the frame is hidden).
+
+Shipped: **304 / 227 / 248 / 239 / 270 words**. Measured block heights at 1536
+against a 713px frame: **942 / 750 / 788 / 788 / 816** — all clear. Section
+4,084px at 1536, 3,482 at 820, 5,698 at 390.
+
+⚠️ **`b5` was extended late for a layout reason.** At 217 words it measured 662
+against the 713 frame — the only failure, caused by
+`.essay-block:last-child { padding-bottom: 0 }` removing 49.2px. Fixed by
+covering fflsynergy's FIA clause *"a death benefit that passes to your
+beneficiaries"*, which the block had not used. **Expansion of an
+already-approved source line, no new OUTSIDE.** If `b5` is ever shortened,
+re-check it against the frame.
+
+## The copy is EXPANSION, and that was forced
+
+fflsynergy has **no unspent prose** for this slot. Every homepage line already
+ships somewhere in this repo — `about.trust.*`, `carriers.subhead`,
+`whySynergy.rows.*`, `footer.pullQuote`, `two.agents.body`. The only unused
+text on the whole site is the six FAQ answers (~350 words), earmarked for a
+FAQ page. The section needs 1,050+. So §4 elaborates published sentences
+rather than reproducing unused ones.
+
+Zero n-gram collisions with checkmatefinancialgroup.com at 3-, 4-, 5- and
+6-gram across all five blocks and all six headings.
+
+## The OUTSIDE ledger — approved, refused, pending
+
+Approved and shipping: **Tier A** (1-A, 1-B, 2-A, 2-B, 3-C, 4-A, 4-B, 5-A,
+5-B, 5-C) and **Tier B** (2-C a flat year still carries charges; 2-D caps limit
+the upside too; 3-B term expires and nothing is paid), plus **1-C** (an
+outstanding loan is settled out of the death benefit).
+
+🔴 **REFUSED — 3-A, level premium across the term.** *"at a price set at the
+outset"* is **not** in the copy. No n-gram collision, but substantively the
+same claim Checkmate makes (*"Level premium for the full term"*), and
+fflsynergy states level premium only of final expense. Do not reintroduce it
+without a decision.
+
+🟡 **PENDING ZIAD, shipping meanwhile — two sentences in `essay.b1`.** Same
+status as *"coverage is guaranteed for life"*:
+
+1. the death benefit *"is not counted as income to them"*
+2. money borrowed against cash value *"is not treated as income received"*
+
+Both are **tax treatment, not product mechanics.** Written in plain terms with
+**no statutory basis cited, on instruction**. If the compliance answer comes
+back against, both sentences come out and `b1` drops ~60 words — re-check it
+against the frame if so.
+
+## `services.trust.*` is deleted
+
+The three-across row that held this slot is gone from the page and both message
+files. Its three claims already ship on the homepage (`whySynergy.rows.r1/r2/r6`)
+and on /about, so nothing was lost from the site.
+
+🔴 **"Fold in" did not mean paste.** The row's sentences are **not** reproduced
+inside the essay: each is a claim about Synergy — who they work with, how they
+sell, where they are licensed — and this section's rule is that it explains
+products and says nothing new about the company. The essay took the slot, not
+the sentences. The deleted strings, if ever wanted back:
+
+- `trust.heading` — "Why Families Trust Synergy With Their Coverage"
+- `trust.t1` — "One Agency. Multiple Carriers." / "We are not locked into one
+  company. We compare options across the nation's top carriers to find the plan
+  that fits your goals and your budget."
+- `trust.t2` — "Education Before Everything." / "We will never recommend a
+  product you do not fully understand. We explain every option in plain
+  language before you ever make a decision."
+- `trust.t3` — "Licensed in All 50 States." / "Whether you are in Orlando, New
+  York, Texas, or anywhere in between — our licensed agents are ready to serve
+  your family wherever you are."
+
+## 🔴 Two Checkmate collisions found in copy that is ALREADY SHIPPING
+
+Unrelated to §4, found while running the collision check. Both are fflsynergy's
+own published wording, so rule 3 does not cover them and rule 2 says rewrite:
+
+| key | shared phrase | Checkmate |
+|---|---|---|
+| `services.products.p1.body` | "the years your family depends on" | *"For the years your family depends on your income."* |
+| `services.products.p6.body` | "the coverage that fits your" | *"Let's find the coverage that fits your life."* |
+
+Not touched. Flagged only.
+
+## The break band was raised
+
+`clamp(260px, 30vw, 460px)` → **`clamp(340px, 40.8vw, 620px)`**. The number is
+an aspect ratio: 40.8vw holds ~2.4:1 at 1536 *and* 820. The 620 ceiling caps it
+at 72% of an 864 viewport so a section edge is always on screen and it can never
+read as a second hero. Measured 620 / 340 / 340 at 1536 / 820 / 390. Nothing
+else about the component changed.
+
+## The five images are wired — all five external, none Synergy's
+
+Synergy owns **three portrait-capable photographs wearing six filenames**, all
+three already rendered on /about, and none clears the 978 x 1467 bar. Two of
+the six (`gallery-leadership-panel`, `gallery-training-session`) read as fresh
+assets and are re-crops of photographs already on /about. Full audit in
+CREDITS.md.
+
+Shipped, all Pexels License, all 1600 x 2400 at 2/3:
+
+| slot | file | Pexels | mean L |
+|---|---|---|---|
+| 1 | `essay-desk-evening.jpg` | `35462658` | 0.126 |
+| 2 | `essay-sea-horizon.jpg` | `29141332` | 0.266 |
+| 3 | `essay-facade-old-new.jpg` | `37136105` | 0.219 |
+| 4 | `essay-waiting-chairs.jpg` | `21404971` | 0.339 |
+| 5 | `essay-road-hills.jpg` | `38746397` | 0.386 |
+
+Ladder gaps 0.093 / 0.047 / 0.073 / 0.047. **At the achievable optimum** — the
+4 -> 5 pair caps the set minimum at 0.047 and both those slots were left
+standing, so re-sourcing slot 2 cannot improve it.
+
+🔴 **`alt=""` on all five and `services.essay.b*.imageAlt` is deleted.** The
+column is `aria-hidden` and `display:none` below 992, so no alt is ever
+announced at any width. If the <=991 rule is reversed, alt must be written
+before the images move inside the blocks.
+
+🔴 **No `priority` on the first image.** It was there; at 390 it fetched w=256
+and w=640 for a photograph inside a `display:none` column. All five are lazy
+and 390 now fetches zero bytes for this section.
+
+🟡 **Not visually confirmed on screen.** Files serve 200 raw and through
+`_next/image`, srcs are wired, the swap pairs every block with the right file,
+and geometry is measured — but lazy images do not decode in the Browser pane
+(`visibilityState: hidden`, 0 rAF/sec), so the rendered pixels need a real
+browser before sign-off.
+
+---
+
+# §13 — The blog: /[locale]/blog and /[locale]/blog/[slug]
+
+Modelled on **for-living.it/work**, re-measured live. Grid 2 cols, image ratio
+**1.615** held at every width, hover **scale 1.02 on the image only, 0.8s ease**.
+Theirs settles at 1.0177 — a Webflow IX2 inline transform, not a designed value.
+
+**Deliberately not reproduced:** their filter bar (`.sem-pad-t` closes the 145px
+it leaves — no new token), their two `<h1>`s, their non-monotonic type ramp,
+their pointer-following "See more" cursor, and their 0.5/0.6 resting opacities
+(3.27:1 and 4.43:1 on cream — both fail AA; ours are 0.78 and 0.72 → 8.08:1 and
+6.58:1).
+
+## 🔴 992 DOES NOT GENERALISE. The card grid breaks at 768.
+
+`.essay-*` on /services drops its column at **991** because a **sticky** column
+cannot survive a single-column layout — there is nowhere for it to stick. A
+**card grid has no such constraint**: it just reflows. Reusing 991 here gave
+tablet ONE column and twelve rows instead of six, which is a different page
+from the one that was measured and approved. `.blog-grid` uses **768**.
+Measured after the fix: 2 / 2 / 1 columns and **6 / 6 / 12 rows** at
+1536 / 820 / 390, card 695 / 353 / 352.
+
+## Content lives on disk, not in the message catalogue
+
+`content/blog/<locale>/<slug>.mdx`, loaded by `lib/blog.ts` (`server-only`).
+Reasons: ~15,000 words against a 396-key catalogue; article bodies need markup
+and the standing rule is that message files never carry any; and a next-intl
+namespace reachable from a client component is serialised to the browser.
+`en.json` holds seven chrome keys only.
+
+🔴 **The es→en fallback is explicit in `resolveFile()`.** `i18n.ts` falls back
+for message KEYS; it knows nothing about files. Without those two lines a
+missing Spanish article 404s instead of rendering English. Verified:
+`/es/blog/living-benefits` → 200 with no Spanish file present.
+
+🔴 **A frontmatter-only file is a LISTING ROW, not an article.** `hasBody`
+gates two things: the card renders without an href, and the route 404s.
+Eleven of twelve are currently listing rows. An unbuilt card gets no hover, no
+pointer and no tab stop, and **no "coming soon" label — that would be a
+timeline claim.**
+
+## Compliance — the blog is worse than /services, by a lot
+
+/services produced five banned phrases. **Article #2 alone produced twenty.**
+Screening is per-article, approved one batch at a time.
+
+**Two standing rules for every remaining article:**
+
+1. **Tax treatment: OMIT, never reword.** Same status as `services.essay.b1`,
+   pending Ziad. Not "generally tax-free" softened — removed.
+2. **Any statutory citation comes out.** (#12 published "IRS Section 101(g)";
+   it is gone.)
+
+🔴 **#6, #8 and #9 cannot ship at all until Ziad answers** — "tax-free" is in
+their TITLES and excerpts, not just their bodies. They need either his answer
+or a commissioned title change, and are sequenced last.
+
+### 🔴 FACTUAL ERRORS ON THE CLIENT'S SITE — send these separately
+
+**These are not phrasing problems and must not be sent with the rewrite list.**
+They are statements that are wrong about how a product works or that contradict
+another page of the same site. A rewrite fixes our copy; only Ziad can fix his.
+
+**1. The IUL floor is described in a way the mechanic does not work.**
+`/blog/indexed-universal-life-iul` states that in a zero-credit year *"you
+simply maintain your current value **with no loss**"*. That is false. A life
+insurance policy deducts a cost of insurance and policy fees whether or not
+interest was credited, so in a period where the index fell and nothing was
+credited the account value **goes down**. The error runs in the direction that
+flatters the product. Our `services.essay.b2` already states the correct
+mechanic — *"a flat year is not a frozen year"* — so his blog and our services
+page currently disagree about the same product.
+
+**2. The medical-exam requirement contradicts his own /services page.**
+See below.
+
+### 🔴 An internal inconsistency on the client's own site
+
+`/blog` states flatly *"no medical exam required"*. `/services` states *"No
+medical exam is required **for most applicants between ages 50 and 85**"*.
+**Two pages of the same site disagree about a qualifying condition.** Ours uses
+the qualified wording in both places. This is a factual correction for Ziad's
+end, not only a phrasing fix on ours.
+
+### Named carriers
+
+#2 as published names **Mutual of Omaha, Aetna and Foresters Financial**. All
+three also appear on Checkmate's carrier list. Not shipped — naming carriers is
+an endorsement-and-accuracy risk distinct from the "A-rated / AM Best" ban.
+
+## Built so far
+
+| article | status |
+|---|---|
+| #12 living-benefits | ✅ shipped, 9 rewrites approved |
+| #2 final-expense-insurance | ✅ shipped, 20 rewrites — approved |
+| #1 term-life-insurance | ✅ shipped, 26 rewrites — approved |
+| #3 | listing rows only |
+| #4, #5, #7, #10, #11 | listing rows only |
+| #6, #8, #9 | blocked on Ziad |
+
+## 🔴 IMAGE SEPARATION: A GRID IS NOT A SEQUENCE
+
+Applies to any future grid, not just the blog.
+
+A **sequence** (the /services §4 essay) shows frames one after another in the
+same box, so every frame is compared against every other and the rule is a
+GLOBAL minimum separation. A **grid** shows two cards side by side and the pair
+above; nobody compares card 2 against card 11. The rule there is NEIGHBOUR
+separation — the horizontal and vertical pairs in the rendered order.
+
+Carrying the sequence rule onto a grid fails twice over. On the blog it was
+**arithmetically impossible**: band 0.10-0.42, twelve images, eleven gaps, so
+the ceiling is 0.029 against a 0.05 rule. And optimising globally produced a
+0.006 minimum where optimising for neighbours produced **0.036** from the same
+candidate pool.
+
+**Before applying a separation rule, check the arithmetic: (band width) /
+(n - 1) is the ceiling.** Then pick the adjacency model that matches the
+layout.
+
+## 🔴 A HUB PAGE INHERITS THE ERRORS OF THE PAGES IT SUMMARISES
+
+Found on #11 (`life-insurance-orlando`), which summarises the other products.
+Its four product paragraphs re-introduced **"zero downside risk"** and
+**"guaranteed income in retirement"** (already removed from #5) and **"ensure
+their family is never burdened"** (already removed from #2). The article was
+written from his originals, so it carried their claims forward intact.
+
+**RULE: any summary, hub or landing page must be screened against the
+CORRECTED articles, not against fflsynergy's versions.** A page that quotes
+another page inherits whatever that page said at the time it was written.
+Applies to #11 today and to any future index, category or campaign page.
+
+Practical check: grep the new page's product sentences against the shipped
+`.mdx` bodies, not against the live client site.
+
+## 🔴 OPEN ITEM FOR ZIAD — published premium figures
+
+Separate from phrasing, and not something a rewrite can solve. **#1 carries two
+rate tables** (a term-length comparison and a full premium grid — roughly
+eighteen dollar figures, e.g. "~$18/mo", "$500,000 in coverage for under $30
+per month"). **#2 carries one.** Both also publish percentage claims about
+preferred rates ("10-20% lower", "60-70% cheaper at 25 than at 45").
+
+**None of it is reproduced.** Publishing premium figures is a pricing
+representation, not copy: it needs a compliance answer from Ziad in the same
+way "coverage is guaranteed for life" does, and the answer governs whether ANY
+article on this blog may show a number. Until then every cost section says the
+same thing — the inputs move independently, so a quote against your own details
+is the only honest answer.
+
+Expect this to recur: any product article can carry a rate table.
+
+Images: **held**. Cards render 1.615 placeholder frames. Synergy's own set
+cannot fill a card — largest portrait frame yields 1100 x 681 against a
+1390 x 861 requirement at 2x, 21% short. See CREDITS.

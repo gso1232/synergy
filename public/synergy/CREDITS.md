@@ -1012,3 +1012,312 @@ The right-hand image was `index={1}`, which adds 80ms on a 600ms fade. On a pair
 meant to read as one object that lag meant one image was fully painted while the
 other was still at zero opacity for most of the reveal — the most likely cause of
 the pair reading as mismatched mid-scroll. Both are `index={0}` now.
+
+
+---
+
+# /[locale]/services — "What We Protect"
+
+Nine images. **All external.** Synergy's own vetted set is three photographs
+wearing six filenames (see the About section above), all three already spent on
+`/about` §2 and §4 — and a services page needs seven distinct product frames
+plus a full-bleed hero and a break band.
+
+All **Pexels License** — exact line: *"All photos and videos on Pexels are free
+to use."* / *"Attribution is not required."* Attribution recorded here as good
+practice only.
+
+## Hero — `services-hero-family.jpg`
+
+**Pexels `8841348`** — a father and his two sons talking on the deck of a
+family home, a woman reading behind them.
+Source: https://www.pexels.com/photo/8841348/
+Native **8067 x 5378 (43.4 MP)**, held at **3840 x 2560** — the largest
+derivative next/image will request. Nothing upscales at any width.
+
+Chosen on copy-region luminance, sampled **only in the rectangle the h1 and sub
+occupy**, not over the whole frame:
+
+| | ID | pixels | MP | copy mean | p99 | hot >0.85 |
+|---|---|---|---|---|---|---|
+| A | 7678153 | 5845 x 3897 | 22.8 | **0.125** | 0.782 | 0.4% |
+| **B** | **8841348** | **8067 x 5378** | **43.4** | 0.301 | 0.741 | **0.0%** |
+| C | 5447197 | 7897 x 5264 | 41.6 | 0.290 | 0.781 | **0.0%** |
+| D | 7819827 | 5472 x 3648 | 20.0 | 0.279 | 0.761 | 0.4% |
+
+B on two grounds: **zero blown pixels** behind the copy, and 43.4 MP. A is
+darker but has 0.4% blown, and blown highlights are the one defect a scrim
+cannot fix — the scrim already carries 0.301, measured.
+
+🔴 **Rejected, and why:**
+- `8470833` — **24.2% blown pixels** behind the copy. Same failure as
+  `27520972` on the About hero.
+- `15077113` — **Nike swoosh centre-frame** plus "TRIBAL" on the shorts.
+- `6185344` — darkest and cleanest of everything measured (0.061, 0% hot) but
+  it is a **Hanukkah menorah scene**: a religious-specificity claim about the
+  reader on a general services page.
+- every `5638xxx` result — **the same shoot as the About hero** (`5638414`).
+  A cross-page repeat in a different costume; the filename trap generalised.
+
+## Break band — `services-break-dusk.jpg`
+
+**Pexels `28201816`** — waterfront homes at dusk with their lights on, seen
+across calm water. Source: https://www.pexels.com/photo/28201816/
+Native **8192 x 5464 (44.8 MP)**, held at **3840 x 2560**.
+Frame mean L **0.188**. No text sits on it, so there is no contrast threshold.
+
+| | ID | pixels | MP | frame mean |
+|---|---|---|---|---|
+| E | 37453136 | 4239 x 2825 | 12.0 | 0.321 |
+| **F** | **28201816** | **8192 x 5464** | **44.8** | **0.188** |
+| G | 11002963 | 6000 x 4000 | 24.0 | 0.157 |
+| H | 32772414 | 6000 x 4000 | 24.0 | 0.396 |
+
+🔴 **Rejected:**
+- `12551262` — **Pontiac** grille badge in the foreground and a **Ford** badge
+  behind it, both confirmed by zooming to full size.
+- `35005664` — legible German street signage (*"Strassenreinigung"*). Not a
+  brand, but it places the photograph in Germany on a page for a Florida
+  agency.
+- `34463947` (-31%) and `17928839` (-1%, and square) on resolution.
+
+## The seven product frames
+
+The swap column renders **476 x 557 CSS** at a 1920 viewport, so the bar is
+**952 x 1115 at 2x DPR** cropped to the frame's 0.854 ratio. All seven are
+stored at **1200 x 1405** — 26% headroom.
+
+| slot | file | Pexels ID | native | frame mean L |
+|---|---|---|---|---|
+| Term Life | `service-term-life.jpg` | `1648368` | 3456 x 5184 | 0.431 |
+| Final Expense | `service-final-expense.jpg` | `6975091` | 4480 x 6720 | 0.350 |
+| Mortgage Protection | `service-mortgage-protection.jpg` | `7641540` | 3827 x 5309 | 0.410 |
+| IUL | `service-iul.jpg` | `8422729` | 3930 x 5887 | 0.211 |
+| Fixed Indexed Annuities | `service-annuities.jpg` | `7477744` | 3858 x 5779 | 0.328 |
+| Medicare | `service-medicare.jpg` | `12419277` | 3456 x 5184 | 0.218 |
+| Health | `service-health.jpg` | `5410080` | 2920 x 4000 | 0.326 |
+
+**Judged as a set, not one at a time.** Frame means run 0.211-0.431, so against
+cream (0.9083) the set spans **3.67x to 1.99x**. That range is the point: the
+`/about` §5 lesson was that a frame at 1.48x reads washed out and detached from
+a row meant to look like three of a kind.
+
+🔴 **Two picks were replaced during review, both for reasons worth recording:**
+
+- `31152769` (Mortgage Protection) — a **LEGO Duplo** set centre-frame. Trade
+  dress rather than a legible wordmark, so it sat on the line the Carhartt /
+  Marshall / LG / Balmain exclusions drew; those were all *marks*. Cut anyway:
+  LEGO trade dress is recognisable worldwide and the mark-versus-trade-dress
+  distinction is not one worth defending on an insurance site. Replaced with
+  `7641540`, checked clean at full size (the laptop lid carries no logo).
+- `8871552` (Medicare) — frame mean **0.470**, only 1.84x from cream. The
+  `value-legacy` problem again. Replaced with `12419277` at 0.218.
+
+**Rejected for set incoherence:** `35858304` (grey studio backdrop — nothing
+else on this site is studio), `4008802` and `8847446` (moody dark bedrooms;
+8847446 at 0.078 would be the same defect inverted), `15092536` (shot through a
+window grille), `35549384` (black and white), `17923325` (the subject is
+holding a cigarette — wrong signal on an insurance page).
+
+## §4 The mirrored essay — five photographs
+
+🔴 **SYNERGY'S OWN SET CANNOT FILL THIS SECTION, AND THE REASON IS NOT TASTE.**
+Audited by opening every file rather than reading its name. Synergy owns **five
+distinct photographs**; **three are portrait-capable, and those three wear six
+filenames**:
+
+| photograph | filenames it wears | shows |
+|---|---|---|
+| gallery **g8** | `gallery-team-presentation` · `gallery-leadership-panel` · `why-bilingual` | two people presenting, woman on the mic |
+| gallery **g11** | `gallery-advisor-explaining` · `gallery-training-session` · `why-g11` | advisor at the "Hone Your Skills & Knowledge" slide |
+| gallery **g2** | `gallery-team-meeting` | different moment, same conference room |
+| gallery g1 | `why-g1` | three women posed — **1620 × 766 landscape** |
+| gallery g3 | `why-g3` | full team at a dinner — **1620 × 766 landscape** |
+
+`gallery-leadership-panel` and `gallery-training-session` are the trap: they
+read as two fresh assets and are re-crops of two photographs **already rendered
+on /about**.
+
+**None clears the box.** The frame maxes at 489 × 733.5, so the 2× DPR bar is
+**978 × 1467**. Largest possible 2:3 crop from each:
+
+| file | source | max 2:3 crop | vs 978 × 1467 |
+|---|---|---|---|
+| `gallery-team-presentation` | 1100 × 1375 | 917 × 1375 | 6.2% short |
+| `gallery-leadership-panel` | 1206 × 1263 | 842 × 1263 | 13.9% short |
+| `gallery-advisor-explaining` | 1000 × 1250 | 833 × 1250 | 14.8% short |
+| `gallery-team-meeting` | 1000 × 1250 | 833 × 1250 | 14.8% short |
+| `gallery-training-session` / `why-g11` | 1080 × 1150 | 767 × 1150 | 21.6% short |
+| `why-g1` / `why-g3` | 1620 × 766 | 511 × 766 | 47.8% short |
+
+Resolution is the second reason. **The first is that this is a SEQUENCE.** At
+most three slots could be Synergy's, and those three are two crops of moments
+already on /about plus one more from the same room. Five frames from one
+afternoon in one conference room is a contact sheet, not a sequence — and it
+would sit directly below §2, which is seven genuinely different photographs.
+
+### The five, all Pexels License
+
+Licence line, verbatim: *"All photos and videos on Pexels are free to use."* /
+*"Attribution is not required."* Each fetched at full resolution, cropped to
+**2 / 3**, written at **1600 × 2400** (1.63× headroom over the 2× DPR bar),
+quality 86; the component re-encodes at `quality={78}`.
+
+| slot | block | file | Pexels | source | crop | mean L |
+|---|---|---|---|---|---|---|
+| 1 | Tax-free is three different things | `essay-desk-evening.jpg` | `35462658` | 2268 × 4032 | **top-biased, y=0** | **0.126** |
+| 2 | What a floor does, and what it does not | `essay-sea-horizon.jpg` | `29141332` | 3729 × 5594 | centre | **0.266** |
+| 3 | A period, or a lifetime | `essay-facade-old-new.jpg` | `37136105` | 3820 × 5730 | centre | **0.219** |
+| 4 | The medical exam column | `essay-waiting-chairs.jpg` | `21404971` | 4160 × 6240 | centre | **0.339** |
+| 5 | When a balance becomes a payment | `essay-road-hills.jpg` | `38746397` | 4160 × 6240 | centre | **0.386** |
+
+**Filenames describe the subject, not the slot** — deliberately, because a
+slot-numbered name rots the moment the block order changes, and because the
+`gallery-leadership-panel` mess above is what happens when a name stops
+describing the file.
+
+**Slot 1's crop is not centred.** Source is 2268 × 4032 and needed 630px
+removed. Centre clipped the lamp; bottom-biased lost the papers. **y=0** keeps
+the whole lamp, the candle, the cup, the pen and the full spread of papers.
+
+**Third-party branding audited at full pixel resolution**, three to four
+horizontal bands per frame — not thumbnails. All five clean. What that caught:
+🔴 **`18530057` was the best luminance match for slot 1 at L 0.105 and is
+DISQUALIFIED** — magazines on the desk carry legible **"Hayat"** mastheads,
+plus a laptop in frame. Invisible at thumbnail size.
+
+### Two frames were rejected on judgement, not numbers
+
+- **`14201540`** (L 0.165) was the original slot 1 and is **not shipped**. It is
+  technically the strongest slot-1 candidate for light quality and it is a
+  **derelict** room — peeling paint, dust, a ruined desk. Under a block about
+  what reaches your family after a death, that is the wrong note. Replaced on
+  instruction with an intact, occupied room.
+- **`12294063`** (L 0.319) was the original slot 2. Re-sourced darker to open
+  the sequence's luminance spread.
+
+### The luminance ladder, and why it stops where it does
+
+Set band is **0.10–0.42** — the range the existing photographs occupy against
+cream `#F8F4EE`. A lighter frame vanishes into the page; a darker one reads as
+a hole. Target was no two frames within **0.06**.
+
+Shipped ladder, measured on the written files: **0.126 / 0.219 / 0.266 / 0.339
+/ 0.386**. Adjacent gaps **0.093 / 0.047 / 0.073 / 0.047**. Minimum gap 0.047,
+span 0.260 — against 0.019 and 0.221 for the first-pass set.
+
+🟡 **The 0.06 rule fails on two adjacent pairs and cannot be fixed by
+re-sourcing slot 2.** With slots 3 and 4 fixed at 0.219 and 0.339, the widest a
+slot-2 frame can open its narrower neighbour is **0.0595** — and slots 4 → 5
+measure **0.047** regardless. The set minimum is therefore capped at 0.047 by
+the 4 → 5 pair, and the shipped slot 2 already delivers it. **The set is at the
+achievable optimum.** To clear 0.06 everywhere, slot 5 must move up to ~0.42 or
+slot 4 down to ~0.31; both were left standing on instruction.
+
+### 🔴 No alt text, deliberately
+
+`alt=""` on all five, inside an `aria-hidden` container that is `display:none`
+below 992. There is **no width and no assistive-technology path** on which an
+alt string here is announced. These photographs are decorative relative to the
+essay — a desk, a horizon, a facade, two chairs, a road — unlike §2, where the
+image identifies which of seven products you are reading about. Authoring alt
+would be writing strings nobody can reach, so `services.essay.b*.imageAlt` was
+removed from both message files. **If the ≤991 rule is ever reversed and the
+images move inside the blocks, alt must be written before they do.**
+
+### 🔴 No `priority`, and it was measured doing harm
+
+The first image carried `priority` and it was removed. This section begins
+~8,200px down the page, so it can never be the LCP element. Below 992 it
+actively cost bandwidth: the column is `display:none` but an eager image is
+still fetched, and at 390 that was a measured **w=256 and w=640** request for a
+photograph the reader can never see. All five are now `loading="lazy"` and 390
+fetches **zero bytes** for this section.
+
+---
+
+# Blog — `/[locale]/blog` — twelve card photographs
+
+🔴 **SYNERGY'S OWN SET CANNOT FILL A BLOG CARD.** The card renders **694.8 x
+430.3** at 1536, so the 2x DPR bar is **1390 x 861**. Their largest
+portrait-capable frame (`gallery-team-presentation`, 1100 x 1375, gallery g8)
+cropped to a 1.615 landscape yields **1100 x 681** — **21% short**, and it
+discards half the frame to get there. Every other Synergy file is smaller. All
+three portrait photographs are also already rendered on /about and /services.
+All twelve are therefore external.
+
+## The set
+
+All **Pexels License**. Exact licence line: *"All photos and videos on Pexels
+are free to use."* / *"Attribution is not required."* Each fetched at full
+resolution, centre-cropped to **1.615**, written **1600 x 991** (15% headroom
+over the 2x bar), quality 84. Source URL pattern:
+`https://www.pexels.com/photo/<id>/`.
+
+| # | article | file | Pexels | source px | mean L |
+|---|---|---|---|---|---|
+| 1 | term-life-insurance | `blog-house-dusk.jpg` | 186077 | 3352 x 2286 | 0.309 |
+| 2 | final-expense-insurance | `blog-window-interior.jpg` | 14149574 | 3637 x 2433 | 0.215 |
+| 3 | mortgage-protection-insurance | `blog-rooftops.jpg` | 2092793 | 5509 x 3673 | 0.188 |
+| 4 | indexed-universal-life-iul | `blog-pier-water.jpg` | 2909254 | 6000 x 3375 | 0.394 |
+| 5 | fixed-indexed-annuity-fia | `blog-road-first-light.jpg` | 2812561 | 5568 x 3712 | 0.410 |
+| 6 | iul-self-employed | `blog-machine-shop.jpg` | 7423708 | 4272 x 2848 | 0.105 |
+| 7 | itin-holders-life-insurance | `blog-binders-desk.jpg` | 17018372 | 2998 x 2000 | 0.206 |
+| 8 | iul-vs-401k-construction | `blog-scaffolding.jpg` | 154141 | 2560 x 1707 | 0.315 |
+| 9 | nurses-tax-free-retirement | `blog-corridor-light.jpg` | 19435068 | 4864 x 3263 | 0.291 |
+| 10 | truck-drivers-retirement | `blog-freight-port.jpg` | 14020705 | 4032 x 3024 | 0.351 |
+| 11 | life-insurance-orlando | `blog-palms-water.jpg` | 15823905 | 6720 x 4480 | 0.121 |
+| 12 | living-benefits | `blog-door-handle.jpg` | 16053396 | 6827 x 4551 | 0.227 |
+
+**Register: no people, in any of the twelve.** /services §2 already runs seven
+people-portraits; twelve more would put nineteen on one site in one register.
+These are light, interiors, objects and the built environment.
+
+## 🔴 THE SEPARATION RULE WAS RE-DERIVED. A GRID IS NOT A SEQUENCE.
+
+The five-image essay set used "no two within 0.06 L". Carried to twelve that
+rule is **arithmetically impossible**: the band is 0.10-0.42 and eleven gaps
+give a ceiling of **0.32 / 11 = 0.029**. Best achievable global ladder from the
+candidate pool was **0.006** — two cards reading as one tone.
+
+It was also the wrong SHAPE. A sequence shows frames one after another in the
+same box, so global uniqueness matters. A grid shows two side by side and the
+pair above; nobody compares card 2 against card 11. **Re-derived against the
+neighbours a reader can actually perceive together** — the six horizontal pairs
+and ten vertical pairs in fflsynergy's fixed order:
+
+**Minimum neighbour separation 0.036**, tightest pair slots 8 and 10.
+Next tightest 0.060 (9-10) and 0.085 (7-9). Band 0.105-0.410, all inside spec.
+
+🟡 The 8/10 pair at 0.036 is the one soft spot and it is recorded rather than
+hidden. Opening it means moving slot 8 or 10 to a frame that was not visually
+audited, which is the trade that produced the two rejects below.
+
+## 🔴 Two frames rejected on inspection, both with good numbers
+
+**Looking at the file caught what the measurement could not, twice.**
+
+- **`4553661`** (L 0.236, dead on the slot-7 target) — paperwork strewn across
+  the floor of a derelict room. On the ITIN article, read by people most
+  anxious about their documents, "your papers scattered in an abandoned
+  building" is the wrong note. Replaced with ring binders in order.
+- **`6538572`** (L 0.202, in band) — a portrait, which breaks the no-people
+  register, and it reads as someone clearing out a desk.
+
+Also rejected: **`249074`** for slot 10 — an abstract of bridge cables in fog
+that did not read as freight at all (the search matched "mist", not the
+subject), and which made **two of twelve roads** alongside slot 5. The freight
+port fixes both. **`2194838`** for slot 12 carried unresolved signage above the
+doorway and was dropped rather than audited around.
+
+**Every one of the twelve was viewed at crop size before selection**, and the
+finalists at full resolution for third-party branding. All clear.
+
+## Alt text
+
+Authored per file and stored in the article frontmatter (`imageAlt`), not in
+the message catalogue — alt describes the file and must change when the file
+changes, which is the one authored-content exception in the standing rules.
+Unlike /services §4, these images are NOT `aria-hidden`: a blog card is a link
+whose image is part of the link's accessible name context, and the card is
+rendered at every width rather than hidden below 992.

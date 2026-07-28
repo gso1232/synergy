@@ -31,6 +31,23 @@ const isAboutRoute = (pathname: string | null) =>
   /^\/(?:en|es)\/about\/?$/.test(pathname ?? "/");
 
 /**
+ * Routes whose FIRST VIEWPORT is a full-bleed photograph dark enough to carry
+ * white nav ink, so the bar may stay transparent until it scrolls off them.
+ *
+ * This is a property of the PAGE, not a list of favourites: /about and
+ * /services both open on a 100svh photo with `.hero-veil-top` over it.
+ * /calculator does not — it opens on cream, where a transparent bar would
+ * paint #FFFFFF on #F8F4EE at 1.11:1 and simply vanish.
+ */
+const isPhotoHeroRoute = (pathname: string | null) =>
+  // /blog joins on the same terms /about and /services did: its first viewport
+  // is a full-bleed photograph dark enough to carry white nav ink. Measured
+  // worst nav-band luminance across 1536 / 820 / 390 is 0.148 -> 5.30:1 bare,
+  // before the 0.15 scrim. The trailing `$` keeps ARTICLE pages off the list —
+  // /blog/<slug> opens on cream and must keep the solid bar.
+  /^\/(?:en|es)\/(?:about|services|blog)\/?$/.test(pathname ?? "/");
+
+/**
  * 🔴 IS ANY ROUTE A DARK SURFACE? Currently no. DO NOT DELETE THIS.
  *
  * /[locale]/about was the only one, and it is CREAM now — so its bar behaves
@@ -451,7 +468,7 @@ export default function SiteHeader() {
    * which is exactly what the homepage bar already does.
    */
   const isHeroRoute = useMemo(
-    () => /^\/(?:en|es)?\/?$/.test(pathname ?? "/") || isAboutRoute(pathname),
+    () => /^\/(?:en|es)?\/?$/.test(pathname ?? "/") || isPhotoHeroRoute(pathname),
     [pathname],
   );
   const solid = compact || !isHeroRoute;

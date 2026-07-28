@@ -10,6 +10,7 @@
     "about": "About",
     "calculator": "Calculator",
     "services": "Services",
+    "blog": "Blog",
     "contact": "Contact",
     "phone": "407-434-0400",
     "phoneHref": "tel:+14074340400",
@@ -408,6 +409,162 @@
     },
     "quote2": "We do not just sell policies. We build protection strategies that last a lifetime.",
     "zoomAlt": "A stone-and-shingle family house at dusk, every window lit, seen through tall pines."
+  },
+  "services": {
+    "metaTitle": "What We Protect — Life, Final Expense, IUL, Annuities, Medicare — Synergy Insurance Group",
+    "metaDescription": "Term life, final expense, mortgage protection, indexed universal life, fixed indexed annuities, Medicare and health insurance from Synergy Insurance Group. Licensed in all 50 states.",
+    "hero": {
+      "headline": "What We Protect",
+      "sub": "From protecting your family today to securing your legacy for generations — we have a solution for every stage of life. Licensed in all 50 states. Partnered with the nation's top carriers.",
+      "imageAlt": "A father and his two sons talking together on the deck of a family home."
+    },
+    "products": {
+      "heading": "Our Insurance Products",
+      "intro": "Every policy is explained clearly. Every recommendation is honest. Nothing is rushed.",
+      "p1": {
+        "name": "Term Life Insurance",
+        "body": "Term life insurance provides affordable, straightforward coverage for a defined period — typically 10, 20, or 30 years. If you pass away during the term, your family receives a tax-free lump sum death benefit to replace your income, pay off debts, and maintain their quality of life. It is the most cost-effective way to get significant coverage during the years your family depends on you most. Ideal for young families, new homeowners, and anyone with financial dependents.",
+        "imageAlt": "A mother sitting on a rug with her two young children in a sunlit room."
+      },
+      "p2": {
+        "name": "Final Expense Insurance",
+        "body": "Final expense insurance is a small whole life policy — typically between $5,000 and $25,000 — written to meet the costs a family faces immediately after a death: the service, outstanding medical bills, and the administration that follows. The premium is level for the life of the policy and the benefit amount does not reduce over time. No medical exam is required for most applicants between ages 50 and 85. It is the most compassionate gift you can leave your family — the certainty that they will never carry that financial burden alone.",
+        "imageAlt": "An older couple sitting at a table, holding hands in the light from a window."
+      },
+      "p3": {
+        "name": "Mortgage Protection Insurance",
+        "body": "Mortgage protection is designed to keep your family in their home if you are no longer there to make the payments. If you pass away, become disabled, or face a critical illness, the policy pays off your remaining mortgage balance directly — so your family is not forced out of the home you built together. Unlike PMI, which protects the lender, mortgage protection protects your family. It is one of the most targeted and powerful forms of protection a homeowner can carry.",
+        "imageAlt": "A family at home in a bright living room, one parent reading and a child in an armchair."
+      },
+      "p4": {
+        "name": "Indexed Universal Life (IUL)",
+        "body": "Indexed Universal Life insurance is permanent coverage that builds real cash value linked to a stock market index — such as the S&P 500 — while a policy floor means index losses are not credited against the value you have built. Your money grows when markets rise and stays flat when they fall. The cash value grows tax-deferred, can be accessed tax-free through policy loans, and the death benefit lasts your entire lifetime. IUL is the preferred vehicle for entrepreneurs, business owners, and professionals who want life insurance that works as a long-term financial strategy.",
+        "imageAlt": "A shop owner in an apron standing with arms folded behind the counter of a small store."
+      },
+      "p5": {
+        "name": "Fixed Indexed Annuities (FIAs)",
+        "body": "A Fixed Indexed Annuity is a retirement vehicle that grows your money based on market index performance — with a floor that means index losses are not credited against your principal. Your account is credited based on the performance of a market index, without being invested in the market directly. FIAs offer lifetime income options, tax-deferred growth, and a death benefit that passes to your beneficiaries. Designed for pre-retirees and retirees who want index-linked crediting alongside a predictable income floor.",
+        "imageAlt": "An older couple preparing fruit together at a kitchen counter."
+      },
+      "p6": {
+        "name": "Medicare Insurance",
+        "body": "Navigating Medicare can be overwhelming — but it does not have to be. Synergy Insurance Group helps individuals turning 65 and existing Medicare beneficiaries understand their options and select the right plan. We work with multiple Medicare carriers to compare Medicare Supplement (Medigap) plans, Medicare Advantage plans, and Medicare Part D prescription drug coverage. Our agents simplify the process, explain every option in plain language, and help you choose the coverage that fits your health needs and your budget — at no additional cost to you.",
+        "imageAlt": "A smiling older man in a blue shirt, photographed indoors in natural light."
+      },
+      "p7": {
+        "name": "Health Insurance",
+        "body": "Access to quality health insurance is one of the most important decisions you can make for yourself and your family. Synergy Insurance Group works with multiple health insurance carriers to help individuals, families, and self-employed professionals find plans that provide real coverage at a price that makes sense. Whether you need an ACA marketplace plan, a short-term health plan, or a supplemental health policy to fill gaps in your existing coverage, our licensed agents walk you through every option in plain language, and leave the decision with you.",
+        "imageAlt": "A florist checking a tablet among buckets of cut flowers in her shop."
+      }
+    },
+    "breakImageAlt": "Waterfront homes at dusk with their lights on, seen across calm water.",
+    "essay": {
+      "heading": "What the Words Mean",
+      "b1": {
+        "name": "Tax-free is three different things",
+        "body": "The word tax-free appears three times in the product list above, and it is not the same mechanism on any of the three occasions.\n\nThe first is the death benefit. When a term life policy pays, the lump sum your family receives is not counted as income to them. That is what the description above means by a tax-free lump sum death benefit: the benefit is not reduced on its way through a tax return, which is why it can be sized against the debts and the income it is meant to replace rather than against some fraction of itself.\n\nThe second is accumulation. An Indexed Universal Life policy carries a cash value alongside its death benefit, and the list above describes that value as growing tax-deferred. Deferred is a narrower word than free. It means no tax falls due in the years the value rises, because nothing has come out of the contract yet.\n\nThe third is access, and it is where the two previous ideas meet. The list above says the cash value can be accessed tax-free through policy loans. A loan is not a withdrawal. Money borrowed against the cash value is not treated as income received, which is the whole reason the loan structure is used instead of simply taking the money out.\n\nTwo consequences belong next to that loan rather than in a footnote. A loan still outstanding when the policy pays is settled out of the death benefit, so what reaches your family is reduced by what was borrowed and by the interest that has accrued on it. And a policy that ends with a loan still standing against it can leave a bill behind instead of a benefit.\n\nThree mechanisms, one word. Which applies depends on the product and on which part of it you are touching."
+      },
+      "b2": {
+        "name": "What a floor does, and what it does not",
+        "body": "A floor is the single mechanic that makes an indexed product behave unlike an investment, and reading it narrowly is the only way to understand what you are buying.\n\nBegin with what the money is not doing. In an Indexed Universal Life policy or a Fixed Indexed Annuity, your money is not in the market. It is with the carrier, and the carrier credits interest to it according to the movement of a market index — the S&P 500 is the one named above. You do not hold the index. You hold a contract whose crediting rate is calculated from how that index moved.\n\nThe floor governs the downside of that calculation. If the index falls, the crediting rate does not go negative, and the index loss is not credited against the value you have already built. That is the whole of the mechanic. In the words used above, your money grows when markets rise and stays flat when they fall.\n\nTwo things follow that are worth saying out loud. A flat year is not a frozen year, because a life insurance contract has its own internal charges and those do not stop when crediting does. And a floor never travels alone: the same contract that limits how far a falling index can reach you also limits how much of a rising one is credited to you."
+      },
+      "b3": {
+        "name": "A period, or a lifetime",
+        "body": "Two of the seven products are the same idea sold on opposite terms, and the comparison table puts the whole difference in one column. Term life reads 10-30 years under Duration. Indexed Universal Life reads Lifetime.\n\nA term policy is a defined-period contract. You choose the length — ten, twenty and thirty years are named above as the usual ones — and across that stretch the insurer carries the risk. If the term runs out and you are still here, the contract ends with it and nothing is paid. That is not a flaw in the product. It is the reason the product is priced the way it is, and it is why term is described above as the most cost-effective way to get significant coverage.\n\nA permanent policy is not written against a period at all. The death benefit, as described above, lasts your entire lifetime, and a contract sold on those terms is priced on the expectation of eventually paying. What the higher price buys, besides duration, is the next column across: Cash Value, which reads Yes for Indexed Universal Life and No for term.\n\nThe choice is therefore less about which product is better than about which question you are answering. Term answers what happens to a household if the earner is not there across the years it is still being built. Permanent answers what should be in place whenever that turns out to be, and holds a value inside the contract while it waits."
+      },
+      "b4": {
+        "name": "The medical exam column",
+        "body": "The comparison table carries a column most people are too polite to ask about directly. Under Medical Exam, three of the seven products read No and two read Sometimes. Nothing reads Always, and that absence is doing real work.\n\nSometimes is the honest answer for term life and for Indexed Universal Life, and it is honest precisely because it declines to commit either way. Whether an exam is called for is a decision the carrier makes about a particular application, not a fixed property of the product.\n\nNo is the answer for final expense, and there it is a design decision rather than a concession. The wording above is specific: no medical exam is required for most applicants between ages 50 and 85. Read that against the age range the same table gives the product — 50 to 85 — and the reason is plain. An exam requirement would sit directly across the entrance of the product for exactly the people it was built for.\n\nWhat none of this means is that health stops mattering. It means the question is put in a different form. An exam is one way of asking it; a set of questions on an application is another, and the answers given there carry the same weight in deciding whether the policy is offered and on what terms. The column is telling you which method the product uses, not whether your health is being considered."
+      },
+      "b5": {
+        "name": "When a balance becomes a payment",
+        "body": "The annuity row is the only one in the table whose Duration does not describe how long you are covered. It reads Lifetime income, and that phrasing is precise. The other six products name a period across which something would be paid on an event. This one names a period across which something is paid on a schedule.\n\nThe product has two halves. In the first, money goes in and interest is credited — for a Fixed Indexed Annuity, credited from the movement of a market index, on the same floor mechanic described above, and deferred from tax for as long as it stays inside the contract. In the second, that accumulated balance is turned into a stream of payments.\n\nThat conversion is the entire point of the product, and it is what is meant above by lifetime income options. Options, in the plural, is the operative word: the conversion can be made in more than one way, and the ways differ in how large each payment is and how long the payments continue. Those two quantities move against each other.\n\nOne thing the table has no column for is worth adding here. The description above notes that a Fixed Indexed Annuity also carries a death benefit that passes to your beneficiaries, which means a balance that was never converted into payments is not left stranded by the fact that the conversion never happened.\n\nThe table gives the product an age range of 45 to 70, which describes its shape well. It is bought across the years income is still arriving, to matter across the years when it is not."
+      }
+    },
+    "quote": "Every policy is explained clearly. Every recommendation is honest. Nothing is rushed.",
+    "compare": {
+      "heading": "Which Product Is Right for You?",
+      "intro": "Use this guide to understand which solution fits your situation — then talk to one of our agents to get a personalized recommendation.",
+      "caption": "Comparison of Synergy's seven insurance products by who they suit, coverage type, medical exam requirement, cash value, duration and age range.",
+      "cols": {
+        "c0": "Product",
+        "c1": "Best For",
+        "c2": "Coverage Type",
+        "c3": "Medical Exam",
+        "c4": "Cash Value",
+        "c5": "Duration",
+        "c6": "Age Range"
+      },
+      "r1": {
+        "c1": "Families & homeowners needing affordable protection",
+        "c2": "Death benefit",
+        "c3": "Sometimes",
+        "c4": "No",
+        "c5": "10–30 years",
+        "c6": "20–55"
+      },
+      "r2": {
+        "c1": "Seniors covering end-of-life costs",
+        "c2": "Death benefit",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Lifetime",
+        "c6": "50–85"
+      },
+      "r3": {
+        "c1": "Homeowners protecting their mortgage",
+        "c2": "Death benefit",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Tied to mortgage",
+        "c6": "30–60"
+      },
+      "r4": {
+        "c1": "Professionals building long-term wealth",
+        "c2": "Death benefit + cash value",
+        "c3": "Sometimes",
+        "c4": "Yes",
+        "c5": "Lifetime",
+        "c6": "25–55"
+      },
+      "r5": {
+        "c1": "Pre-retirees securing retirement income",
+        "c2": "Retirement income",
+        "c3": "No",
+        "c4": "Yes",
+        "c5": "Lifetime income",
+        "c6": "45–70"
+      },
+      "r6": {
+        "c1": "Adults 65+ navigating Medicare options",
+        "c2": "Health coverage",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Annual renewable",
+        "c6": "65+"
+      },
+      "r7": {
+        "c1": "Individuals & families needing medical coverage",
+        "c2": "Health coverage",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Annual renewable",
+        "c6": "All ages"
+      }
+    },
+    "cta": {
+      "heading": "Not Sure Which Coverage Is Right for You?",
+      "body": "Our licensed agents are ready to walk through every option with you — no pressure, no jargon, and no obligation. Just honest guidance built around your family."
+    }
+  },
+  "blog": {
+    "metaTitle": "Insurance and Retirement Planning Blog — Synergy Insurance Group",
+    "metaDescription": "Guides on term life, final expense, mortgage protection, indexed universal life, annuities, Medicare and retirement planning from Synergy Insurance Group.",
+    "heading": "Insurance and Retirement Planning",
+    "intro": "Guides written by licensed agents, in plain language, on the products families ask us about most.",
+    "listLabel": "Articles",
+    "readTime": "{minutes} min read",
+    "allArticles": "All articles"
   },
   "footer": {
     "srTitle": "Footer",

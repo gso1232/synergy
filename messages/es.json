@@ -10,6 +10,7 @@
     "about": "Nosotros",
     "calculator": "Calculadora",
     "services": "Servicios",
+    "blog": "",
     "contact": "Contacto",
     "phone": "407-434-0400",
     "phoneHref": "tel:+14074340400",
@@ -408,6 +409,162 @@
     },
     "quote2": "",
     "zoomAlt": ""
+  },
+  "services": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "hero": {
+      "headline": "",
+      "sub": "",
+      "imageAlt": ""
+    },
+    "products": {
+      "heading": "",
+      "intro": "",
+      "p1": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p2": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p3": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p4": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p5": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p6": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "p7": {
+        "name": "",
+        "body": "",
+        "imageAlt": ""
+      }
+    },
+    "breakImageAlt": "",
+    "essay": {
+      "heading": "",
+      "b1": {
+        "name": "",
+        "body": ""
+      },
+      "b2": {
+        "name": "",
+        "body": ""
+      },
+      "b3": {
+        "name": "",
+        "body": ""
+      },
+      "b4": {
+        "name": "",
+        "body": ""
+      },
+      "b5": {
+        "name": "",
+        "body": ""
+      }
+    },
+    "quote": "",
+    "compare": {
+      "heading": "",
+      "intro": "",
+      "caption": "",
+      "cols": {
+        "c0": "",
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r1": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r2": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r3": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r4": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r5": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r6": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      },
+      "r7": {
+        "c1": "",
+        "c2": "",
+        "c3": "",
+        "c4": "",
+        "c5": "",
+        "c6": ""
+      }
+    },
+    "cta": {
+      "heading": "",
+      "body": ""
+    }
+  },
+  "blog": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "heading": "",
+    "intro": "",
+    "listLabel": "",
+    "readTime": "",
+    "allArticles": ""
   },
   "footer": {
     "srTitle": "",
