@@ -5,7 +5,12 @@ import Image from "next/image";
 // Restoring it needs this import back.
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
-import RouteTheme from "@/components/RouteTheme";
+// NOTE: no RouteTheme. This page is CREAM now, and <body> is already
+// `bg-cream`, so the canvas propagates the right colour to the overscroll
+// region with no help. RouteTheme and its CSS rule are both retained for the
+// next dark route — and removing the call here is what allowed
+// `suppressHydrationWarning` to come off <html> in app/[locale]/layout.tsx.
+// Those two travel as a pair; see HANDOFF.md §8.
 import AboutPullQuote from "@/components/AboutPullQuote";
 import AboutParallaxImage from "@/components/AboutParallaxImage";
 import AboutValueColumn from "@/components/AboutValueColumn";
@@ -31,10 +36,11 @@ import AboutZoom from "@/components/AboutZoom";
  *   §3  Pull-quote #1   715px, scrubbed reveal    -> "Insurance is not a
  *                                                    product. It is a promise."
  *   §4  Food & Drink    826px, entrance reveal    -> "Built on Trust. Driven
- *                                                    by Results." + 2 images
- *                                                    + pill CTA
+ *                                                    by Results." + 2 images.
+ *                                                    Their pill CTA is
+ *                                                    DELIBERATELY ABSENT
  *   §5  Images grid     1158px, scrubbed drift    -> "What We Stand For",
- *                                                    3 staggered columns
+ *                                                    3 columns, NO stagger
  *                                                    🟡 PROVISIONAL IMAGERY
  *   §6  Pull-quote #2   705px, scrubbed reveal    -> "We do not just sell
  *                                                    policies..."
@@ -45,15 +51,52 @@ import AboutZoom from "@/components/AboutZoom";
  * §8 IS COMMENTED OUT AND MUST NOT BE DELETED — see the block below §7.
  *
  * =========================================================================
- * NO SECTION HAS A BACKGROUND. That is the single thing that makes the
- * reference page work: every section is transparent and the whole non-hero
- * column sits on ONE gradient on ONE wrapper (theirs
- * `linear-gradient(rgb(38,92,120), rgb(30,30,30) 75%)` over 8,036px, verified
- * live today). You scroll from daylight into darkness with no colour blocks,
- * no rules and no cards marking the boundaries.
+ * NO SECTION HAS A BACKGROUND. Every section here is transparent and the
+ * whole non-hero column sits on ONE wrapper — the same structure the
+ * reference uses, where that wrapper carries one gradient
+ * (`linear-gradient(rgb(38,92,120), rgb(30,30,30) 75%)` over 8,036px) and you
+ * scroll from daylight into darkness.
  *
- * Ours is `.about-gradient`, #1C3A5A -> #0D1B2A also landing at 75%, ending on
- * exactly the footer's colour so that seam does not exist.
+ * 🔴 OURS NO LONGER DOES. THE PAGE IS CREAM.
+ *
+ * The wrapper is `.about-page`, a flat #F8F4EE. `.about-gradient`
+ * (#1C3A5A -> #0D1B2A) is RETIRED AND COMMENTED OUT in globals.css with its
+ * full navy-lift derivation intact; swapping the class name back is the whole
+ * restore.
+ *
+ * WHAT REPLACED THE DESCENT. The gradient dropped 3.87x from top to bottom and
+ * that descent was the page's spine. A light page cannot have one: cream
+ * #F8F4EE (L 0.9083) to greige #ECE9E2 (L 0.8160) is 1.11x, and anything
+ * deeper breaks gold-deep #7D641F as text (it needs its background at
+ * L >= 0.786). So background bands are not available and none were added.
+ *
+ * The value moved into the PHOTOGRAPHS. Inverted, they stop being the light
+ * mass and become the dark one, over a wider range than the gradient ever had
+ * — hero 0.132, §2 0.405, §4 0.292/0.412, §5 0.234/0.290/0.597, §7 zoom 0.105,
+ * footer 0.0104. The descent is not gone; it is an arc carried by the images
+ * instead of a ramp painted on the background.
+ *
+ * 🔴 THERE ARE NO SECTION SEPARATORS AT ALL. NO RULES, NO BANDS, NO CARDS.
+ *
+ * A build with gold hairlines at every seam existed and has been removed on
+ * instruction. What carries the section rhythm now, in order of how much work
+ * each does:
+ *
+ *   1. WHITESPACE. `.sem-pad-t` is back on every section and is the rhythm
+ *      again — 130.8 / 69.2 / 64px at 1536 / 820 / 390. The hairline never
+ *      created that gap; it sat inside it.
+ *   2. THE PHOTOGRAPHS. Every section except the two pull-quotes contains one,
+ *      and on cream they are the page's dark mass: §2 image right, §4 pair
+ *      left, §5 three-up, §7 full-bleed. Their POSITION alternates, so no two
+ *      adjacent sections put their weight in the same place.
+ *   3. TYPE SCALE. display 90.2 / h2 57.4 / quote 75.44 / body 21.32. No two
+ *      adjacent sections open at the same size.
+ *
+ * THE HONEST CAVEAT: the two pull-quotes hold no photograph, so they are
+ * bounded by whitespace and type scale alone. That is exactly what the
+ * reference does — their quote sections carry no rule either, and sit on the
+ * gradient with nothing marking where they start or stop. It reads because
+ * 75px display type against 21px body is its own boundary.
  *
  * =========================================================================
  * CONTAINER. Theirs is `.padding-global` (padding-inline 41px at 1526, 36.5 at
@@ -65,7 +108,7 @@ import AboutZoom from "@/components/AboutZoom";
  * =========================================================================
  * COPY. Every line is Synergy's own, from fflsynergy.com, verbatim except for
  * two documented changes in "Our Story" (p2 phrasing, p3 two cuts). No string
- * on this page was authored except image alt text.
+ * on this page was authored except image alt text and the §4 eyebrow.
  */
 
 export async function generateMetadata({
@@ -147,8 +190,6 @@ export default async function AboutPage({
 
   return (
     <main>
-      <RouteTheme theme="dark" />
-
       {/* =====================================================================
           §1 HERO — 100vh, static.
 
@@ -166,6 +207,23 @@ export default async function AboutPage({
           true; a team photo of strangers would be a false claim.
       ===================================================================== */}
       <section className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-navy">
+        {/* ⚠️ `object-top`, NOT `object-center`, AND IT ONLY DOES ANYTHING AT
+            DESKTOP. The source is 3840x2560 (1.500). At 1536x900 the box is
+            1.707 — WIDER in aspect — so `cover` fits by width and crops 124px
+            of height (12.1%). Centred, that put the topmost head about 20px
+            from the frame edge with the nav sitting on it at y 49-68.
+
+            `object-top` spends the whole 124px of crop budget on the top of
+            the frame: the family drops 62px and the highest head clears the
+            nav band with room. 62px is the entire budget — there is no more
+            to give, and any value between the two only clears the nav
+            partially (at 25% the head lands at ~51px, still under the links).
+
+            AT 820 AND 390 THIS IS A NO-OP, verified by arithmetic and by
+            rendering: both boxes are TALLER in aspect than 1.500 (0.801 and
+            0.462), so `cover` fits by HEIGHT and crops width instead. The
+            full frame height is shown and the vertical position has nothing
+            to position. Horizontal stays centred at every width. */}
         <Image
           src="/synergy/about-hero-family.jpg"
           alt=""
@@ -173,7 +231,7 @@ export default async function AboutPage({
           priority
           sizes="100vw"
           quality={74}
-          className="object-cover object-center"
+          className="object-cover object-top"
         />
         {/* The header veil is BACK, and it is now load-bearing again. It was
             removed when the bar was solid navy over this hero — an opaque bar
@@ -185,17 +243,47 @@ export default async function AboutPage({
           className="hero-veil-top absolute inset-x-0 top-0 h-[42%]"
         />
         <div aria-hidden="true" className="about-hero-scrim absolute inset-0" />
-        <div
-          aria-hidden="true"
-          className="about-hero-foot absolute inset-x-0 bottom-0 h-24"
-        />
+        {/* 🔴 NO FOOT RAMP. The photograph ends on a hard edge at 5.16x, the
+            same way every other image on this page meets its flat colour —
+            §2 at 2.11x, §5 at 3.38 / 2.82 / 1.48x, §7 onto navy at 1.42x. The
+            ramp that used to sit here is commented out in globals.css with
+            its full per-row derivation. DO NOT PUT IT BACK: it was removed
+            for CONSISTENCY, not because the step became tolerable. */}
 
-        <div className="sem-shell relative z-10 flex h-full flex-col justify-end pb-[clamp(72px,10vh,140px)]">
+        {/* 32.8px, WHICH IS SEM'S OWN OFFSET — `margin-bottom: 2rem` on their
+            notice block, measured live today.
+
+            IT ONLY BECAME AVAILABLE WHEN THE FOOT RAMP CAME OUT. The previous
+            value was 18vh (162px at 900) and every pixel of it was clearance
+            for a 15% cream ramp: cream bleeding up into the sub's last line is
+            cream text on cream. With a hard edge there is nothing below the
+            copy to clear, so the block sits exactly where theirs does.
+
+            THE SCRIM WAS RE-DERIVED FOR THIS POSITION. The copy now runs to
+            ~96% of the hero instead of 82% — a completely different band of
+            the photograph, and one the old decaying scrim left almost bare.
+            See .about-hero-scrim in globals.css. */}
+        <div className="sem-shell relative z-10 flex h-full flex-col justify-end pb-[32.8px]">
           <div className="sem-inner w-full">
+            {/* Still CREAM — this is the one place on the page where type sits
+                on a photograph, and the scrim under it is measured for exactly
+                this pairing. Everything below the hero is ink on cream. */}
             <h1 className="sem-display max-w-[14ch] font-display text-cream">
               {t("hero.headline")}
             </h1>
-            <p className="sem-body mt-6 max-w-[46ch] text-cream md:mt-8">
+            {/* `.sem-hero-sub`, not `.sem-body` — 20.5px / 30.75 / w600 at
+                desktop, which is SEM's notice block measured live. Full
+                derivation, including why our size ramp deliberately is NOT a
+                copy of their non-monotonic one, is on the class in globals.css.
+
+                THE MEASURE IS 32em, AND `em` IS NOT A TYPO FOR `ch`. Their
+                block runs 656.35px at 20.5px with `max-width: none` — that is
+                32.02 EM, which is about 53ch in this face. An earlier pass
+                wrote `32ch`, which is 427.6px: a third narrower than theirs and
+                a different block shape entirely. `em` also tracks the fluid
+                font size for free, so the measure holds at every width without
+                a second clamp. */}
+            <p className="sem-hero-sub mt-6 max-w-[32em] text-cream md:mt-8">
               {t("hero.sub")}
             </p>
           </div>
@@ -203,9 +291,21 @@ export default async function AboutPage({
       </section>
 
       {/* ===================================================================
-          THE GRADIENT. One wrapper, every section below it transparent.
+          THE CREAM COLUMN. One wrapper, every section below it transparent —
+          the same structure the gradient had, with a flat surface instead.
+
+          ⚠️ `.about-gradient` IS RETIRED, NOT DELETED. It and the whole
+          navy-lift #1C3A5A derivation are commented out in globals.css
+          directly above `.about-page`. Swapping this one class name back is
+          the entire restore.
+
+          WHAT SEPARATES SECTIONS NOW: NOTHING EXPLICIT. No rules, no bands,
+          no cards. Whitespace (`.sem-pad-t`), the photographs and the type
+          scale carry it — see the rhythm note in the file docblock above.
+          Background bands were measured and rejected too: cream to greige is
+          1.11x and anything deeper breaks gold-deep as text.
       =================================================================== */}
-      <div className="about-gradient min-h-screen">
+      <div className="about-page min-h-screen">
         {/* =================================================================
             §2 OUR STORY — their `.section_info`.
 
@@ -227,11 +327,11 @@ export default async function AboutPage({
           <div className="sem-inner">
             <div className="grid grid-cols-1 items-start gap-y-12 lg:grid-cols-[1.25fr_1fr] lg:gap-x-[var(--sem-gap-lg)]">
               <FadeUp>
-                <h2 id="about-story" className="sem-display font-display text-cream">
+                <h2 id="about-story" className="sem-display font-display text-ink">
                   {t("story.eyebrow")}
                 </h2>
                 {/* Their left wrapper is a flex column with a 32.8px gap. */}
-                <div className="mt-8 space-y-6 text-cream">
+                <div className="mt-8 space-y-6 text-ink">
                   <p className="sem-body">{t("story.p1")}</p>
                   <p className="sem-body">{t("story.p2")}</p>
                   <p className="sem-body">{t("story.p3")}</p>
@@ -306,17 +406,41 @@ export default async function AboutPage({
                 finished.
 
                 DROP-IN SWAP: replace the <span> with <Image src=.../> at the
-                same cell. The grid, the gap, the 131px cap and the centring
+                same cell. The grid, the gap, the cell height and the centring
                 are all on the <li>, so nothing here changes when artwork
-                arrives — only the child. */}
+                arrives — only the child.
+
+                ⚠️ THE CELL HAS NO HEIGHT AT ALL, AND THAT REVERTS THE DAY
+                ARTWORK ARRIVES. The reference's cells are 131px because that
+                is what a logo needs at `object-fit: contain`. Ours hold type:
+                21.9px at 1536, 18.8 at 820, 37.5 at 390 (where the names wrap
+                to two lines).
+
+                A fixed height was tried twice and left dead space both times —
+                131px left 109.1 / 112.3 / 93.5 empty per cell, and 56px still
+                left 34.1 / 37.2 / 18.5. Because the cell is `items-center`,
+                half of that slack lands BELOW the last row of type, which is
+                the bottom of §2, which is why the §2 → §3 seam ran long at
+                every width (155.1 / 92.7 / 85.8 against a 130.8 / 69.2 / 64
+                rhythm).
+
+                Grid rows stretch to the tallest cell on their own, so nothing
+                needed the height for alignment. Content height, zero slack.
+
+                🔴 PUT `h-[131px]` BACK WHEN THE LOGO FILES LAND.
+
+                The row's own top margin halved with it — the old clamp was the
+                full section rhythm (130.8) sitting INSIDE a section, which is
+                what made "Our Story" and the carrier row read as two separate
+                blocks rather than one. */}
             <FadeUp index={2}>
-              <ul className="mx-auto mt-[clamp(48px,8.6vw,131.2px)] grid w-4/5 grid-cols-2 items-center gap-x-[var(--sem-gap-logos)] gap-y-8 md:grid-cols-3 xl:grid-cols-5">
+              <ul className="mx-auto mt-[clamp(32px,4.3vw,65.6px)] grid w-4/5 grid-cols-2 items-center gap-x-[var(--sem-gap-logos)] gap-y-8 md:grid-cols-3 xl:grid-cols-5">
                 {LOGO_CARRIERS.map((key) => (
                   <li
                     key={key}
-                    className="flex h-[131px] items-center justify-center"
+                    className="flex items-center justify-center"
                   >
-                    <span className="text-center font-display text-[clamp(15px,1.15vw,19px)] font-medium leading-[1.25] tracking-[0.01em] text-cream">
+                    <span className="text-center font-display text-[clamp(15px,1.15vw,19px)] font-medium leading-[1.25] tracking-[0.01em] text-ink">
                       {tc(`names.${key}`)}
                     </span>
                   </li>
@@ -494,17 +618,17 @@ export default async function AboutPage({
                     air above and below and the column read as floating.
                     Aligned to the top instead, so the eyebrow starts level
                     with the top edge of both images. */}
-                <div className="col-span-2 flex h-full flex-col justify-start xl:col-span-1">
+                <div className="col-span-2 flex h-full flex-col justify-center xl:col-span-1">
                   {/* EYEBROW — theirs reads "Dinner at SEM" in this slot.
                       fflsynergy publishes nothing that fits it, so this is an
                       AUTHORED INTERFACE LABEL under the standing rule that
                       permits them: it names the section and asserts nothing
                       about the business — no claim, no number, no promise.
                       One line to change or remove. */}
-                  <p className="sem-eyebrow text-cream">{t("trust.eyebrow")}</p>
+                  <p className="sem-eyebrow text-ink">{t("trust.eyebrow")}</p>
                   <h2
                     id="about-trust"
-                    className="sem-h2 mt-[clamp(12px,1.1vw,16.4px)] font-display text-cream"
+                    className="sem-h2 mt-[clamp(12px,1.1vw,16.4px)] font-display text-ink"
                   >
                     {t("trust.headline")}
                   </h2>
@@ -567,8 +691,8 @@ export default async function AboutPage({
 
                       Dropping p2 also removes a duplication: its first two
                       sentences ship on the homepage as `carriers.subhead`. */}
-                  <div className="mt-[clamp(24px,2.15vw,32.8px)] text-cream">
-                    <p className="sem-body">{t("trust.body")}</p>
+                  <div className="mt-[clamp(24px,2.15vw,32.8px)] text-ink">
+                    <p className="sem-body">{t("trust.p1")}</p>
                   </div>
                 </div>
               </FadeUp>
@@ -648,12 +772,16 @@ export default async function AboutPage({
         <section aria-labelledby="about-values" className="sem-shell sem-pad-t">
           <div className="sem-inner">
             <FadeUp>
-              <h2 id="about-values" className="sem-h2 font-display text-cream">
+              <h2 id="about-values" className="sem-h2 font-display text-ink">
                 {t("values.headline")}
               </h2>
             </FadeUp>
 
-            <ul className="mt-[clamp(48px,8.6vw,131.2px)] grid grid-cols-1 gap-x-[var(--sem-gap-lg)] gap-y-12 xl:grid-cols-3">
+            {/* HALVED. The old clamp was the full SECTION rhythm (130.8 at 1536)
+                sitting inside a section, which pushed "What We Stand For" so
+                far from its own three columns that the heading read as
+                detached from them. */}
+            <ul className="mt-[clamp(32px,4.3vw,65.6px)] grid grid-cols-1 gap-x-[var(--sem-gap-lg)] gap-y-12 xl:grid-cols-3">
               {VALUES.map((v, i) => (
                 <AboutValueColumn
                   key={v}
@@ -679,8 +807,19 @@ export default async function AboutPage({
                         aria-hidden — a screen reader reading "I" before
                         "Integrity" hears a pronoun — so the accessible name of
                         this heading is the word alone. */}
-                    <h3 className="sem-eyebrow font-display text-cream">
-                      <span aria-hidden="true" className="text-gold">
+                    <h3 className="sem-eyebrow font-display text-ink">
+                      {/* 🔴 gold-deep #7D641F, NOT gold #C9A84C.
+                          gold on cream is 2.09:1. There is a real argument
+                          that these numerals are pure decoration and therefore
+                          exempt from 1.4.3 — they are aria-hidden, they are
+                          ordinal ornament, and the word alone is this
+                          heading's accessible name. That argument was
+                          DELIBERATELY NOT TAKEN. It is an exemption you would
+                          have to defend, on a site with documented regulatory
+                          exposure, and this project already refused to loosen
+                          gold to large-text-only for exactly that reason.
+                          gold-deep measures 5.16:1 and needs no argument. */}
+                      <span aria-hidden="true" className="text-gold-deep">
                         {t(`values.${v}.numeral`)}
                       </span>{" "}
                       {t(`values.${v}.title`)}
@@ -708,7 +847,7 @@ export default async function AboutPage({
                       className="mt-4 mx-auto w-full max-w-[440px] xl:max-w-none"
                     />
 
-                    <p className="sem-body mt-6 text-cream">
+                    <p className="sem-body mt-6 text-ink">
                       {t(`values.${v}.body`)}
                     </p>
                   </FadeUp>
@@ -726,7 +865,21 @@ export default async function AboutPage({
         {/* =================================================================
             §7 IMAGE ZOOM — sticky pin, scale 0.5 -> 1.0. No copy.
         ================================================================= */}
-        <div className="sem-pad-t">
+        {/* A SMALL TOP GAP, NOT THE FULL `sem-pad-t`, AND THE REASON IS THE
+            EFFECT'S OWN GEOMETRY.
+
+            The sticky child rests at `scale-50` inside a 100svh box, so its
+            visible top edge already sits a quarter of a viewport below the
+            runway's top — 225px at 900, 256 at 1024, 211 at 844. The effect
+            supplies its own air. A full `sem-pad-t` on top of that put 355.8px
+            between the pull-quote's last word and the top of the card.
+
+            Removing the padding outright went too far the other way: measured
+            7.3 / 5.8 / 4.4px from the quote's last line to the runway, which
+            is not a gap, it is a collision that happens to look fine only
+            because the card is drawn 225px lower. This is the middle value —
+            structural gap ~56 / 32 / 28, perceived gap ~281 / 288 / 239. */}
+        <div className="pt-[clamp(24px,3.2vw,49px)]">
           <AboutZoom alt={t("zoomAlt")} />
         </div>
 
@@ -772,11 +925,11 @@ export default async function AboutPage({
                   <FadeUp index={1}>
                     <h2
                       id="about-founder"
-                      className="sem-h2 font-display text-cream"
+                      className="sem-h2 font-display text-ink"
                     >
                       {t("founder.headline")}
                     </h2>
-                    <div className="mt-8 space-y-6 text-cream">
+                    <div className="mt-8 space-y-6 text-ink">
                       <p className="sem-body">{t("founder.p1")}</p>
                       <p className="sem-body">{t("founder.p2")}</p>
                     </div>
@@ -789,7 +942,19 @@ export default async function AboutPage({
         {/* §9 is the site-wide <Footer />, mounted in app/[locale]/layout.tsx
             inside <SmoothScroll>. It is already bg-navy #0D1B2A, exactly where
             this gradient lands, so there is no seam and nothing to build. */}
-        <div className="h-[clamp(64px,8.6vw,131.2px)]" />
+        {/* 🔴 THE TRAILING SPACER IS GONE, AND IT WAS DOING TWO BAD THINGS.
+            It was `h-[clamp(64px,8.6vw,131.2px)]` — 130.8 / 69.2 / 64px of
+            nothing between the zoom photograph and the footer. On the dark
+            page it was invisible gradient. On cream it would have been a
+            131px cream band wedged between a full-bleed photograph and a navy
+            footer, which is precisely the hard cream/navy boundary the
+            inversion had to solve.
+
+            Deleting it solves both at once: the zoom's own bottom edge is now
+            the footer's top edge, and photograph (L 0.105) meeting navy
+            (L 0.0104) is a 1.42x step — effectively seamless, against the
+            15.87x a cream/navy butt-joint would have been. Holds under
+            reduced motion too, where the zoom is a static full-bleed still. */}
       </div>
     </main>
   );

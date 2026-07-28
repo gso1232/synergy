@@ -54,13 +54,28 @@ export default function AboutPullQuote({
   return (
     <section className={`sem-shell ${className}`}>
       <div className="sem-inner">
-        {/* NO MEASURE CAP. The previous build carried `max-w-[16ch]`, which on
+        {/* 🔴 NO RULES. A build bracketed this quote with a gold hairline
+            above and below; both were removed on instruction, along with every
+            other separator on the page.
+
+            NOTHING MARKS WHERE THIS BLOCK STARTS OR ENDS except whitespace and
+            the jump in type scale — 75.44px display against the 21.32px body
+            either side of it. That is also exactly what the reference does:
+            their two quote sections carry no rule and no background, and sit
+            on the page gradient with nothing bounding them. See the rhythm
+            note at the top of app/[locale]/about/page.tsx.
+
+            NO MEASURE CAP. The previous build carried `max-w-[16ch]`, which on
             a 1444px container wrapped the quote after about a third of the
             width and left it starting somewhere near the middle of the screen.
             Theirs runs the FULL container: `.text-pullquote` measured at x51,
             width 1424 of a 1444 container, four lines at 75.44/113.16. The
-            container is the measure. */}
-        <blockquote ref={ref} className="sem-quote font-display text-cream">
+            container is the measure.
+
+            INK, NOT CREAM — 15.88:1 on the cream surface. The word reveal's
+            floor opacity was derived against cream-on-gradient and has been
+            re-derived for ink-on-cream; see useWordReveal. */}
+        <blockquote ref={ref} className="sem-quote font-display text-ink">
           {text}
         </blockquote>
       </div>

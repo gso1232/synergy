@@ -5,10 +5,21 @@ need to continue is here or is pointed at from here. Read §2, the Standing
 Rules, first — they are not negotiable and they are the reason most decisions
 on this project look the way they do.
 
-> **What changed since the last revision of this file.** The previous version
-> described the About page as *"DESIGNED, NOT BUILT"*. **It is built and it is
-> in the working tree.** Eight new files exist that that document never
-> mentioned. Everything below is read off the code as it stands, not off notes.
+> **What changed since the last revision of this file.** The About page was
+> **INVERTED FROM DARK TO CREAM.** The `navy-lift #1C3A5A` gradient is retired
+> and commented out, the header's dark variant is retired, `RouteTheme` is no
+> longer mounted, and **every contrast measurement on that page was rebuilt from
+> scratch** — the old AA table is void and nothing in it carried over. Two
+> values failed the inversion silently and were caught by re-deriving rather
+> than by reasoning: the pull-quote reveal's floor opacity and the hero scrim's
+> shape. See §6a.
+>
+> **Since then:** the gold hairlines were removed (§6c), the hero lost its foot
+> ramp and gained a hard edge (§6d), the hero crop shifted to `object-top`, the
+> copy dropped to SEM's 32.8px offset, the sub took SEM's type scale, and a
+> site-wide locale switcher was built and shipped OFF (§6e). Everything below is
+> read off the code as it stands. The hero AA table (§6f) was re-run at the
+> final crop, copy position and scrim.
 
 ---
 
@@ -77,7 +88,7 @@ See §12 for why that is the production alias and not a preview URL.
 | `cream` | `#F8F4EE` | 0.9083 | page background, and text on dark |
 | `greige` | `#ECE9E2` | 0.8160 | card surface on cream |
 | `navy` | `#0D1B2A` | **0.0104** | dark surface, footer, panels |
-| `navy-lift` | **`#1C3A5A`** | **0.0401** | **SHIPPED.** Top of the About gradient — see below |
+| `navy-lift` | **`#1C3A5A`** | **0.0401** | 🔴 **RETIRED, TOKEN KEPT.** Was the top of the About gradient; the page is cream now. Still the only measured mid-tone this palette has — see §3a |
 | `ink` | `#1A1A1A` | **0.0103** | body text on light |
 | `gold` | `#C9A84C` | 0.4094 | borders, icons, and **text on navy only** |
 | `gold-pale` | `#EFE1B0` | 0.7534 | hover + focus rings on dark |
@@ -96,6 +107,14 @@ descent. For reference, the source page's own gradient descends **7.26×**.
 
 **Anyone reaching for "navy to ink" to create depth is making a mistake.** Our
 palette has no mid-tone between `greige` (0.816) and `navy` (0.0104).
+
+### 🔴 §3a — `navy-lift` is retired but the derivation is not
+
+**The About page is cream now.** `.about-gradient` is commented out in
+`globals.css` with everything below it intact, and the token stays in
+`tailwind.config.ts`. Nothing renders it today. **Do not delete either** — this
+is the only mid-tone this palette has ever had, and the next dark surface on
+this site starts here instead of re-deriving it.
 
 ### Why `navy-lift #1C3A5A` exists, and why it is that exact value
 
@@ -122,9 +141,10 @@ ship.
 
 Descent **3.87×**. Gold worst case **5.10:1**.
 
-🔴 **`gold-deep` is UNUSABLE on this run — 2.06:1 at the top. Nothing on the
-About page may use it.** Dark surfaces take `gold`, light surfaces take
-`gold-deep`, and neither crosses over.
+🔴 **`gold-deep` is UNUSABLE on this run — 2.06:1 at the top.** Dark surfaces
+take `gold`, light surfaces take `gold-deep`, and neither crosses over. (On the
+cream page the rule runs the other way and is just as absolute: **`gold` is
+unusable, `gold-deep` is the only legal gold text.** See §6a.)
 
 `navy-lift` is a **background token only**. It has never been measured as text
 and must not be used as one — see the `.sem-pill-cta` note in §7.
@@ -302,12 +322,14 @@ wrapper and reflows on its own.
 
 1. **Header.** `/about` is now in `SiteHeader`'s `isHeroRoute` set, so the bar
    is **transparent over the hero** exactly like the homepage, and takes a
-   surface once it leaves it. The surface it takes is the new **dark variant**
-   — see §8.
-2. **Footer.** No change needed. Already `bg-navy #0D1B2A`, and the gradient
-   ends on exactly that colour.
-3. **Cream → dark route transitions.** Handled by `components/RouteTheme.tsx` —
-   see §8.
+   surface once it leaves it. ⚠️ **The dark variant it used to take is
+   RETIRED** — the bar is now byte-identical to the homepage's. See §6a.
+2. **Footer.** ⚠️ **The gradient no longer lands on navy, so this changed.** On
+   a cream page the footer is a hard boundary; it is solved by deleting the
+   trailing spacer so the §7 photograph runs straight into it. See §6a.
+3. **Cream → dark route transitions.** ⚠️ **No longer applicable** — the route
+   is cream, `<body>` already is too, and `RouteTheme` is no longer mounted.
+   Component and CSS both retained. See §6a and the pair rule.
 
 ### Copy — written to `en.json`, `about.*`
 
@@ -325,17 +347,432 @@ Source: `fflsynergy.com/about`, verbatim except for two documented changes.
   opportunities for agents"* (agent income claim). Shipped: *"Licensed in all 50
   states and partnered with the nation's top-rated carriers, Synergy serves
   families across the country."*
-- **§4 body** — `trust.body` is the **second sentence of `trust.p1`, verbatim**.
-  A cut, not a rewrite. `trust.p1` and `trust.p2` are **retained untouched** in
-  both files; restoring the full block is putting the two `<p>` tags back.
-  *Why it was cut:* the copy column measured 688px against the images' 562px, so
-  the copy — not the imagery — was setting the row height. Dropping p2 also
-  removed a duplication: its first two sentences ship on the homepage as
-  `carriers.subhead`.
+- **§4 body** — ⚠️ **now renders `trust.p1` IN FULL**, both sentences, verbatim.
+  It previously rendered `trust.body`, which is only p1's second sentence — a
+  cut made when the copy column measured 688px against the images' 562px and was
+  setting the row height. After the pill was removed the column had 234.6px of
+  empty space below it, so the cut was reversed: p1 in full is 404.1px in a 562px
+  row, which fits with 79px of air above and below (§9a).
+  🔴 **`trust.p2` was deliberately NOT restored** — its first two sentences ship
+  on the homepage as `carriers.subhead`, and putting it back would re-introduce
+  that duplication. `trust.body` and `trust.p2` are both **retained untouched**
+  in both message files.
 - **§4 eyebrow** "Our approach" — an **authored interface label** under rule 4.
   Theirs reads "Dinner at SEM"; fflsynergy publishes nothing that fits.
 - **Values** I Integrity / II Education / III Legacy — verbatim, incl. numerals
 - **Pull-quotes** both verbatim (§3 from their About page, §6 from homepage)
+
+---
+
+## 6a. 🔴 THE CREAM INVERSION — read this before touching the About page
+
+The page was dark: a `navy-lift #1C3A5A → navy #0D1B2A` gradient on one wrapper,
+cream type throughout. **It is cream now** — `#F8F4EE` base, ink type, gold as
+accent only. Everything in this section is the consequence.
+
+### What is retired, and where it went
+
+| thing | where it is now |
+|---|---|
+| `.about-gradient` | **commented out in `globals.css`** directly above `.about-page`, with the whole navy-lift derivation intact. Swapping the class name on the wrapper in `about/page.tsx` is the entire restore |
+| `navy-lift` token | still live in `tailwind.config.ts`. Rendered by nothing. Keep it |
+| header dark variant | CSS **commented out** in `globals.css`; the branch that drove it is gated behind `DARK_SURFACE_ROUTES = false` in `SiteHeader.tsx` |
+| `<RouteTheme theme="dark" />` | **call removed** from `about/page.tsx`. Component and CSS rule both kept |
+| `suppressHydrationWarning` | **removed** from `<html>` in `layout.tsx` — see the pair rule below |
+
+### The one thing that cannot be carried over: value
+
+The gradient descended **3.87×**. A light page has no such range:
+
+| pairing | ratio |
+|---|---|
+| cream `#F8F4EE` 0.9083 → greige `#ECE9E2` 0.8160 | **1.11×** |
+
+And it cannot be bought by going darker, because **`gold-deep` sets a floor** —
+as normal text it needs its background at **L ≥ 0.786**:
+
+| candidate band | L | ink | gold-deep | vs cream |
+|---|---|---|---|---|
+| cream `#F8F4EE` | 0.9083 | 15.88 | **5.16** | 1.00× |
+| `#F2ECE3` | 0.8441 | 14.82 | 4.81 | 1.07× |
+| greige `#ECE9E2` | 0.8160 | 14.35 | **4.66** ← already thin | 1.11× |
+| `#E8DFD1` | 0.7453 | 13.18 | **4.28 FAIL** | 1.21× |
+
+**Any band with enough separation to be seen breaks gold-deep.** So background
+bands are not available as a separator on this page, and **no new token was
+added**. Do not reach for one.
+
+### What replaced the descent: the photographs
+
+Inverted, the images stop being the light mass and become the dark one, over a
+wider range than the gradient ever had. Measured mean luminance vs cream:
+
+| section | image | mean L | step below cream |
+|---|---|---|---|
+| §1 hero | `about-hero-family` | 0.132 | **5.27×** |
+| §2 | `gallery-team-presentation` | 0.405 | 2.11× |
+| §4 left | `gallery-advisor-explaining` | 0.292 | 2.80× |
+| §4 right | `gallery-team-meeting` | 0.412 | 2.08× |
+| §5 I / II | `value-integrity` / `-education` | 0.234 / 0.290 | 3.38× / 2.82× |
+| §5 III | `value-legacy` | **0.597** | **1.48×** 🟡 |
+| §7 zoom | `about-zoom` | 0.105 | **6.18×** |
+| footer | navy | 0.0104 | 15.87× |
+
+The descent is not lost; its **shape** changed — an arc carried by the images
+rather than a ramp painted on the background. Dark hero, open cream field,
+photographs deepening through §2 → §4 → §5, the zoom as the darkest event, navy
+footer.
+
+🟡 **`value-legacy` is the one frame the inversion broke.** At L 0.597 it was
+signed off as "a bright card against a dark gradient". On cream it sits 1.48×
+from the page while its two neighbours sit at 3.38× and 2.82×, so it reads
+washed out and detached. **It is awaiting a replacement pick** — candidates in
+§11.
+
+### Gold on cream — the rule, and the number that governs it
+
+🔴 **gold `#C9A84C` on cream `#F8F4EE` is 2.09:1.** That fails the 4.5:1 text
+bar **and** the 3:1 non-text bar of WCAG 1.4.11.
+
+| use | verdict |
+|---|---|
+| ~~`.sem-rule` hairlines~~ | 🔴 **REMOVED — see §6c.** They shipped briefly as pure decoration at 2.09:1. There is no gold on this page now |
+| §5 roman numerals | 🔴 **`gold-deep` 5.16:1.** A decoration-exemption argument was available — they are `aria-hidden` ordinal ornament and the word alone is the heading's accessible name. **It was deliberately refused**: it is an exemption you would have to defend on a site with documented regulatory exposure, and this project already refused to loosen gold to large-text-only for the same reason |
+| any icon that means something | 🔴 gold-deep. 2.09 fails 3:1 |
+| any text | 🔴 gold-deep `#7D641F` |
+| focus rings | 🔴 **never `gold-pale`** — `#EFE1B0` on cream is **1.19:1**. Navy or gold-deep |
+| `.sem-pill-cta` if restored | 🔴 cream fill on cream = 1.00:1, invisible. Invert to navy fill / cream label |
+
+### 🔴 §6c — the gold hairlines are gone, and what carries the rhythm
+
+A build separated every section with a 1px gold hairline (`.sem-rule`), with the
+two pull-quotes bracketed above and below. **All of it was removed on
+instruction.** There is no explicit section separation on this page at all — no
+rules, no bands, no cards.
+
+**What carries the section rhythm now**, in order of how much work each does:
+
+1. **Whitespace.** `.sem-pad-t` is the rhythm again — 130.8 / 69.2 / 64px at
+   1536 / 820 / 390. The hairline never created that gap; it sat *inside* it,
+   splitting the section's top padding into a margin above and below itself.
+   Taking it out returned the padding to the section and the seam measures the
+   same.
+2. **The photographs.** Every section but the two pull-quotes holds one, and on
+   cream they are the page's dark mass. Their *position* alternates — §2 right,
+   §4 pair left, §5 three across, §7 full-bleed — so no two adjacent sections
+   put their weight in the same place.
+3. **Type scale.** display 90.2 / h2 57.4 / quote 75.44 / body 21.32. No two
+   adjacent sections open at the same size.
+
+**The caveat, stated rather than glossed:** the two pull-quotes hold no
+photograph, so they are bounded by whitespace and type scale alone. That is what
+the reference does too — its quote sections carry no rule and no background.
+
+**A finding worth keeping from the hairline build:** a rule on *both* sides of a
+pull-quote seam put two hairlines 83px apart with nothing between them and
+stretched that seam to **189.3px** against a 131 rhythm. If a separator is ever
+reintroduced, one per seam.
+
+**And it cannot be gold.** gold `#C9A84C` on cream is 2.09:1 — it failed the
+4.5 text bar *and* the 3:1 of 1.4.11, and shipped only as pure decoration.
+gold-deep `#7D641F` (5.16:1) or ink are the options.
+
+### The four seams, all solved
+
+**Header** — reverts to homepage behaviour exactly: transparent white ink over
+the hero, cream bar with ink from scrollY 60. **`/about` KEEPS its place in
+`isHeroRoute`** — that rule tests whether the first viewport holds a full-bleed
+photograph dark enough to carry white ink, and it still does. Only the surface
+reverted.
+
+**Hero** — 🔴 **superseded, see §6d.** The cream foot ramp described in earlier
+revisions of this file has been removed and the photograph now ends on a hard
+edge.
+
+**Footer** — solved by a deletion. A bare `h-[clamp(64px,8.6vw,131.2px)]` spacer
+sat between the zoom and the footer. On cream that would have been a 131px cream
+band wedged between a full-bleed photograph and a navy footer — exactly the hard
+boundary the inversion had to solve. Deleted: the zoom's bottom edge is now the
+footer's top edge, and photo (L 0.105) meeting navy (L 0.0104) is a **1.42×**
+step against the **15.87×** a cream/navy butt-joint would have been. Holds under
+reduced motion, where the zoom is a static full-bleed still.
+
+**`RouteTheme`** — no longer needed. `<body>` is already `bg-cream` and the
+canvas propagates it, so overscroll at both ends exposes the right colour
+unaided. **The call was removed; the component and its CSS rule were kept.**
+
+> ⚠️ **THE PAIR RULE.** Removing the `<RouteTheme />` call is what allowed
+> `suppressHydrationWarning` to come off `<html>` in `app/[locale]/layout.tsx`.
+> That prop existed *only* because RouteTheme's inline script writes an
+> attribute before hydration. With nothing writing it, leaving the prop in would
+> silently mask a future genuine mismatch on the document element. **Restore
+> both together or neither.**
+
+### 🔴 Two values that failed the inversion silently
+
+Both would have shipped below AA. Neither was catchable by reasoning — only by
+re-deriving against the new surface.
+
+1. **`useWordReveal`'s floor opacity.** It was 0.45, derived for *cream at alpha
+   over navy*. The quotes are *ink over cream* now, and the arithmetic is not
+   symmetric: ink at 0.45 over cream composites to `rgb(148,146,143)` = **2.83:1
+   — FAIL** against a 3:1 bar. And it fails in the *resting* state, on the
+   section a reader is most likely to stop at. Floor is 0.50 (3.27); **shipped
+   0.55 (3.79)**. Illumination range narrows to 1.82×.
+2. **The hero scrim.** Covered above — the old shape was actively wrong for a
+   cream handover, not merely under-tuned.
+
+**The lesson to carry: an alpha value derived against one surface is not a
+number, it is a relationship. Inverting a page invalidates every one of them.**
+
+---
+
+## 6d. 🔴 The hero: hard edge, `object-top`, SEM's copy scale
+
+Three changes, and they interlock — each one moved the copy, and the copy
+position is what the scrim is derived from.
+
+### The edge — no ramp
+
+A ramp over the last 15% of the hero used to fade the photograph into cream. It
+has been **removed**; the photograph ends on a hard line. The ramp is commented
+out in `globals.css` with its full per-row derivation.
+
+**It was removed for CONSISTENCY, not because the step became tolerable.** Every
+other photograph on this page already butts straight onto a flat colour with no
+fade:
+
+| | step onto its flat colour |
+|---|---|
+| §2 `gallery-team-presentation` → cream | 2.11× |
+| §5 `value-integrity` / `-education` → cream | 3.38× / 2.82× |
+| §5 `value-legacy` → cream | 1.48× |
+| §7 `about-zoom` → navy | 1.42× |
+| **§1 hero → cream** | **5.16×** |
+
+The hero was the only faded edge on the page, which is why it read as a glow. It
+now agrees with the rest of the page.
+
+⚠️ **The full-bleed caveat, recorded because it is real:** the other images are
+*contained* — they have left and right edges, so they read as pictures in a
+layout. The hero is full-bleed, so its cut is a line across the whole viewport.
+That is the intended effect.
+
+### The crop — `object-top`
+
+Source 3840×2560 (1.500). At 1536×900 the box is 1.707 — wider — so `cover`
+crops **124px of height, which is the entire budget**. Centred, the topmost head
+sat ~20px from the frame edge with the nav on it at y 49–68. `object-top` spends
+all 62px of available shift and the head clears the nav band.
+
+**At 820 and 390 it is a no-op** — both boxes are *taller* in aspect than 1.500
+(0.801, 0.462), so `cover` fits by height and crops width. Confirmed: those two
+columns of the AA table are byte-identical before and after.
+
+### The copy — SEM's 32.8px, and SEM's type
+
+`padding-bottom` went from `18vh` (162px at 900) to **32.8px**, which is SEM's
+own `margin-bottom: 2rem` on its notice block. **That only became available when
+the ramp came out** — every pixel of the 18vh was clearance so cream would not
+bleed into the sub's last line.
+
+The sub is now `.sem-hero-sub`: **20.5px / 30.75 (lh 1.5) / w600**, measure
+**32em**, which is SEM's `.hero-section_address-link` measured live (20.5px,
+lh 1.5, w700, 656.35px natural — 32.02em).
+
+- **w600, not their 700.** This is the body face (Overpass), where 700 exists
+  and the "never above 500" rule does not apply — that rule is about the display
+  face. 700 beside a w400 Kufam h1 reads as two competing bolds.
+- **`32em`, not `32ch`.** An earlier pass wrote `32ch`, which is 427.6px — a
+  third narrower than theirs and a different block shape. `ch` is the width of
+  "0" (~0.6em here), not the em.
+- **Our size ramp is not theirs.** Their rem is fluid across three Webflow
+  breakpoint formulas, so their 1.25rem computes to 20.50 / 18.39 / 19.07px at
+  1536 / 820 / 390 — **non-monotonic**, shrinking to tablet then growing again on
+  phone. That is an artifact, not an intent. Ours holds their desktop value and
+  steps with our own body scale: 20.50 / 18.43 / 16.50.
+- **Their mobile treatment is not copied.** At ≤991 they centre the block.
+  Theirs has no h1; ours does, and centring only the sub under a left-aligned h1
+  reads as a mistake.
+
+### The h1 is unchanged, deliberately
+
+The sub went *down* 21.32 → 20.5, so the size ratio moved **4.23 : 1 → 4.40 : 1**
+— the hierarchy widened rather than collapsed. The w600 adds optical presence
+without size; those roughly cancel. **SEM has no headline at all**, so there is
+nothing to calibrate an h1 against, and changing it would be invention.
+
+### The scrim is on its THIRD shape
+
+| | shape | why |
+|---|---|---|
+| 1 | peak 0.60, flat 72→100% | dark page, hero handed over to a navy gradient |
+| 2 | peak 0.62 across 56–84%, **decaying** to 0 by 96% | cream page with a foot ramp; the ramp needed bare photograph below the copy, which sat at 82% |
+| 3 | peak 0.62 from 64% and **holding to 100%** | no ramp, and the copy now runs to ~96%. Under shape 2 the sub sat where the scrim had already decayed to nothing — **1.44:1** |
+
+**Copy band, read off the built page** (not estimated), as a % of hero height:
+
+| viewport | h1 | sub |
+|---|---|---|
+| 1536 × 900 | 75.96–85.97 | 89.53–96.36 |
+| 820 × 1024 | 80.38–88.29 | 91.41–96.80 |
+| 390 × 844 | 71.82–84.47 | 87.32–96.11 |
+
+---
+
+## 6e. 🔴 Locale switcher — built, mounted site-wide, SHIPPED OFF
+
+`components/LocaleSwitcher.tsx`, mounted in `app/[locale]/layout.tsx` **outside
+`SmoothScroll`** (it is `position: fixed`, and a fixed child of a transformed
+ancestor positions against that ancestor — the same trap the mobile menu panel
+documents).
+
+**`LOCALE_SWITCHER_READY = false`. It renders `null`.** Same pattern as
+`HEADER_ASIDES_READY`, off for the same reason the lead form is disabled: **an
+affordance must not advertise a capability the site does not have.**
+
+Measured on the catalogue: **131 of 305 leaf strings translated — 43.0%.** Empty
+by namespace: `about` 30 · `carriers` 29 · `footer` 25 · `whatWeCover` 23 ·
+`hero` 20 · `whySynergy` 16 · `leadModal` 14 · `two` 9 · `consultation` 3 ·
+`meta` 2 · `calculator` 2 · `whoWeServe` 1. **The whole About page and the whole
+homepage hero are at zero.** A visitor clicking ES gets English at a Spanish URL.
+
+**To ship: flip the one constant.** Nothing else changes.
+
+### SEM's, measured live, and our four divergences
+
+| | SEM | ours |
+|---|---|---|
+| position | fixed, right 49.2 / bottom 32.8 (49.2 on inner pages) | right 49.2 / bottom 32.8; 19.07 right below `md` |
+| pill | white, radius 82px, pad 0 8.2, shadow `0 2px 5px rgba(0,0,0,.2)` | **cream `#F8F4EE`**, same geometry, navy-tinted shadow |
+| link | 16.4/24.6 w500 uppercase, gap 4.92, pad 4.92/8.2 | identical |
+| active | their orange `#EB6330` | **gold-deep `#7D641F`** — 5.16:1 |
+| inactive | `#1E1E1E` | **ink `#1A1A1A`** — 15.88:1 |
+| flags | 19.68px UK / PT webp | 🔴 **none** |
+| hover | 🔴 **none exists** | gold-deep on greige, 4.66:1 |
+| focus | 🔴 **none exists** | 2px gold-deep, offset 2 |
+| mobile ≤991 | jumps to bottom-**left** | stays bottom-right, moves in to the gutter |
+
+1. **No flags.** A UK flag for English on a Florida insurance site is wrong; a US
+   flag makes a nationality claim about the *reader*; Synergy's Spanish audience
+   is US Hispanic. Language is not nationality.
+2. **Hover and focus exist.** Theirs has neither — no `:hover` rule for
+   `.local-link` anywhere in their stylesheet. That is a defect, not a spec.
+3. **Our colours are measured**, not matched.
+4. **It does not move across the screen at a breakpoint.** Relocating a
+   persistent control for no reason a reader can see is worse than the 30px of
+   gutter it saves.
+
+**Zero new strings.** `nav.langLabel` / `langEn` / `langEs` already existed for
+the retired `components/Nav.tsx` and are already translated in `es.json`.
+Nothing was written to a message file.
+
+### ⚠️ `navigation.ts` — and the trap it exists for
+
+**`usePathname` from `next/navigation` is the wrong one, and it fails silently.**
+Next's returns the real path *including* the locale — `/en/about` — so
+`/es` + that = **`/es/en/about`**, which 404s. The first pass shipped exactly
+that and TypeScript was happy with it; it was caught by reading the rendered
+`href` on the built page.
+
+`navigation.ts` re-exports next-intl's `createSharedPathnamesNavigation({locales})`.
+Its `usePathname` strips the locale (`/about`) and its `Link` understands the
+`locale` prop, which **`next/link` silently ignores in the App Router** (a Pages
+Router API). `createShared…` rather than `createLocalizedPathnames…` because our
+routes are the same strings in both locales — localised pathnames would be a
+second route table to keep in sync with `routes.ts`.
+
+Verified with the flag on: `/en/about` → `EN` `aria-current="page"` gold-deep,
+`ES` → `/es/about` (HTTP 200, `<html lang="es">`), both real anchors, both
+tabbable, `<nav aria-label>` + `role="list"` + `hreflang` + `lang`.
+
+---
+
+## 6f. AA — rebuilt from scratch, and re-run at the final hero
+
+**The pre-inversion table is void. None of it carried over.** Worst pixel, not
+mean. Anything over a photograph is composited in the browser's own order —
+photo → `.hero-veil-top` → `.about-hero-scrim` → `.about-hero-foot` — in sRGB,
+with the JPEG mapped through the same object-cover arithmetic the browser uses
+at each viewport, and text boxes read off the built page with
+`getBoundingClientRect`.
+
+### Text over the photograph — §1 hero
+
+🔴 **Re-derived at the FINAL crop (`object-top`), the FINAL copy position
+(32.8px) and the FINAL scrim (shape 3).** The composite is photo →
+`.hero-veil-top` → `.about-hero-scrim`. **There is no `.about-hero-foot` in the
+stack any more.**
+
+| element | viewport | fg | px | worst | needs | | worst pixel |
+|---|---|---|---|---|---|---|---|
+| h1 | 1536×900 | `#F8F4EE` | 90.1 | **5.83** | 3.0 | pass | y 76.8% x 42.1% |
+| sub | 1536×900 | `#F8F4EE` | 20.5 | **5.93** | 4.5 | pass | y 92.2% x 41.7% |
+| nav links | 1536×900 | `#FFFFFF` | 15 | **7.87** | 4.5 | pass | y 5.5% x 10.0% |
+| nav "Calculator" | 1536×900 | `#FFFFFF` | 15 | **11.18** | 4.5 | pass | y 5.5% x 83.3% |
+| Join pill boundary | 1536×900 | `#F8F4EE` | — | **6.36** | 3.0 | pass | y 4.2% x 93.6% |
+| h1 | 820×1024 | `#F8F4EE` | 80.9 | **5.54** | 3.0 | pass | y 82.6% x 82.6% |
+| sub | 820×1024 | `#F8F4EE` | 18.4 | **5.95** | 4.5 | pass | y 95.2% x 37.9% |
+| h1 | 390×844 | `#F8F4EE` | 53.4 | **5.53** | 3.0 | pass | y 75.3% x 92.7% |
+| sub | 390×844 | `#F8F4EE` | 16.5 | **5.95** | 4.5 | pass | y 95.2% x 29.6% |
+
+Tightest in the matrix: **h1 at 390, 5.53 against 3.0.**
+
+The scrim peak was bisected against the final copy boxes, not chosen:
+
+| peak | h1 (1536/820/390) | sub (1536/820/390) | |
+|---|---|---|---|
+| 0.00 | 1.40 / 1.27 / 1.27 | 1.44 / 1.44 / 1.44 | fails |
+| 0.50 | 4.21 / 3.94 / 3.94 | 4.30 / 4.31 / 4.31 | fails on the sub |
+| 0.51 | 4.32 / 4.05 / 4.05 | 4.41 / 4.42 / 4.42 | fails on the sub |
+| **0.52** | 4.44 / 4.16 / 4.16 | 4.53 / 4.54 / 4.54 | **the floor, +0.03** |
+| **0.62** | 5.83 / 5.54 / 5.53 | 5.93 / 5.95 / 5.95 | **SHIPPED, +1.43** |
+| 0.66 | 6.53 / 6.23 / 6.22 | 6.63 / 6.65 / 6.65 | costs the photograph |
+
+0.62 is not a new number — it is the peak the previous shape already shipped, so
+the photograph reads at the same strength it did before the edge changed. The
+floor *improved* (0.56 → 0.52) because the copy moved into a darker band of the
+frame.
+
+### Text on the cream surface — flat, no photograph involved
+
+Identical at all three widths; the surface does not vary.
+
+| element | fg | px | ratio | needs | |
+|---|---|---|---|---|---|
+| §2 h2 "Our Story" | ink | 90.1 | **15.88** | 3.0 | pass |
+| §2 body ×3 | ink | 21.3 | **15.88** | 4.5 | pass |
+| §2b carrier wordmarks | ink | 17.5 | **15.88** | 4.5 | pass |
+| §3 / §6 pull-quote, illuminated | ink | 75.3 | **15.88** | 3.0 | pass |
+| §3 / §6 pull-quote, **at the reveal floor** | ink @ 0.55 | 75.3 | **3.79** | 3.0 | pass |
+| §4 eyebrow | ink | 21.3 | **15.88** | 4.5 | pass |
+| §4 h2 | ink | 57.4 | **15.88** | 3.0 | pass |
+| §4 body | ink | 21.3 | **15.88** | 4.5 | pass |
+| §5 h2 | ink | 57.4 | **15.88** | 3.0 | pass |
+| §5 value labels | ink | 21.3 | **15.88** | 4.5 | pass |
+| §5 roman numerals | **gold-deep** | 21.3 | **5.16** | 4.5 | pass |
+| §5 value bodies | ink | 21.3 | **15.88** | 4.5 | pass |
+
+Tightest on cream: **the pull-quote at its reveal floor, 3.79 against 3.0.**
+Second tightest: **the roman numerals at 5.16.**
+
+### Non-text — recorded as a decision, not an omission
+
+| element | ratio | governed by | verdict |
+|---|---|---|---|
+| ~~`.sem-rule` gold hairlines~~ | ~~2.09~~ | — | 🔴 **REMOVED — §6c.** There is no gold anywhere on this page now. The reasoning is kept because it is the standing rule for any future separator |
+| locale switcher, active | 5.16 | 1.4.3, 4.5 | pass — gold-deep on the cream pill |
+| locale switcher, inactive | 15.88 | 1.4.3, 4.5 | pass — ink |
+| locale switcher, hover | 4.66 | 1.4.3, 4.5 | pass — gold-deep on greige |
+| locale switcher, focus ring | 5.16 | 2.4.11, 3:1 | pass — gold-deep |
+| Join pill boundary over the hero | 6.27 | 1.4.11, 3:1 | pass |
+| header focus ring (cream bar) | 5.16 | 2.4.11, 3:1 | pass — gold-deep |
+| header focus ring (over the hero) | 7.68+ | 2.4.11, 3:1 | pass — gold-pale on the veiled photograph |
+
+🔴 **If a hairline on this page is ever asked to mean something** — group items,
+bound an input, indicate state, mark focus — **it must stop being gold.** At
+2.09 it is below the 3:1 any informational graphic needs. gold-deep (5.16) or
+ink.
 
 ---
 
@@ -494,7 +931,10 @@ Do not conflate them.
 
 - **`data-compact`** (position-driven): `solid = compact || !isHeroRoute`.
   Threshold `COMPACT_AT = 60`. Decides **whether** the bar has a surface.
-- **`data-surface`** (route-driven, **NEW**): `dark` on `/{locale}/about`,
+- **`data-surface`** (route-driven) — 🔴 **RETIRED, see §6a.** It is still
+  emitted and still reads `light` everywhere; the branch that returned
+  `dark` is gated behind `DARK_SURFACE_ROUTES = false`. What follows is what
+  it did, kept because the next dark surface starts here: `dark` on `/{locale}/about`,
   `light` everywhere else. Decides **which** surface — dark paints `#0D1B2A`
   with cream ink, 15.87:1, the same pairing the footer ships, so the page opens
   and closes on the same surface. **It is DECLARED, not sniffed** — reading the
@@ -507,6 +947,31 @@ Do not conflate them.
   `lerp: 0.1` emits sub-pixel deltas every frame. Never hidden below 160, never
   while focus is inside the header, never while the mobile menu is open.
   **Reduced motion: stays put** — switched off, not made instant.
+
+> 🔴 **SEM HAS NO SCROLL-DRIVEN LOGO BEHAVIOUR. Do not re-litigate this.**
+> Measured live in real Chrome at scrollY **0 / 150 / 700 / 800 / 2000** — the
+> logo's viewport position, size and transform are **identical at every one**,
+> and the navbar's background is `rgba(221,221,221,0)` throughout.
+>
+> | | their homepage | their inner pages |
+> |---|---|---|
+> | logo | 196.8 × 193.35, centred, viewport y **274.2** (mid-hero) | 65.6 × 64.43, centred **in the bar**, cy 51.6 |
+> | on scroll | does not move | does not move |
+>
+> **Those are two PAGE states, not an animation.** What looks like a logo
+> "rising into the bar" is the difference between their homepage and an inner
+> page.
+>
+> **Ours already does the thing SEM does not**, and it needed no work: measured
+> in real Chrome on `/about`, the bar goes 116 → 76px and the logo 75.10 × 64
+> (scale 1.3333) → 56.33 × 48 (scale 1), centre y 58 → 38, centre x 760.4
+> against a viewport centre of 760.5. That is the homepage's existing
+> compaction, shared unchanged now that the dark variant is gone. **No second
+> mechanism was invented.**
+>
+> ⚠️ The Browser pane reports this header as 64px with no background at every
+> scroll position, because **CSS transitions never advance there** (trap 1).
+> Header state must be measured in real Chrome.
 
 **`/about` is in `isHeroRoute`, and it earned that by having a hero.** The rule
 is a property of the page: does the first viewport contain a full-bleed
@@ -579,8 +1044,71 @@ reference.** Each is recorded in a `⚠️`-marked comment at its call site.
 | §5 columns | column drift only | column drift **and** image parallax | the image parallax was asked for separately. **Theirs does not do it.** Drop it by swapping `AboutParallaxImage` for a plain `<Image>` |
 | §5 | opacity **not animated** (measured 1/1/1 everywhere) | `FadeUp` entrance | ours; the reference has no fade at all on this section |
 | §4 copy | **pill CTA** between heading and body ("Food with a story" → their story page) | 🔴 **no CTA at all** | **no honest destination exists.** `routes.ts` lists three built routes. `/calculator` is not what this section is about; `/about#about-story` sends the reader back up to a paragraph they passed thirty seconds ago; `/#why-heading` is real but leaves the page and is not a story. **It comes back when a Services or Story page exists.** `.sem-pill` / `.sem-pill-cta` are retained in `globals.css`, `about.trust.ctaLabel` is retained untouched in both message files, and `about/page.tsx` has no `next/link` import as a result — the restore recipe is in the comment at the call site |
+| **whole page** | one continuous gradient, daylight into darkness | 🔴 **flat cream `#F8F4EE`** | asked for. A light page cannot have a value descent — cream→greige is 1.11× and anything deeper breaks gold-deep as text. The descent moved into the photographs (6.18× at the zoom, wider than the gradient's 3.87×). See §6a |
+| section boundaries | no rules, no cards — the gradient marked everything | 🔴 **nothing at all** | asked for. Whitespace, the photographs and the type scale carry it — §6c |
+| §1 hero edge | — | 🔴 **hard cut, no fade** | asked for. Every other photograph on the page already meets its flat colour with no fade; the hero was the only one that did, which is what made it read as a glow — §6d |
+| §1 hero copy | — | **32.8px bottom offset — THEIRS** | this is one of the few places we match them exactly, and it only became possible when the foot ramp came out |
+| §1 hero sub | 20.5 / 30.75 / **w700**, centred at ≤991 | 20.5 / 30.75 / **w600**, left at every width | 700 beside a w400 Kufam h1 is two competing bolds; theirs has no h1 to sit under, ours does |
+| locale switcher | flags, no hover, no focus, jumps left at ≤991 | no flags, hover + focus, stays right | §6e |
 | §1 hero | **no headline at all** | h1 + sub | a silent photograph doesn't survive semantics or SEO |
 | §2b | award/press logo grid | five carrier wordmarks | fflsynergy has no awards or press logos |
+
+### 🔴 §9a — the dead-space pass, and the numbers that came out of it
+
+A separate sweep of every boundary and every intra-section gap. **There was no
+stacked padding anywhere** — every section carried `padding-top` and
+`padding-bottom: 0`, so the seams were clean by construction. What was found was
+oversized single gaps and one bare spacer.
+
+| # | where | was | now | why |
+|---|---|---|---|---|
+| 1 | §2b carrier cells | `h-[131px]` holding **21.9px** of type — **109.1 / 112.3 / 93.5** empty per cell | **`h-[56px]`** | 131 is the height the reference needs for logo ARTWORK. 🔴 **Put it back to 131 when the logo files land** |
+| 2 | §5 heading → grid | `clamp(48px,8.6vw,131.2px)` — **the full section rhythm, inside a section** | `clamp(32px,4.3vw,65.6px)`, measured **65.4** | the heading read as detached from its own three columns |
+| 3 | §2 → carrier row | same clamp, **158.3** | halved with #2 | as above |
+| 4 | §4 copy column | **327.4px** of ink top-aligned in a **562px** row → **234.6 empty below** | `justify-center` **and** the full `trust.p1` restored → **404.1** of ink, air **79 above / 79 below** | removing the pill had made this worse. `trust.p1`'s first sentence is fflsynergy verbatim and was unused — `trust.body` was only its second sentence. No cross-page duplication: `trust.p2` was **not** restored, because its first two sentences ship on the homepage as `carriers.subhead` |
+| 5 | end of page | bare `h-[clamp(64px,8.6vw,131.2px)]` spacer | **deleted** | dead space *and* the hard cream/navy boundary — see §6a |
+| 6 | §7 zoom | `sem-pad-t` **plus** the 225px `scale-50` rest offset = **355.8** from the quote's last line to the card | `pt-[clamp(24px,3.2vw,49px)]` → seam **56 / 32 / 28** | the effect supplies its own air; the padding was paying twice. Dropping it outright went too far — see §9b |
+
+**Seams after that pass**, ink-to-ink at 1536: 155.8 / 139.6 / 131.7 / 138.7 /
+57.6. **Two of those were still wrong and are fixed in §9b.**
+
+**Left alone as healthy:** §2 h2→p1 32 · §4 eyebrow→h2 16.4 · §4 h2→body 32.7 ·
+§5 label→image 16 · §5 image→body 24 · §5 row-gap 48.
+
+### 🔴 §9b — the second dead-space pass (whole page, three widths)
+
+Run after the hairlines came out. Ink-to-ink, transforms and FadeUp neutralised.
+
+**Nothing had stacked padding at any boundary** — every section carries
+`padding-top` and `padding-bottom: 0`. Two real defects, both traced to a cause
+rather than shaved at the seam:
+
+| # | where | measured (1536 / 820 / 390) | cause | fix |
+|---|---|---|---|---|
+| 1 | §2 carrier cells | **34.1 / 37.2 / 18.5** of empty cell | the cell had a fixed height (131px, then 56px) and is `items-center`, so **half the slack landed below the last row of type** — i.e. at the bottom of §2. That is why the §2 → §3 seam ran long at every width: **155.1 / 92.7 / 85.8** against a 130.8 / 69.2 / 64 rhythm | **no fixed height at all.** Grid rows stretch to the tallest cell on their own, so the height was never needed for alignment. Cell = 21.9px = text height, zero slack. 🔴 `h-[131px]` returns when logo artwork lands |
+| 2 | §6 → §7 | **7.3 / 5.8 / 4.4** | removing the pull-quote's closing rule took its margin with it. Not a gap — a collision that only looked fine because the zoom's card is drawn 225px lower | `pt-[clamp(24px,3.2vw,49px)]` on the zoom wrapper. Structural **56 / 32 / 28**, perceived **~281 / 288 / 239** once the `scale-50` rest offset is counted |
+
+**Seams after, 1536:** 138.0 / 138.2 / 130.8 / 138.0 / **56.0**. The 138s are
+130.8 + 7.4 of blockquote line leading, which is intrinsic to the type, not
+padding.
+
+**Measured and left alone as healthy or explained:**
+
+| gap | 1536 | 820 | 390 | |
+|---|---|---|---|---|
+| hero → §2 | 130.8 | 69.2 | 64.0 | on rhythm |
+| §4 → §5 | 130.8 | 69.2 | 64.0 | on rhythm |
+| §7 → footer | 0 | 0 | 0 | deliberate — §6a |
+| §2 h2 → p1 | 32 | 32 | 32 | healthy |
+| §2 last p → carrier row | 92.9 | — | — | explained: 65.6 + the 27.5 column-height mismatch |
+| §2 left col vs image col | 27.5 | — | — | inherent to unequal columns |
+| §4 eyebrow → h2 | 16.4 | 12 | 12 | healthy |
+| §4 h2 → body | 32.7 | 24 | 24 | healthy |
+| §4 air above / below copy | 79 / 79 | n/a | n/a | deliberate, balanced |
+| §5 h2 → grid | 65.4 | 34.6 | 32 | healthy |
+| §5 label → image | 16 | 16 | 16 | healthy |
+| §5 image → body | 24 | 24 | 24 | healthy |
+| §5 row-gap | 48 | 48 | 48 | healthy |
 
 ### What §5's drift still is, and it is unchanged
 
@@ -794,6 +1322,34 @@ not ship, but uncommenting that block would ship them.
 `why-overlooked` already crops out an **LG** monitor mark; every `why-*` has the
 Synergy watermark band cropped off.
 
+### 🟡 `value-legacy` — awaiting a replacement pick
+
+**The inversion turned this from a look into a defect.** `value-legacy.jpg`
+(Pexels `8317698`, frame mean **L 0.597**) was chosen as "the brightest of the
+set — a bright card against a dark gradient". On cream it sits **1.48× from the
+page** while its two neighbours sit at 3.38× and 2.82×, so it reads washed out
+and detached from a row that is meant to read as three of a kind.
+
+**Target: L roughly 0.23–0.30**, matching `value-integrity` (0.234) and
+`value-education` (0.290).
+
+Candidates already measured for this slot, from `CREDITS.md`:
+
+| Pexels ID | frame mean L | step below cream | parallax face-check | verdict |
+|---|---|---|---|---|
+| `8317698` | 0.597 | 1.48× | passes | **shipping — too bright on cream** |
+| `8769727` | 0.144 | 5.03× | not yet run | **the only measured alternative still in play** — darker than its neighbours but in the right direction |
+| `7086015` | 0.171 | 4.34× | 🔴 **FAILS** — forehead clipped at the travel extremes | unusable |
+| `20191416` | 0.434 | 1.98× | 🔴 **FAILS** — same failure, was wired then replaced | unusable |
+
+🔴 **Nothing here is a clean match.** `8769727` is the only survivor and it
+overshoots the target the other way. **A fresh search is likely needed** — and
+any new candidate must clear both bars: frame mean L ~0.23–0.30, **and** every
+face inside the parallax safe band **21.5%–78.5%** verified by rendering at the
+travel extremes, which is what eliminated the other two.
+
+One line to swap in `VALUE_IMAGES` in `app/[locale]/about/page.tsx`.
+
 ### 🟡 Logo
 
 `components/Logo.tsx` has `variant="dark"` (gold artwork as supplied) and
@@ -911,6 +1467,13 @@ feature and its gate together.
 | `components/Hero.tsx` | the second CTA (`hero.ctaQuote`) | removed, not commented — string retained in both message files |
 | `components/Testimonials.tsx:68` | `HEADER_ASIDES_READY = false` | hides the eyebrow **and** the results-disclaimer — §10 |
 | `components/WhySynergy.tsx` | the eight-row block | ⚠️ references `why-g10` / `why-g12`, which carry **Balmain / Gucci** buckles. Uncommenting ships them |
+| `app/globals.css` | **`.about-gradient`** + the whole navy-lift derivation | 🔴 the About page is cream — §6a. Swapping the class on the wrapper is the entire restore |
+| `app/globals.css` | the **`[data-surface="dark"]` header block** | retired with the dark page. Its measurements are worth keeping for the next dark surface |
+| `app/globals.css` | **`.about-hero-foot`** + its per-row derivation | 🔴 the hero ends on a hard edge — §6d |
+| `components/LocaleSwitcher.tsx` | **`LOCALE_SWITCHER_READY = false`** | 🔴 built, mounted, renders `null`. es.json is 43.0% — §6e |
+| `components/SiteHeader.tsx` | **`DARK_SURFACE_ROUTES = false`** | gates the `surface` memo's dark branch. Annotated `boolean` on purpose so TypeScript keeps the `"dark"` call sites compiled |
+| `components/SiteHeader.tsx` | one focus-ring selector | **inert, not commented** — part of the same restore, left in the list so it is not forgotten separately |
+| `app/[locale]/about/page.tsx` | the `RouteTheme` call | ⚠️ **pairs with `suppressHydrationWarning` in `layout.tsx`** — §6a |
 | `components/Nav.tsx` | whole file | superseded three-zone nav, rendered nowhere. `SiteHeader` replaced it |
 | `components/Calculator.tsx` | superseded layout, in the docblock | kept for revert |
 | `routes.ts` | the `UNBUILT` list | six routes, recorded so restoring one is three lines |
@@ -921,6 +1484,35 @@ section header can be the `h1` on its own page. Keep it.
 ---
 
 ## 14. Testing traps — these will waste your time
+
+### 🔴 0. A CLEAN BUILD IS NOT EVIDENCE. Read this before trusting a green tick.
+
+`npx tsc --noEmit` clean and `next build` clean mean the code *parses, types and
+compiles*. **They say nothing about whether a URL resolves or a measurement is
+the one you meant.** Two defects in a single session passed both gates and would
+have shipped:
+
+| defect | what the toolchain said | what the page said |
+|---|---|---|
+| `usePathname` from `next/navigation` in the locale switcher | ✅ tsc clean, ✅ build clean — the types are identical, both return `string` | rendered `href="/en/en/about"` and `href="/es/en/about"`. Both 404 |
+| `max-w-[32ch]` on the hero sub, meant as SEM's 32em measure | ✅ tsc clean, ✅ build clean — `32ch` is a valid length | 427.6px against their 656.35px. A third too narrow, and a different block shape |
+
+Neither is exotic. `ch` is the advance width of "0" (~0.6em in this face), not
+the em; and Next's `usePathname` returns the real path, locale segment and all.
+**Both are type-correct and semantically wrong**, which is the category a
+compiler cannot help with.
+
+The rule this project already follows and should keep following: **read the
+rendered value off the built page.** The href off the DOM, the box off
+`getBoundingClientRect`, the contrast off composited pixels. A number you did
+not measure is a number you guessed.
+
+The same principle is why the hero AA table is re-run after *every* change that
+moves anything. Dropping the hero copy from 18vh to SEM's 32.8px moved the sub
+from 82% to ~96% of the hero — into the band where the previous scrim shape had
+already decayed to zero. **Carried forward unchanged it would have measured
+1.44:1 against a 4.5 requirement**, on a page that had passed AA an hour
+earlier. Nothing in the build output would ever have mentioned it.
 
 1. **The Browser pane does not composite.** CSS transitions never advance in it,
    `computer{action:"screenshot"}` fails outright when the pane is not
@@ -942,6 +1534,21 @@ section header can be the `h1` on its own page. Keep it.
 6. **Dev-server error logs are a buffer.** Errors from a transient mid-edit
    state persist in `preview_logs` long after the code is fixed. Check recent
    request status codes, not the error tail.
-7. **Measure §5's resting positions on the `<li>`, not the inner div.** The
+7. 🔴 **An alpha derived against one surface is not a number, it is a
+   relationship.** Two values on this page failed the cream inversion silently
+   and both were still "passing" by inspection: the word-reveal floor (0.45 →
+   2.83:1) and the hero scrim shape. **Anything expressed as an opacity, a
+   tint, a veil or a scrim must be re-derived when the surface under it
+   changes.** Grep for `rgba(`, `opacity`, `FLOOR` and `-scrim` before assuming
+   a page-level colour change is cosmetic.
+8. **The Browser pane cannot measure the header.** It reports 64px and no
+   background at every scroll position because the bar's height and background
+   are CSS *transitions*, which never advance there. Header state — compaction,
+   surface, logo scale — must be read in real Chrome. This is trap 1 with a
+   specific victim.
+9. **`usePathname` from `next/navigation` includes the locale segment.** For
+   anything locale-aware use the one re-exported from `navigation.ts`. The wrong
+   one type-checks, builds, and produces `/es/en/about` — see §6e.
+10. **Measure §5's resting positions on the `<li>`, not the inner div.** The
    `<li>` is untransformed by design; the drift lives on its child. `offsetTop`
    is also transform-immune and is the cleaner read.

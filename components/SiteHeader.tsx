@@ -31,6 +31,29 @@ const isAboutRoute = (pathname: string | null) =>
   /^\/(?:en|es)\/about\/?$/.test(pathname ?? "/");
 
 /**
+ * 🔴 IS ANY ROUTE A DARK SURFACE? Currently no. DO NOT DELETE THIS.
+ *
+ * /[locale]/about was the only one, and it is CREAM now — so its bar behaves
+ * exactly like the homepage's: transparent white ink over the hero photograph,
+ * then the cream bar with ink from scrollY 60.
+ *
+ * /about KEEPS its place in `isHeroRoute` below. That rule tests a property of
+ * the page — does the first viewport hold a full-bleed photograph dark enough
+ * to carry white ink? — and /about still does. Only the SURFACE reverted.
+ *
+ * Everything else stays wired: the `data-surface` attribute is still emitted,
+ * the CSS that consumes it is commented out beside its measurements in
+ * globals.css, and the focus-ring selector that referenced it is left inert in
+ * its selector list on purpose. Restoring a dark route is flipping this to
+ * `true` and uncommenting that CSS block — nothing has to be re-derived.
+ *
+ * Annotated `boolean` rather than left to infer `false`, so TypeScript keeps
+ * the `"dark"` branch reachable and type-checks the call sites that depend on
+ * it. See the note at `surface` below.
+ */
+const DARK_SURFACE_ROUTES: boolean = false;
+
+/**
  * One nav link. Shared by the desktop row and the mobile panel so the
  * current-page logic cannot drift between them.
  *
@@ -456,8 +479,8 @@ export default function SiteHeader() {
    * nothing else, so every other route renders byte-identical markup to before
    * (the attribute is present and reads "light", which no CSS rule targets).
    */
-  const surface = useMemo(
-    () => (isAboutRoute(pathname) ? "dark" : "light"),
+  const surface = useMemo<"light" | "dark">(
+    () => (DARK_SURFACE_ROUTES && isAboutRoute(pathname) ? "dark" : "light"),
     [pathname],
   );
 

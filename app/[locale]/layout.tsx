@@ -9,6 +9,7 @@ import {
 } from "next-intl/server";
 import { locales, type Locale } from "@/i18n";
 import SmoothScroll from "@/components/SmoothScroll";
+import LocaleSwitcher from "@/components/LocaleSwitcher";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import Splash from "@/components/Splash";
@@ -74,19 +75,25 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       className={`${display.variable} ${body.variable} ${hero.variable}`}
-      // components/RouteTheme.tsx writes `data-route-theme` onto <html> from an
-      // inline script, so it is present before React hydrates and the first
-      // painted frame of a dark route is already dark. React then sees an
-      // attribute its server render did not emit and logs "Extra attributes
-      // from the server: data-route-theme" on every load of /[locale]/about.
+      // 🔴 NO `suppressHydrationWarning`, AND ITS ABSENCE TRAVELS AS A PAIR
+      // WITH RouteTheme. DO NOT ADD IT BACK ALONE.
       //
-      // A nested route cannot contribute attributes to <html> in the App
-      // Router, so there is no way to make the two agree — this is the same
-      // trade every theme-before-paint implementation makes, and suppressing
-      // it here is the documented answer. It covers THIS element's attributes
-      // only, not its descendants; `lang` is the one other attribute in scope,
-      // and it is derived from the same `locale` on both sides.
-      suppressHydrationWarning
+      // It existed for exactly one reason: components/RouteTheme.tsx writes
+      // `data-route-theme` onto <html> from an inline script, before React
+      // hydrates, so the first painted frame of a dark route is already dark.
+      // React then saw an attribute its server render did not emit and logged
+      // "Extra attributes from the server: data-route-theme" on every load of
+      // /[locale]/about. A nested route cannot contribute attributes to <html>
+      // in the App Router, so the two could not be made to agree, and
+      // suppressing was the documented answer.
+      //
+      // /about is cream now and no longer mounts RouteTheme, so nothing writes
+      // that attribute and there is no mismatch to suppress. Leaving the prop
+      // in would silently mask a FUTURE genuine mismatch on the document
+      // element — the one place on the page where that is hardest to notice.
+      //
+      // Restoring a dark route means restoring both: the `<RouteTheme />` call
+      // on that page AND this prop. See HANDOFF.md §8.
     >
       {/* The hero is a photo now; next/image with `priority` emits its own
           preload link for the correct derivative, so the hand-written
@@ -114,6 +121,21 @@ export default async function LocaleLayout({
             {children}
             <Footer />
           </SmoothScroll>
+          {/* Locale switcher — a fixed pill, bottom-right, on every route.
+              ---------------------------------------------------------------
+              🔴 IT RENDERS NOTHING TODAY. `LOCALE_SWITCHER_READY` is `false`
+              inside the component and it returns null; the mount is here so
+              that turning it on is one constant, not a hunt through the tree.
+              es.json is 43.0% translated with the whole About page and the
+              homepage hero at zero, so a visitor clicking ES would get English
+              content at a Spanish URL. See the component docblock.
+
+              OUTSIDE SmoothScroll, and that is deliberate: it is
+              `position: fixed`, so it must not sit inside the element Lenis
+              transforms. A fixed child of a transformed ancestor is positioned
+              against that ancestor instead of the viewport — the same trap the
+              mobile menu panel already documents in SiteHeader. */}
+          <LocaleSwitcher />
         </NextIntlClientProvider>
       </body>
     </html>

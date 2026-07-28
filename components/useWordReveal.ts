@@ -31,29 +31,42 @@ import { useEffect, type RefObject } from "react";
  * unsplit paragraph did — a span-per-word with a trailing space inside each one
  * changes where the browser is allowed to break.
  *
- * THE FLOOR IS 0.45, NOT THEIR 0.2, AND THAT IS A CONTRAST FIX.
+ * THE FLOOR IS 0.55, NOT THEIR 0.2, AND THAT IS A CONTRAST FIX.
  *
  * A scrubbed reveal holds every un-illuminated word at the floor for as long as
  * the reader is above `top 20%` — that is not a transient frame, it is a state
  * you can sit in indefinitely, and it is on screen (the trigger opens at
  * `top 70%`, i.e. well inside the viewport). So the floor has to clear AA on
- * its own. Measured on the real composite — cream #F8F4EE at alpha over the
- * gradient stop each quote actually sits on, against that same stop:
+ * its own.
  *
- *   alpha   quote 1 (t≈0.18)   quote 2 (t≈0.62)
- *   0.20         1.79               1.84          <- their value, fails
- *   0.35         2.77               2.95
- *   0.40         3.18               3.43
- *   0.45         3.61               3.94          <- shipped
+ * ⚠️ RE-DERIVED FOR THE CREAM PAGE. THE PREVIOUS VALUE DOES NOT SURVIVE THE
+ * INVERSION, AND IT FAILS QUIETLY RATHER THAN LOUDLY.
  *
- * Both quotes are large text at every breakpoint (clamped to a 38px floor,
- * against the 24px threshold), so the bar is 3.0:1 and 0.45 clears it with
- * margin at the worst position on the run. 0.40 clears it by 0.18 and would be
- * re-broken by any reflow that moves a quote further up the gradient.
+ * The old floor was 0.45, derived for CREAM #F8F4EE at alpha over the navy
+ * gradient stop each quote sat on. The quotes are INK #1A1A1A on cream now, and
+ * the arithmetic is not symmetric — ink at 0.45 over cream composites to
+ * rgb(148,146,143), which is 2.83:1 against cream and FAILS the 3:1 bar. Left
+ * alone, the inversion would have shipped a pull-quote whose resting state is
+ * below AA, on the section of the page a reader is most likely to stop at.
  *
- * The illumination range narrows from 5x to 2.2x, which is the cost. The effect
- * still reads — words visibly arrive — and an unreadable pull-quote on a page
- * whose entire argument is honesty is not a trade worth making.
+ * Measured on the real composite — ink at alpha over cream, against cream:
+ *
+ *   alpha   composite        vs cream
+ *   0.20    rgb(204,200,196)   1.52   <- their value, fails
+ *   0.45    rgb(148,146,143)   2.83   <- the OLD floor, now fails
+ *   0.50    rgb(137,135,132)   3.27   <- the floor, +0.27
+ *   0.55    rgb(126,124,121)   3.79   <- SHIPPED, +0.79
+ *   0.60    rgb(115,113,111)   4.43
+ *
+ * Both quotes are large text at every breakpoint (clamped to a 38.14px floor
+ * against the 24px threshold), so the bar is 3.0:1. Shipped a step above the
+ * floor for the same reason as everything else on this page: 0.50 leaves +0.27
+ * and any reflow re-breaks it.
+ *
+ * The illumination range narrows from 5x to 1.82x, which is the cost, and it is
+ * tighter than the 2.2x the dark build had. The effect still reads — words
+ * visibly arrive — and an unreadable pull-quote on a page whose entire argument
+ * is honesty is not a trade worth making.
  *
  * ACCESSIBILITY. The spans are visual only; the element's text content is
  * unchanged, so a screen reader still reads one continuous sentence. Opacity is
@@ -65,8 +78,10 @@ import { useEffect, type RefObject } from "react";
  * a faster reveal — there is no reveal, because a quote held at its floor until
  * you scroll is a dimmed quote, not a slower animation.
  */
-/** Un-illuminated opacity. See the contrast note above — this is not 0.2. */
-const FLOOR = 0.45;
+/** Un-illuminated opacity. See the contrast note above — this is not 0.2, and
+ *  it is no longer the 0.45 the dark build shipped. It is derived from the
+ *  SURFACE the quote sits on; change the surface and this must be re-derived. */
+const FLOOR = 0.55;
 
 export function useWordReveal(
   ref: RefObject<HTMLElement>,
