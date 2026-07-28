@@ -667,3 +667,348 @@ its bottom can never reach the viewport top. Measured live: the tween reaches
 The table above was measured across the FULL ±10 travel, including positions no
 visitor can currently reach, so it stays valid unchanged the moment a footer is
 added below.
+
+---
+
+# About page — `/[locale]/about`
+
+Three images. One is Synergy's own; two are licensed stock, and one of those is
+explicitly a placeholder.
+
+## §1 Hero — `about-hero-family.jpg` 🟡 PLACEHOLDER
+
+**Pexels photo `5638414`** — a multi-generational family posed together in warm
+late light while an out-of-focus figure in the left foreground photographs them.
+Source: https://www.pexels.com/photo/5638414/. **Pexels License** — exact
+licence line: *"All photos and videos on Pexels are free to use."* /
+*"Attribution is not required."* No attribution required; recorded here as good
+practice.
+
+Source **8224 × 5483 (45.1 MP)**, held at **3840 × 2560** — the largest
+derivative `next/image` will ever request, which is a full-bleed slot on a 1920
+viewport at 2× DPR. Nothing upscales at any width. No edits, no grade.
+
+Checked clean of third-party branding at full size. Faces verified by rendering
+at all three widths: all six clear every edge, and none collide with the copy
+block.
+
+Chosen from four measured candidates. Luminance was sampled **only in the
+rectangle the h1 and sub occupy**, not over the whole frame:
+
+| | ID | pixels | MP | copy-region mean | p99 |
+|---|---|---|---|---|---|
+| A | 5638613 | 6000 × 4000 | 24.0 | 0.081 | 0.344 |
+| **B** | **5638414** | **8224 × 5483** | **45.1** | 0.096 | 0.582 |
+| C | 7799613 | 4461 × 2978 | 13.3 | 0.076 | 0.240 |
+| D | 5591277 | 5743 × 3829 | 22.0 | 0.232 | 0.569 |
+
+B on two grounds: at 45.1 MP it never softens at any viewport, and the
+out-of-focus foreground figure sits exactly where the copy block lands, so the
+copy has a quiet region to sit on that is part of the photograph rather than
+something the scrim has to manufacture.
+
+Rejected: `27520972` (15.2% blown pixels behind the copy), `5888407`,
+`5591173`, `11459334`.
+
+**🟡 It is a placeholder for Synergy's own photography.** Ziad still owes
+original camera files; when they arrive this hero is swapped and nothing else
+on the page changes. A contained hero was NOT built as a workaround — an honest
+full-bleed option exists today.
+
+**Deliberate: family imagery, not a team photo.** Under an h1 reading "We Are
+Synergy" a family reads as *who we protect*, which is true. A team photo of
+strangers would read as *Synergy's staff*, which would be false — and would
+have to be Synergy's own people.
+
+### Hero legibility — measured on the real composite
+
+Ground truth: the JPEG mapped through the same object-cover arithmetic the
+browser uses at each viewport, `.about-hero-scrim` composited as a real per-row
+alpha fill in sRGB, then **every pixel** of each text box sampled. Text boxes
+read off the built page with `getBoundingClientRect`, not estimated. Worst
+pixel, not mean.
+
+**There is no `.hero-veil-top` on this hero.** The homepage needs one because
+`SiteHeader` is transparent at the top of the locale root; `/about` is not the
+hero route, so the bar is opaque `#0D1B2A` from scroll 0 (nav links 15.87:1 on
+a flat fill) and a second graduated veil would darken 300px of photograph for
+nobody.
+
+| scrim peak | h1 worst | sub worst | |
+|---|---|---|---|
+| none | 1.49 | 1.39 | fails |
+| 0.55 | 4.58 | 4.83 | passes, sub has only +0.33 at tablet |
+| **0.60** | **4.43** | **5.51** | **shipped** |
+| 0.72 | 5.87 | 7.78 | buys nothing, costs the photograph |
+
+Per viewport at the shipped 0.60:
+
+| viewport | h1 (needs 3.0) | sub (needs 4.5) |
+|---|---|---|
+| 1425 × 900 | **4.43** | **5.51** |
+| 753 × 1024 | 5.39 | 5.56 |
+| 390 × 844 | 5.34 | 5.56 |
+
+The scrim is anchored to the bottom edge, monotonic, fully clear by 30% of the
+section, and held flat from 72% down so no vertical gradient crosses the last
+line of the sub-headline. Steepest segment 0.20 per 10% of height — no band,
+no edge, and it never reaches the faces, which sit in the upper half at every
+width.
+
+## §2 Our Story — `gallery-advisor-explaining.jpg` (Synergy's own)
+
+Already in the repo. A Synergy advisor with a microphone gesturing at a
+presentation slide headed "Hone Your Skills & Knowledge". Checked clean of
+third-party branding at full size.
+
+**1000 × 1250**, i.e. safe to a **500px CSS box at 2× DPR**. The image column is
+capped at exactly 500px for that reason — it is a resolution budget, not a
+taste call, and a wider column would upscale Synergy's own photograph. It could
+not carry a full-bleed slot at any width; this is the one contained slot on the
+page and it is where Synergy's own imagery belongs.
+
+## §7 Image zoom — `about-zoom.jpg`
+
+**Pexels photo `36777966`** — a stone-and-shingle family house at dusk, every
+window lit, shot through tall pines. Source:
+https://www.pexels.com/photo/36777966/. **Pexels License**, same licence line as
+above.
+
+Source **8000 × 5338 (42.7 MP)**, held at **3840 × 2562**. The element is one
+viewport wide at scale 1.0 and never wider, so 3840 covers a 1920 viewport at
+2× DPR with nothing to upscale — and at scale 0.5 it is being downscaled 2×,
+which is where the frame is sharpest.
+
+| | ID | pixels | MP | frame mean L | |
+|---|---|---|---|---|---|
+| **E** | **36777966** | 8000 × 5338 | 42.7 | **0.100** | shipped |
+| F | 4933643 | 6016 × 4016 | 24.2 | 0.219 | |
+| G | 36777965 | 8000 × 5338 | 42.7 | 0.154 | |
+| H | 9592437 | 5031 × 3354 | 16.9 | 0.053 | |
+
+Two measured reasons for E:
+
+1. **No people.** The scale runs 0.5 → 1.0, so the visible crop changes
+   continuously through the whole section. A frame with faces has to be
+   verified at every intermediate scale and any face near an edge fails at one
+   end of the run. With no people the failure mode does not exist. All four
+   candidates share this; E is not special here.
+2. **Frame mean L 0.100**, sitting just above the gradient's top value
+   (`#1C3A5A`, L 0.0401). That is what makes the half-scale card read as a
+   **lift out of the page rather than a hole punched in it** — a darker frame
+   at scale 0.5 would look like a gap. H (L 0.053) is the one that would.
+
+No copy sits on this image in the reference or in ours, so there is no contrast
+threshold to meet. Checked clean of third-party branding at full size.
+
+## §8 Staff — 🔴 no image, and none may be sourced
+
+The section is commented out in `app/[locale]/about/page.tsx`. A stock portrait
+presented as Synergy's founder would be a fabrication, not a placeholder.
+Awaiting a real portrait of Rula AlAryan from Ziad.
+
+---
+
+## §4 Built on Trust — the pair (equal size + offset)
+
+`gallery-team-meeting.jpg` (1000×1250) and `gallery-team-presentation.jpg`
+(1100×1375) — both Synergy's own, both checked clean of third-party branding at
+full size.
+
+Rendered **437 × 562 each, identical**, with the second offset down **131.2px**
+and a **32.8px** gap. At the widest container each column is 448 CSS → **896 ×
+1153 at 2× DPR**; cropped to the box ratio 0.7775 the sources give **972 × 1250**
+and **1069 × 1375**. Both clear with margin.
+
+⚠️ **Equal-size-plus-offset is a deliberate deviation from the reference**, made
+on instruction after being reported. Re-measured live at 1536 and 820:
+
+| viewport | SEM left | SEM right | margin-top | transform |
+|---|---|---|---|---|
+| 1536 | 376 × 564 @ y2994 | 501 × 564 @ y2994 | 0 / 0 | none / none |
+| 820 | 354 × 530 @ y3515 | 354 × 530 @ y3515 | 0 / 0 | none / none |
+
+Theirs differ in **width** at desktop, are **identical** at tablet, and the tops
+are **flush at both**. The staggered offset on that page belongs to §5. The
+numbers used here are still theirs: the pair keeps SEM's total image span
+(376 + 32.8 + 501 = 909.8 of 1444) and their 32.8 gap, split evenly; the 131.2px
+offset is SEM's own offset unit from §5.
+
+## 🔴 Two more exclusions from the vetted list
+
+Found on inspection at full size, both previously listed as usable:
+
+- **`why-g10.jpg`** — **Balmain** belt buckle, centre frame.
+- **`why-g12.jpg`** — **Gucci GG** belt buckle, centre frame.
+
+Both are disqualified under the third-party-branding rule. That leaves Synergy
+with exactly **three** portrait-capable frames — `gallery-advisor-explaining`,
+`-team-meeting`, `-team-presentation` — all three consumed by §2 and §4, where
+each is the only asset that clears its slot.
+
+## §5 What We Stand For — three portraits 🟡 PROVISIONAL
+
+Synergy's own material could not fill this section at the resolution its columns
+need (see above), so these are licensed stock, **wired pending approval**, one
+line each to swap in `VALUE_IMAGES` in `app/[locale]/about/page.tsx`.
+
+All **Pexels License** — exact licence line: *"All photos and videos on Pexels
+are free to use."* / *"Attribution is not required."* Each downloaded at 2400px
+and stored at **1200 × 1800** against the **809 × 1214** the column needs at 2×
+DPR on the widest container — 48% headroom.
+
+| slot | file | Pexels ID | source | frame mean L |
+|---|---|---|---|---|
+| I Integrity | `value-integrity.jpg` | `6814528` | 2400 × 3600 | 0.233 |
+| II Education | `value-education.jpg` | `8439647` | 2400 × 3595 | 0.289 |
+| III Legacy | `value-legacy.jpg` | `8317698` | 2400 × 3600 | 0.597 |
+
+Candidates measured and rejected: Integrity — `8441789` (L 0.455), `8470806`
+(0.408), `7734593` (0.224). Education — `8204948` (0.430), `8439686` (0.429),
+`8112157` (0.123). Legacy — `8769727` (0.144), `20191416` (0.434), `7086015`
+(0.171).
+
+**`20191416` was wired first and then replaced — it failed the parallax
+face-check.** Rendered at the travel extremes, the woman's forehead is clipped
+by the top edge at −10% and at rest. `7086015` fails the same way. `8317698` is
+the only Legacy candidate whose faces sit fully inside the guaranteed band, and
+it is the brightest of the set (L 0.597) — a bright card against a dark
+gradient, which is a look to sign off rather than a defect. No text sits on it.
+
+### Parallax — verified by rendering, not by reading source
+
+Every image in §5 carries the site's shared scroll parallax via
+`components/useParallax.ts` using the **Testimonials pairing** — a 130% layer
+starting at −15%, travelling **±10** — chosen because its safe band is what
+allows people in a parallax section at all.
+
+Geometry reproduced exactly and checked at 1536 / 820 / 390:
+
+| travel | source visible | edge exposed? |
+|---|---|---|
+| −10% | 21.5% – 98.5% | no |
+| 0% | 11.5% – 88.5% | no |
+| +10% | 1.5% – 78.5% | no |
+
+**Safe band (visible at every position): 21.5% – 78.5% = 56.9% of source
+height**, identical at all three widths (the box aspect is fixed, so the band is
+width-independent). All three images were rendered at all three positions and
+every face sits inside the band with headroom.
+
+`scrub: 0.5` rather than the default locked scrub — derived from the reference's
+own `smoothing: 50`. See the §5 note in `app/[locale]/about/page.tsx`.
+
+---
+
+## §4 — pair swapped, and both now carry parallax
+
+The previous pair (`gallery-team-meeting` + `gallery-team-presentation`) was two
+frames from the same moment in the same room and read as duplicates. Replaced
+with two frames that share nothing:
+
+| slot | file | pixels | subject |
+|---|---|---|---|
+| left | `howitworks-2-compare.jpg` | 1280 × 1920 | hands comparing paperwork at a desk — **no faces at all** |
+| right | `consultation-family-walk.jpg` | 5184 × 3456 | a family walking a path at golden hour |
+
+Both already in the repo and previously vetted for the homepage.
+
+**Resolution now includes the parallax layer**, which is 130% of the box, so the
+bar is the LAYER's size and not the box's: at the widest container the box is
+448 × 577 CSS, the layer 448 × 749, i.e. **896 × 1498 at 2× DPR**. Cropped to
+the layer's 0.598 aspect the sources give **1148 × 1920** and **2067 × 3456**.
+Both clear it.
+
+### Equal by construction, verified by rendering
+
+Both boxes are `aspect-[0.7775]` on equal grid tracks, so width and height are
+identical by construction. Measured on the rendered boxes across nine widths:
+
+| viewport | box 1 | box 2 | equal | overflow |
+|---|---|---|---|---|
+| 1200 | 543.4 × 698.9 | 543.4 × 698.9 | ✅ | none |
+| 1280 | 358.7 × 461.3 | 358.7 × 461.3 | ✅ | none |
+| 1366 | 385.1 × 495.3 | 385.1 × 495.3 | ✅ | none |
+| 1440 | 407.6 × 524.3 | 407.6 × 524.3 | ✅ | none |
+| 1536 | 437 × 562 | 437 × 562 | ✅ | none |
+| 1600–2560 | 448.8 × 577.2 | 448.8 × 577.2 | ✅ | none |
+
+Offset 131.2px, gap 32.8px, image-block-to-copy 32px, copy column 499 — against
+SEM's 33 / 33 / 501 measured the same day.
+
+## §5 — column drift (a second, separate effect)
+
+`AboutValueColumn` moves the WHOLE COLUMN; `AboutParallaxImage` moves the
+photograph inside its frame. The reference has only the first.
+
+Measured live on restaurantsem.com, then measured on ours:
+
+| | SEM | ours |
+|---|---|---|
+| col 1 | drifts down | −76.9 → +76.9 ✅ |
+| col 2 | **static at 0 throughout** | **0 throughout** ✅ |
+| col 3 | drifts up | +76.9 → −76.9 ✅ |
+| extremes | +225 / 0 / −233 px | ±76.9 px (shipped ±10 yPercent) |
+| scrubbed | yes, `smoothing: 50` | yes, `scrub: 0.5` |
+| opacity | **not animated** (1/1/1) | not animated |
+
+Magnitude is the shipped ±10 rather than their ±225; only the SIGN varies per
+column, and the middle column's 0 is their own measured value.
+
+---
+
+## §4 — Synergy's own photography (replaces the stock pair)
+
+Both frames are the client's own, taken from **fflsynergy.com/gallery**:
+
+| slot | file | source | original | stored |
+|---|---|---|---|---|
+| left | `gallery-leadership-panel.jpg` | `fflsynergy.com/gallery/g8.jpg` | 1206 × 1779 | **1206 × 1263** |
+| right | `gallery-training-session.jpg` | `fflsynergy.com/gallery/g11.jpg` | 1080 × 1620 | **1080 × 1150** |
+
+### The watermark
+
+**Every image on fflsynergy's gallery page carries a large SYNERGY wordmark
+across the lower ~29% of the frame.** The `why-` and `gallery-` files already in
+this repo are the same photographs with that band cropped off, which is why they
+are shorter than their originals (`why-g11` is 1080 × 1150 from a 1080 × 1620
+source — exactly 71.0%). The two new files use the identical 71.0% crop, so the
+watermark is gone and nothing else is altered. No recolouring, no retouching.
+
+Both checked clean of third-party branding at full size.
+
+### Different moments, same room
+
+g8 is two advisors presenting with a screen behind them; g11 is a different
+speaker at a different slide. Same Orlando training room — which is unavoidable.
+**Synergy's entire usable gallery is that one room**, plus a team dinner and an
+office floor, and both of those are landscape and far too small (596 × 766 after
+the watermark crop against a 874 × 1124 requirement).
+
+### 🔴 The parallax came off this pair, and it is a resolution decision
+
+The rendered box is 437 × 562 at 1536, so the bar is **874 × 1124 at 2× DPR**.
+A parallax layer is 130% of its box, which raises the bar to **874 × 1461**.
+Measured on the watermark-free sources:
+
+| candidate | box-crop | vs 874 × 1124 | layer-crop | vs 874 × 1461 |
+|---|---|---|---|---|
+| g8 leadership panel | 982 × 1263 | **PASS +12.4%** | 755 × 1263 | **FAIL −13.6%** |
+| g11 training session | 894 × 1150 | **PASS +2.3%** | 688 × 1150 | **FAIL −21.3%** |
+| g2 (same moment as g8) | 894 × 1150 | PASS +2.3% | 688 × 1150 | FAIL −21.3% |
+| g1 / g3 / g4 landscape | 596 × 766 | FAIL −31.9% | 458 × 766 | FAIL −47.6% |
+
+Synergy's own photography cannot carry a parallax in this slot without being
+upscaled. "Large enough that nothing upscales" is a standing rule; the parallax
+on this particular pair was one round old. The images won.
+
+**To restore it:** swap the two `<Image>` tags for `<AboutParallaxImage>` and
+accept a 14% / 21% upscale, or go back to licensed stock. §5's three images are
+unaffected and keep their parallax.
+
+### FadeUp stagger removed
+
+The right-hand image was `index={1}`, which adds 80ms on a 600ms fade. On a pair
+meant to read as one object that lag meant one image was fully painted while the
+other was still at zero opacity for most of the reveal — the most likely cause of
+the pair reading as mismatched mid-scroll. Both are `index={0}` now.

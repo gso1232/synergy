@@ -74,6 +74,19 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       className={`${display.variable} ${body.variable} ${hero.variable}`}
+      // components/RouteTheme.tsx writes `data-route-theme` onto <html> from an
+      // inline script, so it is present before React hydrates and the first
+      // painted frame of a dark route is already dark. React then sees an
+      // attribute its server render did not emit and logs "Extra attributes
+      // from the server: data-route-theme" on every load of /[locale]/about.
+      //
+      // A nested route cannot contribute attributes to <html> in the App
+      // Router, so there is no way to make the two agree — this is the same
+      // trade every theme-before-paint implementation makes, and suppressing
+      // it here is the documented answer. It covers THIS element's attributes
+      // only, not its descendants; `lang` is the one other attribute in scope,
+      // and it is derived from the same `locale` on both sides.
+      suppressHydrationWarning
     >
       {/* The hero is a photo now; next/image with `priority` emits its own
           preload link for the correct derivative, so the hand-written

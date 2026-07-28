@@ -8,6 +8,7 @@
     "tagline": "Protegiendo familias. Construyendo futuros.",
     "home": "Inicio",
     "about": "Nosotros",
+    "calculator": "Calculadora",
     "services": "Servicios",
     "contact": "Contacto",
     "phone": "407-434-0400",
@@ -359,6 +360,55 @@
       }
     }
   },
+  "about": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "hero": {
+      "headline": "",
+      "sub": ""
+    },
+    "story": {
+      "eyebrow": "",
+      "p1": "",
+      "p2": "",
+      "p3": "",
+      "imageAlt": ""
+    },
+    "quote1": "",
+    "trust": {
+      "headline": "",
+      "p1": "",
+      "p2": "",
+      "ctaLabel": "",
+      "imageAlt1": "",
+      "imageAlt2": "",
+      "body": "",
+      "eyebrow": ""
+    },
+    "values": {
+      "headline": "",
+      "v1": {
+        "numeral": "I",
+        "title": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "v2": {
+        "numeral": "II",
+        "title": "",
+        "body": "",
+        "imageAlt": ""
+      },
+      "v3": {
+        "numeral": "III",
+        "title": "",
+        "body": "",
+        "imageAlt": ""
+      }
+    },
+    "quote2": "",
+    "zoomAlt": ""
+  },
   "footer": {
     "srTitle": "",
     "missionTitle": "",
@@ -375,6 +425,7 @@
     "nav": {
       "home": "",
       "about": "",
+      "calculator": "",
       "services": "",
       "blog": "",
       "gallery": "",

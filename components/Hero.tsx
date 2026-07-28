@@ -61,6 +61,10 @@ import heroPhoto from "../public/hero-porch-family.jpg";
  */
 export default function Hero() {
   const t = useTranslations("hero");
+  // The phone number lives in `nav` and is already the footer's tel: href.
+  // Read from there rather than duplicating a phone number into a second key
+  // that could drift out of sync with it.
+  const tNav = useTranslations("nav");
   const reduce = useReducedMotion();
 
   const lines = [t("headlineA"), t("headlineB")];
@@ -221,15 +225,33 @@ export default function Hero() {
               custom={0.72}
               className="mt-5 flex flex-wrap gap-2.5"
             >
+              {/* ONE CTA, AND IT DIALS A REAL PHONE.
+                  ---------------------------------------------------------
+                  There were two, both `href="#"`.
+
+                  "Talk to an advisor" is the survivor because it has an
+                  honest destination: 407-434-0400 is Synergy's own number,
+                  it is already a live tel: link in the footer, and it is NOT
+                  shared with Checkmate (their only number is 833-997-6934).
+                  A phone call to a licensed advisor is exactly what the label
+                  promises, so nothing had to be re-worded.
+
+                  It takes the PRIMARY styling — the solid white pill the
+                  quote button used to wear — rather than staying a glass
+                  ghost. A hero with a single low-emphasis CTA reads as an
+                  unfinished hero; this way the section keeps its visual
+                  weight and the one button on it works. To revert, put
+                  `liquid-glass ... text-white` back in place of
+                  `bg-white ... text-navy`.
+
+                  🔴 REMOVED: "Get a free quote" (`hero.ctaQuote`). There is
+                  no quote route and no working form — the lead modal is
+                  deliberately disabled and says so. The string is retained
+                  untouched in both message files; restoring it is putting
+                  this anchor back with a real href. */}
               <a
-                href="#"
+                href={tNav("phoneHref")}
                 className="inline-flex h-11 items-center rounded-full bg-white px-6 text-[14px] font-medium text-navy transition-transform duration-300 ease-out hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-              >
-                {t("ctaQuote")}
-              </a>
-              <a
-                href="#"
-                className="liquid-glass inline-flex h-11 items-center rounded-full px-6 text-[14px] font-medium text-white transition-transform duration-300 ease-out hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
               >
                 {t("ctaCall")}
               </a>

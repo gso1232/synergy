@@ -8,6 +8,26 @@ const config: Config = {
         cream: "#F8F4EE",
         greige: "#ECE9E2",
         navy: "#0D1B2A",
+        // Navy-lift — the TOP of the About page's continuous gradient, which
+        // ends on `navy` so the footer seam disappears.
+        //
+        // It exists because navy and ink are luminance-identical: navy #0D1B2A
+        // is L 0.0104 and ink #1A1A1A is L 0.0103. They differ in hue, not in
+        // brightness, so the obvious "navy to ink" gradient descends 1.00x and
+        // looks like nothing is happening. Our palette has no mid-tone between
+        // greige (0.816) and navy (0.0104), so one had to be derived.
+        //
+        // Solved BACKWARDS from the gold constraint, not chosen by eye. Gold
+        // #C9A84C (L 0.4094) as NORMAL text needs 4.5:1, which caps the
+        // background at L <= 0.0521. #1C3A5A sits at L 0.0401 — the lightest
+        // navy that keeps gold legal as normal text with real margin (5.10:1).
+        // #204264 (L 0.0512) lands on 4.54:1, too close to ship.
+        //
+        // Across the full #1C3A5A -> #0D1B2A run the descent is 3.87x and gold
+        // never drops below 5.10:1. `gold-deep` is UNUSABLE here — 2.06:1 at
+        // the top — so dark surfaces take `gold`, light surfaces take
+        // `gold-deep`, and neither crosses over.
+        "navy-lift": "#1C3A5A",
         gold: "#C9A84C",
         // Pale gold / champagne — a lighter value of the brand gold, added for
         // muted-emphasis type on the hero video. #C9A84C sits at luminance

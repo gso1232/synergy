@@ -16,6 +16,32 @@ html {
   scrollbar-gutter: stable;
 }
 
+/* Dark routes paint the CANVAS, not just the page.
+ *
+ * The root layout sets `bg-cream` on <body>, and the browser propagates the
+ * body background to the canvas — which is what fills the area exposed by
+ * overscroll rubber-banding when you drag past the top or the bottom. On
+ * /[locale]/about that is a cream flash at both ends of a page that is dark
+ * from its first pixel to its last, and it is the one flash a `min-h-screen`
+ * gradient wrapper cannot fix: the wrapper is not what is exposed, the absence
+ * of the document is.
+ *
+ * Set on <html> by components/RouteTheme.tsx, and REMOVED on unmount, so a
+ * cream route navigated to from here goes back to cream. `background-color` on
+ * <html> wins the propagation (the canvas takes html's background when html
+ * has one, and only falls through to body when it does not), so this overrides
+ * the body class without touching it.
+ *
+ * #0D1B2A is the bottom of the About gradient AND the footer's colour, so the
+ * bottom rubber-band is invisible. The top exposes the same value against the
+ * hero photograph's own dark top, which is where the header veil already sits.
+ *
+ * iOS Safari is the case this is really for — it is the only common browser
+ * that rubber-bands by default at both ends. */
+html[data-route-theme="dark"] {
+  background-color: #0d1b2a;
+}
+
 /* ---------------------------------------------------------------------------
    Global shell metrics.
 
@@ -225,6 +251,65 @@ html {
   transition: color 280ms ease;
 }
 
+/* ---------------------------------------------------------------------------
+   DARK SURFACE — /[locale]/about only.
+
+   `data-surface` is set from the same usePathname logic that already derives
+   `isHeroRoute`, and it is orthogonal to the other two attributes in the same
+   way they are orthogonal to each other:
+
+     data-compact   WHETHER the bar has a surface   (position-driven)
+     data-surface   WHICH surface it is             (route-driven)
+     data-hidden    the transform, and nothing else (direction-driven)
+
+   So every rule below is gated on data-compact="true" as well: on a dark route
+   the bar is still a pure overlay over the hero photograph for the first 60px,
+   exactly as it is on the homepage, and only the solid state changes colour.
+   `data-surface="light"` is targeted by nothing, so every other route renders
+   the same CSS it did before this block existed.
+
+   WCAG AA, flat surfaces, no photograph involved (the bar is opaque in this
+   state):
+
+     nav links / hamburger   #F8F4EE on #0D1B2A   15.87:1   needs 4.5
+     link hover              #EFE1B0 on #0D1B2A   13.31:1   needs 4.5
+     Join pill label         #0D1B2A on #F8F4EE   15.87:1   needs 4.5
+     Join pill boundary      #F8F4EE on #0D1B2A   15.87:1   needs 3.0
+     pill hover label        #F8F4EE on #7D641F    6.02:1   needs 4.5
+     hairline                cream 12%             1.38:1   decorative
+
+   Hover goes to gold-pale, NOT gold-deep: gold-deep #7D641F is 1.31:1 on navy
+   and disappears. That is the same crossover rule the palette note in
+   tailwind.config.ts states — light surfaces take gold-deep, dark surfaces take
+   gold, and neither crosses over.
+
+   The hairline replaces the cream bar's drop shadow, which is invisible on a
+   dark page: a shadow under a #0D1B2A bar sitting on a #1C3A5A gradient has
+   nothing to darken.
+--------------------------------------------------------------------------- */
+.site-header[data-surface="dark"][data-compact="true"] {
+  background-color: #0d1b2a;
+  box-shadow: 0 1px 0 rgba(248, 244, 238, 0.12);
+}
+.site-header[data-surface="dark"][data-compact="true"] {
+  --nav-ink: #f8f4ee;
+}
+.site-header[data-surface="dark"][data-compact="true"] .nav-ink:hover {
+  color: #efe1b0;
+}
+/* The pill inverts the other way round here. On cream it is a navy fill; on
+   navy it becomes the cream fill — which is the SAME rule the transparent
+   state already follows (the pill always contrasts with the bar it sits in),
+   just arriving at the opposite value because the bar did. */
+.site-header[data-surface="dark"][data-compact="true"] .nav-pill {
+  background-color: #f8f4ee;
+  color: #0d1b2a;
+}
+.site-header[data-surface="dark"][data-compact="true"] .nav-pill:hover {
+  background-color: #7d641f;
+  color: #f8f4ee;
+}
+
 @media (min-width: 900px) {
   .site-header {
     height: 116px;
@@ -232,6 +317,71 @@ html {
   .site-header[data-compact="true"] {
     height: 76px;
   }
+}
+
+/* ---------------------------------------------------------------------------
+   CURRENT-PAGE INDICATOR.
+
+   Driven off `aria-current="page"`, which SiteHeader sets from the real
+   pathname — so the machine-readable state and the visible state cannot drift
+   apart. There is no second class to remember to add.
+
+   IT IS A RULE, NOT A COLOUR. Colour alone does not satisfy 1.4.1, and this
+   bar has three different ink colours across its states anyway (white over the
+   hero photograph, navy on the cream bar, cream on the dark About bar), so
+   "the gold one is current" has no fixed meaning here.
+
+   `currentColor` is load-bearing: the rule inherits whichever of those three
+   inks is live, which means it is exactly as legible as the label it sits
+   under and can never become the one element on the bar that fails contrast.
+   A fixed gold would: #C9A84C on cream is 2.09:1, under the 3:1 that 1.4.11
+   asks of a meaningful non-text graphic.
+
+   2px at a 6px offset clears Overpass's descenders at 15px, so it reads as an
+   underline rather than a strikethrough on the "g" in "Legacy"-style labels.
+--------------------------------------------------------------------------- */
+.nav-link[aria-current="page"] {
+  text-decoration-line: underline;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 6px;
+}
+
+/* ---------------------------------------------------------------------------
+   FOCUS RING — header-scoped, follows the surface.
+
+   The global ring is `2px solid #C9A84C`, which is 2.09:1 on cream: below the
+   3:1 that 2.4.11 / 1.4.11 want of a focus indicator. That was survivable
+   while the bar's links were `href="#"` stubs nobody would tab to on purpose;
+   they are real destinations now, so the ring has to actually pass.
+
+     cream bar     gold-deep #7D641F on #F8F4EE    5.16:1
+     dark bar      gold-pale #EFE1B0 on #0D1B2A   13.31:1
+     over the hero gold-pale #EFE1B0, on the veiled photograph the nav links
+                   already measure 10.15:1 against
+
+   gold-deep never appears on a dark surface and gold-pale never on a light
+   one — the same crossover rule the palette note in tailwind.config.ts states.
+
+   The mobile panel is a SIBLING of <header> (see the note on the markup), so
+   it is not covered by these selectors and takes the cream-surface ring from
+   its own rule below.
+--------------------------------------------------------------------------- */
+.site-header a:focus-visible,
+.site-header button:focus-visible {
+  outline: 2px solid #7d641f;
+  outline-offset: 4px;
+}
+.site-header[data-compact="false"] a:focus-visible,
+.site-header[data-compact="false"] button:focus-visible,
+.site-header[data-surface="dark"][data-compact="true"] a:focus-visible,
+.site-header[data-surface="dark"][data-compact="true"] button:focus-visible {
+  outline-color: #efe1b0;
+}
+#site-menu a:focus-visible,
+#site-menu button:focus-visible {
+  outline: 2px solid #7d641f;
+  outline-offset: 4px;
 }
 
 /* Links sit on a busy photograph in the transparent state, so they carry a soft
@@ -1103,4 +1253,244 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   .motion-safe-lift:hover {
     transform: none !important;
   }
+}
+
+/* ===========================================================================
+   ABOUT PAGE — /[locale]/about
+   ===========================================================================
+
+   Modelled on the ENTIRE homepage of restaurantsem.com, section for section,
+   with Synergy's content and our tokens. Measured live; none of their CSS is
+   copied and none of their files are used.
+
+   THE ONE THING THAT MAKES THAT PAGE WORK: no section has a background. Every
+   one is transparent, and the whole non-hero column sits on a SINGLE
+   continuous gradient on one wrapper — theirs #265C78 -> #1E1E1E at 75% over
+   8,036px. You scroll from daylight into darkness. There are no colour blocks,
+   no rules and no cards marking boundaries; that gradient does most of the
+   emotional work, and every section that painted its own background would
+   break it.
+
+   OURS IS #1C3A5A -> #0D1B2A, ALSO LANDING AT 75%.
+
+   Ending on exactly #0D1B2A is not a preference — it is the footer's colour,
+   so the seam between the last section and the footer does not exist. Landing
+   at 75% rather than 100% is theirs, and it is what guarantees that: the last
+   quarter of the column is FLAT #0D1B2A, so the footer is reached on a colour
+   that has already stopped changing rather than on the final pixel of a ramp
+   that a rounding error could leave one step short.
+
+   WHY THE TOP COLOUR HAD TO BE DERIVED. navy #0D1B2A is L 0.0104 and ink
+   #1A1A1A is L 0.0103 — they differ in hue, not in brightness, so the obvious
+   "navy to ink" gradient descends 1.00x and looks like nothing is happening.
+   navy-lift #1C3A5A was solved backwards from the gold constraint (see the
+   note in tailwind.config.ts). Descent 3.87x; gold never below 5.10:1; cream
+   never below 10.63:1.
+
+   gold-deep #7D641F is UNUSABLE on this run — 2.06:1 at the top. Nothing on
+   this page may use it.
+--------------------------------------------------------------------------- */
+.about-gradient {
+  background-image: linear-gradient(180deg, #1c3a5a 0%, #0d1b2a 75%);
+  /* The 75% stop means the ramp is complete before the wrapper ends, so the
+     flat tail below it is the same #0D1B2A the footer paints. */
+  background-color: #0d1b2a;
+}
+
+/* HERO — bottom-anchored copy scrim.
+ *
+ * The photograph is a family being photographed in warm late light, with an
+ * out-of-focus foreground figure at the left. It is bright: measured with no
+ * scrim at all, the worst pixel under the copy is 1.39:1.
+ *
+ * THIS IS THE ONLY SCRIM ON THIS HERO. The homepage carries .hero-veil-top as
+ * well, because SiteHeader is transparent at the top of the locale root and
+ * white nav links sit straight on the photograph. /about is not the hero
+ * route, so the bar is opaque #0D1B2A from scroll 0 and nothing on the image
+ * is carrying the nav — a second graduated veil there would darken 300px of
+ * photograph for nobody.
+ *
+ * Measured the same way the homepage hero was: the real JPEG mapped through
+ * object-cover at each viewport, the scrim composited as a real per-row alpha
+ * fill, then EVERY pixel of each text box sampled. Worst pixel, not mean, and
+ * the boxes are read off the built page with getBoundingClientRect rather than
+ * estimated.
+ *
+ *   peak   h1 worst   sub worst
+ *   none      1.49       1.39     <- fails
+ *   0.55      4.58       4.83     <- passes, but sub has only +0.33 at tablet
+ *   0.60      4.43       5.51     <- shipped, against 3.0 and 4.5
+ *   0.72      5.87       7.78     <- buys nothing the copy needs, costs the photo
+ *
+ * Per viewport at the shipped 0.60:  1425x900  h1 4.43 / sub 5.51
+ *                                     753x1024 h1 5.39 / sub 5.56
+ *                                     390x844  h1 5.34 / sub 5.56
+ *
+ * Anchored to the bottom edge, monotonic, fully clear by 30% — so it never
+ * reads as a band or a mid-frame pool, and it never touches the faces, which
+ * sit in the upper half of the frame at every width. The steepest segment is
+ * 0.20 per 10% of height.
+ *
+ * Held FLAT from 72% to the bottom rather than continuing to deepen: the copy
+ * block's own bottom edge is at ~91% and a scrim still ramping under it would
+ * put a visible vertical gradient across the last line of the sub-headline. */
+.about-hero-scrim {
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(13, 27, 42, 0.13) 42%,
+    rgba(13, 27, 42, 0.33) 52%,
+    rgba(13, 27, 42, 0.52) 62%,
+    rgba(13, 27, 42, 0.6) 72%,
+    rgba(13, 27, 42, 0.6) 100%
+  );
+}
+
+/* The hero's bottom edge meets the gradient's top colour. Without this the
+   photograph's own bottom row (whatever luminance it happens to be) butts
+   straight into #1C3A5A and reads as a seam. A short fade to exactly the
+   gradient's first value hands one section to the next. */
+.about-hero-foot {
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(28, 58, 90, 0) 0%, #1c3a5a 100%);
+}
+
+/* ===========================================================================
+   SEM SCALE — container, gutters, type, grid gaps.
+   ===========================================================================
+
+   RE-MEASURED LIVE on restaurantsem.com at three viewports. Every number below
+   is read off their computed styles, not inferred:
+
+                        1526        758         390
+     page gutter        41          36.5        19.07
+     container max      1476        1476        1476     (`.container-large`)
+     display h1         90.2/90.2   80.31/80.31 53.39/53.39   w300
+     section h2         57.4/68.88  51.11/61.33 45.77/54.92   w300
+     eyebrow            21.32/25.58 18.98/22.78 17.16/20.59   w500
+     body               21.32/38.38 18.98/34.17 17.16/30.89   w300
+     pull-quote         75.44/113.16 52.57/73.59 38.14/57.21  w300
+     pill CTA           16.4/24.6   14.6/21.9   15.26/22.88   w600
+     info grid          729.55/583.65 gap 131.2 | 1 col | 1 col
+     food-drink grid    376/501/501   gap 32.8  | 2 col | 2 col
+     images grid        3x394         gap 131.2 | 1 col | 1 col
+     logo grid          5 col         gap 49.2  | 3 col | 2 col
+
+   Their ramp is STEPPED (Webflow rem + breakpoints), not fluid, which is why
+   these are two-step rules rather than one clamp across the whole range: a
+   single clamp fitted to the extremes misses their tablet value by 15px on the
+   display size. Below 768 the phone value is held flat, exactly as theirs is.
+
+   WEIGHT IS THE ONE THING WE CANNOT MATCH. Theirs is Satoshi at 300
+   throughout. Kufam is loaded at 400 and 500 only, and the project rule is
+   that nothing goes above 500 and no synthetic weight is ever used. So every
+   display size here is w400 — one step heavier than the reference at the same
+   size. It is the closest honest value; faking 300 would mean loading a face
+   we do not have a licence measurement for.
+--------------------------------------------------------------------------- */
+.sem-shell {
+  padding-inline: clamp(19.07px, 1.93vw + 11.54px, 41px);
+}
+.sem-inner {
+  max-width: 1476px;
+  margin-inline: auto;
+}
+
+/* Vertical section rhythm — their `.padding-section-large`, 131.2px at 1526. */
+.sem-pad-y {
+  padding-block: clamp(64px, 8.6vw, 131.2px);
+}
+.sem-pad-t {
+  padding-top: clamp(64px, 8.6vw, 131.2px);
+}
+
+:root {
+  /* Their grid gaps, stepped the way theirs are. */
+  --sem-gap-lg: 43.8px;
+  --sem-gap-md: 29.2px;
+  --sem-gap-logos: 43.8px;
+}
+@media (min-width: 1280px) {
+  :root {
+    --sem-gap-lg: 131.2px;
+    --sem-gap-md: 32.8px;
+    --sem-gap-logos: 49.2px;
+  }
+}
+
+.sem-display {
+  font-size: 53.39px;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+.sem-h2 {
+  font-size: 45.77px;
+  line-height: 1.2;
+  font-weight: 400;
+  letter-spacing: -0.0162em;
+}
+.sem-eyebrow {
+  font-size: 17.16px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+.sem-body {
+  font-size: 17.16px;
+  line-height: 1.8;
+  font-weight: 400;
+}
+.sem-quote {
+  font-size: 38.14px;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.sem-pill {
+  font-size: 15.26px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .sem-display {
+    font-size: clamp(80.31px, 1.288vw + 70.55px, 90.2px);
+  }
+  .sem-h2 {
+    font-size: clamp(51.11px, 0.819vw + 44.9px, 57.4px);
+  }
+  .sem-eyebrow,
+  .sem-body {
+    font-size: clamp(18.98px, 0.305vw + 16.67px, 21.32px);
+  }
+  .sem-quote {
+    font-size: clamp(52.57px, 2.978vw + 30px, 75.44px);
+  }
+  .sem-pill {
+    font-size: clamp(14.6px, 0.234vw + 12.83px, 16.4px);
+  }
+}
+
+/* The pill CTA — their `.button.is-icon.white`, measured: white fill,
+   #265C78 label (their gradient's top colour), padding 7.38/32.8, radius 82px,
+   16.4/24.6 w600, with a trailing arrow.
+
+   OURS INVERTS THE LABEL COLOUR AND THAT IS FORCED. Their label is the
+   gradient's top value on white — for us that would be navy-lift #1C3A5A on
+   cream, which measures 11.65:1 and would actually pass. But navy-lift exists
+   only as a background token in this palette and has never been measured as
+   text; navy #0D1B2A on cream is 15.87:1 and is already the site's button
+   pairing (SiteHeader's Join pill, the hero CTA). Reusing it keeps one button
+   system instead of two. */
+.sem-pill-cta {
+  background-color: #f8f4ee;
+  color: #0d1b2a;
+  border-radius: 82px;
+  padding: 7.38px 32.8px;
+  transition: background-color 200ms ease;
+}
+.sem-pill-cta:hover {
+  background-color: #efe1b0;
 }

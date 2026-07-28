@@ -1,12 +1,105 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  HEADER_ROUTES,
+  JOIN_URL,
+  isCurrentRoute,
+  routeHref,
+  type RouteKey,
+} from "@/routes";
 import Logo from "./Logo";
 
-const LEFT_LINKS = ["home", "about"] as const;
-const RIGHT_LINKS = ["services", "contact"] as const;
+/**
+ * The bar is a three-column grid with the logo dead centre, so the nav is
+ * split either side of it: the first two routes left, the rest right. The
+ * SOURCE of the list is routes.ts — this file decides where the items sit, not
+ * which items exist.
+ *
+ * It used to be two hard-coded pairs, `["home","about"]` and
+ * `["services","contact"]`, every one of them rendered as `<a href="#">`.
+ * Services and Contact are not built; they are gone rather than greyed out.
+ */
+const LEFT_LINKS: readonly RouteKey[] = HEADER_ROUTES.slice(0, 2);
+const RIGHT_LINKS: readonly RouteKey[] = HEADER_ROUTES.slice(2);
+
+/** /{locale}/about, either locale, with or without a trailing slash. */
+const isAboutRoute = (pathname: string | null) =>
+  /^\/(?:en|es)\/about\/?$/.test(pathname ?? "/");
+
+/**
+ * One nav link. Shared by the desktop row and the mobile panel so the
+ * current-page logic cannot drift between them.
+ *
+ * ⚠️ IT IS DECLARED AT MODULE SCOPE, AND THAT IS LOAD-BEARING. DO NOT MOVE IT
+ * BACK INSIDE SiteHeader.
+ *
+ * It was defined inside the component body for exactly one commit, and it made
+ * every link in the header unclickable. The chain:
+ *
+ *   1. A component declared inside another component's body is a NEW FUNCTION
+ *      IDENTITY on every render. React compares element types by identity, so
+ *      it does not update the existing subtree — it unmounts the old one and
+ *      mounts a fresh one, replacing every DOM node underneath.
+ *   2. Pressing the mouse on a link focuses it, which fires `focusin`, which
+ *      runs `setFocusWithin(true)`, which re-renders SiteHeader. That happens
+ *      BETWEEN mousedown and mouseup.
+ *   3. So the <a> that received mousedown is detached before mouseup lands on
+ *      its replacement. The browser only synthesises a `click` when both
+ *      halves hit the same node — so no click event was ever generated, React
+ *      never saw one, and the router was never called.
+ *
+ * Measured in real Chrome: at mousedown the node is connected; at mouseup
+ * `isConnected === false` and a different element occupies the slot. Nothing
+ * was covering the link and nothing called preventDefault — the click simply
+ * never existed.
+ *
+ * It survived automated testing because a synthetic `element.click()` or a
+ * dispatched `new MouseEvent('click')` bypasses the browser's down/up pairing
+ * entirely. Only a real pointer press can catch this. That is why the nav is
+ * now verified by driving a real mouse in a real browser.
+ *
+ * CURRENT PAGE IS MARKED TWICE, ON PURPOSE.
+ *
+ *   aria-current="page"  the machine-readable half. Screen readers announce
+ *                        "current page" on the link; nothing visual is
+ *                        required for that to work.
+ *   an underline         the visible half, driven off that same attribute in
+ *                        globals.css. It is a SHAPE, not a colour — 1.4.1 is
+ *                        not satisfied by colour alone, and the bar carries
+ *                        three different ink colours across its states.
+ *
+ * The rule is drawn in `currentColor`, so it inherits whichever ink is live
+ * and is exactly as legible as the label it sits under.
+ */
+function NavLink({
+  routeKey,
+  className,
+  onClick,
+}: {
+  routeKey: RouteKey;
+  className: string;
+  onClick?: () => void;
+}) {
+  const t = useTranslations("nav");
+  const locale = useLocale();
+  const pathname = usePathname();
+  const current = isCurrentRoute(pathname, locale, routeKey);
+
+  return (
+    <Link
+      href={routeHref(locale, routeKey)}
+      aria-current={current ? "page" : undefined}
+      onClick={onClick}
+      className={className}
+    >
+      {t(routeKey)}
+    </Link>
+  );
+}
 
 /** Scroll distance at which the bar compacts. Lemonade's own threshold, found
  *  by bisection: 60px holds the tall bar, 62px has already compacted. */
@@ -88,6 +181,9 @@ const DIR_DELTA = 8;
 export default function SiteHeader() {
   const t = useTranslations("nav");
   const pathname = usePathname();
+  // Every href is built from the locale this bar is rendering in, so following
+  // a link from /es never silently drops you back to /en.
+  const locale = useLocale();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
   const [hidden, setHidden] = useState(false);
@@ -180,6 +276,40 @@ export default function SiteHeader() {
       lenis?.off?.("scroll", read);
     };
   }, []);
+
+  /**
+   * A ROUTE CHANGE RESETS THE SCROLL POSITION, BUT NOT THE BAR'S MEMORY OF IT.
+   *
+   * SiteHeader is mounted in the layout, so it does not remount on client-side
+   * navigation — and the scroll reset that Next performs does not reach the
+   * listener above, because Lenis deliberately swallows most native scroll
+   * events. Measured: scrolled to the bottom of /en/about, click "Home" in the
+   * footer, and the homepage arrives at scrollY 0 with data-compact="true" and
+   * data-hidden="true" — a compacted bar, translated fully off the top of the
+   * screen, over a hero that expects the tall transparent one. It stays there
+   * until the first scroll gesture.
+   *
+   * This predates the dark variant and affects every route transition on the
+   * site (it is just far easier to hit now that there is a long page to scroll
+   * before leaving). Visibility is forced back on because arriving at a new
+   * page with no navigation is the worse of the two failures; the surface is
+   * recomputed from the real position, which is correct whether the new route
+   * lands at the top or has its scroll restored by a back-navigation.
+   *
+   * setTimeout rather than requestAnimationFrame, for the same reason the
+   * focus effect below uses one: rAF does not fire in a tab that is not
+   * compositing, which would strand the bar off-screen in exactly the case
+   * that is hardest to notice. The accumulator inside the scroll effect is
+   * left alone — it self-resets on the first event at or below HIDE_AFTER, and
+   * on any direction change.
+   */
+  useEffect(() => {
+    setHidden(false);
+    const id = window.setTimeout(() => {
+      setCompact(window.scrollY > COMPACT_AT);
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [pathname]);
 
   // Keyboard focus forces the bar visible. Tabbing to a link that is sitting
   // at translateY(-100%) is a focus trap in the literal sense: the element is
@@ -275,16 +405,61 @@ export default function SiteHeader() {
    * navigation bar. So the transparent state is allowed only on the locale
    * root, and every other route gets the solid bar from the first pixel.
    *
-   * Matches "/", "/en", "/es" and their trailing-slash forms; anything deeper
-   * ("/en/calculator") is a content page. next-intl's middleware means the
-   * as-rendered path always carries the locale, but "/" is matched too so a
-   * pre-redirect render never flashes the solid bar over the hero.
+   * Matches "/", "/en", "/es" and their trailing-slash forms, AND
+   * "/{locale}/about". next-intl's middleware means the as-rendered path
+   * always carries the locale, but "/" is matched too so a pre-redirect render
+   * never flashes the solid bar over the hero.
+   *
+   * /about EARNED ITS PLACE HERE BY HAVING A HERO, not by being a special
+   * case. The rule is a property of the page, not of the route: does the first
+   * viewport contain a full-bleed photograph dark enough to carry white ink?
+   * The homepage does. /about does — it opens on the same kind of full-bleed
+   * image. /calculator does not; it opens on cream, where a transparent bar
+   * would paint #FFFFFF on #F8F4EE at 1.11:1 and simply vanish.
+   *
+   * The reference nav goes further than this: theirs is `rgba(221,221,221,0)`
+   * and NEVER takes a surface, at any scroll position — measured live at
+   * scrollY 3500 and still fully transparent. Ours cannot copy that, and the
+   * reason is that their page and ours are different below the fold. Their
+   * gradient starts at #265C78 (L 0.117) and their nav is white; ours starts
+   * at #1C3A5A and stays dark, but the sections our bar travels over include
+   * the §2b logo row and the §5 image grid, where white ink would sit on
+   * arbitrary photograph. So the bar takes a surface once it leaves the hero —
+   * which is exactly what the homepage bar already does.
    */
   const isHeroRoute = useMemo(
-    () => /^\/(?:en|es)?\/?$/.test(pathname ?? "/"),
+    () => /^\/(?:en|es)?\/?$/.test(pathname ?? "/") || isAboutRoute(pathname),
     [pathname],
   );
   const solid = compact || !isHeroRoute;
+
+  /**
+   * SURFACE is the THIRD derived attribute, and it is orthogonal to the other
+   * two in exactly the way `data-compact` and `data-hidden` are orthogonal to
+   * each other. `data-compact` decides WHETHER the bar has a surface;
+   * `data-surface` decides WHICH surface it is. `data-hidden` still owns
+   * nothing but the transform.
+   *
+   * Why it exists: /[locale]/about is a dark page. It opens on a photograph and
+   * then runs one continuous #1C3A5A -> #0D1B2A gradient to the footer, so a
+   * cream bar forced solid over it is a bright band stapled across the top of a
+   * page whose whole effect is a descent into darkness. The dark variant paints
+   * the bar #0D1B2A with cream ink — 15.87:1, the same pairing the footer
+   * already ships, so the page opens and closes on the same surface.
+   *
+   * It is DECLARED, not sniffed. The alternative — reading the pixels behind
+   * the bar and inverting — is a scroll-time measurement that would have to run
+   * every frame and would still be wrong for one frame after any navigation.
+   * A route knows what colour it is; it says so.
+   *
+   * Route-scoped by construction: this matches /about under either locale and
+   * nothing else, so every other route renders byte-identical markup to before
+   * (the attribute is present and reads "light", which no CSS rule targets).
+   */
+  const surface = useMemo(
+    () => (isAboutRoute(pathname) ? "dark" : "light"),
+    [pathname],
+  );
 
   /**
    * Visibility is the scroll decision AND the two overrides. Focus wins over
@@ -294,7 +469,7 @@ export default function SiteHeader() {
   const concealed = hidden && !focusWithin && !open;
 
   const linkClass =
-    "nav-ink text-[15px] font-semibold tracking-[0.01em] transition-colors duration-200 hover:text-gold-deep";
+    "nav-link nav-ink text-[15px] font-semibold tracking-[0.01em] transition-colors duration-200 hover:text-gold-deep";
 
   return (
     <>
@@ -302,6 +477,7 @@ export default function SiteHeader() {
       ref={headerRef}
       data-compact={solid ? "true" : "false"}
       data-hidden={concealed ? "true" : "false"}
+      data-surface={surface}
       // Height AND surface live in globals.css keyed off data-compact. No
       // `bg-cream` here — at the top of the page the bar is a pure overlay on
       // the photo, and the cream is cross-faded in only once compacted.
@@ -324,39 +500,53 @@ export default function SiteHeader() {
         <ul className="hidden items-center gap-8 card:flex">
           {LEFT_LINKS.map((key) => (
             <li key={key}>
-              <a href="#" className={linkClass}>
-                {t(key)}
-              </a>
+              <NavLink routeKey={key} className={linkClass} />
             </li>
           ))}
         </ul>
 
-        {/* CENTRE — logo */}
-        <a
-          href="#"
+        {/* CENTRE — logo. A wordmark in the top-left (or here, top-centre) is
+            expected to be the way home, and it was `href="#"`. It is the one
+            link on the bar that is not labelled by its text — aria-label
+            overrides the SVG's own <title> and its two <text> nodes, which
+            otherwise concatenate into "Synergy Insurance GroupSYNERGY
+            INSURANCE GROUP". No aria-current here: the visible Home link
+            already carries it, and marking two elements as the current page
+            makes a screen reader announce it twice. */}
+        <Link
+          href={routeHref(locale, "home")}
           aria-label={t("company")}
           className="flex items-center justify-self-center"
         >
+          {/* The wordmark follows the surface. `light` is the wordmark
+              recoloured to ink, which is right on cream and unreadable on the
+              dark bar; `dark` is the gold artwork exactly as supplied — the
+              same variant the footer already uses on the same #0D1B2A. Nothing
+              is recoloured for this and no mark is invented. */}
           <Logo
-            variant="light"
+            variant={surface === "dark" ? "dark" : "light"}
             className="site-header__logo h-11 w-auto card:h-12"
           />
-        </a>
+        </Link>
 
         {/* RIGHT — ends exactly on the headline's right edge */}
         <div className="flex items-center justify-end gap-8">
           <ul className="hidden items-center gap-8 card:flex">
             {RIGHT_LINKS.map((key) => (
               <li key={key}>
-                <a href="#" className={linkClass}>
-                  {t(key)}
-                </a>
+                <NavLink routeKey={key} className={linkClass} />
               </li>
             ))}
           </ul>
 
+          {/* The one destination on this bar that is not ours. It goes to
+              fflsynergy's own live recruiting site, which is the single
+              external link on the whole site that has always resolved — the
+              footer already pointed here while this pill sat on href="#". */}
           <a
-            href="#"
+            href={JOIN_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="nav-pill hidden h-10 items-center rounded-full px-6 text-[15px] font-semibold card:inline-flex"
           >
             {t("join")}
@@ -437,19 +627,22 @@ export default function SiteHeader() {
             className="flex flex-1 flex-col pb-10 pt-2"
             style={{ paddingInline: "var(--nav-inset)" }}
           >
-            {[...LEFT_LINKS, ...RIGHT_LINKS].map((key) => (
-              <a
+            {/* HEADER_ROUTES, not the left/right split — the panel is one
+                stacked list, so it takes the nav's real order rather than
+                re-joining two halves that only exist because of the logo. */}
+            {HEADER_ROUTES.map((key) => (
+              <NavLink
                 key={key}
-                href="#"
+                routeKey={key}
                 onClick={close}
-                className="border-b border-navy/10 py-5 font-display text-[26px] font-medium tracking-[-0.01em] text-navy"
-              >
-                {t(key)}
-              </a>
+                className="nav-link border-b border-navy/10 py-5 font-display text-[26px] font-medium tracking-[-0.01em] text-navy"
+              />
             ))}
 
             <a
-              href="#"
+              href={JOIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={close}
               className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-full bg-navy text-[16px] font-semibold text-cream"
             >

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { FOOTER_ROUTES, JOIN_URL, routeHref } from "@/routes";
 import Logo from "./Logo";
 
 /**
@@ -131,14 +132,22 @@ export default function Footer() {
   const headingClass =
     "cap-trim cap-body py-3 text-[14px] font-normal leading-[1.5] tracking-[0.016em] text-cream/70 md:text-[15px]";
 
-  const navItems = [
-    { key: "home", href: `/${locale}` },
-    { key: "about", href: `/${locale}/about` },
-    { key: "services", href: `/${locale}/services` },
-    { key: "blog", href: `/${locale}/blog` },
-    { key: "gallery", href: `/${locale}/gallery` },
-    { key: "contact", href: `/${locale}/contact` },
-  ] as const;
+  /**
+   * THE FOOTER SITEMAP IS NOW A SITEMAP OF PAGES THAT EXIST.
+   *
+   * It used to list six routes hard-coded here; four of them — services,
+   * blog, gallery, contact — 404. They were real <Link>s to nothing, which is
+   * the worst version of the problem: they look and behave like working
+   * navigation right up to the moment the 404 renders.
+   *
+   * The list comes from routes.ts now, which is the same list the header
+   * reads, so the two navigation surfaces cannot disagree about what the site
+   * contains. Restoring a page adds it in one place.
+   */
+  const navItems = FOOTER_ROUTES.map((key) => ({
+    key,
+    href: routeHref(locale, key),
+  }));
 
   return (
     <footer className="bg-navy text-cream">
@@ -210,7 +219,7 @@ export default function Footer() {
                 {/* The only link here that resolves today — it is fflsynergy's
                     own live external recruiting site, not a future route. */}
                 <a
-                  href={t("joinHref")}
+                  href={JOIN_URL}
                   className={linkClass}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -221,7 +230,33 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* LEGAL — their legal slot, 11 / span 2 */}
+          {/* LEGAL — their legal slot, 11 / span 2.
+              ---------------------------------------------------------------
+              🔴 REMOVED, AND THIS ONE IS BLOCKED, NOT MERELY UNBUILT.
+
+              It held two links, /privacy and /terms. Both 404.
+
+              A privacy policy and terms of service for a Florida life
+              insurance brokerage are legal documents, and they come from the
+              client — the same rule that already governs the regulatory
+              disclosure and the results disclaimer everywhere else in this
+              codebase. They cannot be written here to fill the slot.
+
+              And a link is worse than no link in this specific case: the link
+              asserts that Synergy HAS a published privacy policy and that you
+              can read it. Clicking it proves otherwise. An absent link says
+              nothing, which is the accurate thing to say right now.
+
+              The strings `footer.legalTitle`, `footer.legal.privacy` and
+              `footer.legal.terms` are RETAINED UNTOUCHED in both message
+              files. Restoring is: build the routes, then uncomment this.
+
+              The nav column stays at col-start-9 / span 2 rather than
+              spreading to fill the space — the reference layout this footer
+              was measured from carries an empty gutter at column 8 already,
+              so a second one at 11-12 is consistent with it rather than a
+              hole where something used to be.
+
           <nav
             aria-labelledby="footer-legal-heading"
             className="col-span-6 lg:col-span-2 lg:col-start-11"
@@ -242,6 +277,7 @@ export default function Footer() {
               </li>
             </ul>
           </nav>
+          */}
 
           {/* DIVIDER — their line_wrap: air, then a hairline at the BOTTOM */}
           <div

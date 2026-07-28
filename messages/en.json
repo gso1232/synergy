@@ -8,6 +8,7 @@
     "tagline": "Protecting Families. Building Futures.",
     "home": "Home",
     "about": "About",
+    "calculator": "Calculator",
     "services": "Services",
     "contact": "Contact",
     "phone": "407-434-0400",
@@ -359,6 +360,55 @@
       }
     }
   },
+  "about": {
+    "metaTitle": "About Synergy Insurance Group — Licensed Insurance Advisors — Orlando Florida",
+    "metaDescription": "Learn about Synergy Insurance Group, founded by licensed insurance advisor Rula AlAryan in Orlando Florida. We protect families and build careers across all 50 states. ITIN friendly.",
+    "hero": {
+      "headline": "We Are Synergy",
+      "sub": "A brokerage built on integrity, education, and a genuine commitment to protecting the people we serve."
+    },
+    "story": {
+      "eyebrow": "Our Story",
+      "p1": "Synergy Insurance Group was founded in Orlando, Florida with a single purpose: to bring transparency and honesty to an industry that too often leaves families confused. We were built around family values — the belief that every person deserves to understand exactly what they are getting and why.",
+      "p2": "Our education-first philosophy means we never rush a conversation. We take the time to understand your situation before we recommend anything. We are independent brokers, which means we are never locked into one carrier — we compare what is available and bring back what suits your household.",
+      "p3": "Licensed in all 50 states and partnered with the nation's top-rated carriers, Synergy serves families across the country.",
+      "imageAlt": "Two members of the Synergy team standing together at the front of a training room, one speaking into a microphone."
+    },
+    "quote1": "Insurance is not a product. It is a promise.",
+    "trust": {
+      "headline": "Built on Trust. Driven by Results.",
+      "p1": "Synergy Insurance Group is a premium life insurance brokerage headquartered in Orlando, Florida. We take an education-first approach to every conversation — helping families understand their options before making any decisions.",
+      "p2": "Our access to multiple top-rated carriers means we are never limited to one solution. We find what is right for your family — not what is easiest to sell. Licensed in all 50 states, we serve clients from coast to coast with the same commitment to clarity and care.",
+      "ctaLabel": "Open the retirement calculator",
+      "imageAlt1": "A Synergy advisor speaking into a microphone, gesturing towards a presentation slide headed “Hone Your Skills & Knowledge”.",
+      "imageAlt2": "Members of the Synergy team applauding a colleague speaking into a microphone.",
+      "body": "We take an education-first approach to every conversation — helping families understand their options before making any decisions.",
+      "eyebrow": "Our approach"
+    },
+    "values": {
+      "headline": "What We Stand For",
+      "v1": {
+        "numeral": "I",
+        "title": "Integrity",
+        "body": "We tell you the truth even when it is not what you want to hear. Your trust is worth more than any commission.",
+        "imageAlt": "Two people shaking hands across a table at the close of a meeting."
+      },
+      "v2": {
+        "numeral": "II",
+        "title": "Education",
+        "body": "We believe an informed client makes the best decisions. We never rush. We never pressure. We explain everything.",
+        "imageAlt": "An advisor talking a couple through paperwork at a kitchen table."
+      },
+      "v3": {
+        "numeral": "III",
+        "title": "Legacy",
+        "body": "We think beyond the policy. We help families build protection strategies that outlast any single life event.",
+        "imageAlt": "A grandfather, his daughter and his granddaughter together outdoors."
+      }
+    },
+    "quote2": "We do not just sell policies. We build protection strategies that last a lifetime.",
+    "zoomAlt": "A stone-and-shingle family house at dusk, every window lit, seen through tall pines."
+  },
   "footer": {
     "srTitle": "Footer",
     "missionTitle": "Our Mission",
@@ -375,6 +425,7 @@
     "nav": {
       "home": "Home",
       "about": "About",
+      "calculator": "Calculator",
       "services": "Services",
       "blog": "Blog",
       "gallery": "Gallery",

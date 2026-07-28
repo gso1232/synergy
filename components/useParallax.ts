@@ -38,7 +38,28 @@ export function useParallax(
     // framer-motion's useReducedMotion returns boolean | null (null until it
     // has read the media query), so accept null rather than forcing every
     // caller to coerce it.
-  }: { from?: number; to?: number; reduce?: boolean | null } = {},
+    //
+    // SCRUB MODE. `true` (the default, and what every existing call site gets)
+    // locks the tween to the scroll position exactly. A NUMBER instead gives
+    // GSAP that many seconds to catch up, so the layer eases toward its target
+    // rather than tracking it rigidly.
+    //
+    // It exists because restaurantsem.com's own image-grid parallax is a
+    // Webflow SCROLLING_IN_VIEW continuous action with `smoothing: 50` — a
+    // damped follow, not a locked scrub, and that damping is most of what
+    // reads as "smooth" on their page. Measured: scroll instantly to a new
+    // position and their transform is still travelling toward it ~0.5s later.
+    //
+    // Added as an OPTION rather than a change of default so that Coverage and
+    // Testimonials keep the exact feel they were tuned to; nothing outside the
+    // About page passes it.
+    scrub = true,
+  }: {
+    from?: number;
+    to?: number;
+    reduce?: boolean | null;
+    scrub?: boolean | number;
+  } = {},
 ) {
   useEffect(() => {
     if (
@@ -74,7 +95,7 @@ export function useParallax(
             trigger: sec,
             start: "top bottom",
             end: "bottom top",
-            scrub: true,
+            scrub,
           },
         },
       );
@@ -89,5 +110,5 @@ export function useParallax(
       cancelled = true;
       cleanup();
     };
-  }, [sectionRef, bgRef, from, to, reduce]);
+  }, [sectionRef, bgRef, from, to, reduce, scrub]);
 }
