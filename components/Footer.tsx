@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { FOOTER_ROUTES, JOIN_URL, routeHref } from "@/routes";
+import { FOOTER_ROUTES, routeHref } from "@/routes";
 import Logo from "./Logo";
 
 /**
@@ -215,18 +215,13 @@ export default function Footer() {
                   </Link>
                 </li>
               ))}
-              <li>
-                {/* The only link here that resolves today — it is fflsynergy's
-                    own live external recruiting site, not a future route. */}
-                <a
-                  href={JOIN_URL}
-                  className={linkClass}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {t("nav.join")}
-                </a>
-              </li>
+              {/* THE BESPOKE JOIN <li> THAT USED TO SIT HERE IS GONE.
+                  It was an external link to join.fflsynergy.com with
+                  target="_blank" — a hand-written exception because `join` was
+                  not a route. It is a route now and it is in FOOTER_ROUTES, so
+                  the loop above renders it and the exception would print a
+                  SECOND "Join" directly under the first. The subdomain also
+                  404s; see JOIN_URL_EXTERNAL_DEAD in routes.ts. */}
             </ul>
           </nav>
 

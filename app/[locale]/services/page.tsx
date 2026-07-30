@@ -101,14 +101,36 @@ export async function generateMetadata({
  * many there are, and cutting two products or inventing three would be fitting
  * content to a layout.
  */
+/**
+ * 2026-08 — the seven frames now show the client's OWN supplied photography,
+ * matched to each product BY NAME from `public/services gallery/`. The files
+ * were copied into a SPACE-FREE path — `public/services-gallery/` — because a
+ * space in a public URL double-encodes (`%2520`) and 404s; the originals with
+ * spaces are left untouched on disk. Every image clears its slot at 2x DPR with
+ * margin (product frame render 476x557 CSS -> 952x1115 @2x; the smallest source,
+ * 2001x3000, clears it 2.10x). Nothing is upscaled. Clearances per image are in
+ * CREDITS.md.
+ *
+ * PREVIOUS Pexels stock refs kept COMMENTED for fallback (files remain on disk):
+ *   ["p1", "/synergy/service-term-life-family.jpg"],    // young family, golden hour
+ *   ["p2", "/synergy/service-final-expense-senior.jpg"], // silver-haired woman, laughing
+ *   ["p3", "/synergy/service-mortgage-home.jpg"],        // couple unlocking their door
+ *   ["p4", "/synergy/service-iul-couple.jpg"],           // older couple, coffee at home
+ *   ["p5", "/synergy/service-annuities-couple.jpg"],     // retired couple outdoors
+ *   ["p6", "/synergy/service-medicare-active.jpg"],      // active senior, vegetables
+ *   ["p7", "/synergy/service-health-kitchen.jpg"],       // family cooking together
+ *
+ * The tuple's second element is now a FULL public path (was a bare filename
+ * joined onto `/synergy/`), so the two galleries can live side by side.
+ */
 const PRODUCTS = [
-  ["p1", "service-term-life.jpg"],
-  ["p2", "service-final-expense.jpg"],
-  ["p3", "service-mortgage-protection.jpg"],
-  ["p4", "service-iul.jpg"],
-  ["p5", "service-annuities.jpg"],
-  ["p6", "service-medicare.jpg"],
-  ["p7", "service-health.jpg"],
+  ["p1", "/services-gallery/term-life.jpg"], // "Term life"
+  ["p2", "/services-gallery/final-expense.jpg"], // "Final Expense Insurance"
+  ["p3", "/services-gallery/mortgage-protection.jpg"], // "Mortgage Protection Insurance"
+  ["p4", "/services-gallery/indexed-universal-life.jpg"], // "Indexed Universal Life (IUL)"
+  ["p5", "/services-gallery/fixed-indexed-annuities.jpg"], // "Fixed Indexed Annuities (FIAs)"
+  ["p6", "/services-gallery/medical-insurance.jpg"], // "medical insurance" -> Medicare
+  ["p7", "/services-gallery/health-insurance.jpg"], // "health insurance" -> Health
 ] as const;
 
 /**
@@ -132,12 +154,27 @@ const PRODUCTS = [
  * ever reversed and the images move inside the blocks, alt must be written at
  * that point and `services.essay.b*.imageAlt` re-added to both message files.
  */
+/**
+ * 2026-08 — four of the five essay frames now show the client's supplied
+ * photography, matched BY NAME from `public/services gallery/` and copied into
+ * the space-free `public/services-gallery/`. b3 ("A period, or a lifetime") had
+ * no matching file in the folder, so it KEEPS its prior frame. Each supplied
+ * frame clears the §4 frame (489x734 CSS -> 978x1467 @2x) with margin — the
+ * smallest, 3391x5080, clears it 3.46x. Nothing upscaled.
+ *
+ * PREVIOUS frames kept COMMENTED for fallback (files remain on disk):
+ *   ["b1", "/synergy/essay-desk-evening.jpg"],
+ *   ["b2", "/synergy/essay-sea-horizon.jpg"],
+ *   ["b4", "/synergy/essay-waiting-chairs.jpg"],
+ *   ["b5", "/synergy/essay-road-hills.jpg"],
+ * (b3's "/synergy/essay-facade-old-new.jpg" is unchanged — no supplied match.)
+ */
 const ESSAY = [
-  ["b1", "essay-desk-evening.jpg"],
-  ["b2", "essay-sea-horizon.jpg"],
-  ["b3", "essay-facade-old-new.jpg"],
-  ["b4", "essay-waiting-chairs.jpg"],
-  ["b5", "essay-road-hills.jpg"],
+  ["b1", "/services-gallery/tax-free.jpg"], // "Tax-free"
+  ["b2", "/services-gallery/a-floor.jpg"], // "A floor"
+  ["b3", "/synergy/essay-facade-old-new.jpg"], // no supplied match — unchanged
+  ["b4", "/services-gallery/medical-exam-column.jpg"], // "The medical exam column"
+  ["b5", "/services-gallery/balance-becomes-payment.jpg"], // "balance become payment"
 ] as const;
 const ROWS = ["r1", "r2", "r3", "r4", "r5", "r6", "r7"] as const;
 const COLS = ["c0", "c1", "c2", "c3", "c4", "c5", "c6"] as const;
@@ -150,11 +187,12 @@ export default async function ServicesPage({
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "services" });
 
-  const items: SequenceItem[] = PRODUCTS.map(([key, file]) => ({
+  const items: SequenceItem[] = PRODUCTS.map(([key, src]) => ({
     key,
     heading: t(`products.${key}.name`),
     body: t(`products.${key}.body`),
-    src: `/synergy/${file}`,
+    // `src` is now a full public path (see PRODUCTS) — no `/synergy/` prefix.
+    src,
     alt: t(`products.${key}.imageAlt`),
   }));
 
@@ -300,11 +338,12 @@ export default async function ServicesPage({
         <ServicesEssay
           headingId="services-essay"
           blocks={ESSAY.map(
-            ([k, file]): EssayBlock => ({
+            ([k, src]): EssayBlock => ({
               key: k,
               heading: t(`essay.${k}.name`),
               body: t(`essay.${k}.body`),
-              src: `/synergy/${file}`,
+              // `src` is now a full public path (see ESSAY) — no `/synergy/` prefix.
+              src,
             }),
           )}
         />

@@ -14,6 +14,78 @@ on this project look the way they do.
 > than by reasoning: the pull-quote reveal's floor opacity and the hero scrim's
 > shape. See §6a.
 >
+> 🔴 **NEWEST (2026-07-30, 3) — /join §4 STEPS ARE IMAGELESS NOW; that resolves
+> the step photo-collisions, and the step copy was tightened.** A cross-check
+> found the step frames md5-identical to /about's §5/§4 portraits (and the hero
+> to /about's hero); Synergy has NO distinct unused portrait — all seven are on
+> /about. Rather than repeat a face across two pages, §4 was rebuilt as
+> `components/JoinSteps.tsx`: an editorial rail of **I–IV gold-deep numerals +
+> type, no photographs**. `useWordReveal` gained a `floor` arg (default 0.55, so
+> /about is untouched); the numerals reveal at **0.78** so gold-deep stays ≥3:1
+> (**5.16 full / 3.35 floor**; 0.55 → 2.23, fail). Otherwise flat cream:
+> heading/body ink **15.88**, tagline ink-80 **8.66**.
+> **COPY (authored, approved, written to `en.json`):** step headings → **"Get in
+> Touch / Meet the Team / Get Licensed / Get Appointed & Start Selling"** (ours,
+> not fflsynergy's; none asserts earnings; "Get Licensed" avoids a "fast-track"
+> timeline claim). New **`join.steps.tagline` = "Your pace, your goals."** — the
+> neutral stand-in for a **"$0 startup cost"** line that is **NOT shipped** (cost
+> claim → Ziad, add to the client list; fflsynergy's own page says "Not a side
+> hustle," so no part-time claim was carried either).
+> 🔴 **STILL OPEN — the HERO collision is NOT resolved.** §1 is still the
+> team-dinner, byte-identical to /about's hero. "SYNERGY OFFICE INSIDE" was
+> proposed as its replacement and REFUSED — it carries a legible agent-commission
+> sheet **and** an LG logo. No clean office-interior shot exists (all carry LG /
+> AlphaMed / commission figures). Awaiting a hero decision or a clean high-res
+> office frame from Ziad. The `join-step-*.jpg` files are now orphaned on disk.
+>
+> 🔴 **NEWEST (2026-07-30) — /join IS THE FIRST PAGE WHOSE IMAGERY IS ENTIRELY
+> SYNERGY'S OWN.** All six /join photo slots moved off Pexels stock onto the
+> client's own team photos (the `New folder` drop = fflsynergy.com/gallery — the
+> same files, probed live, capped at 1620px wide): hero = team dinner, §2 = five
+> agents (studio), the four steps = Aiman / Rula / team portraits (step 4 reuses
+> the /about §5 stage portrait). **Branding audit:** five own frames were
+> EXCLUDED, not placed — they carry AlphaMed, Checkmate, National Life / Solid
+> Financial, LG, or a legible agent-commission sheet (the filename-hides-branding
+> trap, §11). **§2 was SHRUNK** from full-width 16:9 to a **760×507 (3:2)**
+> contained frame and its **parallax dropped** — no Synergy landscape reaches the
+> 2908px the old box needed at 2×, so the 1620px own frame now clears 2× (+6.6%,
+> no crop); the four step frames clear 2× natively (+13.5%). **🟡 THE HERO IS A
+> PLACEHOLDER FOR RESOLUTION:** at 1620px it clears 1× (+5.5%) but softens at 2×
+> (−47%) — the same trade the About hero took. Kept full-bleed for hero-to-hero
+> consistency; **swapped when Ziad sends the high-res camera files**, exactly as
+> the About hero awaits. Hero scrim + AA re-derived on the new frame
+> (object-center): nav 7.14/4.82/5.05 · eyebrow 5.82/6.26/5.92 · h1 6.22/7.43/7.41
+> · sub 7.36/8.60/8.79, all clearing. The `.join-apply-trust` **BBB slot stays
+> empty** — Synergy's own accreditation, held for Ziad.
+>
+> 🔴 **NEWEST — TWO THINGS WERE SHIPPING BROKEN AND ARE NOW FIXED.**
+> **(1) The Join journey was dead.** All three CTAs on the homepage's For
+> Agents tab were `href="#"`. They now go to `JOIN_URL` with the header's and
+> footer's `target`/`rel`. **The `href="#"` audit is swept across all 13
+> rendered routes in both locales and the count is now ZERO** — the three "Get
+> a free quote" stubs were resolved to `/contact` on evidence from the live
+> source site, where the client's own identically-labelled buttons go. §4a.
+> **§4's "All are gone" was false and is corrected in place.**
+> 🔴 **And a finding to take to Ziad: fflsynergy.com's three forms look like
+> fake successes** — no `action`, no endpoint anywhere in the bundle,
+> hard-coded "Request Received" copy. §4a.
+> **(2) `.sem-pill-cta` was cream-on-cream at 1.00:1 and shipping** on
+> /contact's submit button, with its label at 2.86:1. Inverted to navy fill /
+> cream label, 15.87:1 — §7.
+> **(3) `join.fflsynergy.com` is an APPROVED COPY SOURCE** and the Join page is
+> scoped to **four blocks** — §13b. Not built.
+>
+> 🔴 **PREVIOUSLY: THE BLOG ARTICLE IS NO
+> LONGER CENTRED.** `.blog-measure` (31em, `margin-inline: auto`) is off the
+> article that has frames; the template runs **/services §4** — copy column
+> left at 832.25, sticky image column right at 475.56, 131.2 gutter, sticky
+> `display: none` below 991. The measure is **86 characters and that was
+> accepted on instruction**, not fixed by narrowing. **All nine articles with
+> bodies are on the grid — 41 frames, sourced, audited at full resolution and
+> placed; 18 candidates were rejected at that audit after passing every
+> measurement.** See **§13a**, which is the section to read before touching the
+> article template, and CREDITS.md for the frames.
+>
 > **Since then:** the gold hairlines were removed (§6c), the hero lost its foot
 > ramp and gained a hard edge (§6d), the hero crop shifted to `object-top`, the
 > copy dropped to SEM's 32.8px offset, the sub took SEM's type scale, and a
@@ -47,9 +119,20 @@ See §12 for why that is the production alias and not a preview URL.
 1. **Copy comes only from <https://fflsynergy.com/>.** Never invent copy to fill
    a slot. An empty slot is reported to the client, not filled.
 2. **Every proposed line is checked against
-   <https://checkmatefinancialgroup.com/>.** The two agencies share a building
-   and there is a known lifted-copy problem. Match found → keep the meaning,
+   <https://checkmatefinancialgroup.com/>.** Match found → keep the meaning,
    rewrite the phrasing.
+
+   🔴 **SOME OVERLAPS ARE SHARED HISTORY, NOT LIFTED COPY.** Synergy and
+   Checkmate were one company that split; they share a building, a suite, and
+   whatever was written before the split. So an overlap is not evidence of
+   anyone copying anyone, and the finding should never be reported to the
+   client as an accusation.
+
+   **THE REWRITE RULE IS UNCHANGED.** They are separate competing businesses
+   now, and text that appears on both sites differentiates neither. Rewrite for
+   DIFFERENTIATION, and say that is the reason. Factual data that is genuinely
+   common to both — the shared office address — is not rewritten at all,
+   because it is not phrasing, it is a fact.
 3. **Attributed quotes are never reworded.** Ship verbatim or drop.
 4. **Interface labels may be authored** — nav items, column headings, CTA
    labels, image alt text. A wayfinding label names a destination; it asserts
@@ -185,10 +268,26 @@ never be linked from one surface and missing from another.
 
 **The rule it enforces: A LINK IS A PROMISE THAT A PAGE EXISTS.** Before this
 file there were 17 `href="#"` stubs in the header and hero and 6 footer links to
-routes that 404. All are gone. **Unbuilt routes are NOT rendered as disabled
+routes that 404. ~~All are gone.~~ **Unbuilt routes are NOT rendered as disabled
 entries** — a greyed-out "Services" says Synergy has a services page that is
 temporarily unavailable, which is false; an absent one says nothing, which is
 true.
+
+> 🔴 **CORRECTION — "All are gone" WAS FALSE AND STAYED IN THIS FILE FOR
+> SEVERAL PASSES.** It was true of the header and the hero, which is where the
+> 17 were counted, and it was written as if it were true of the site. It never
+> was: `WhoWeServe`, `WhatWeCover` and `WhySynergy` each kept live `href="#"`
+> stubs on the homepage the whole time, **including all three CTAs on the For
+> Agents tab — the entire Join journey.** The stubs were only found when the
+> Join research pass went looking for the Join journey and could not find one.
+>
+> **The count today, swept across all 13 rendered routes in both locales** (see
+> §4a for the audit): **ZERO.** Every anchor on every route resolves.
+>
+> The lesson is about the record, not the links: a claim of completeness in
+> this file has to be written against a sweep, not against the part of the
+> change that was in front of you. Where a claim like this appears from now on
+> it says what was swept and when.
 
 🔴 **Unbuilt, listed only as a comment in `routes.ts`:** `services`, `contact`,
 `blog`, `gallery`, `privacy`, `terms`. All their message strings (`nav.*`,
@@ -197,6 +296,124 @@ true.
 🔴 **`privacy` and `terms` are BLOCKED, not merely unbuilt.** They are legal
 documents for a Florida life-insurance brokerage and come from the client.
 **Do not write them.**
+
+---
+
+## 4a. The `href="#"` audit — swept, dated, and 3 left standing
+
+Method: every rendered route fetched as SSR HTML and parsed, in **both**
+locales — `/[locale]`, `/about`, `/services`, `/blog`, `/blog/[slug]`,
+`/contact`, `/calculator` — plus a client-side pass on the homepage with the
+**For Agents** tab open, because `AnimatePresence` only renders the active tab
+so the agent cards are absent from SSR. 13 routes, 29 anchors on the homepage.
+
+### ✅ Fixed this pass — five stubs that had an obvious destination
+
+| file | what it is | now points at |
+|---|---|---|
+| `WhoWeServe.tsx` agents c1 "Apply to join" | **the Join journey** | `JOIN_URL`, `_blank`, `noopener noreferrer` |
+| `WhoWeServe.tsx` agents c2 "Meet the team" | **the Join journey** | `JOIN_URL`, same target/rel |
+| `WhoWeServe.tsx` agents c3 "See the opportunity" | **the Join journey** | `JOIN_URL`, same target/rel |
+| `WhoWeServe.tsx` families c2 "Compare my options" | homepage card CTA | `/[locale]/services` |
+| `WhoWeServe.tsx` families c3 "Speak with an agent" | homepage card CTA | `/[locale]/contact` |
+| `WhatWeCover.tsx` ctaSecondary "Talk to an advisor" | section CTA | `/[locale]/contact` |
+| `WhatWeCover.tsx` card links ×3 "Learn more" | Term / IUL / Tax-Free cards | `/[locale]/services` |
+
+**Plus the three "Get a free quote" CTAs, resolved the round after** — see the
+section below: `WhatWeCover`, `WhoWeServe` families c1 and `WhySynergy`, all
+three to `/[locale]/contact`, on evidence from the live source site.
+
+The three agent CTAs carry **the same `target` and `rel` as the header pill and
+the footer link**, so all three surfaces behave identically. Destinations live
+in a `CTA_DEST` table at the top of `WhoWeServe.tsx`; when a `/join` route
+exists, three entries change from `{kind:"join"}` to `{kind:"route"}` and
+nothing else in the component moves.
+
+### ✅ RESOLVED — the three "Get a free quote" stubs. **ZERO STUBS REMAIN.**
+
+They were held back one round pending a decision, on the reasoning that there is
+no quote route and no working form. **That reasoning was right about the facts
+and wrong about the question.** Before removing them the live source site was
+checked, the same way `join.fflsynergy.com` turned out to be a real destination
+for the Join CTAs. Measured on **fflsynergy.com**, Brave 138 / Chromium 138:
+
+| finding | detail |
+|---|---|
+| **No quote route exists** | the router carries **9** paths: `/ · /about · /services · /blog · /gallery · /contact · /join-us · /privacy · /terms`. No `/quote`, `/get-a-quote`, `/free-quote`, `/apply`, `/get-started` |
+| **Every path returns 200** | it is a client-side SPA — `/zzz-not-a-real-page-9182` returns the same **878-byte** shell as `/contact`. HTTP status proves nothing on this site; pages had to be rendered to be read |
+| **🔴 THEIR OWN "Get a Free Quote" BUTTONS GO TO `/contact`** | all three of them — homepage nav bar (y 30), hero (y 557) and closing band (y 5930). Each is a `<button class="btn-gold">` **wrapped in an `<a href="/contact">`** |
+| **Their /contact submit reads "Request My Free Quote"** | which is the exact string our own `ContactForm` already ships as `form.submit` |
+| one external destination, sitewide | `https://join.fflsynergy.com/` — the same one we already use |
+
+**So the client had already answered the question.** Their own resolution of this
+exact CTA is the contact page, and our `/contact` is the rebuild of theirs. All
+three now point at **`routeHref(locale, "contact")`** — internal, so no `target`
+or `rel`: those belong to the external Join destination, and sending a visitor
+from our rebuild back to the old site would be wrong.
+
+**Why this does not contradict the hero.** `hero.ctaQuote` was removed when
+`/contact` did not exist and the CTA had no destination at all. That was correct
+then. `/contact` exists now, and the source site resolves the CTA to it.
+⚠️ **It does leave the hero as the odd one out** — three blocks now point at
+/contact and the hero dropped its equivalent CTA entirely. Worth revisiting;
+not changed here.
+
+### 🔴 THEIR FORMS APPEAR TO BE FAKE SUCCESSES — relevant to us twice over
+
+Inspected, **not submitted** — submitting would send data to a live business.
+On `fflsynergy.com/contact`:
+
+- the `<form>` has **no `action` and no `method`**; submission is a React
+  `onSubmit` of **85 characters**
+- the **entire 534 KB bundle contains one `fetch(`** and **no form endpoint of
+  any kind** — no CRM, no GoHighLevel, no form service, no API host. Every
+  outbound URL in it is React docs, React Router docs, Facebook, Instagram or
+  Vercel analytics
+- it ships **hard-coded success copy for three separate forms**: *"Message
+  Sent"*, *"Request Received — A licensed Synergy agent will contact you
+  shortly…"*, and *"Application Received — …within 1–2 business days."*
+
+That is the signature of `preventDefault(); setSent(true)` — **the exact bug
+this project already fixed in `LeadModal`**, which used to show "Thanks — we'll
+be in touch" while sending nothing. It cannot be proven without submitting, and
+it should not be proven that way; **what would settle it is asking Ziad where
+those three forms deliver.**
+
+**Two consequences.** (1) Our `/contact` form is *visibly disabled* with a "not
+connected" notice, which is more honest than a fake success — that decision is
+vindicated, keep it. (2) 🔴 **It is a client-side finding to report to Ziad**:
+if their live site is accepting quote requests and applications and dropping
+them, they are losing leads today.
+
+🟡 **Also logged: the CTA pair in `WhatWeCover` now sends both buttons to the
+same page.** "Get a free quote" and "Talk to an advisor" sit side by side at
+y 1520 and both resolve to `/contact`. Not broken, but a primary/secondary pair
+normally offers two different actions. Copy or destination question, not a link
+bug. Not changed.
+
+### 🟡 Dormant — stubs in components that render nowhere
+
+Listed so a future pass does not "discover" them as live defects:
+
+| file | stubs | status |
+|---|---|---|
+| `components/Nav.tsx` | 7 (lines 104, 117, 129, 185, 245, 256, 273) | **superseded** by `SiteHeader`; not imported by any route |
+| `components/TwoWaysIn.tsx:50` | 1 | commented out of `app/[locale]/page.tsx`; component kept |
+
+Neither ships. **If either is ever remounted its stubs come with it** —
+`TwoWaysIn`'s is the agents card and would go to `JOIN_URL`.
+
+### ⚠️ Two things the sweep turned up that are NOT stubs
+
+- **"Talk to an advisor" now has two destinations on one page.** The hero dials
+  `nav.phoneHref` (`tel:+14074340400`); `WhatWeCover`'s identically-labelled CTA
+  now goes to `/contact`. The hero's was decided when `/contact` did not exist.
+  Not changed here — changing the hero was not this pass — but one label with
+  two destinations on one page should be resolved.
+- **`whatWeCover.ctaPrimary` is untranslated.** On `/es` the button still reads
+  "Get a free quote" while the other two quote CTAs render "Obtener una
+  cotización gratis". It is one of the 174 empty `es.json` leaves (§6e), not a
+  new gap.
 
 ---
 
@@ -443,7 +660,7 @@ bar **and** the 3:1 non-text bar of WCAG 1.4.11.
 | any icon that means something | 🔴 gold-deep. 2.09 fails 3:1 |
 | any text | 🔴 gold-deep `#7D641F` |
 | focus rings | 🔴 **never `gold-pale`** — `#EFE1B0` on cream is **1.19:1**. Navy or gold-deep |
-| `.sem-pill-cta` if restored | 🔴 cream fill on cream = 1.00:1, invisible. Invert to navy fill / cream label |
+| ~~`.sem-pill-cta` if restored~~ | ✅ **DONE — INVERTED.** It was never "if restored": `ContactForm`'s submit has been rendering it on cream since /contact was built. Navy fill / cream label, 15.87:1. See §7 |
 
 ### 🔴 §6c — the gold hairlines are gone, and what carries the rhythm
 
@@ -807,13 +1024,55 @@ extremes misses their tablet value by 15px on the display size.
 throughout; Kufam is loaded at 400/500 only and synthetic weights are forbidden.
 Every display size here is **w400** — one step heavier at the same size.
 
-**`.sem-pill-cta` inverts their label colour, and that is forced.** Theirs is
-their gradient's top value on white. Ours would be `navy-lift` on cream — which
-measures 11.65:1 and *would* pass, but `navy-lift` exists only as a background
-token and has never been measured as text. So the pill is cream fill with
-`navy #0D1B2A` label (15.87:1), which is already the site's button pairing
-(SiteHeader's Join pill, the hero CTA). One button system, not two.
-Hover → `gold-pale #EFE1B0`.
+### 🔴 `.sem-pill-cta` — INVERTED, and it was shipping broken
+
+**The previous entry here said the pill is cream fill with a navy label, and
+that the class was unused. Both halves were wrong by the time /contact shipped.**
+`ContactForm`'s submit button carries `.sem-pill-cta` and renders on the cream
+contact page. Measured on the built page **before** the change:
+
+| | |
+|---|---|
+| declared fill `#F8F4EE` on page `#F8F4EE` | **boundary 1.00:1 — no visible edge at all** |
+| rendered label at `opacity: .45` | composited `rgb(142,146,150)` → **2.86:1, FAIL** (needs 4.5) |
+
+**Shipped now — navy fill `#0D1B2A`, cream label `#F8F4EE`, 15.87:1**, and
+15.87:1 for the boundary against cream as well. That is already the site's
+button pairing (SiteHeader's Join pill, the hero CTA, WhySynergy's closing
+pill). One button system, not two.
+
+| | old | new | why |
+|---|---|---|---|
+| fill | `#F8F4EE` | **`#0D1B2A`** | 1.00:1 boundary on cream |
+| label | `#0D1B2A` | **`#F8F4EE`** | follows the fill |
+| hover | `#EFE1B0` | **`#7D641F`** | cream on gold-pale is **1.19:1**; cream on gold-deep is 5.16:1. WhySynergy's navy pill already hovers to gold-deep |
+| focus | global gold ring | **`2px #7D641F`, offset 2** | scoped; see the note below |
+| `.contact-submit:disabled` | `opacity: .45` | **`.62`** | 2.86 → **4.79:1**, measured |
+
+**`.sem-pill-cta--on-dark` is the retired pairing, kept where it measures.**
+Cream fill / navy label, 15.87:1 on navy, hover `gold-pale` (navy on gold-pale
+is 13.30:1 — legal now that the label is navy). Nothing renders it yet; it
+exists so a navy band does not invent a second button.
+
+**Why the disabled alpha moved.** `opacity` on a button is a GROUP opacity —
+fill and label composite together, then the group composites over the page, so
+dimming the button drags its label down with it. Measured ladder on the built
+page: `.45` → 2.86 · `.55` → 3.80 · `.60` → 4.45 · **`.62` → 4.79** · `1.0` →
+15.87. **The 2.86 was pre-existing, not introduced by the inversion** — the old
+cream-fill button's navy label measured exactly the same 2.86. A disabled
+control is arguably exempt under 1.4.3's "inactive user interface component"
+clause; **the exemption was refused**, for the same reason the §5 roman numerals
+refused theirs. It still reads as disabled: 62% against a 100% page, plus
+`cursor: not-allowed`, plus the real `disabled` attribute, plus the "not
+connected" notice directly beneath it.
+
+🔴 **A SEPARATE, SITE-WIDE DEFECT FOUND WHILE DOING THIS, NOT FIXED HERE.** The
+global rule at the top of `globals.css` is `:focus-visible { outline: 2px solid
+#c9a84c }`. **Gold on cream is 2.09:1**, under the 3:1 that 2.4.11 asks of a
+focus indicator, so every focusable element on a cream surface that is not
+inside `.site-header`, `#site-menu` or `.locale-link` — all of which already
+override to `gold-deep` — takes a ring that fails. `.sem-pill-cta` now overrides
+it too. **The global rule still needs changing and that touches every page.**
 
 **The 38.14px pull-quote floor is load-bearing, not aesthetic.** It keeps the
 quote **large text** at every width (threshold 24px), which is what lets the
@@ -1145,10 +1404,11 @@ view-source on every route even though only one painted.
 Verified: zero occurrences in the rendered page **and** zero in the full HTML
 source.
 
-🟡 **Still owed:** `two.agents.body` is a placeholder. fflsynergy has **no
-agent-recruiting copy anywhere**. (`TwoWaysIn` is no longer rendered, but the
-string still ships in the catalogue on every page.) **Open question for Ziad: is
-`join.fflsynergy.com` in scope as a copy source?**
+🟡 **Still owed:** `two.agents.body` is a placeholder. fflsynergy's MAIN site has
+no agent-recruiting copy anywhere. (`TwoWaysIn` is no longer rendered, but the
+string still ships in the catalogue on every page.) ~~**Open question for Ziad:
+is `join.fflsynergy.com` in scope as a copy source?**~~ ✅ **ANSWERED — YES.
+APPROVED BY THE CLIENT. See §13b.**
 
 ### ✅ Lead form — disabled, no longer lies (`9db65f1`)
 
@@ -1205,11 +1465,16 @@ naming a calculator cannot be reused for a story page.
   insurance…"* A Florida life-agency footer would normally carry at least a
   licence number and a "not an offer of insurance" line. **Do not write one.**
 - **Privacy policy and terms of service** — §4
-- **Address `5728 Major Blvd Suite 702` is unverified and IS shared with
-  Checkmate** — their JSON-LD carries the same building and suite. The phone
+- ✅ **Address `5728 Major Blvd Suite 702` is VERIFIED — do not re-flag it.**
+  It was held for months because Checkmate's JSON-LD carries the same building
+  AND the same suite, which looked like lifted data. The client has confirmed
+  the reason: **Synergy and Checkmate were one company that split, and the
+  office is genuinely shared.** The match is shared history, not copied data.
+  Rendered in full on /contact and in the /blog Orlando article. The phone
   `407-434-0400` is **not** shared; Checkmate's only number is `833-997-6934`
 - **Light/horizontal logo lockup** — §11
-- Whether `join.fflsynergy.com` is an approved copy source
+- ~~Whether `join.fflsynergy.com` is an approved copy source~~ ✅ **CLOSED — the
+  client has approved it. §13b**
 
 ### 🟡 Still to sign off (built, shipping, reversible)
 
@@ -1254,12 +1519,45 @@ Every photograph and every person now appears once.
 
 | slot | file | source | note |
 |---|---|---|---|
-| §1 hero | `about-hero-family.jpg` | Pexels `5638414`, 8224×5483 held at 3840×2560 | 🟡 **PLACEHOLDER** for Synergy's own |
+| §1 hero | `about-hero-office.jpg` | Synergy's own ("OFFICE PHOTO IMPORTANT"), 1620×1080 | 🟢 **REAL team photo (2026-07-30).** Same 1.5 aspect as the old placeholder, so `object-top` maths unchanged. **2× clearance 52.7%** (1620 vs 3072 @1536): clears 1× (+5.5%), soft at 2× — a real downgrade taken on instruction (authenticity > sharpness). Ships **as shot**, logo baked bottom-right |
 | §2 | `gallery-team-presentation.jpg` | Synergy **g8**, 1100×1375 | **exactly 4:5, so this slot performs NO crop at all.** Box renders 465×581 → 930×1163 at 2× → **+18.3%** |
 | §4 left | `gallery-advisor-explaining.jpg` | Synergy **g11**, 1000×1250 | crop 972×1250 vs 874×1124 → **+11.2%** |
 | §4 right | `gallery-team-meeting.jpg` | Synergy **g2**, 1000×1250 | crop 972×1250 vs 874×1124 → **+11.2%** |
-| §5 ×3 | `value-integrity` / `-education` / `-legacy` .jpg | Pexels `6814528` / `8439647` / `8317698`, 1200×1800 | 🟡 **PROVISIONAL** licensed stock |
+| §5 ×3 | `about-value-rula-speaking` / `-training-skills` / `-aiman-rula` .jpg | Synergy's own, 4640×6960 / 1080×1620 / 1080×1620 | 🟢 **REAL (2026-07-30).** All exactly 2:3 → NO crop. **Parallax DROPPED** → plain `<Image>` in a fixed 2:3 box (box@2× 880×1320 clears; the two 1080-wide by +22.7%). The old Pexels `value-*` stock (1200×1800) stays on disk + in CREDITS.md. Ship **as shot** |
 | §7 | `about-zoom.jpg` | Pexels `36777966`, 8000×5338 held at 3840×2562 | no people, so the 0.5→1.0 crop range has no face-crop failure mode |
+
+### 🟡 Available Synergy assets on disk, waiting on a placement decision (2026-07-30)
+
+Client dropped a folder of **real Synergy photographs** at **`public/New Folder/`**
+(16 files). Three portraits went to §5 and one landscape to §1 (above); the rest
+are **held** because the About layout has **no landscape band** below the hero
+and no new layout was added this round. **Do not forget we have these** — they
+are real team/office imagery and beat anything stock or licensed.
+
+**Landscape 1620×1080 (1.5), all with the Synergy logo baked in — no home yet:**
+
+| file | shows |
+|---|---|
+| `SYNERGY OFFICE INSIDE.jpeg` | the real office — open-plan cubicles, monitors, people working |
+| `AGENT SPEAKING.jpeg` | a man at a mic presenting, "hosting some amazing companies" screen |
+| `SYNERGY AGENTS.jpeg` | five women agents, grey-wall studio portrait |
+| `WhatsApp …15.08.09 (1).jpeg` | three women, grey-wall studio portrait |
+| `WhatsApp …15.08.09 (5).jpeg` | three people at the glass office door w/ Synergy signage |
+| `WhatsApp …15.08.10 (1).jpeg` | office break area, team mingling, pizza |
+| `WhatsApp …15.08.10.jpeg` | office floor candid, Synergy pull-up banner |
+
+**Portraits NOT used by §5 (0.667–0.678), also held / available for §2 swaps:**
+`RULA SPEAKING.jpg` is at §5 now; spare portraits are `aiman & rula .jpeg`
+(1206×1779), `WhatsApp …15.08.09 (2).jpeg` and `…15.08.10 (3).jpeg` (1080×1620).
+
+**Two files in that folder are NOT photos** — `WhatsApp …09.42.38.jpeg` and
+`…(1).jpeg` (1254×1254) are the **Synergy logo artwork** (vertical crest and
+horizontal lockup on black). The horizontal lockup may answer the Footer's
+still-open "wide cream wordmark wanted" note — but it is on black, not cream.
+
+**Decision needed:** add a landscape "inside Synergy" band, restore **§8 Staff**
+(still blocked on founder bio copy — see §6), or leave them parked. No layout was
+added this round on instruction.
 
 All Pexels files carry the **Pexels License** — exact line: *"All photos and
 videos on Pexels are free to use."* / *"Attribution is not required."*
@@ -1865,3 +2163,636 @@ Expect this to recur: any product article can carry a rate table.
 Images: **held**. Cards render 1.615 placeholder frames. Synergy's own set
 cannot fill a card — largest portrait frame yields 1100 x 681 against a
 1390 x 861 requirement at 2x, 21% short. See CREDITS.
+
+---
+
+# §13b — Join Us — ✅ BUILT AND APPROVED
+
+**The header of this section used to read "SCOPED, NOT BUILT / Nothing is built.
+No copy is written." Both sentences are now false and are replaced rather than
+left to mislead the next pass. Everything below the "what happens next round"
+list is retained as the record of how the page was scoped.**
+
+## What is built, and when
+
+Built 2026-07-29. `/[locale]/join` renders in both locales, is in `RouteKey`,
+`PATHS`, `HEADER_ROUTES` and `FOOTER_ROUTES`, and is in `isPhotoHeroRoute`.
+
+**Copy is APPROVED** — signed off against the rendered page. `join.*` in
+`messages/en.json` carries no `_status` key any more because it no longer says
+anything true. `messages/es.json` mirrors every leaf empty, so `/es/join` falls
+back to working English until translation lands.
+
+**SIX blocks, not the agreed four.** §13b scoped four on the assumption that the
+Join CTA would hand off to `join.fflsynergy.com`. That subdomain returns a Vercel
+404 (see `JOIN_URL_EXTERNAL_DEAD` in `routes.ts`), so the page had to grow its
+own application surface — §2 (opening block) and §5 (apply) are the two
+additions. Both are twinned to measured references; the numbers are in the page
+file and in `globals.css`.
+
+## 🔴 WHAT THE PAGE IS WAITING ON — three items, all client-side
+
+**1. THE AGENT PORTAL URL.** The hero carries two CTAs. "Join as agent" is live
+and scrolls to §5 through Lenis. **"Agent portal" is rendered, visible and
+genuinely disabled** — a real `<button disabled aria-disabled="true">`, so it is
+not focusable and cannot be tabbed to, with a visible note beneath it tied by
+`aria-describedby` because a grey-out is colour alone and would not satisfy
+1.4.1.
+
+It ships visible so the decision is not quietly forgotten, and disabled so it is
+not a link to nothing. **This is the ContactForm precedent, not a new pattern.**
+
+*Waiting on:* a portal URL from the client. There is no agent portal today —
+`checkmatefinancialgroup.com/agents` has one ("AGENT PORTAL / ONLINE / Already
+one of ours? Sign in"), which is what raised the question. The day a URL
+arrives: swap the `<button>` for a `<Link>`, delete `join.hero.portalNote` and
+remove `.join-cta--disabled` from the markup. Nothing else changes.
+
+**2. THE APPLY CONSENT WORDING.** §5's consent checkbox is BUILT and its label
+is the placeholder `join.apply.consentPlaceholder`, which renders a visible
+"wording pending" line so the gap cannot be missed on the page.
+
+Checkmate's equivalent reads, in part: *"you authorize Checkmate Financial Group
+LLC to text/call the number above… Msg/data rates apply, msg frequency varies…
+Text HELP for help and STOP to unsubscribe."* **That was deliberately not
+reproduced and not reworded.** It is TCPA consent language naming their legal
+entity — a legal instrument, not copy. Rewording it changes what an applicant
+agrees to and who they agree with.
+
+*Waiting on:* the exact consent text and the legal entity name it must
+reference. The client has confirmed a consent is required.
+
+**3. THE BBB BADGE.** §5 has a trust slot, `join-apply-trust`, built and left
+**unrendered**. Checkmate's is an `<a class="bbb-seal">` to their own
+`bbb.org/us/fl/orlando/profile/life-insurance/checkmate-financia…` profile.
+
+*Waiting on:* Synergy's own BBB rating and profile URL. The client says Synergy
+is accredited. **Do not fill this slot with Checkmate's seal** — it is a
+different company's accreditation.
+
+**4. 🟡 §2'S PHOTOGRAPH IS A PLACEHOLDER — it is the hero's own file.**
+
+`§2`'s 16:9 frame currently points at `join-hero-atrium.jpg`, which is also the
+hero's photograph. The crop differs (`object-center` on 16:9 against the hero's
+`object-top` on 1.5), but it is the same building twice on one page.
+
+*Why it is not simply fixed:* the frame resolves to 1454 x 818 at 1536, so a
+source needs to be **2908px wide** to clear 2x DPR. Every unused image in
+`public/synergy` tops out at 2400 (`cover-backdrop.jpg`, which is also an
+off-palette red sunset), so nothing in the repo qualifies, and the download was
+blocked partway through the build pass.
+
+*To fix:* source one landscape >= 2908px wide, croppable to 16:9, in the
+register the `article-*` and `essay-*` sets established — architecture or place,
+**no identifiable people**, nothing derelict, distressed or scattered-paperwork.
+Save as `join-opening-hall.jpg`, point `§2`'s `<JoinFrame src>` at it, rewrite
+`join.opening.imageAlt` to describe what actually lands, and add the row to
+`public/synergy/CREDITS.md` with native dimensions and the 2x clearance.
+
+## 🔴 The apply form cannot submit, and that is the point
+
+`components/JoinApplyForm.tsx` is a SERVER component: no `"use client"`, no
+state, no handler, no `action`, no `method`. The fields are fully visible inside
+a `<fieldset disabled>` with a plain `role="status"` notice, exactly as
+`ContactForm` does it.
+
+**There is no code path that can show a success state**, because there is
+nothing to succeed at. The client's own live site has **three** forms that
+render a confirmation and post nowhere. We are not shipping a fourth. The day an
+endpoint exists: wire the POST, drop `disabled` from the fieldset and the button,
+add validation, error states **and** a success state, and replace the consent
+placeholder with item 2 above.
+
+## ✅ The copy blocker is lifted
+
+**`join.fflsynergy.com` is an APPROVED COPY SOURCE.** The client confirmed it.
+The open question recorded in §12 and in the "Confirmed by the client" list is
+closed. That is the only thing that changed — **copy still stops for approval**,
+exactly as it does for every other string on this site. Standing rule 5 is
+untouched: nothing goes into `messages/en.json` without explicit approval with
+the source line quoted.
+
+## 🔴 Two rules survive the approval and are NOT negotiable
+
+The approval is of a SOURCE, not of its contents. Both of these outrank it:
+
+1. **No agent income, earnings or commission claims.** Any figure, range,
+   average, "six figures", "unlimited", "residual income", commission
+   percentage or advancement-pay example. This is the rule that already struck
+   *"provides life-changing income opportunities for agents"* out of About §3.
+2. **No unverified volume claims.** Agent counts, families served, policies
+   placed, offices, states, growth rates — unless independently verifiable.
+
+🔴 **If `join.fflsynergy.com` carries either, FLAG THE LINE AND DO NOT CARRY IT
+OVER.** Report it with the published wording quoted, the same way the nine
+`/services` compliance changes were reported. An approved source does not make a
+non-compliant line compliant.
+
+## The agreed scope — FOUR blocks, not eight
+
+The eight-block structure proposed in the research round is **superseded**. It
+needed 7–8 licensed photographs, which is more page than the content justifies,
+and two of its blocks depended on assets that do not exist. Agreed scope:
+
+| # | block | layout at 1536 |
+|---|---|---|
+| 1 | **Hero** | full-bleed photograph, `100svh`, copy bottom-left at the 41px gutter, 32.8px bottom offset. `.sem-display` 90.2/90.2 w400, sub `.sem-hero-sub` 20.5/30.75 w600 capped 32em. The /about §1 pattern; add `/join` to `isHeroRoute` and re-run the nav AA over the new photograph at 1536 / 820 / 390 |
+| 2 | **The four-item offer** | two-column split: heading rail left, **2 × 2** cards right. `column-gap: var(--sem-gap-logos)` 49.2, `row-gap` 65.6. Heading `.sem-h2` 57.4/68.88, numerals `I–IV` in `gold-deep`, labels `.sem-h3` 49.2, bodies `.sem-body` 21.32/38.38. Stacks to one column below 768 |
+| 3 | **The steps** | `.essay-grid` — copy **832.25** left, sticky frame **475.56** right, gutter **131.2**, `top: 8rem`, frame `aspect-ratio: 2/3`, `display:none` ≤991, driven by `useSequenceSwap`. Four steps = four frames, so no scroll position is unfilled |
+| 4 | **Closing CTA** | full-bleed `navy #0D1B2A`, `padding-block: 131.2`. `.sem-h2` 57.4 in cream (15.87:1), body `.sem-body` in cream, **one `.sem-pill-cta--on-dark`** |
+
+**DROPPED, with the reason:**
+
+- **The checkerboard** ("what you bring") — needs two more licensed frames and
+  a `greige` copy cell. Cut on asset cost.
+- **The pull-quote** — needs an attributed quote from the client. Quotes ship
+  verbatim or are dropped (standing rule 3), and there is none. Cut.
+- **The break band, the FAQ and the credentials row** — cut with the eight-block
+  version; four blocks is the agreed page.
+
+**Photograph budget: 5** — one full-bleed hero, four 2:3 sticky frames. Same
+sourcing rules as everything else: Pexels License or equivalent, nothing
+upscaled, audited at full resolution, **no people presented as Synergy agents**.
+
+**The button is `.sem-pill-cta`** — navy fill / cream label on cream, and
+`--on-dark` on the navy closing band. Both now measure (§7). No new button.
+
+## 🟡 What the source-site check already told us about the Join page
+
+Measured while resolving the quote CTAs (§4a), and it changes the shape of the
+next round:
+
+- **`fflsynergy.com/join-us` is a COPY PAGE WITH NO FORM.** h1 *"Build Your
+  Career. Change Your Life."*, zero `<form>` elements, and **two links out to
+  `join.fflsynergy.com`**. So the main site's own join page does exactly what
+  our nav pill does — it hands off to the subdomain. That is a second,
+  independent confirmation that `JOIN_URL` is the right destination.
+- **There are therefore TWO candidate copy sources**, and both are approved by
+  extension of the client's answer: `fflsynergy.com/join-us` (prose, on the main
+  site, already in scope under rule 1) and `join.fflsynergy.com` (the recruiting
+  site itself). **Read both.**
+- 🔴 **The bundle carries application-form copy** — *"Submit My Application" /
+  "Application Received" / "…within 1–2 business days."* — which does **not**
+  render on `/join-us`. If it renders on the subdomain, it is very likely the
+  same fake-success pattern as their other two forms. **Do not reproduce a
+  form on our /join page on the strength of theirs.** Our Join CTA hands off to
+  the subdomain and that is the honest thing until a real endpoint exists.
+
+## What happens next round, in order
+
+1. **Fetch `join.fflsynergy.com` live** and read it in full. **Read
+   `fflsynergy.com/join-us` too** — see above.
+2. **Cross-check every line against `checkmatefinancialgroup.com`.** Where the
+   meaning overlaps, **rewrite for differentiation** and say that is the reason
+   — standing rule 2. Remember the shared-history caveat: an overlap is not an
+   accusation, and genuinely common factual data (the shared office address) is
+   not rewritten at all.
+3. **Screen every line against the two rules above.** Flag and drop, do not
+   soften.
+4. **Come back with the proposed strings and their key names** — a `join.*`
+   namespace — for approval **before anything goes into `en.json`.**
+
+Nothing is built until step 4 comes back approved.
+
+## 🔴 2026-07-30 VERIFICATION PASS — what the measurements changed
+
+Both references were re-inspected live and **five recorded numbers turned out to
+be wrong**. Every old value is retained, commented, at its rule.
+
+**Browser: the in-app Browser pane, Chromium 148.0.7778.280.** Claude in Chrome
+was requested for the reference inspection but the extension was **not
+connected**, so the reference was measured in the same Chromium instead.
+
+1. **`useClipReveal` is DELETED.** It was 129 lines, imported only by
+   `JoinFrame`, and justified by "the reference's reveal is a clip inset." The
+   reference has **no reveal at all** — `transition-duration: 0s`,
+   `animation-name: none`, `clip-path: none`. The standing rule is to use the
+   existing primitives first and only add one if the reference does something
+   none of them can do; it does nothing, so nothing needed adding. The frame now
+   enters on **`FadeUp`** (24px / 600ms / `cubic-bezier(0.16, 1, 0.3, 1)`), like
+   every other block on the page. `JoinFrame` is a server component again.
+2. **Two more of that file's claims were false** and are corrected in place:
+   theirs is `overflow: visible`, not hidden, and their image is **1.100× larger
+   than its figure box** (1463.7×823.4 vs 1330.9×748.6), spilling out of it.
+3. **The §2 rhythm was inverted.** The gaps claimed to hold the reference's
+   ratios and did not: 0.517 under the heading (target 0.263) and 0.098 under the
+   figure (target 0.160) — generous where the reference is tight and tight where
+   it is generous. Re-measuring at all three widths also showed the reference
+   **does not hold a ratio at all** (0.263 / 0.529 / 0.590 at 1536 / 820 / 390);
+   it renders near-constant absolutes. Both gaps are now absolute-and-fluid and
+   land on the reference's own values: **69.4px** and **118.7px** at 1536
+   (theirs: 69.9 and 120.1), **50.0px** at 390 (theirs: 50.0).
+4. **`63ch` rendered 70 characters, and the rule was on the wrong element.** The
+   measure sat on `.join-copy`, an unstyled `<div>` whose font-size is *not*
+   fluid, so one px width served two type scales — 63 characters at 1536 and 70
+   at 820. It is now on `.join-copy p`, where `ch` resolves against each
+   paragraph's own fluid size, calibrated from the render at two widths (one text
+   character ≈ 1/1.45 of a `ch` in this face): **43.5ch**. Counted after the
+   change: **62–65 characters at 1536 and 820**, 40–49 at 390. This is the third
+   instance of this same unit trap on this project — see the commit "Fix the
+   article measure: 65ch rendered 91 characters, not 65."
+5. **The hero CTA's scroll offset read a stale variable.** It used
+   `--header-h-tall` (104px). The bar's real heights are **116px expanded / 76px
+   compact at ≥900, 64px below** — 104 is none of them, and `globals.css` already
+   warned that this variable went stale when the bar moved to concrete lengths.
+   The landing now uses the **compact** height (the state the bar is in once the
+   scroll arrives), matching `.page-header-offset`'s 64/76/900px. Clearance is
+   now **24.1px at 1536, 23.8px at 820, 24.0px at 390** — it was 52px at desktop.
+
+### 🟡 One thing that could NOT be measured, stated rather than glossed
+
+**Scroll-linked parallax on the reference is unproven, not ruled out.** The
+browser pane does not composite, so `requestAnimationFrame` never fires and
+`getBoundingClientRect` does not update after a programmatic scroll — rects read
+identically at scrollY 0 and 2000. An earlier note in `JoinFrame` claimed
+"transform constant across 8 scroll positions"; that sweep never actually
+scrolled (first a cookie-dialog scroll lock, then the missing compositor), so it
+was eight copies of one reading. **The claim is withdrawn, not restated.** The
+resting styles still establish no CSS transition, animation or clip. If a JS
+parallax is ever confirmed, `useParallax` already exists.
+
+The same limitation means the **Lenis smooth scroll and the FadeUp entry could
+not be watched running** — both were verified by their computed target geometry
+and by the arithmetic the handler performs, not by observing the animation.
+
+## 🟢 2026-07-30 — §3b THE PRODUCTS, added
+
+The brief called the page body thin and pointed at `checkmatefinancialgroup.com/agents`
+for substance. Their blocks map onto ours as: **THE TERMS → §3 offer**,
+**GETTING STARTED → §4 steps** — both already built. The one role genuinely
+missing was their **CARRIERS** block ("The paper behind you"): telling someone
+what they would actually be selling before asking them to apply.
+
+`§3b` fills it. Four new strings (`join.range.*`); the **seven product names are
+read from the `services` namespace**, not retyped, so /join and /services cannot
+drift into naming the same products differently.
+
+**Dropped from their block:** "40+ A-rated carriers" and every other count —
+an unverified volume claim is dropped, not softened, so there is no "dozens of"
+standing in for the number.
+
+**🔴 Their "TECHNOLOGY & TOOLS" block was NOT taken, and that is a compliance
+call rather than an editorial one.** It lists an AI CRM, an AI dialer, an agent
+portal and an inbound call pipeline. There is no confirmation Synergy has any of
+them, and writing them up would be **inventing capabilities**, which is worse
+than duplicating copy. The agent portal is the sharpest case: this page *disables*
+the portal CTA because the portal does not exist, so describing one in body copy
+two blocks away would have the page contradict itself. Their **THE MACHINE**
+block ("Here's your Monday", AI call routing) is dropped for the same reason.
+
+**🟡 ALSO NOTED: their apply form carries TWO consent checkboxes, not one** — one
+transactional, one promotional, each naming their legal entity. Ours builds
+**one**, per what the client approved. If the client's counsel wants the
+transactional/promotional split, that is a second checkbox and a second string,
+not a rewording of the first.
+
+---
+
+# §14 — /contact
+
+Modelled on **reyou.life/contact**, measured live. Their surface is
+`rgb(248, 244, 238)` — #F8F4EE, our cream — and their display face is Kufam,
+ours, so this reference sits closer to our system than any other on the project.
+
+Their layout, measured at 1536 x 710: hero two columns **720 + 32 + 720** on a
+32px gutter (copy left, form right); detail block **four columns at x 32 / 283 /
+533 / 1285**, labels 11px, values 15px. h1 **58/69.6, w400, ls -0.94, Kufam**.
+The split is theirs; the spacing is ours, because their 32px gutter is far
+tighter than anything else on this site.
+
+## 🔴 THREE DELIBERATE DIVERGENCES — do not "restore" these from the reference
+
+**1. Their §2 is a mental-health crisis notice and is ABSENT here.** It reads
+*"If You Are Struggling Right Now"* and directs readers to call **911** and the
+**Suicide & Crisis Lifeline on 988**. reyou is a ketamine and Spravato clinic;
+that notice is a duty of care specific to what they do. An insurance brokerage
+has no equivalent, and manufacturing one would borrow the emotional weight of a
+crisis service for a business that does not provide it. **It is not an
+omission.**
+
+**2. Their form is a third-party CRM iframe** — `link.psyclecrm.com/widget/form/`,
+1472 x 724, parked off-canvas at x = -9967 and revealed on demand. They did not
+hand-build a form; they embedded a hosted one, which is the same shape as our
+own (blocked) GHL webhook.
+
+**3. 🔴 THEIR MOTION COULD NOT BE MEASURED, AND WAS THEREFORE NOT COPIED.**
+GSAP, ScrollTrigger and Flip are all loaded, and their hero h1 sits at
+`opacity: 0` with `transform: none`, so an opacity-only entry reveal exists.
+But **their preloader never dismisses under automation**: `readyState` reaches
+`complete` while `.loader` stays `display: block; opacity: 1` and
+`document.body.scrollHeight` stays pinned at one viewport (710). No reveal ever
+plays, so no duration and no easing could be read. Reloading and waiting nine
+seconds did not clear it. Guessing at numbers would be inventing them, so this
+page uses **`FadeUp`** — ours, and the entrance every other page already uses.
+If you re-measure, expect the same block.
+
+## The form is present, complete and visibly disabled
+
+`components/ContactForm.tsx`, following the `LeadModal` pattern. It is a SERVER
+component with no client JS attached, no `action`, no `method` and no handler,
+so it cannot submit or fake a submission.
+
+🔴 **THERE IS NO SUCCESS STATE IN THE FILE AT ALL, AND THAT IS SEQUENCING, NOT
+AN OMISSION.** A success message is only written when the POST exists, so no
+code path can reach one before there is something to succeed at. Adding it now —
+even behind a flag — would recreate exactly the bug fixed in `LeadModal`, which
+used to run `preventDefault(); setSent(true)` and show "Thanks — we'll be in
+touch" while sending nothing.
+
+**The day the GHL webhook arrives, four things change and nothing else:**
+1. wire the POST to the endpoint
+2. drop `disabled` from the `<fieldset>` and the submit button
+3. add a real `onSubmit` with validation, error states **and** a success state
+4. swap the "not connected" notice for `contact.form.legalNote`
+
+Markup, labels, focus rings, error styling and the select options are final.
+
+**Accessibility divergences from the reference, deliberately:** reyou ships five
+fields with placeholders and **no `<label>` elements at all**. Every field here
+has a real visible `<label>` tied by `htmlFor`. Errors render text plus a symbol
+via `.contact-field-error`, never colour alone — dormant until step 3, but
+styled now so the wiring pass cannot forget the rule.
+
+## 🟡 The legal note ships with UNLINKED document names
+
+fflsynergy's form links *"Privacy Policy"* and *"Terms of Service"*. Both routes
+are **BLOCKED** on this site — they are legal documents that must come from the
+client. A link to a 404 is worse than a name without a link, so the sentence
+ships with both names in plain text. **Link them the day the documents land.**
+
+---
+
+# 🔴 §13a — THE ARTICLE CENTRING IS REVERSED. THE TEMPLATE IS /services §4.
+
+**Read this before touching `app/[locale]/blog/[slug]/page.tsx`.** The previous
+revision of this file describes a centred article and argues at length for it.
+That argument was overruled on instruction and the layout is gone.
+
+## What changed
+
+| | was | is |
+|---|---|---|
+| wrapper | `.blog-measure` — `max-width: 31em; margin-inline: auto` | `.essay-grid` — the /services §4 grid |
+| copy | one centred column, 604.5 @1536 | `.essay-copy`, **832.25** @1536, left |
+| image | none | `.essay-sticky`, **475.56**, right, `top: 8rem` |
+| gutter between | — | **131.2px** |
+| below 991 | n\a | sticky `display: none`, copy runs single-column |
+| prose ramp | `clamp(16.5, .36vw + 15, 19.5)` / lh 1.62 | `.sem-body` `clamp(18.98, .305vw + 16.67, 21.32)` / lh 1.8 |
+| chars/line | 67 | **86** |
+| body element | one `<MDXRemote>` | one `<section>` per h2 |
+
+**Nothing above is re-derived here.** `.essay-grid`, `.essay-copy`,
+`.essay-sticky` and `.essay-frame` are the SAME rules `/services` reads, in
+globals.css. The two routes cannot drift apart, and a change to that grid moves
+both. Measured on the built page, not converted: 832.25 / 475.56 / 131.2 gap /
+sticky `top: 128px` / frame 475.56 × 713.34 at 1536; 750.65 single column with
+the sticky column `display: none` at 820; 352.27 at 390.
+
+## 🔴 86 CHARACTERS IS ACCEPTED, NOT A DEFECT TO FIX HERE
+
+**The copy column is not to be narrowed.** That is explicit. The section below
+(§14) logs the 86-character measure on /services and still stands as a finding —
+but on this route it is a decision, not a bug, and the two must not be
+conflated by a later pass "fixing" the article.
+
+The type moved because narrowing was ruled out and size is the only other lever:
+characters = width ÷ font-size. At 19.5px in an 832.25px column the line runs
+**~93** characters; at `.sem-body`'s 21.32px it runs **~85**. Re-counted on the
+built page by per-character `Range` rects, last line of each block dropped:
+
+| width | copy column | body px | lines | min | **median** | mean | max |
+|---|---|---|---|---|---|---|---|
+| 1536 | 832.25 | 21.309 | 41 | 53 | **86** | 84.9 | 106 |
+| 820 | 750.65 | 19.125 | 41 | 53 | **86** | 84.2 | 94 |
+| 390 | 352.27 | 17.16 | 83 | 31 | **43** | 42.8 | 50 |
+
+⚠️ **The min/max spread is wider than /services' 76–93 and that is the CONTENT,
+not the layout.** This article carries two bullet lists; a four-word list item
+is a short line by definition. The paragraph median is the /services number.
+
+## The four frames, and what a section without one does
+
+`ARTICLE_FRAMES` in the template, **keyed on the heading slug, never on the
+section index** — an index rots the moment a section is inserted, and a
+mis-keyed frame is the failure that has already happened twice on this project.
+
+| # | section | frame | shipped L |
+|---|---|---|---|
+| 1 | Quick summary | — inherits ↓ | — |
+| 2 | Which products are available | `article-arched-windows.jpg` | 0.212 |
+| 3 | What it costs | `article-stair-concrete.jpg` | 0.415 |
+| 4 | What a broker does that a captive agent cannot | `article-colonnade-doors.jpg` | 0.290 |
+| 5 | What to have ready | `article-pigeonholes.jpg` | 0.132 |
+| 6 | Frequently asked questions | — inherits ↑ | — |
+
+**THE SKIP RULE.** A section gets a frame if it is substantive body prose. It
+does not if it is (a) a summary or abstract, (b) an FAQ, or (c) a single
+paragraph — in all three the section is either restating the article or is too
+short to hold a frame's worth of scroll, and a frame that swaps in and straight
+out reads as a glitch.
+
+**WHAT THE EMPTY SLOT DOES — and this is the answer to the objection that
+killed this layout the first time.** Nothing swaps. A skipped section holds the
+frame of the nearest qualifying section **above** it; a skipped section above
+the first qualifying one holds the **first** frame. So the summary opens on the
+products frame rather than on a hole, and the FAQ closes still holding the
+"what to have ready" frame. **There is no scroll position at which the sticky
+column is empty.** That is what makes the pattern survivable on an article,
+where /services gets it for free by having an image per block. The frames are
+`alt=""` inside an `aria-hidden` container, so holding one across a section
+boundary asserts nothing about that section.
+
+An unlisted slug is not a crash — it inherits.
+
+## ✅ ALL NINE ARTICLES ARE ON THE GRID. 41 FRAMES. NO FALLBACK BRANCH.
+
+| article | h2 | frames | ladder min gap |
+|---|---|---|---|
+| `term-life-insurance` | 9 | **6** | 0.076 |
+| `final-expense-insurance` | 10 | **5** | 0.093 |
+| `mortgage-protection-insurance` | 9 | **5** | 🟡 0.056 |
+| `indexed-universal-life-iul` | 7 | **5** | 0.073 |
+| `fixed-indexed-annuity-fia` | 8 | **5** | 0.063 |
+| `truck-drivers-retirement` | 8 | **5** | 0.063 |
+| `life-insurance-orlando` | 6 | **4** | 0.125 |
+| `itin-holders-life-insurance` | 5 | **3** | 0.105 |
+| `living-benefits` | 5 | **3** | 0.084 |
+| | **67** | **41** | |
+
+Sources, crops, subjects, ladders and the full rejection list are in
+**public/synergy/CREDITS.md**. Every one of the 41 was viewed at full resolution
+before it was written; that audit rejected **18 candidates that had already
+cleared luminance, resolution and register** — six for people in frame, seven
+for dereliction or neglect, five for legible signage or a place claim, plus a
+chapel and a statuette on religious specificity. The rate is nearly one in
+three, which is the argument for the rule.
+
+### 🔴 A BRANCH EXISTED FOR ONE PASS AND IS NOW DELETED — keep the measurement
+
+When only the Orlando article had frames, the template branched on
+`frames.length` and rendered the old `.blog-measure` centred build for the other
+eight, because **an unpaired `.essay-copy` inside `.sem-inner` measures 1,505px
+at 1536 and the prose runs a median of 217 characters per line** (max 233,
+measured on `term-life-insurance` before its frames landed). That branch is gone
+because every body now has frames.
+
+**The consequence for anyone writing article number ten: a body must not ship
+without its frames.** There is no longer a layout that catches it — it would
+render at 217 characters. Either source the frames first, or restore the branch;
+`.blog-measure` is kept commented in globals.css with all its numbers for
+exactly that. Three frontmatter-only entries (`iul-self-employed`,
+`iul-vs-401k-construction`, `nurses-tax-free-retirement`) are listing rows and
+404, so they are not affected.
+
+### The one ladder below target, stated rather than hidden
+
+🟡 **`mortgage-protection-insurance` ships a minimum adjacent gap of 0.056**
+against a 0.06 target. Its five values cluster into two close pairs
+(0.171/0.183, 0.263/0.282) and 0.056 is the best any ordering achieves —
+checked exhaustively, not estimated. Opening it means replacing a frame already
+audited at full size. The subjects at that seam — a garden gate and a brick
+facade — share nothing, and subject change is what makes a swap legible. For
+reference the /services essay five shipped at a min of 0.047.
+
+## Verified on the built page
+
+Brave/Chromium **148.0.7778.280** (Claude 1.24012.9 / Electron 42.7.0), dev
+server.
+
+**All nine articles swept at 1536 × 900**, 31 scroll samples each plus a hard
+jump to the bottom and back. Every one passes on the same three assertions:
+
+| article | blocks | frames | distinct pinned `top` | swap order | jump ↕ |
+|---|---|---|---|---|---|
+| term-life-insurance | 9 | 6 | **[128]** | 1→6 in order | ✅ |
+| final-expense-insurance | 10 | 5 | **[128]** | 1→5 in order | ✅ |
+| mortgage-protection-insurance | 9 | 5 | **[128]** | 1→5 in order | ✅ |
+| indexed-universal-life-iul | 7 | 5 | **[128]** | 1→5 in order | ✅ |
+| fixed-indexed-annuity-fia | 8 | 5 | **[128]** | 1→5 in order | ✅ |
+| truck-drivers-retirement | 8 | 5 | **[128]** | 1→5 in order | ✅ |
+| life-insurance-orlando | 6 | 4 | **[128]** | 1→4 in order | ✅ |
+| itin-holders-life-insurance | 5 | 3 | **[128]** | 1→3 in order | ✅ |
+| living-benefits | 5 | 3 | **[128]** | 1→3 in order | ✅ |
+
+`.essay-copy` measures **832.25** on all nine. Release (the container bound) at
+80–86% of travel on every one. Zero console errors, zero server errors,
+production build clean, 33/33 static pages generated.
+
+At **820**: single column 750.65, sticky `display: none`, block seams 51.5,
+median 87 characters, **zero `article-` image requests**. At **390**: column
+352.27, sticky none, seams 40, median 44 characters, no horizontal overflow,
+**zero `article-` image requests**.
+
+The detail below was measured on `/en/blog/life-insurance-orlando` and holds for
+all nine.
+
+- **Sticky holds against Lenis with zero drift.** 41 samples across the full
+  **3,854px** travel. Over the pinned run the set of DISTINCT values of
+  `getBoundingClientRect().top` is **`[128]`** — one number, not a range. 31 of
+  the 41 samples sit on it. **No jitter, no sub-pixel wobble, no frame-lag
+  against the copy.** The structural reason is the one `useStickyZoom` already
+  records: `document.documentElement` and `body` both compute `transform: none`,
+  so Lenis is driving NATIVE scroll and the pin is composited by the browser,
+  not by GSAP. CSS sticky cannot desynchronise from it — which is exactly why
+  the /services grid uses `position: sticky` and not ScrollTrigger's `pin`.
+- **Release at scrollY 3,083 — 80% of the travel** — and it is the normal
+  container bound, not a failure: `128 + 713.34 = 841.34` against a falling
+  `grid.bottom`. The frame rides out over the last 771px with the FAQ, exactly
+  as /services' does.
+- **Swap sequence correct and in the right places**: arched-windows holds
+  0 → 1,445 (summary + products), stair 1,542 → 1,831, colonnade 1,927 → 2,409,
+  pigeonholes 2,505 → end (ready + FAQ). Three swaps, four frames, six sections.
+- **Correct after a hard jump** in both directions — bottom lands on
+  pigeonholes, top lands on arched-windows — which is the `useSequenceSwap`
+  property the reference implementation demonstrably lacks.
+- **Zero bytes fetched for the column at 820 and 390.** `performance
+  .getEntriesByType('resource')` returns **0** entries matching `article-` at
+  both widths. No horizontal overflow at 390.
+- Block seams: **98.4** at 1536 (2 × 49.2), **51.5** at 820, **40** at 390 —
+  the /services rhythm, and identical between every pair.
+- Exactly one `<h1>`; blocks are `<section>`, not `<li>` — see below.
+- Zero console errors, zero server errors, production build clean.
+
+🟡 **No screenshot was captured.** The Browser pane was not displayed in this
+session, so the page never composited frames: `computer{screenshot}` times out
+and CSS transitions freeze at their last painted value. Everything above was
+measured from live layout instead (`getBoundingClientRect`, `getComputedStyle`,
+`Range` rects), and the crossfade was verified by reading the class binding with
+`transition: none` forced. **The visual composition is unscreenshotted.**
+
+## 🔴 `<section>`, not /services' `<ol>`/`<li>` — the one markup divergence
+
+On /services the essay blocks are a **set** — five named principles — and a list
+is what they are. Here they are the running body of one article, each already
+introduced by its own h2. An `<ol>` wrapper makes a screen reader announce
+"list, 6 items" and read every paragraph inside a list item. `.essay-block` is a
+class, not an element, and it styles a `<section>` identically.
+
+## Two CSS corrections the split forced
+
+Both are the same shape as `.essay-block:last-child` on /services — *the block's
+padding is the section rhythm, an element's own margin is internal rhythm, and
+only one of them may own a seam.*
+
+1. **`.blog-prose > h2:first-child { margin-top: 0 }`.** Every block now opens
+   on its h2, whose `margin-top: clamp(40px, 5vw, 65.6px)` stacked on top of
+   `.essay-block`'s `padding-block: clamp(32px, 4.3vw, 49.2px)` — a ~115px seam
+   against a 49.2 rhythm.
+2. **`.blog-prose { margin-top }` REMOVED.** It was the gap under the meta line
+   when `.blog-prose` was one element for the whole article. It is one element
+   *per section* now, so it fired between every pair of sections.
+
+## What is retained, and where
+
+- **`.blog-measure` is COMMENTED OUT IN FULL and renders nowhere** — the rule,
+  the centring (`max-width: 31em`, `margin-inline: auto`), its 19.5px / lh 1.62
+  ramp and its prose top-margin are all kept verbatim inside the comment block
+  in globals.css. Restoring the centred build is uncommenting it and wrapping
+  the article's children in it again.
+- **Every replaced value is commented in place with the old number intact** —
+  both earlier prose ramps (`clamp(16.5, .32vw + 15, 18.4)` and
+  `clamp(16.5, .36vw + 15, 19.5)`) on `.blog-prose`, `.blog-prose p` and
+  `.blog-prose li`; `line-height: 1.62`; `max-width: 30em`; and
+  `.blog-prose { margin-top: clamp(32px, 4.3vw, 49.2px) }` with the reason it
+  had to go.
+
+---
+
+# 🟡 §14 — LOGGED, NOT ACTED ON — /services §4 ships an 86-character measure
+
+Found while measuring `/services` as a candidate pattern for the article
+template, and logged on instruction rather than fixed. **This is a defect on a
+shipping page.** Not touched in this pass.
+
+⚠️ **SUPERSEDED IN PART.** The article template now runs this same grid and the
+86 characters were **accepted on instruction** there — see §13a. The number
+below is still the measurement; it is no longer an open question on the blog.
+
+Measured in Brave 138.1.80.125, `.essay-copy` paragraphs, counting real glyphs
+per rendered line via per-character `Range` rects — not converted from `ch`:
+
+| width | copy column | sticky column | body size | chars/line (min / avg / max) |
+|---|---|---|---|---|
+| 1536 | 832.1 @ left 41 | 475.5 @ left 1004.3 | 21.32 | 76 / **86** / 93 |
+| 820 | 750.1 @ left 27.4 | **`display: none`** | 19.171 | 76 / **86** / 94 |
+
+The comfortable band is 45–75. The section runs **86 at both widths** across
+**1,288 words** (5 blocks of 227–304), which is more prose than the longest blog
+article. ~~For comparison the blog article now measures **67**.~~ 🔴 **That
+comparison is void — the blog article was rebuilt on this grid and now measures
+86 too, deliberately. See §13a.**
+
+Two things make it worse than the number alone suggests:
+
+- **Below 991px the image column is `display: none`**, so at 820 the section is
+  1,288 words in a single unpaired 750px column at 86 characters. The sticky
+  image — the thing that justifies the wide copy column — is not there.
+- The grid is `1.75fr / 1fr` with a 131.2px gap, so the copy column's width is
+  derived from the sticky column's, not from a measure. Nothing in the section
+  is holding the line length to anything.
+
+**Do not "fix" it by narrowing `.essay-copy` alone** — that re-opens the
+one-sided gap on the right that the sticky column exists to close, which is the
+same trap the article template was just pulled out of. The fix is a decision
+about the grid ratio and the body ramp together.
+

@@ -174,8 +174,15 @@ function Field({
   required?: boolean;
   autoFocus?: boolean;
 }) {
+  // `focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep/40`
+  // — REMOVED, same defect as ContactForm's `field` (see the note there). At
+  // 40% alpha it was worse: gold-deep #7D641F at 0.40 over the white field
+  // composites to #CBC2A8, which is 1.79:1 on #FFFFFF against the 3:1 that
+  // 1.4.11 requires. These fields ARE reachable — the modal has no disabled
+  // fieldset — so this one was live on every keyboard open of the lead form.
+  // The global rule now draws gold-deep at 5.65:1 on the white field.
   const base =
-    "w-full rounded border border-ink/15 bg-white px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink/40 transition-colors duration-200 focus:border-gold-deep focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-deep/40";
+    "w-full rounded border border-ink/15 bg-white px-3.5 py-2.5 text-[15px] text-ink placeholder:text-ink/40 transition-colors duration-200 focus:border-gold-deep";
   return (
     <label htmlFor={id} className="flex flex-col gap-1.5">
       <span className="text-[12px] font-medium uppercase tracking-[0.06em] text-ink/60">

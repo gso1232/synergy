@@ -85,7 +85,16 @@
       "c9": "Lincoln Financial",
       "c10": "Nassau",
       "c11": "Foresters",
-      "c12": "Liberty Bankers"
+      "c12": "Liberty Bankers",
+      "c13": "Aetna",
+      "c14": "Aflac",
+      "c15": "American National",
+      "c16": "Columbus Life",
+      "c17": "Ethos",
+      "c18": "F&G",
+      "c19": "National Life Group",
+      "c20": "Royal Neighbors",
+      "c21": "United Home Life"
     },
     "ratings": {
       "c1": "",
@@ -99,7 +108,16 @@
       "c9": "",
       "c10": "",
       "c11": "",
-      "c12": ""
+      "c12": "",
+      "c13": "",
+      "c14": "",
+      "c15": "",
+      "c16": "",
+      "c17": "",
+      "c18": "",
+      "c19": "",
+      "c20": "",
+      "c21": ""
     }
   },
   "whatWeCover": {
@@ -392,19 +410,19 @@
         "numeral": "I",
         "title": "Integrity",
         "body": "We tell you the truth even when it is not what you want to hear. Your trust is worth more than any commission.",
-        "imageAlt": "Two people shaking hands across a table at the close of a meeting."
+        "imageAlt": "A Synergy team member speaking into a microphone on stage at a company event."
       },
       "v2": {
         "numeral": "II",
         "title": "Education",
         "body": "We believe an informed client makes the best decisions. We never rush. We never pressure. We explain everything.",
-        "imageAlt": "An advisor talking a couple through paperwork at a kitchen table."
+        "imageAlt": "A Synergy advisor presenting at a team training session in the office."
       },
       "v3": {
         "numeral": "III",
         "title": "Legacy",
         "body": "We think beyond the policy. We help families build protection strategies that outlast any single life event.",
-        "imageAlt": "A grandfather, his daughter and his granddaughter together outdoors."
+        "imageAlt": "Two members of the Synergy team standing together at the office."
       }
     },
     "quote2": "We do not just sell policies. We build protection strategies that last a lifetime.",
@@ -424,37 +442,37 @@
       "p1": {
         "name": "Term Life Insurance",
         "body": "Term life insurance provides affordable, straightforward coverage for a defined period — typically 10, 20, or 30 years. If you pass away during the term, your family receives a tax-free lump sum death benefit to replace your income, pay off debts, and maintain their quality of life. It is the most cost-effective way to get significant coverage during the years your family depends on you most. Ideal for young families, new homeowners, and anyone with financial dependents.",
-        "imageAlt": "A mother sitting on a rug with her two young children in a sunlit room."
+        "imageAlt": "A young couple stand close together in a sunlit grassy field at golden hour, gently holding and kissing their baby."
       },
       "p2": {
         "name": "Final Expense Insurance",
         "body": "Final expense insurance is a small whole life policy — typically between $5,000 and $25,000 — written to meet the costs a family faces immediately after a death: the service, outstanding medical bills, and the administration that follows. The premium is level for the life of the policy and the benefit amount does not reduce over time. No medical exam is required for most applicants between ages 50 and 85. It is the most compassionate gift you can leave your family — the certainty that they will never carry that financial burden alone.",
-        "imageAlt": "An older couple sitting at a table, holding hands in the light from a window."
+        "imageAlt": "A silver-haired woman in a mint-green polka-dot dress laughs over her shoulder against a cream wall with greenery behind her."
       },
       "p3": {
         "name": "Mortgage Protection Insurance",
         "body": "Mortgage protection is designed to keep your family in their home if you are no longer there to make the payments. If you pass away, become disabled, or face a critical illness, the policy pays off your remaining mortgage balance directly — so your family is not forced out of the home you built together. Unlike PMI, which protects the lender, mortgage protection protects your family. It is one of the most targeted and powerful forms of protection a homeowner can carry.",
-        "imageAlt": "A family at home in a bright living room, one parent reading and a child in an armchair."
+        "imageAlt": "A couple in coats stand on the wooden porch of their house beside stacked moving boxes as one of them unlocks the front door with a key."
       },
       "p4": {
         "name": "Indexed Universal Life (IUL)",
         "body": "Indexed Universal Life insurance is permanent coverage that builds real cash value linked to a stock market index — such as the S&P 500 — while a policy floor means index losses are not credited against the value you have built. Your money grows when markets rise and stays flat when they fall. The cash value grows tax-deferred, can be accessed tax-free through policy loans, and the death benefit lasts your entire lifetime. IUL is the preferred vehicle for entrepreneurs, business owners, and professionals who want life insurance that works as a long-term financial strategy.",
-        "imageAlt": "A shop owner in an apron standing with arms folded behind the counter of a small store."
+        "imageAlt": "A silver-haired couple hold coffee cups in the open doorway of their home, a snow-covered deck behind them."
       },
       "p5": {
         "name": "Fixed Indexed Annuities (FIAs)",
         "body": "A Fixed Indexed Annuity is a retirement vehicle that grows your money based on market index performance — with a floor that means index losses are not credited against your principal. Your account is credited based on the performance of a market index, without being invested in the market directly. FIAs offer lifetime income options, tax-deferred growth, and a death benefit that passes to your beneficiaries. Designed for pre-retirees and retirees who want index-linked crediting alongside a predictable income floor.",
-        "imageAlt": "An older couple preparing fruit together at a kitchen counter."
+        "imageAlt": "A smiling older couple stand outdoors among sunlit trees; the man in a straw hat holds a phone as the woman rests a hand on his shoulder."
       },
       "p6": {
         "name": "Medicare Insurance",
         "body": "Navigating Medicare can be overwhelming — but it does not have to be. Synergy Insurance Group helps individuals turning 65 and existing Medicare beneficiaries understand their options and select the right plan. We work with multiple Medicare carriers to compare Medicare Supplement (Medigap) plans, Medicare Advantage plans, and Medicare Part D prescription drug coverage. Our agents simplify the process, explain every option in plain language, and help you choose the coverage that fits your health needs and your budget — at no additional cost to you.",
-        "imageAlt": "A smiling older man in a blue shirt, photographed indoors in natural light."
+        "imageAlt": "A silver-haired woman in glasses smiles while holding a basket of freshly picked celery and tomatoes in a sunny vegetable garden."
       },
       "p7": {
         "name": "Health Insurance",
         "body": "Access to quality health insurance is one of the most important decisions you can make for yourself and your family. Synergy Insurance Group works with multiple health insurance carriers to help individuals, families, and self-employed professionals find plans that provide real coverage at a price that makes sense. Whether you need an ACA marketplace plan, a short-term health plan, or a supplemental health policy to fill gaps in your existing coverage, our licensed agents walk you through every option in plain language, and leave the decision with you.",
-        "imageAlt": "A florist checking a tablet among buckets of cut flowers in her shop."
+        "imageAlt": "A mother, father, and young child make dumplings together at a bright kitchen counter set with eggs and flour."
       }
     },
     "breakImageAlt": "Waterfront homes at dusk with their lights on, seen across calm water.",
@@ -557,6 +575,118 @@
       "body": "Our licensed agents are ready to walk through every option with you — no pressure, no jargon, and no obligation. Just honest guidance built around your family."
     }
   },
+  "join": {
+    "meta": {
+      "title": "Careers at Synergy Insurance Group — Orlando, Florida",
+      "description": "Synergy Insurance Group is hiring in Orlando. Licensing support, training, and an in-person team. No insurance experience necessary."
+    },
+    "hero": {
+      "eyebrow": "CAREERS AT SYNERGY INSURANCE GROUP",
+      "headline": "Build a career protecting families.",
+      "sub": "Synergy Insurance Group is hiring in Orlando. No experience necessary — we walk you through licensing, training, and your first months in the field.",
+      "imageAlt": "",
+      "ctaApply": "Join as agent",
+      "ctaPortal": "Agent portal",
+      "portalNote": "The agent portal is not open yet."
+    },
+    "offer": {
+      "heading": "What joining actually involves.",
+      "body": "Four things Synergy provides. Everything after that is the work itself.",
+      "i": {
+        "numeral": "I",
+        "label": "Leads you do not have to buy",
+        "body": "Synergy runs its own lead generation, so you are not buying lists or working a cold phone book. The people you speak to have already put their hand up and asked someone to call them back, which changes the first ten seconds of every conversation you have."
+      },
+      "ii": {
+        "numeral": "II",
+        "label": "Licensing, supported",
+        "body": "You do not need an insurance background to start. Florida licensing is a state exam with a published syllabus, and someone at Synergy walks you through what it covers, what the state asks for, and the carrier paperwork that follows it. You are not left to decode it alone."
+      },
+      "iii": {
+        "numeral": "III",
+        "label": "Training that keeps going",
+        "body": "Training here is not a first-week orientation you never see again. Sessions run on a regular schedule, they cover live cases rather than theory, and the people running them are the same people you work alongside the rest of the week."
+      },
+      "iv": {
+        "numeral": "IV",
+        "label": "An Orlando team, in person",
+        "body": "The office is on Major Boulevard and the team actually works from it. If you want people to learn from in the same room — someone to sit in on a call, or to ask why a case was declined — that is what this is, rather than a contract and a login."
+      }
+    },
+    "steps": {
+      "heading": "How it works.",
+      "tagline": "Your pace, your goals.",
+      "one": {
+        "heading": "Get in Touch",
+        "body": "Call the office or send the contact form. It is a short conversation, not an application: where you are now, whether you already hold a licence, and what you are hoping the work will look like. Nobody is going to push you toward a decision on a first call, and you will speak to someone who actually works here rather than a recruiter reading from a script. If it is plainly not a fit, we will say so then, because wasting six weeks of your time helps neither of us."
+      },
+      "two": {
+        "heading": "Meet the Team",
+        "body": "Before anything is signed you come and meet the people you would be working with. You see the office, you sit in on how a case is actually worked, and you ask the questions that are hard to ask over the phone. This is deliberately a two-way conversation: Synergy is deciding whether to invest training time in you, and you are deciding whether these are people you want to learn the business from. Both answers matter and both are allowed to be no."
+      },
+      "three": {
+        "heading": "Get Licensed",
+        "body": "Florida requires a life insurance licence before you can sell, so that is the first real milestone. You are pointed at the pre-licensing course, the state exam and the fingerprinting the state asks for, and once you pass, the carrier appointments and the paperwork behind them are handled with you rather than handed to you. It is the part most people expect to be the obstacle, and it is mostly a matter of doing the steps in the right order."
+      },
+      "four": {
+        "heading": "Get Appointed & Start Selling",
+        "body": "You begin sitting with real clients, with someone experienced alongside you for the first ones. You will not be handed a phone list and wished luck. Early appointments are reviewed afterwards — what was asked, what was missed, what the carrier came back with — and that review is the part that turns a licence into competence. The support does not stop once you are producing; it changes shape."
+      }
+    },
+    "cta": {
+      "heading": "Come and talk to us.",
+      "body": "There is no application form on this page. The first step is a conversation, and the phone and the contact form both reach the same Orlando office.",
+      "button": "Talk to us about joining"
+    },
+    "opening": {
+      "phrase": "You are not buying a job.",
+      "imageAlt": "Five Synergy agents standing together for a portrait against a light studio wall.",
+      "lead": "Most people who ask about this work have already been sold something once. So here is the plain version, before anyone asks you for a phone number.",
+      "q1": "What the work actually is",
+      "a1": "You sit with families and explain products that are genuinely hard to read: term, final expense, indexed universal life, annuities. Most of the job is listening carefully, asking better questions than the last person did, and being willing to say that a product is wrong for someone. The paperwork is learnable in weeks. The judgement takes longer, and it is the part that makes the difference to the person across the table.",
+      "q2": "What Synergy provides",
+      "a2": "Leads generated in-house rather than bought from a list broker, so the people you call have asked to hear from someone. Licensing support, because most people arriving here have never sat a state exam. Training on a regular schedule, run by the people you work beside rather than by a course somebody sells you. And an office in Orlando where those people actually are.",
+      "q3": "What it asks of you",
+      "a3": "Turning up, mostly. Licensing is a state exam with a published syllabus and it does not pass itself. Early appointments are uncomfortable, and the only way through that is doing enough of them with someone experienced sitting in. If you want something that pays without being learned, this is the wrong room, and we would rather say so now than six weeks in."
+    },
+    "apply": {
+      "eyebrow": "APPLY",
+      "heading": "Start the conversation.",
+      "body": "Fill this in and someone from the Orlando office will get back to you to talk about what the work involves. Licensed already or not licensed at all — both are normal, and the second one is more common than people expect.",
+      "phoneLead": "Would rather talk first?",
+      "legend": "Agent application",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "phone": "Phone",
+      "phonePlaceholder": "(407) 000-0000",
+      "email": "Email",
+      "emailPlaceholder": "you@email.com",
+      "state": "State you live in",
+      "statePlaceholder": "Select a state...",
+      "licensed": "Are you currently licensed?",
+      "licensedYes": "Yes",
+      "licensedNo": "Not yet",
+      "hear": "How did you hear about Synergy?",
+      "hearPlaceholder": "Select...",
+      "hearOptions": {
+        "search": "Search engine",
+        "social": "Social media",
+        "referral": "Someone who works here",
+        "event": "An event",
+        "other": "Something else"
+      },
+      "consentPlaceholder": "[ Consent wording pending — this checkbox is built and the exact SMS/call consent text, and the legal entity name it must reference, have not arrived from the client yet. ]",
+      "submit": "Submit application",
+      "disabledTitle": "This form is not connected yet.",
+      "disabledBody": "There is nowhere for it to send yet, so it is switched off rather than pretending to work. Call the office on 407-434-0400 and you will reach a person today."
+    },
+    "range": {
+      "eyebrow": "THE PRODUCTS",
+      "heading": "What you would be selling.",
+      "body": "Synergy is not a one-product shop, and that matters more than it sounds. When the only policy you hold is the wrong one for the person across the table, the conversation has nowhere honest left to go. These are the lines Synergy writes. Working out which one a family actually needs — and saying so when the answer is none of them — is most of the skill.",
+      "link": "Read what each product does"
+    }
+  },
   "blog": {
     "metaTitle": "Insurance and Retirement Planning Blog — Synergy Insurance Group",
     "metaDescription": "Guides on term life, final expense, mortgage protection, indexed universal life, annuities, Medicare and retirement planning from Synergy Insurance Group.",
@@ -565,6 +695,49 @@
     "listLabel": "Articles",
     "readTime": "{minutes} min read",
     "allArticles": "All articles"
+  },
+  "contact": {
+    "metaTitle": "Contact Synergy Insurance Group — Orlando, FL — 407-434-0400",
+    "metaDescription": "Talk to a licensed agent at Synergy Insurance Group. Orlando, Florida, licensed in all 50 states. Call 407-434-0400.",
+    "heading": "Let Us Protect Your Family",
+    "heroImageAlt": "A man with an open folder and a laptop sits talking with an older couple on a sofa in a sunlit room.",
+    "intro": "Tell us about your situation and one of our licensed agents will reach out with honest guidance tailored to your family.",
+    "agentHeading": "Talk to a Licensed Agent",
+    "agentBody": "Our agents are licensed in all 50 states and work with the nation's top carriers. We take the time to understand your situation before recommending anything.",
+    "detailsHeading": "Contact details",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "addressLabel": "Office",
+    "hoursLabel": "Hours",
+    "form": {
+      "heading": "Request a quote",
+      "optionalNote": "Only your email address is required. All other fields are optional.",
+      "nameLabel": "Your name",
+      "emailLabel": "Email address",
+      "phoneLabel": "Phone number",
+      "productLabel": "What can we help with?",
+      "messageLabel": "Your message",
+      "optionalSuffix": "(optional)",
+      "namePlaceholder": "Enter your name",
+      "emailPlaceholder": "Enter your email address",
+      "phonePlaceholder": "Enter your phone number",
+      "messagePlaceholder": "What would you like us to know",
+      "productPlaceholder": "Select a product…",
+      "p1": "Term Life Insurance",
+      "p2": "Final Expense Insurance",
+      "p3": "Mortgage Protection Insurance",
+      "p4": "Indexed Universal Life (IUL)",
+      "p5": "Fixed Indexed Annuities (FIAs)",
+      "p6": "Medicare Insurance",
+      "p7": "Health Insurance",
+      "p8": "Not Sure — Help Me Decide",
+      "smsConsent": "I agree to receive SMS text messages from Synergy Insurance Group at the number provided. Message frequency varies. Message & data rates may apply. Reply STOP to opt out, HELP for help.",
+      "emailConsent": "I agree to receive marketing and informational emails from Synergy Insurance Group.",
+      "legalNote": "By submitting this form you acknowledge our Privacy Policy and Terms of Service.",
+      "submit": "Request My Free Quote",
+      "disabledTitle": "This form isn't connected yet.",
+      "disabledBody": "Your details won't be sent anywhere and no one will be contacted. Call 407-434-0400 to speak with a licensed advisor in the meantime."
+    }
   },
   "footer": {
     "srTitle": "Footer",
@@ -589,7 +762,6 @@
       "join": "Join Us",
       "contact": "Contact"
     },
-    "joinHref": "https://join.fflsynergy.com/",
     "legalTitle": "Legal",
     "legal": {
       "privacy": "Privacy Policy",

@@ -127,9 +127,25 @@ export default function ServicesSequence({
                 <div className="services-frame relative mb-8 w-full overflow-hidden xl:hidden">
                   <Image
                     src={it.src}
-                    alt={it.alt}
+                    // 🔴 alt="" — DECORATIVE, and for the same reason the sticky
+                    // column above is `aria-hidden`: the product name is the
+                    // <h3> immediately below this image inside the same <li>, so
+                    // an alt string here announces the product a second time.
+                    // `it.alt` still exists (from `products.*.imageAlt`) but is
+                    // no longer read on this route: 2026-08 the frames were
+                    // swapped to the client's supplied photography and those alt
+                    // strings describe the PRIOR Pexels stock in fine detail, so
+                    // reading them would narrate the wrong picture. They are left
+                    // in the message files for restore, not deleted.
+                    alt=""
                     fill
-                    sizes="(min-width: 1280px) 0px, (min-width: 768px) 60vw, 90vw"
+                    // "(min-width: 1280px) 0px, 92vw" — below xl the layout is a
+                    // SINGLE column and this image is `w-full`, so it renders
+                    // ~92vw (measured 751px in an 820 viewport = 91.6vw). The
+                    // supplied sources are 2001–4160px wide, which clears the
+                    // 820 stack (1502px @2x) and every narrower width with no
+                    // upscale.
+                    sizes="(min-width: 1280px) 0px, 92vw"
                     quality={78}
                     className="object-cover object-center"
                   />

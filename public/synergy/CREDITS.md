@@ -1083,9 +1083,50 @@ Frame mean L **0.188**. No text sits on it, so there is no contrast threshold.
 
 ## The seven product frames
 
-The swap column renders **476 x 557 CSS** at a 1920 viewport, so the bar is
-**952 x 1115 at 2x DPR** cropped to the frame's 0.854 ratio. All seven are
-stored at **1200 x 1405** — 26% headroom.
+The desktop swap column renders **476 x 557 CSS** (bar **952 x 1115 at 2x**),
+but below the sticky breakpoint (≤1279) the frame renders INLINE and much larger
+— up to **751 CSS at 820** (1502 @2x) and **1192 CSS at 1279** (2384 @2x). The
+old files were stored at 1200 x 1405, which covered only the desktop bar and
+upscaled on the inline layout. **The 2026-07-30 set is stored at 1600 x 1874**,
+which clears every TESTED width (1536 / 820 / 390) with no upscaling; the natives
+are far larger again. The 992–1279 inline band still exceeds 1600 (a pre-existing
+property of the frame system, far worse under the old 1200 files); a 2600-wide
+store would clear that too and every native here supports it — flagged, not done.
+
+### 🟢 2026-07-30 — REAL TOPIC-MATCHED PHOTOGRAPHY (current)
+
+Replaced the generic lifestyle stock (table below, files retained on disk) with
+seven photographs each chosen to read as its actual product. **Pexels License**
+throughout — *"Free to use." / "Attribution is not required."* — free for
+commercial use, no attribution. Each was viewed at full size and cleared the
+content rules: no illness / distress / grief / dereliction / scattered paperwork;
+the Final Expense and Medicare seniors read **well and dignified**, never frail;
+no stock handshake and no posed-on-a-lawn. Alt text describes only what the
+photograph shows — no person is presented as a Synergy agent.
+
+| slot | file | Pexels photo page | native | 2x clearance |
+|---|---|---|---|---|
+| Term Life | `service-term-life-family.jpg` | pexels.com/photo/…-33204381/ | 4160 x 6240 | crop 4160×4871 vs 1200×1405 store → **3.47x**, no upscale |
+| Final Expense | `service-final-expense-senior.jpg` | pexels.com/photo/…-36792488/ | 4160 x 6240 | **3.47x** |
+| Mortgage Protection | `service-mortgage-home.jpg` | pexels.com/photo/…-8962201/ | 3648 x 5472 | crop 3648×4272 → **3.04x** |
+| IUL | `service-iul-couple.jpg` | pexels.com/photo/…-7328474/ | 3872 x 5808 | crop 3872×4534 → **3.23x** |
+| Fixed Indexed Annuities | `service-annuities-couple.jpg` | pexels.com/photo/…-4894565/ | 3840 x 5760 | crop 3840×4496 → **3.20x** |
+| Medicare | `service-medicare-active.jpg` | pexels.com/photo/…-7658788/ | 5105 x 3408 (landscape) | crop 2910×3408 → **2.43x** |
+| Health | `service-health-kitchen.jpg` | pexels.com/photo/…-7705380/ | 4333 x 6500 | **3.61x** |
+
+Subjects: young family at golden hour (term life); a silver-haired woman laughing
+(final expense — dignity, not decline); a couple unlocking their front door with
+move-in boxes (mortgage protection); an older couple with coffee at their home
+(IUL — the comfortable future it funds); a settled retired couple outdoors
+(annuities); an active senior harvesting vegetables (Medicare — well at 65+); a
+family making dumplings together (health — everyday wellbeing).
+
+Full photo-page URLs are in the git history of this commit's build report. The
+Medicare native is landscape (5105 x 3408) — cropped to the 0.854 portrait it
+still clears the 2x bar by 2.43x, so no upscaling; the other six are portrait
+natives.
+
+### PREVIOUS — generic lifestyle stock (replaced 2026-07-30, files kept for fallback)
 
 | slot | file | Pexels ID | native | frame mean L |
 |---|---|---|---|---|
@@ -1321,3 +1362,570 @@ changes, which is the one authored-content exception in the standing rules.
 Unlike /services §4, these images are NOT `aria-hidden`: a blog card is a link
 whose image is part of the link's accessible name context, and the card is
 rendered at every width rather than hidden below 992.
+
+---
+
+# Blog articles — the sticky column — 41 frames across nine articles
+
+The article template was rebuilt on **/services §4** (copy left, sticky image
+column right). The column needs a frame per qualifying h2 section. **All nine
+articles that have bodies now carry frames — 41 in total.** The first four
+below were sourced for `/blog/life-insurance-orlando`; the remaining 37 for the
+other eight, in one pass, and they are listed further down.
+
+**Common spec for all 41.** Pexels License — exact line: *"All photos and videos
+on Pexels are free to use."* / *"Attribution is not required."* Each fetched at
+full resolution, cropped to **2 / 3**, written **1600 × 2400** JPEG q86 mozjpeg;
+the component re-encodes at `quality={78}`. Resolution bar **978 × 1467** (the
+489 × 733.5 CSS frame at 2× DPR) — the smallest crop shipped is **2153px** wide,
+2.2× the bar, so nothing upscales at any width or DPR. Source URL pattern:
+`https://www.pexels.com/photo/<id>/`.
+
+**Register held across all 41: no people, no legible signage, no third-party
+branding, nothing derelict.** Interiors, light, landscape and the built
+environment — the same register as the twelve blog cards, the /services essay
+five and the /contact hero.
+
+## /blog/life-insurance-orlando — four frames
+
+| section heading | file | Pexels | native | crop | shipped L |
+|---|---|---|---|---|---|
+| Which products are available | `article-arched-windows.jpg` | `20822566` | 2268 × 4032 | 2268 × 3402 @ y315 | **0.212** |
+| What it costs | `article-stair-concrete.jpg` | `5498049` | 2966 × 4000 | 2667 × 4000 @ x149 | **0.415** |
+| What a broker does that a captive agent cannot | `article-colonnade-doors.jpg` | `27675521` | 3834 × 5896 | 3499 × 5248 @ y324 | **0.290** |
+| What to have ready | `article-pigeonholes.jpg` | `35623825` | 5993 × 7491 | 4593 × 6889 @ x1400 y301 | **0.132** |
+
+### The luminance ladder
+
+Measured on the SHIPPED files, in the order the sections appear:
+**0.212 → 0.415 → 0.290 → 0.132.** Adjacent gaps **0.203 / 0.125 / 0.158**,
+minimum **0.125**, band **0.132–0.415**. That clears the 0.06 target the
+/services essay set by a factor of two, and comfortably beats that set's own
+shipped minimum of 0.047 — a four-frame sequence has three gaps to spend
+across the same 0.10–0.42 band, where five frames had four.
+
+### 🔴 TWO FRAMES WERE RE-CROPPED AFTER BEING VIEWED AT FULL SIZE
+
+Both passed every measurement and both would have shipped a wrong note. This is
+the third and fourth time on this project that opening the file caught what the
+numbers could not.
+
+- **`article-pigeonholes`** — a centred 2:3 crop keeps a red **FIRE ALARM** box,
+  its label legible, on the left wall. Crop moved right to `x=1400` (the box's
+  right edge is x≈1335), which also improves the composition: the wall of
+  compartments now fills the frame instead of sharing it with an empty corner.
+- **`article-colonnade-doors`** — the last cabinet on the right-hand wall is
+  glass-fronted and holds a **devotional statuette**, legible at full size and
+  invisible at thumbnail size. 335px trimmed off the right. Same call as the
+  rejected `6185344` menorah frame on /services: no religious specificity about
+  the reader on a general page. Four door panels remain, which is the point of
+  the frame.
+
+### 🔴 REJECTED, and why — the rule that did not bend
+
+The instruction on this pass was absolute: **nothing showing illness, distress,
+grief, dereliction, abandonment or scattered paperwork.** Rejections:
+
+- **`6333730`** (card-catalogue drawers, L 0.194, dead on the brief for "What to
+  have ready") — every label is legible **Cyrillic**, including *Ленин В.И.*
+  and *Лермонтов М.Ю.* Foreign-language signage placing the frame in a Russian
+  library, and a Lenin drawer label on a Florida insurance page. Same class as
+  the `35005664` German street-sign rejection on /services.
+- **`18725637`** (numbered PO boxes, L 0.254) — heavy fluorescent yellow cast,
+  scuffed and grimy doors, and one door hanging open on a broken latch. Reads
+  neglected.
+- **`19683921`** (arcade with potted plants, L 0.126) — a person on the balcony
+  in frame, and cracked weathered plaster throughout.
+- **`37297699`** (repeated arched niches, L 0.35) — ducting hose on the ground,
+  a poster carrying faces, and a CCTV camera. Reads utility corridor.
+- **`14201540`**-class **derelict rooms** — not sourced at all this pass. The
+  frame that shipped and was pulled from /services slot 1 is the standing
+  example of the rule.
+- The entire **postal-box** family beyond the two above — `4551930` (Latvijas
+  **PASTS**), `35664126` (Deutsche Post horn), `5308805` (**India Post**),
+  `38548889`/`36644909`/`33975914` (Royal Mail **E‖R**), `4744773` (Почта).
+  All disqualified on third-party branding, not on subject.
+- **`13726560`**, **`20378650`**, **`34187516`**, **`20849350`**, **`17190476`**
+  — black and white. The register on this site is colour; a monochrome frame in
+  a colour sequence reads as a different photographer, not as a choice.
+- **`10051525`** / **`10051526`** (apothecary drawers, L 0.308 / 0.298) —
+  legible pharmacopoeia labels (*AMYLUM*, *ANNATTO*, *CUSSO*). A pharmacy
+  reading is illness-adjacent on a life-insurance page.
+- **`5716254`**, **`29555786`**, **`38675666`**, **`6550460`**, **`15412016`**,
+  **`277572`**, **`1861153`**, **`3460599`** — all clean and all usable; cut on
+  the ladder or on motif duplication, not on content. `15412016` (warm wooden
+  staircase in raking light, L 0.262) is the strongest runner-up and is the
+  first place to look if `article-stair-concrete` is ever replaced for being
+  the only cool-toned frame in the set.
+
+**Every candidate above was viewed at crop size, and all four finalists at full
+resolution in three horizontal bands at native pixel scale**, which is what
+caught the fire alarm, the statuette and the Cyrillic.
+
+### 🔴 No alt text, deliberately
+
+`alt=""` on all four, inside an `aria-hidden` container that is `display:none`
+below 992 — identical to /services §4 and for the identical reason. There is no
+width and no assistive-technology path on which an alt string here is
+announced. These are decorative relative to the article: a room of windows, a
+stair, a colonnade, a wall of pigeonholes. **If the ≤991 rule is ever reversed
+and the images move inside the sections, alt must be written before they do.**
+
+### 🔴 No `priority`
+
+All four are lazy. Below 992 the column is `display:none` but an eager image is
+still fetched, and the section begins immediately below the fold at every
+width — it can never be the LCP element. Same finding as /services §4.
+**Verified: at 820 and 390 the page fetches ZERO bytes matching `article-`.**
+
+---
+
+## The other eight articles — 37 frames
+
+Same spec, same register, same rule. Sourced, audited and placed in one pass.
+Every frame below was **viewed at full resolution before it was written** — that
+audit rejected 18 candidates that had passed every measurement (list at the end).
+
+### `/blog/term-life-insurance` — 6 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | What is term life insurance and how does it work? | `article-tree-avenue.jpg` | `18573952` | 3965 × 5950 | 0.144 |
+| 2 | How much coverage do I need? | `article-timber-beams.jpg` | `31848124` | 4000 × 6000 | 0.261 |
+| 3 | 10, 20 or 30 years — how do they differ? | `article-concrete-atrium.jpg` | `35288711` | 6048 × 8064 | 0.168 |
+| 4 | What does it cost? | `article-reservoir-bridge.jpg` | `37130561` | 3024 × 4032 | 0.305 |
+| 5 | What happens when the term expires? | `article-stone-terrace.jpg` | `36039235` | 4000 × 6000 | 0.194 |
+| 6 | Can I convert to a permanent policy? | `article-vaulted-walk.jpg` | `29809065` | 3024 × 4032 | 0.270 |
+
+Frames, in order: an avenue of bare trees running to a sunset horizon · new
+timber beams under a white boarded ceiling · a concrete atrium with a glass lift
+and columns · a long causeway bridge over a green reservoir · stone steps and
+flagstones with a potted shrub, from above · a vaulted stone walk ending on a
+red door. **Adjacent gaps 0.117 / 0.093 / 0.137 / 0.111 / 0.076 — min 0.076.**
+
+### `/blog/final-expense-insurance` — 5 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | How is it different from regular life insurance? | `article-tile-threshold.jpg` | `7047482` | 4176 × 6264 | 0.122 |
+| 2 | Who qualifies? | `article-tiled-courtyard.jpg` | `19638850` | 3760 × 5642 | 0.282 |
+| 3 | Is a medical exam required? | `article-roof-frame.jpg` | `8817839` | 3648 × 5472 | 0.189 |
+| 4 | Guaranteed issue and simplified issue | `article-stair-flights.jpg` | `20361882` | 2369 × 3230 | 0.348 |
+| 5 | How do I choose a policy? | `article-kitchen-garden-gate.jpg` | `38119102` | 5152 × 7728 | 0.196 |
+
+Frames: patterned tiles meeting old floorboards in raking sun · a terracotta
+arcaded courtyard with a stone fountain · new roof framing against blue sky and
+pines · cascading concrete stair flights under warm uplight · an open picket gate
+onto a kitchen garden. **Gaps 0.160 / 0.093 / 0.159 / 0.152 — min 0.093.**
+
+🔴 **This article's imagery was chosen with a specific constraint.** It is about
+funeral costs, and §3 is headed *"Is a medical exam required?"* Nothing in this
+set is sombre, clinical, medical or valedictory — the register is deliberately
+warm daylight, growing things and new construction.
+
+### `/blog/mortgage-protection-insurance` — 5 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | What is mortgage protection insurance? | `article-garden-gate-pond.jpg` | `34317574` | 4160 × 6240 | 0.227 |
+| 2 | How is it different from PMI? | `article-sash-windows.jpg` | `27418816` | 2604 × 3993 | 0.171 |
+| 3 | How is it different from term life insurance? | `article-green-louvres.jpg` | `20703557` | 5446 × 7262 | 0.263 |
+| 4 | What does it cover? | `article-timber-canopy.jpg` | `32599822` | 4004 × 6006 | 0.183 |
+| 5 | Where its limits are | `article-white-cliffs.jpg` | `5328309` | 3024 × 4032 | 0.282 |
+
+Frames: an open timber gate onto a lawn and pond with a tree in blossom · a brick
+facade of sash windows reflecting the street · a green louvred facade over grass
+and daisies · a timber-and-glass canopy seen from below · white chalk cliffs and
+green downland above the sea. **Gaps 0.056 / 0.092 / 0.080 / 0.099.**
+
+🟡 **Min gap 0.056 — the one set below the 0.06 target, and it is recorded
+rather than hidden.** The five values cluster into two close pairs
+(0.171/0.183 and 0.263/0.282), and 0.056 is the best any ordering of this set
+achieves — checked exhaustively. Opening it means replacing a frame that has
+already been audited at full size, which is the trade that produced most of the
+rejections below. The subjects at the seam — a garden gate and a brick facade —
+share nothing, and subject change is what makes a swap legible; luminance is the
+second cue, not the first. For reference the /services essay five shipped at a
+min of 0.047.
+
+### `/blog/indexed-universal-life-iul` — 5 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | How the crediting actually works | `article-glazed-dome.jpg` | `18800234` | 2444 × 3666 | 0.148 |
+| 2 | What the floor does not do | `article-encaustic-floor.jpg` | `30992346` | 4672 × 7008 | 0.273 |
+| 3 | How is it different from whole life and term? | `article-landing-skylight.jpg` | `30473221` | 3213 × 5712 | 0.200 |
+| 4 | Using the cash value | `article-white-spiral.jpg` | `16261090` | 3024 × 4032 | 0.307 |
+| 5 | The risks, stated plainly | `article-brick-arches.jpg` | `37100567` | 3977 × 5966 | 0.208 |
+
+Frames: an octagonal atrium looking up into a glazed lantern · an encaustic tile
+floor in raking light · a landing under a roof window with a wooden banister · a
+white spiral stair from below · a brick and stone facade of arched windows with
+geraniums. **Gaps 0.125 / 0.073 / 0.107 / 0.099 — min 0.073.**
+
+### `/blog/fixed-indexed-annuity-fia` — 5 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | What is a Fixed Indexed Annuity? | `article-stone-arcade.jpg` | `16239490` | 3310 × 4965 | 0.211 |
+| 2 | How the crediting works | `article-forest-light.jpg` | `28656695` | 5304 × 7952 | 0.131 |
+| 3 | Where the cost sits | `article-field-track.jpg` | `13417449` | 3024 × 4032 | 0.194 |
+| 4 | The two halves | `article-dune-path.jpg` | `38457237` | 2656 × 3984 | 0.346 |
+| 5 | Surrender charges — the constraint that matters most | `article-hillside-steps.jpg` | `27396713` | 3985 × 5978 | 0.189 |
+
+Frames: a barrel-vaulted limestone arcade with a dark doorway at the end · light
+shafts through a misty pine wood beside a lane · a farm track through fields at
+dusk with one tree · a boardwalk climbing through marram dunes to a blue sky · a
+flight of balustraded stone steps rising past dry-stone terracing.
+**Gaps 0.080 / 0.063 / 0.152 / 0.157 — min 0.063.**
+
+### `/blog/truck-drivers-retirement` — 5 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | Why the usual advice does not fit | `article-rail-canopy.jpg` | `3636903` | 2696 × 3740 | 0.201 |
+| 2 | What an IUL does differently | `article-farm-track.jpg` | `32821657` | 4000 × 6000 | 0.264 |
+| 3 | The risk that comes with that flexibility | `article-timber-trusses.jpg` | `19240406` | 4000 × 6000 | 0.154 |
+| 4 | How the cash value works | `article-reed-boardwalk.jpg` | `14044290` | 4129 × 5504 | 0.357 |
+| 5 | Using the cash value on the road | `article-forest-track.jpg` | `31612219` | 4672 × 7008 | 0.116 |
+
+Frames: curving rail tracks under a glazed viaduct canopy · a gravel farm track
+between green and rape fields under a big sky · timber trusses and glazing seen
+from below · a long boardwalk running through reeds to the horizon · a soft green
+forest track in rain. **Gaps 0.063 / 0.110 / 0.203 / 0.241 — min 0.063.**
+
+The journey register is deliberate on this one — it is the article written for
+drivers — but note it stays in the site's unpeopled vocabulary: no cab, no
+truck, no road-freight imagery, because that would be a different register from
+every other page and would make a claim about the reader.
+
+### `/blog/itin-holders-life-insurance` — 3 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | What types of cover are available? | `article-open-gate.jpg` | `16961830` | 3986 × 4982 | 0.230 |
+| 2 | Why an IUL comes up often in this context | `article-sea-deck.jpg` | `30819026` | 4480 × 6720 | 0.125 |
+| 3 | What the application involves | `article-patterned-tiles.jpg` | `32021732` | 4000 × 6000 | 0.265 |
+
+Frames: an open iron field gate under a hawthorn in blossom, path running through
+· a blue-railed viewing deck out over a calm sea · a patchwork of encaustic tiles.
+**Gaps 0.105 / 0.140 — min 0.105.**
+
+🔴 **THIS IS THE ARTICLE WHERE IT WENT WRONG BEFORE.** Pexels `4553661` —
+paperwork strewn across the floor of a derelict room — was placed here on the
+card and pulled. The set above was chosen against that history: three open,
+bright, tended, unmistakably intact frames, no documents, no archives, no
+institutional interiors. Two candidates were rejected specifically on this
+article: **`13504750`**, a domed glasshouse that is unambiguously derelict at
+full size — broken panes, rust, building rubble — and **`35485678`**, a mossy
+winter pergola with plastic buckets that reads unkempt. Both had good numbers.
+Both were caught by opening the file.
+
+### `/blog/living-benefits` — 3 frames
+
+| # | section heading | file | Pexels | native | shipped L |
+|---|---|---|---|---|---|
+| 1 | The three types of living benefits | `article-woodland-path.jpg` | `37368587` | 3712 × 5568 | 0.141 |
+| 2 | Why living benefits matter for your financial plan | `article-sea-terrace.jpg` | `37109551` | 2773 × 4160 | 0.260 |
+| 3 | Which life insurance policies include living benefits? | `article-olive-hillside.jpg` | `5624201` | 4014 × 5352 | 0.344 |
+
+Frames: a green woodland path in soft mist · a balcony rail and a laid table
+above a calm sea · a Tuscan olive grove backlit gold, a hill village beyond.
+**Gaps 0.119 / 0.084 — min 0.084.**
+
+🔴 **THE HARDEST SET ON THE BLOG, AND THE REASON IS THE SUBJECT.** Living
+benefits are critical-, chronic- and terminal-illness riders. Nothing here may
+read as illness, care, decline or valediction — no clinical interiors, no
+hospital light, no empty chairs, no dusk-as-ending. All three frames are green,
+warm, in daylight, and about somewhere you would want to be. The luminance
+ladder rises rather than falls, which is the one place on this blog where the
+ARC of the set was chosen for what it says and not only for separation.
+
+---
+
+## 🔴 The full-size audit — 18 rejections that passed every measurement
+
+Every candidate was screened at crop size (526 screened, 96 out of the 0.10–0.42
+band) and every finalist opened at full resolution. **The audit rejected 18
+frames that had already cleared luminance, resolution and register.** It is
+listed in full because the rate — nearly one in three finalists — is the argument
+for the rule.
+
+**People in frame** (the register is unpeopled, and it was applied to distant
+figures too, not just subjects): `19683921` (a figure on a balcony, plus cracked
+plaster), `15018649` (a walker on a tree-lined avenue), `38335387` (figures on a
+coastal boardwalk), `16292315` (one seated figure deep in a cloister arcade),
+`34055577` (a cyclist on a canal street), `34336856` (a seated figure in the
+Casa de Pilatos courtyard, plus museum stanchions and labels).
+
+**Dereliction, decay or neglect** — the rule that does not bend: `13504750`
+(derelict glasshouse, broken panes and rubble), `12098858` (graffitied stairwell
+in an abandoned building), `3968002` (railway past a rusting shed with a broken
+fence and weeds), `32413272` (rusting truss bridge with litter on the bank),
+`18725637` (scuffed PO boxes, one door hanging on a broken latch), `35485678`
+(mossy winter pergola with plastic buckets), `27039489` (boardwalk over a bog
+under a dead grey sky — bleak rather than derelict, cut anyway).
+
+**Legible text, signage or a place claim**: `6333730` (Cyrillic drawer labels
+including *Ленин В.И.*), `5025768` (fishing boats with legible names and a Cape
+Town registration), `15887356` (a national flag on a Venetian facade),
+`37419745` (a yellow signboard and erosion netting on a cliff walkway),
+`37376693` (the **LOUVRE** wordmark).
+
+**Religious specificity** — the same call as the `6185344` menorah rejection on
+/services: `15562594` (three leaded lancet windows behind a cypress: reads as a
+chapel), and the RE-CROP of `27675521` for the devotional statuette.
+
+**Register break, not content**: `5953664` (a cattle barn — live animals and
+manure), `26893623` (a rust-streaked underpass), `37297699` (ducting hose, CCTV
+and a poster of faces), `15703818` (an encaustic floor with grey cement patches),
+`13726560` / `20378650` / `34187516` / `20849350` / `17190476` (black and white —
+a monochrome frame in a colour sequence reads as a different photographer),
+`10051525` / `10051526` (apothecary drawers with pharmacopoeia labels —
+illness-adjacent on a life-insurance page), and the whole **postal-box** family
+on third-party branding (`4551930` Latvijas **PASTS**, `35664126` Deutsche Post,
+`5308805` **India Post**, `38548889` / `36644909` / `33975914` Royal Mail
+**E‖R**, `4744773` Почта).
+
+**One near-miss worth keeping:** `15412016`, a warm wooden staircase in raking
+sunlight (L 0.262). Clean, audited, unused — cut on the ladder, not on content.
+It is the first place to look if any frame here ever needs replacing.
+
+---
+
+# /contact
+
+## §1 hero — `contact-doors-light.jpg`
+
+**Pexels `19184551`** — "Open door to the balcony". Source:
+https://www.pexels.com/photo/open-door-to-the-balcony-19184551/
+
+**Pexels License**, exact line: *"All photos and videos on Pexels are free to
+use."* / *"Attribution is not required."* Commercial use, no attribution
+required — the same licence every other Pexels file in this repo carries.
+
+**Subject:** an empty room, French doors standing open onto a balcony, low
+raking sun throwing the window bars across the floor. No people, no interior
+clutter, no signage. In the unpeopled register the blog twelve and the
+/services essay five established — interiors, objects, light, built
+environment.
+
+### Derivation, measured
+
+| | |
+|---|---|
+| source | **2820 × 5018** (ratio 0.5620), 1.51 MB |
+| crop | **2820 × 4230** at 0,394 — centred, keeps **84.3%** of source height |
+| downscale | factor **0.5674** — a REDUCTION. Nothing is upscaled |
+| shipped master | **1600 × 2400**, JPEG q82 mozjpeg, **397 KB** |
+| slot box | ratio **1.0598** — THEIRS, off their measured 752 × 709.6 |
+| band the slot shows | master rows **445–1955**, the middle **62.9%** |
+
+**Mean luminance**, WCAG relative, measured on the shipped file — not on the
+source, and not on the full frame where it would flatter:
+
+| | |
+|---|---|
+| full master | **0.2806** (darkest row 0.028, brightest 0.672) |
+| **slot crop @ 1.0598** | **0.3644** (darkest row 0.057, brightest 0.671) |
+
+Candidate measurement before processing was 0.3662; the 0.0018 delta is the
+crop and the JPEG. Against the /services essay ladder (0.126 / 0.219 / 0.266 /
+0.339 / 0.386) this sits at the light end of the band, inside it.
+
+### Resolution, checked at DPR 2 rather than assumed
+
+Box renders **654 CSS** at 1536 → needs **1309** at DPR 2. next/image's srcset
+jumps 1200 → 1920, so the browser requests **w=1920** from a **1600**-wide
+master. Verified empirically that this is safe: `/_next/image?...&w=1920`
+returns **1600 × 2400**. The optimizer caps at the source width and does not
+enlarge. The delivered image is a downscale at every width and DPR.
+
+### Branding audit
+
+Viewed at full resolution before selection. Clear — no logos, wordmarks,
+signage or identifiable marks anywhere in frame.
+
+**Two candidates with good numbers were rejected on exactly this**, which is
+why the audit is not a formality:
+
+- **`10985999`** (doorway to a staircase, crop L 0.142) — a **branded oval
+  floor mat** carrying a monogram and wordmark, plus a branded standing banner
+  at the left edge. Disqualified under the standing rule.
+- **`20543598`** (window corner, crop L 0.152) — a **printed wall label** with
+  Chinese text and a circular logo mark. A centre crop clears it by ~27px,
+  which is far too thin a margin to ship on.
+
+Also rejected, on register rather than branding: `27872073` (clean, but a
+café/bar with clutter and a fire extinguisher — reads hospitality),
+`26508560` (clean, but a tight object study whose large blue mass fights
+cream/ink/gold), `11433145` and `10091248` (L 0.58 / 0.80 — too light to be
+the page's dark mass), `9899873` / `34245503` / `8285612` (L 0.04–0.06, below
+the set's floor), `35278717` (person in frame).
+
+Runners-up, both clean and both still viable if this one is ever replaced:
+**`2128347`** (stone hall, arched window, crop L 0.243, delivers +104% over the
+master) and **`20180326`** (window corner and a shaft of light, crop L 0.286,
++29.4%).
+
+### Alt text
+
+**`alt=""`.** The photograph carries nothing the copy does not already say —
+the h1, the phone number and the intro paragraph are the content of that
+column. It is decorative, and an invented description ("light through open
+doors") would be noise in a screen reader rather than information. This
+matches the /services essay five. It is NOT `aria-hidden` and NOT hidden below
+992: unlike /services §4 the image renders at every width, but a decorative
+image with an empty alt is already skipped, so no hiding is needed.
+
+### 🔴 In-column, not full-bleed — and what that defers
+
+Theirs is pinned to the viewport corner at x=0, y=0, running under their nav,
+with the h1 absolutely positioned over the photograph. Ours sits inside the
+grid column at 654 CSS.
+
+Reproducing their placement means the photograph runs under our header, which
+means the header cannot stay solid on this route, which means adding /contact
+to `isPhotoHeroRoute`, restoring the nav veil and re-running the **nav** AA
+over a photograph at three widths. That is a header decision, not an image
+decision. The file does not change if it is taken later — only the wrapper.
+
+Because the image is in flow, there is also no DOM order to be faithful to:
+theirs sits between the h1 and the phone only as an artifact of corner-
+anchoring with `margin: -160px 0 0 -32px`. Ours goes at the foot of the column,
+which is where the dead-space pass found the **701.1px** void it exists to
+fill. Residual after wiring: **40.4px**, columns ending 1251 vs 1290 — a
+mismatch inherent to unequal columns, the same condition already accepted on
+/about §2.
+
+---
+
+# /[locale]/join — six photographs
+
+All six are **Pexels License**, commercial use, no attribution required. Every
+one is a genuine **downscale** of a larger original — nothing on this page is
+upscaled, and the source dimensions are given so that can be checked.
+
+| # | slot | file | Pexels ID | original | shipped | 2× DPR target | clearance |
+|---|---|---|---|---|---|---|---|
+| 1 | §1 hero | `join-hero-atrium.jpg` | `38197381` | 5207 × 3472 | **3840 × 2560** | 3072 × 1800 | **+25% W / +42% H** |
+| 2 | §2 opening frame | `join-opening-courtyard.jpg` | `36756213` | 6000 × 4000 | **3840 × 2560** | 2908 × 1636 | **+32% W / +56% H** |
+| 3 | §3 step 1 | `join-step-palm-walk.jpg` | `32642344` | 3568 × 5352 | **1600 × 2400** | 952 × 1427 | **+68% / +68%** |
+| 4 | §3 step 2 | `join-step-reading-room.jpg` | `35548579` | 4000 × 6000 | **1600 × 2400** | 952 × 1427 | **+68% / +68%** |
+| 5 | §3 step 3 | `join-step-stair-light.jpg` | `28560789` | 4000 × 6000 | **1600 × 2400** | 952 × 1427 | **+68% / +68%** |
+| 6 | §3 step 4 | `join-step-palm-road.jpg` | `10504639` | 3648 × 5472 | **1600 × 2400** | 952 × 1427 | **+68% / +68%** |
+
+Sources: https://www.pexels.com/photo/38197381/ · `/36756213/` · `/32642344/` ·
+`/35548579/` · `/28560789/` · `/10504639/`
+
+**§2 opening frame — `join-opening-courtyard.jpg` (Pexels `36756213`).** A sunlit
+honey-stone courtyard with a tree and arched wooden doorways — warm,
+place/architecture, no identifiable people, nothing derelict. Route-scoped: used
+on /join only, not shared with any other page (it replaced a borrow of
+`services-break-dusk.jpg`). The 16:9 frame `object-cover`s this 3:2 file; the
+extra height feeds the parallax layer's no-uncover margin. No text sits on it.
+
+**The hero is 1.500 aspect on purpose.** `about-hero-family.jpg` is 3840 × 2560
+— the same ratio — so the `object-top` derivation written on /about §1 transfers
+to /join verbatim instead of needing to be re-derived: at 1536 × 900 the box is
+1.707, `cover` fits by width, and the whole crop budget comes out of the height.
+At 820 and 390 the box is taller in aspect than 1.500, so it is a no-op there.
+
+The four step frames ship at 1600 × 2400 because that is exactly what the
+`essay-*` frames ship at, and they render in the same `.essay-frame` box.
+
+## 🔴 What is in these frames, and what is deliberately not
+
+The brief rejects on sight: illness, distress, grief, dereliction, abandonment,
+scattered paperwork. It also forbids presenting any person as a Synergy agent.
+
+**There are no identifiable people in any of the five.** That was the cheapest
+way to satisfy the agent rule outright rather than argue the line, and it also
+keeps the page inside the architectural vocabulary the `article-*` and `essay-*`
+sets already established. What each one actually shows:
+
+1. an atrium under a glazed roof, with a city street visible through it
+2. a paved walkway between date palms under a clear sky
+3. a vaulted library reading room with empty wooden desks
+4. a flight of stairs rising toward a skylit landing
+5. a road between palms, backlit at golden hour
+
+**Six candidates were rejected after being viewed at full size**, and the reasons
+are recorded because two wrong frames have shipped on this project already:
+
+| Pexels ID | why rejected |
+|---|---|
+| `7534173` | bare office, empty chairs and empty shelves — reads as abandonment |
+| `7046156` | office interior, but red/pink furnishings clash with cream/gold/navy |
+| `26799456` | legible Turkish museum signage ("Tematik Sergiler") in frame |
+| `38369237` | legible Turkish signage ("İTİNİZ") plus weathered, stained stonework |
+| `34936110` | unrendered brick and bare dirt ground — reads as dereliction |
+| `15257959` | near-black stone tunnel; gloomy, and almost no tonal range on cream |
+| `9408172` | back-of-house service stairwell, chain across the flight, debris |
+| `10945186` | marble stairwell with **snow** through the windows — wrong for Florida |
+
+---
+
+## Client-supplied galleries (2026-08) — `/services-gallery/` and `/blog-gallery/`
+
+The client supplied two folders of their own photography. Each file was matched
+to a slot **by name** and copied into a **space-free** public path — a space in a
+public URL double-encodes (`%2520`) and 404s — leaving the space-named originals
+(`public/services gallery/`, `public/blog gallery/`) untouched on disk. Nothing
+is upscaled: every image clears its rendered slot at **2× DPR** with margin.
+These are the client's own assets, not Pexels; no licence line applies.
+
+Clearance = min(sourceW ÷ slotW×2, sourceH ÷ slotH×2) for the object-cover box.
+
+### Services — product frames (§2), slot 476×557 CSS → 952×1115 @2×
+
+| slot | product | source file → copy | native | 2× clearance |
+|---|---|---|---|---|
+| p1 | Term Life | `Term life.jpg` → `term-life.jpg` | 3840×5760 | 4.03× |
+| p2 | Final Expense | `Final Expense Insurance.jpg` → `final-expense.jpg` | 2001×3000 | 2.10× |
+| p3 | Mortgage Protection | `Mortgage Protection Insurance.jpg` → `mortgage-protection.jpg` | 2738×3010 | 2.70× |
+| p4 | Indexed Universal Life | `Indexed Universal Life (IUL).jpg` → `indexed-universal-life.jpg` | 4000×6000 | 4.20× |
+| p5 | Fixed Indexed Annuities | `Fixed Indexed Annuities (FIAs).jpg` → `fixed-indexed-annuities.jpg` | 2001×3000 | 2.10× |
+| p6 | Medicare | `medical insurance.jpg` → `medical-insurance.jpg` | 4160×6240 | 4.37× |
+| p7 | Health | `health insurance.jpg` → `health-insurance.jpg` | 4016×6016 | 4.22× |
+
+### Services — essay frames (§4), slot 489×734 CSS → 978×1467 @2×
+
+| slot | block | source file → copy | native | 2× clearance |
+|---|---|---|---|---|
+| b1 | "Tax-free…" | `Tax-free.jpg` → `tax-free.jpg` | 3514×5271 | 3.59× |
+| b2 | "What a floor does…" | `A floor.jpg` → `a-floor.jpg` | 4000×6000 | 4.09× |
+| b3 | "A period, or a lifetime" | — (no supplied match; prior frame kept) | — | — |
+| b4 | "The medical exam column" | `The medical exam column.jpg` → `medical-exam-column.jpg` | 3391×5080 | 3.46× |
+| b5 | "When a balance becomes a payment" | `balance become payment.jpg` → `balance-becomes-payment.jpg` | 4480×6720 | 4.58× |
+
+### Blog — card frames, slot 713×442 CSS → 1427×883 @2×
+
+| article | source file → copy | native | 2× clearance |
+|---|---|---|---|
+| fixed-indexed-annuity-fia | `Annuity.jpg` → `annuity.jpg` | 6720×4480 | 4.71× |
+| iul-vs-401k-construction | `constuction work.jpg` → `construction-work.jpg` | 7952×5304 | 5.57× |
+| life-insurance-orlando | `florida.jpg` → `florida.jpg` | 5472×3078 | 3.48× |
+| itin-holders-life-insurance | `itin.jpg` → `itin.jpg` | 4512×3008 | 3.16× |
+| indexed-universal-life-iul | `iul.jpg` → `iul.jpg` | 6000×4000 | 4.21× |
+| iul-self-employed | `iul2.jpg` → `iul-self-employed.jpg` | 4205×3493 | 2.95× |
+| living-benefits | `Living Benefits.jpg` → `living-benefits.jpg` | 5184×3888 | 3.63× |
+| mortgage-protection-insurance | `mortgage protection.jpg` → `mortgage-protection.jpg` | 5184×3888 | 3.63× |
+| nurses-tax-free-retirement | `nurses.jpg` → `nurses.jpg` | 6000×4000 | 4.21× |
+| term-life-insurance | `Term Life2.jpg` → `term-life.jpg` | 5616×3744 | 3.94× |
+| truck-drivers-retirement | `truck drivers.jpg` → `truck-drivers.jpg` | 6240×4160 | 4.37× |
+| final-expense-insurance | `retirment planning .jpg` → `retirement-planning.jpg` | 6016×4016 | 4.22× |
+
+**⚠ One blog pairing is by elimination, not by name.** Eleven articles matched a
+same-named image cleanly; `final-expense-insurance` had no "final expense" /
+"senior" file, and `retirment planning .jpg` had no "retirement" article (the
+truck-drivers piece took `truck drivers.jpg`). They are paired last by
+elimination — a retirement-planning photo on the final-expense card. Flag for the
+client if a better-matched final-expense image exists.
+
+### Article body images — REMOVED (2026-08)
+
+The in-article sticky image column (`ARTICLE_FRAMES`, `ArticleEssay`'s
+`.essay-sticky`) is commented out, not deleted; all 12 articles are text-only,
+the copy re-centred via `.essay-grid--textonly`. The `article-*.jpg` frame files
+remain on disk for restore.

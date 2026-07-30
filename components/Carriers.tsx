@@ -48,6 +48,19 @@ export const APPOINTMENTS: ReadonlyArray<{
   { key: "c10" }, // Nassau              → /carriers/nassau.svg
   { key: "c11" }, // Foresters           → /carriers/foresters.svg
   { key: "c12" }, // Liberty Bankers     → /carriers/liberty-bankers.svg
+  // 2026-07-30 — the 9 formerly held-back carriers. Ziad confirmed he is
+  // contracted with all of them, so they are now confirmed appointments and
+  // render in CarrierStrip. (The 3 "-2" duplicate source files are skipped;
+  // one file per carrier.)
+  { key: "c13" }, // Aetna               → /carriers/aetna.svg
+  { key: "c14" }, // Aflac               → /carriers/aflac.png
+  { key: "c15" }, // American National    → /carriers/american-national.svg
+  { key: "c16" }, // Columbus Life       → /carriers/columbus-life.svg
+  { key: "c17" }, // Ethos               → /carriers/ethos.svg
+  { key: "c18" }, // F&G                 → /carriers/fg.svg
+  { key: "c19" }, // National Life Group → /carriers/national-life-group.png
+  { key: "c20" }, // Royal Neighbors     → /carriers/royal-neighbors.svg
+  { key: "c21" }, // United Home Life    → /carriers/united-home-life.svg
 ];
 
 function CarrierMark({ carrier }: { carrier: Carrier }) {

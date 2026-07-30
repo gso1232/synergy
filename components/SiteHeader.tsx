@@ -5,8 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
-  HEADER_ROUTES,
-  JOIN_URL,
+  HEADER_PILL_ROUTE,
+  HEADER_ROUTES_TEXT,
   isCurrentRoute,
   routeHref,
   type RouteKey,
@@ -23,8 +23,11 @@ import Logo from "./Logo";
  * `["services","contact"]`, every one of them rendered as `<a href="#">`.
  * Services and Contact are not built; they are gone rather than greyed out.
  */
-const LEFT_LINKS: readonly RouteKey[] = HEADER_ROUTES.slice(0, 2);
-const RIGHT_LINKS: readonly RouteKey[] = HEADER_ROUTES.slice(2);
+// The split is over HEADER_ROUTES_TEXT, not HEADER_ROUTES: `join` lives in the
+// route list but is rendered by the PILL below, so it must not also appear as a
+// text link. Deriving the text list in routes.ts keeps the two in step.
+const LEFT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(0, 2);
+const RIGHT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(2);
 
 /** /{locale}/about, either locale, with or without a trailing slash. */
 const isAboutRoute = (pathname: string | null) =>
@@ -45,7 +48,35 @@ const isPhotoHeroRoute = (pathname: string | null) =>
   // worst nav-band luminance across 1536 / 820 / 390 is 0.148 -> 5.30:1 bare,
   // before the 0.15 scrim. The trailing `$` keeps ARTICLE pages off the list —
   // /blog/<slug> opens on cream and must keep the solid bar.
-  /^\/(?:en|es)\/(?:about|services|blog)\/?$/.test(pathname ?? "/");
+  //
+  // /join joins on the same terms again, and the numbers below are MEASURED on
+  // the built page, not estimated. Its hero is join-hero-atrium.jpg composited
+  // under `.hero-veil-top` and `.join-hero-scrim`; the worst (brightest) pixel
+  // of the real nav band, taken from the header links' own rects, is:
+  //
+  //     1536 x 900   band y 34-82   #4F5148   L 0.0802   white ink  8.07:1
+  //      820 x 1180  band y 10-54   #454740   L 0.0614   white ink  9.42:1
+  //      390 x 844   band y 10-54   #303431   L 0.0331   white ink 12.64:1
+  //
+  // Worst case 8.07:1 against the 4.5 that white nav ink needs. The margin is
+  // wide because the veil sits over the atrium's dark upper storeys rather
+  // than over sky, which is the opposite of the /blog hero's problem.
+  //
+  // /contact joined when its hero took the reference's CORNER BLEED. The
+  // photograph is ~49% wide and 100svh, running under the bar, so the bar has
+  // to be transparent here now. Below 900 the media becomes a full-width
+  // in-flow 100svh band rather than collapsing, precisely so there is no width
+  // at which a transparent bar sits on cream. Measured worst (brightest) pixel
+  // of the real nav band over contact-advisor-couple.jpg:
+  //
+  //     1536 x 900   media 745x900   #2B3845  L 0.0377  white ink 11.97:1
+  //      820 x 1180  media 805x1180  #273442  L 0.0328  white ink 12.68:1
+  //      390 x 844   media 390x844   #293542  L 0.0341  white ink 12.48:1
+  //
+  // Worst case 11.97:1 against the 4.5 white nav ink needs. Measured over the
+  // part of the nav band that actually overlaps the media, composited through
+  // `.hero-veil-top` AND `.contact-hero-scrim` — not against the bare JPEG.
+  /^\/(?:en|es)\/(?:about|services|blog|join|contact)\/?$/.test(pathname ?? "/");
 
 /**
  * 🔴 IS ANY ROUTE A DARK SURFACE? Currently no. DO NOT DELETE THIS.
@@ -579,18 +610,37 @@ export default function SiteHeader() {
             ))}
           </ul>
 
-          {/* The one destination on this bar that is not ours. It goes to
-              fflsynergy's own live recruiting site, which is the single
-              external link on the whole site that has always resolved — the
-              footer already pointed here while this pill sat on href="#". */}
-          <a
-            href={JOIN_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* WAS the one destination on this bar that was not ours — an
+              external target="_blank" link to join.fflsynergy.com. That
+              subdomain now returns a Vercel 404 (see JOIN_URL_EXTERNAL_DEAD in
+              routes.ts), so the pill points at our own /join route and the
+              whole bar is internal again.
+
+              🔴 THE PILL *IS* THE `join` ENTRY IN HEADER_ROUTES. It reads its
+              href from the route list like every other item, so the bar cannot
+              contain a destination the list does not know about, and the list
+              cannot gain one the bar silently ignores.
+              `HEADER_ROUTES_TEXT` is that list minus this key, and it is what
+              the left/right split maps — otherwise "Join" would render as a
+              seventh text link a few pixels from this pill, and the split
+              around the centred logo would go 2/5 instead of 3/3. */}
+          <Link
+            href={routeHref(locale, HEADER_PILL_ROUTE)}
+            // The pill is a nav item now, so it marks the current page like
+            // every other one. Without this, /join was the only route in the
+            // bar that never announced itself as current. The visible half is
+            // `.nav-pill[aria-current]` in globals.css — a rule under the
+            // label, the same SHAPE the text links use, because 1.4.1 is not
+            // satisfied by a fill colour alone.
+            aria-current={
+              isCurrentRoute(pathname, locale, HEADER_PILL_ROUTE)
+                ? "page"
+                : undefined
+            }
             className="nav-pill hidden h-10 items-center rounded-full px-6 text-[15px] font-semibold card:inline-flex"
           >
             {t("join")}
-          </a>
+          </Link>
 
           <button
             ref={triggerRef}
@@ -667,10 +717,14 @@ export default function SiteHeader() {
             className="flex flex-1 flex-col pb-10 pt-2"
             style={{ paddingInline: "var(--nav-inset)" }}
           >
-            {/* HEADER_ROUTES, not the left/right split — the panel is one
+            {/* HEADER_ROUTES_TEXT, not the left/right split — the panel is one
                 stacked list, so it takes the nav's real order rather than
-                re-joining two halves that only exist because of the logo. */}
-            {HEADER_ROUTES.map((key) => (
+                re-joining two halves that only exist because of the logo.
+                🔴 TEXT, not the full list: `join` is in HEADER_ROUTES but the
+                CTA below renders it, and mapping the full list here printed
+                "Join" twice in the open panel — once as a row and once as the
+                button under it. */}
+            {HEADER_ROUTES_TEXT.map((key) => (
               <NavLink
                 key={key}
                 routeKey={key}
@@ -679,15 +733,19 @@ export default function SiteHeader() {
               />
             ))}
 
-            <a
-              href={JOIN_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            {/* Same repoint as the desktop pill — /join, same tab. */}
+            <Link
+              href={routeHref(locale, HEADER_PILL_ROUTE)}
               onClick={close}
-              className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-full bg-navy text-[16px] font-semibold text-cream"
+              aria-current={
+                isCurrentRoute(pathname, locale, HEADER_PILL_ROUTE)
+                  ? "page"
+                  : undefined
+              }
+              className="nav-pill mt-8 inline-flex h-14 w-full items-center justify-center rounded-full bg-navy text-[16px] font-semibold text-cream"
             >
               {t("join")}
-            </a>
+            </Link>
           </div>
         </div>
       )}

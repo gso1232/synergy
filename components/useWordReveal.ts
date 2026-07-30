@@ -88,7 +88,7 @@ export function useWordReveal(
   /** The rendered string. Only used to re-run the split when the copy or the
    *  locale changes — the split itself reads from the DOM. */
   text: string,
-  { reduce = false }: { reduce?: boolean | null } = {},
+  { reduce = false, floor = FLOOR }: { reduce?: boolean | null; floor?: number } = {},
 ) {
   useEffect(() => {
     const el = ref.current;
@@ -121,7 +121,7 @@ export function useWordReveal(
       // inline-block would make each word its own line box and break the
       // shared baseline on a wrapped line; plain inline is what the unsplit
       // paragraph already was.
-      span.style.opacity = String(FLOOR);
+      span.style.opacity = String(floor);
       spans.push(span);
       frag.appendChild(span);
     }
@@ -166,5 +166,5 @@ export function useWordReveal(
       // would ship a permanently dimmed quote.
       el.replaceChildren(document.createTextNode(original));
     };
-  }, [ref, text, reduce]);
+  }, [ref, text, reduce, floor]);
 }

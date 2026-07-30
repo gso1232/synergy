@@ -7,7 +7,8 @@ import {
   useInView,
   useReducedMotion,
 } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { joinHref, routeHref, type RouteKey } from "@/routes";
 import FadeUp from "./FadeUp";
 
 /**
@@ -50,6 +51,68 @@ type Tab = (typeof TABS)[number];
 const CARDS = [1, 2, 3] as const;
 const BULLETS = ["b1", "b2", "b3"] as const;
 
+/* =========================================================================
+   🔴 WHERE THE SIX CARD CTAs GO. ALL SIX WERE `href="#"` AND SHIPPING.
+
+   These are the six most prominent buttons on the homepage — 66px tall, full
+   card width — and every one of them was a dead stub. The three on the AGENTS
+   tab were the entire Join journey: the nav pill goes to join.fflsynergy.com,
+   and the section that actually argues the case for joining sent you nowhere.
+
+   `null` means NO DESTINATION HAS BEEN DECIDED and the card keeps its `#`.
+   That is deliberate and it is not laziness: see `families.1` below. A `#` is
+   listed as an open item rather than quietly repointed, because repointing a
+   label at a page that does not deliver what the label promises is the same
+   class of lie the stub is.
+   ========================================================================= */
+type CtaDest = { kind: "join" } | { kind: "route"; key: RouteKey } | null;
+
+const CTA_DEST: Record<Tab, Record<(typeof CARDS)[number], CtaDest>> = {
+  families: {
+    // "Get a free quote" — RESOLVED, AND THE CLIENT'S OWN SITE RESOLVED IT.
+    // Was `null` (kept as `#`) on the reasoning that there is no quote route.
+    // That is still true — fflsynergy.com has no /quote of any kind — but it
+    // was the wrong question. Checked live: all three "Get a Free Quote"
+    // buttons on fflsynergy.com are anchors to **/contact**, and the submit
+    // button on that page reads "Request My Free Quote", which is the exact
+    // string our own ContactForm already ships. The client's own answer to
+    // "where does this CTA go" is the contact page. See HANDOFF §4a.
+    1: { kind: "route", key: "contact" },
+    // "Compare my options" — /services is the comparison: seven products and
+    // the comparison table.
+    2: { kind: "route", key: "services" },
+    // "Speak with an agent" — /contact is that page, and its phone number is
+    // live even while the form is not.
+    3: { kind: "route", key: "contact" },
+  },
+  agents: {
+    // 🔴 ALL THREE GO TO join.fflsynergy.com — Synergy's own live recruiting
+    // site, and the only external destination on this site. Same `target` and
+    // `rel` as the header pill and the footer link, so the three surfaces
+    // behave identically. "Apply to join", "Meet the team" and "See the
+    // opportunity" all resolve there today; when a /join route exists these
+    // become internal and nothing else about this component changes.
+    1: { kind: "join" },
+    2: { kind: "join" },
+    3: { kind: "join" },
+  },
+};
+
+/** Anchor props for a destination. The external case carries the SAME `target`
+ *  and `rel` the header pill and the footer link already use — one behaviour
+ *  for one destination across all three surfaces. */
+function ctaProps(dest: CtaDest, locale: string) {
+  if (!dest) return { href: "#" };
+  if (dest.kind === "join") {
+    // WAS an external target="_blank" link to join.fflsynergy.com. That
+    // subdomain 404s (see JOIN_URL_EXTERNAL_DEAD in routes.ts), so this is our
+    // own /join route now — and with nothing external left on this card, the
+    // `target` / `rel` pair goes with it.
+    return { href: joinHref(locale) };
+  }
+  return { href: routeHref(locale, dest.key) };
+}
+
 /* Colours are ours — navy, gold-deep, gold. Each card's text colour is the one
    that actually measures on that background, never plain gold on a light card. */
 const SKINS = [
@@ -86,6 +149,7 @@ const EASE_CSS = "cubic-bezier(0.645,0.045,0.355,1)";
 export default function WhoWeServe() {
   const t = useTranslations("whoWeServe");
   const reduce = useReducedMotion();
+  const locale = useLocale();
   const [tab, setTab] = useState<Tab>("families");
 
   // The in-view gate is read here rather than declared with `whileInView` on
@@ -254,9 +318,34 @@ export default function WhoWeServe() {
                     {/* Their button contract: .3s on the shared curve, and a
                         press state of scale(.98). */}
                     <a
-                      href="#"
+                      // href="#" — REPLACED. See CTA_DEST above; five of the
+                      // six now resolve and the sixth is an open decision that
+                      // keeps its `#` rather than being repointed at a page
+                      // that cannot honour its label.
+                      {...ctaProps(CTA_DEST[tab][n], locale)}
                       style={{ transitionTimingFunction: EASE_CSS }}
-                      className={`mt-auto flex h-[66px] w-full shrink-0 items-center justify-center rounded-full text-[17px] font-semibold transition-[background-color,transform] duration-300 hover:-translate-y-0.5 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-current motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 ${skin.button}`}
+                      // `focus-visible:outline focus-visible:outline-2
+                      //  focus-visible:outline-offset-2
+                      //  focus-visible:outline-current` — REMOVED.
+                      //
+                      // `outline-current` took the ring from the BUTTON's own
+                      // text colour, and the ring does not land on the button.
+                      // outline-offset puts it on the CARD, so all three skins
+                      // were measuring the wrong pair:
+                      //
+                      //   navy card, cream button, navy label
+                      //     -> navy ring on navy card      1.00:1  invisible
+                      //   gold-deep card, cream button, navy label
+                      //     -> navy ring on gold-deep      3.08:1  no margin
+                      //   gold card, navy button, cream label
+                      //     -> cream ring on gold          2.09:1  fails
+                      //
+                      // The global rule in globals.css now draws it, and the
+                      // card's own `--focus-ring` token picks the colour from
+                      // the surface the ring actually sits on: gold-pale on
+                      // the navy card (13.31:1), gold-pale on the gold-deep
+                      // card (4.33:1), navy on the gold card (7.61:1).
+                      className={`mt-auto flex h-[66px] w-full shrink-0 items-center justify-center rounded-full text-[17px] font-semibold transition-[background-color,transform] duration-300 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 ${skin.button}`}
                     >
                       {t(`${tab}.c${n}.cta`)}
                     </a>

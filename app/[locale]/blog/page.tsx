@@ -90,26 +90,37 @@ export default async function BlogIndexPage({
           the last third of a full-bleed image. That also means /blog JOINS
           `isHeroRoute` and the bar goes transparent here.
 
-          🔴 THE SCRIM IS FLAT, AND THAT IS DERIVED, NOT LAZY. Measured on the
-          real composite at all three widths, worst 1/14th-height strip:
+          🔴 THE SCRIM IS SHAPED NOW — the flat one retired with the old image.
+          The hero was blog-hero-rooftops-dusk.jpg, a dark frame whose two text
+          bands cleared AA bare, so a flat 0.15 was the honest answer. It is now
+          /blog-gallery/retirement-planning.jpg — an advisor with a senior couple
+          in a BRIGHT office: windows/monitors under the nav bar, people under the
+          copy. Under the old flat 0.15 the white nav ink measured 1.44:1 and the
+          cream copy 2.11:1 — both fail, and a flat scrim can't rescue them
+          without crushing the photo (nav is still 4.03:1 at flat 0.50). This
+          image needs a shape, which is the case /about's scrim exists for.
+          Re-derived on the real composite, worst pixel per band:
 
-            band            1536     820      390     worst
-            nav (top)      0.148    0.123    0.137    5.30:1 bare
-            copy (btm)     0.118    0.072    0.146    5.34:1 bare
+            band                 1536   820    390   needs
+            nav (white 15px)     5.82   5.83   5.89   4.5
+            h1  (cream, large)   4.94   5.54   5.77   3.0
+            sub (cream)          5.88   6.28   7.00   4.5
 
-          Both already clear AA on the bare photograph. /about needed a SHAPED
-          scrim because its image failed in places and the shape was what
-          rescued the failing rows; this one has nothing to rescue, so a shaped
-          ramp would be inventing a gradient to look like the other page. A
-          flat 0.15 lifts both bands to ~7:1 as margin, and — being flat — it
-          introduces no band and no edge anywhere.
+          Full derivation, the retired flat value and the muted-photo trade-off
+          are on `.blog-hero-scrim` in globals.css.
+
+          2x DPR: the 6016x4016 source downscales to the 3072px a 1536 box needs
+          at 2x by 0.51x (a genuine downscale) — clears with margin, nothing
+          upscales. No baked-in lettering under either band; the only text in the
+          frame is the prop document in the advisor's hand, bottom-RIGHT, clear of
+          the bottom-LEFT copy.
 
           NO FOOT RAMP. The photograph ends on a hard edge into cream, like
           every other photo edge on this site.
       ===================================================================== */}
       <section className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-navy">
         <Image
-          src="/synergy/blog-hero-rooftops-dusk.jpg"
+          src="/blog-gallery/retirement-planning.jpg"
           alt=""
           fill
           priority

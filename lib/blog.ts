@@ -132,6 +132,65 @@ export function getArticle(locale: string, slug: string): Article | null {
   return { ...a, body: content.trim() };
 }
 
+export type ArticleSection = {
+  /** The heading as authored, or `null` for prose sitting before the first h2. */
+  heading: string | null;
+  /** Kebab slug of the heading. Image assignments are keyed on this, never on
+   *  the section's INDEX — an index rots the moment a section is inserted, and
+   *  a mis-keyed frame on this site is the failure that has already happened
+   *  twice. See ARTICLE_FRAMES in the article template. */
+  key: string;
+  /** The section's own MDX, INCLUDING its `##` line, so MDXRemote still emits
+   *  the heading and the document keeps exactly one h1 and its real h2s. */
+  body: string;
+};
+
+/**
+ * Split an article body into its h2 sections.
+ *
+ * 🔴 WHY THIS EXISTS AT ALL. The article template now runs the /services §4
+ * layout — copy left, sticky image column right — and that layout is driven by
+ * `useSequenceSwap`, which needs ONE DOM ELEMENT PER BLOCK to hang a
+ * ScrollTrigger on. A single `<MDXRemote source={article.body} />` is one
+ * element for the whole article, so there is nothing to trigger against. The
+ * body has to arrive already cut at its h2s.
+ *
+ * `##` ONLY, never `###`. An h3 is a sub-point inside a section; promoting it
+ * to a swap point would change the image mid-argument.
+ */
+export function splitSections(body: string): ArticleSection[] {
+  const lines = body.split("\n");
+  const out: ArticleSection[] = [];
+  let current: ArticleSection | null = null;
+
+  for (const line of lines) {
+    const m = /^##\s+(.+?)\s*$/.exec(line);
+    if (m) {
+      if (current) out.push(current);
+      const heading = m[1];
+      current = { heading, key: slugifyHeading(heading), body: line };
+      continue;
+    }
+    if (!current) {
+      // Prose before the first h2. Rare — this blog's articles all open on a
+      // summary heading — but a preamble must not be silently dropped.
+      if (!line.trim() && out.length === 0) continue;
+      current = { heading: null, key: "preamble", body: line };
+      continue;
+    }
+    current.body += "\n" + line;
+  }
+  if (current) out.push(current);
+  return out.map((s) => ({ ...s, body: s.body.trim() }));
+}
+
+function slugifyHeading(h: string): string {
+  return h
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
 export function getAllArticles(locale: string): ArticleMeta[] {
   const order = readOrder();
   return order

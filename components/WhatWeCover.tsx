@@ -3,7 +3,8 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
 import { useParallax } from "./useParallax";
 
@@ -13,6 +14,7 @@ const CARDS = ["term", "iul", "taxfree"] as const;
 
 export default function WhatWeCover() {
   const t = useTranslations("whatWeCover");
+  const locale = useLocale();
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
@@ -43,7 +45,12 @@ export default function WhatWeCover() {
     <section
       ref={sectionRef}
       aria-labelledby="cover-heading"
-      className="relative overflow-hidden bg-navy"
+      // `cover-scene` is a focus-ring hook, not a style: it scopes the
+      // photographic two-tone ring in globals.css to the controls that sit on
+      // this section's full-bleed photograph (the two intro CTAs), the same
+      // way `.cover-card` scopes it to the tiles. A flat ring can't clear 3:1
+      // on the cleared middle third of `.cover-veil`. See the note there.
+      className="cover-scene relative overflow-hidden bg-navy"
     >
       {/* Full-bleed parallax photograph */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
@@ -79,8 +86,13 @@ export default function WhatWeCover() {
             {t("subhead")}
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
+            {/* `ctaPrimary` is "Get a free quote". href="#" — REPLACED with
+                /contact, on evidence rather than judgement: fflsynergy.com's
+                own three "Get a Free Quote" buttons are anchors to /contact,
+                and that page's submit reads "Request My Free Quote". The
+                client already answered this. See HANDOFF §4a. */}
             <a
-              href="#"
+              href={routeHref(locale, "contact")}
               className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 text-[14px] font-medium text-navy shadow-[0_2px_18px_rgba(13,27,42,0.28)] transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
             >
               {t("ctaPrimary")}
@@ -91,8 +103,16 @@ export default function WhatWeCover() {
                 →
               </span>
             </a>
+            {/* `ctaSecondary` is "Talk to an advisor". href="#" — REPLACED
+                with /contact, which is the page that does exactly that and
+                whose phone number is live even while its form is not.
+                ⚠️ NOTE THE DIVERGENCE FROM THE HERO: the hero's identically
+                labelled CTA dials `nav.phoneHref` directly, because /contact
+                did not exist when that decision was made. Two destinations for
+                one label on one page is worth resolving — logged, not changed
+                here, because changing the hero is not this pass. */}
             <a
-              href="#"
+              href={routeHref(locale, "contact")}
               className="inline-flex h-12 items-center rounded-full border border-white/70 bg-navy/30 px-7 text-[14px] font-medium text-white backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-navy/40"
             >
               {t("ctaSecondary")}
@@ -111,7 +131,17 @@ export default function WhatWeCover() {
           {CARDS.map((key) => (
             <motion.a
               key={key}
-              href="#"
+              // href="#" — REPLACED. The three cards are Term Life, IUL and
+              // Tax-Free Retirement and their CTA reads "Learn more". All
+              // three subjects are on /services (seven products plus the
+              // comparison table), so one honest destination serves the set.
+              // 🟡 A per-card deep link would be better — /blog carries built
+              // articles for term-life-insurance and indexed-universal-life-iul
+              // — but there is NO built article for "Tax-Free Retirement"
+              // (`nurses-tax-free-retirement` is a listing row with no body),
+              // so two cards would deep-link and one would not. Uniform beats
+              // two-thirds. Revisit when that article is written.
+              href={routeHref(locale, "services")}
               variants={rise}
               className="cover-card group flex min-h-[360px] flex-col rounded-[4px] p-10 backdrop-blur-[12px] transition-[transform,box-shadow,background-color] duration-300 ease-out-expo hover:-translate-y-1 motion-reduce:hover:translate-y-0"
             >

@@ -3,7 +3,8 @@
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
 import whyPhoto from "../public/why-advisor-family.jpg";
 
@@ -79,6 +80,7 @@ const SCALE_MAX = 1.1;
 
 export default function WhySynergy() {
   const t = useTranslations("whySynergy");
+  const locale = useLocale();
   const reduce = useReducedMotion();
   const frameRef = useRef<HTMLDivElement>(null);
 
@@ -234,8 +236,15 @@ export default function WhySynergy() {
             <p className="max-w-[46ch] text-[15px] leading-[1.45] tracking-[0.016em] text-ink/80">
               {t("closing")}
             </p>
+            {/* href="#" — REPLACED with /contact. Checked live: fflsynergy.com
+                sends its own "Get a Free Quote" buttons to /contact, whose
+                submit reads "Request My Free Quote". See HANDOFF §4a.
+                ⚠️ The label still does not quite match the paragraph above it,
+                which offers "a free, no-obligation consultation" rather than a
+                quote. That is a COPY question, not a link question, and it is
+                logged rather than solved with an href. */}
             <a
-              href="#"
+              href={routeHref(locale, "contact")}
               className="mt-16 inline-flex h-12 items-center rounded-full bg-navy px-7 text-[15px] font-semibold text-cream transition-colors duration-300 hover:bg-gold-deep"
             >
               {t("cta")}

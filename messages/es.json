@@ -85,7 +85,16 @@
       "c9": "",
       "c10": "",
       "c11": "",
-      "c12": ""
+      "c12": "",
+      "c13": "",
+      "c14": "",
+      "c15": "",
+      "c16": "",
+      "c17": "",
+      "c18": "",
+      "c19": "",
+      "c20": "",
+      "c21": ""
     },
     "ratings": {
       "c1": "",
@@ -99,7 +108,16 @@
       "c9": "",
       "c10": "",
       "c11": "",
-      "c12": ""
+      "c12": "",
+      "c13": "",
+      "c14": "",
+      "c15": "",
+      "c16": "",
+      "c17": "",
+      "c18": "",
+      "c19": "",
+      "c20": "",
+      "c21": ""
     }
   },
   "whatWeCover": {
@@ -557,6 +575,117 @@
       "body": ""
     }
   },
+  "join": {
+    "meta": {
+      "title": "",
+      "description": ""
+    },
+    "hero": {
+      "eyebrow": "",
+      "headline": "",
+      "sub": "",
+      "imageAlt": "",
+      "ctaApply": "",
+      "ctaPortal": "",
+      "portalNote": ""
+    },
+    "offer": {
+      "heading": "",
+      "body": "",
+      "i": {
+        "numeral": "",
+        "label": "",
+        "body": ""
+      },
+      "ii": {
+        "numeral": "",
+        "label": "",
+        "body": ""
+      },
+      "iii": {
+        "numeral": "",
+        "label": "",
+        "body": ""
+      },
+      "iv": {
+        "numeral": "",
+        "label": "",
+        "body": ""
+      }
+    },
+    "steps": {
+      "heading": "",
+      "one": {
+        "heading": "",
+        "body": ""
+      },
+      "two": {
+        "heading": "",
+        "body": ""
+      },
+      "three": {
+        "heading": "",
+        "body": ""
+      },
+      "four": {
+        "heading": "",
+        "body": ""
+      }
+    },
+    "cta": {
+      "heading": "",
+      "body": "",
+      "button": ""
+    },
+    "opening": {
+      "phrase": "",
+      "imageAlt": "",
+      "lead": "",
+      "q1": "",
+      "a1": "",
+      "q2": "",
+      "a2": "",
+      "q3": "",
+      "a3": ""
+    },
+    "apply": {
+      "eyebrow": "",
+      "heading": "",
+      "body": "",
+      "phoneLead": "",
+      "legend": "",
+      "firstName": "",
+      "lastName": "",
+      "phone": "",
+      "phonePlaceholder": "",
+      "email": "",
+      "emailPlaceholder": "",
+      "state": "",
+      "statePlaceholder": "",
+      "licensed": "",
+      "licensedYes": "",
+      "licensedNo": "",
+      "hear": "",
+      "hearPlaceholder": "",
+      "hearOptions": {
+        "search": "",
+        "social": "",
+        "referral": "",
+        "event": "",
+        "other": ""
+      },
+      "consentPlaceholder": "",
+      "submit": "",
+      "disabledTitle": "",
+      "disabledBody": ""
+    },
+    "range": {
+      "eyebrow": "",
+      "heading": "",
+      "body": "",
+      "link": ""
+    }
+  },
   "blog": {
     "metaTitle": "",
     "metaDescription": "",
@@ -565,6 +694,49 @@
     "listLabel": "",
     "readTime": "",
     "allArticles": ""
+  },
+  "contact": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "heading": "",
+    "heroImageAlt": "",
+    "intro": "",
+    "agentHeading": "",
+    "agentBody": "",
+    "detailsHeading": "",
+    "phoneLabel": "",
+    "emailLabel": "",
+    "addressLabel": "",
+    "hoursLabel": "",
+    "form": {
+      "heading": "",
+      "optionalNote": "",
+      "nameLabel": "",
+      "emailLabel": "",
+      "phoneLabel": "",
+      "productLabel": "",
+      "messageLabel": "",
+      "optionalSuffix": "",
+      "namePlaceholder": "",
+      "emailPlaceholder": "",
+      "phonePlaceholder": "",
+      "messagePlaceholder": "",
+      "productPlaceholder": "",
+      "p1": "",
+      "p2": "",
+      "p3": "",
+      "p4": "",
+      "p5": "",
+      "p6": "",
+      "p7": "",
+      "p8": "",
+      "smsConsent": "",
+      "emailConsent": "",
+      "legalNote": "",
+      "submit": "",
+      "disabledTitle": "",
+      "disabledBody": ""
+    }
   },
   "footer": {
     "srTitle": "",
@@ -589,7 +761,6 @@
       "join": "",
       "contact": ""
     },
-    "joinHref": "",
     "legalTitle": "",
     "legal": {
       "privacy": "",

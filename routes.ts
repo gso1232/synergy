@@ -20,7 +20,14 @@
  */
 
 /** Routes that are built, routed and reachable today. */
-export type RouteKey = "home" | "about" | "services" | "blog" | "calculator";
+export type RouteKey =
+  | "home"
+  | "about"
+  | "services"
+  | "blog"
+  | "contact"
+  | "calculator"
+  | "join";
 
 /** Path AFTER the locale segment. `home` is the locale root itself. */
 const PATHS: Record<RouteKey, string> = {
@@ -28,7 +35,9 @@ const PATHS: Record<RouteKey, string> = {
   about: "/about",
   services: "/services",
   blog: "/blog",
+  contact: "/contact",
   calculator: "/calculator",
+  join: "/join",
 };
 
 /**
@@ -68,28 +77,80 @@ export function isCurrentRoute(
  * links gone that omission became conspicuous. One line to remove if it is not
  * wanted.
  */
+/**
+ * Header nav order.
+ *
+ * 🔴 `join` IS IN THIS LIST AND IS NOT A TEXT LINK. It is rendered by the bar's
+ * Join PILL, which reads its href from here like everything else — so this
+ * array is the single source of truth for what the header contains, and the
+ * pill cannot drift from it.
+ *
+ * SiteHeader therefore splits `HEADER_ROUTES_TEXT` (this list minus `join`)
+ * around the centred logo, not this list. Adding `join` to the text split
+ * would print "Join" twice — once as a link and once as the pill a few pixels
+ * away — and would make the split 2 left / 5 right instead of 3 / 3.
+ */
 export const HEADER_ROUTES: readonly RouteKey[] = [
   "home",
   "about",
   "services",
   "blog",
+  "contact",
   "calculator",
+  "join",
 ];
 
-/** Footer sitemap order. Same set — the footer is not a reduced nav. */
+/** The header's TEXT links — HEADER_ROUTES minus the key the pill renders.
+ *  Derived, not hand-maintained, so the two cannot disagree. */
+export const HEADER_PILL_ROUTE: RouteKey = "join";
+export const HEADER_ROUTES_TEXT: readonly RouteKey[] = HEADER_ROUTES.filter(
+  (k) => k !== HEADER_PILL_ROUTE,
+);
+
+/** Footer sitemap order. Same set — the footer is not a reduced nav.
+ *
+ * `join` is in FOOTER_ROUTES but NOT in HEADER_ROUTES, and that is deliberate:
+ * the header already carries a dedicated Join PILL (see JOIN_URL below), so
+ * adding a seventh text link would put the same destination in the bar twice.
+ * The footer has no pill, so it takes the sitemap entry. */
 export const FOOTER_ROUTES: readonly RouteKey[] = [
   "home",
   "about",
   "services",
   "blog",
+  "contact",
   "calculator",
+  "join",
 ];
 
 /**
- * fflsynergy's own live recruiting site. The only external destination on the
- * site, and the only link here that is not one of our routes.
+ * 🔴 THE RECRUITING SUBDOMAIN IS DEAD, AND THIS NOW POINTS AT OUR OWN PAGE.
+ *
+ * `https://join.fflsynergy.com/` was the destination of the header pill, the
+ * footer pill, the mobile-panel CTA and the WhoWeServe "For Agents" card — four
+ * places. Fetched live on 2026-07-29 it returns a Vercel
+ * **404 / DEPLOYMENT_NOT_FOUND**, not a redirect and not a parked page. So
+ * every one of those four controls was sending applicants to an error page.
+ *
+ * That also removed the plan recorded in HANDOFF §13b, which was for our Join
+ * CTA to hand off to the subdomain rather than reproduce their form. There is
+ * nothing left to hand off to, so `/join` — a real page on this site, with the
+ * closing CTA pointing at `/contact`, which has a live phone number — is now
+ * the honest destination. A link is a promise that a page exists.
+ *
+ * The old value is kept below, commented, because if the subdomain comes back
+ * the decision is worth revisiting rather than rediscovering:
+ *
+ *   export const JOIN_URL = "https://join.fflsynergy.com/";   // 404 on 2026-07-29
+ *
+ * It is still a single exported constant, and still the one thing all four
+ * call sites read, so restoring it is a one-line change.
  */
-export const JOIN_URL = "https://join.fflsynergy.com/";
+export const JOIN_URL_EXTERNAL_DEAD = "https://join.fflsynergy.com/";
+
+/** Locale-aware href for the Join pill. Takes the locale so the pill never
+ *  drops a reader from /es back to /en — the same rule `routeHref` enforces. */
+export const joinHref = (locale: string) => routeHref(locale, "join");
 
 /* ---------------------------------------------------------------------------
    🔴 UNBUILT — linked from nowhere, deliberately.
@@ -101,10 +162,13 @@ export const JOIN_URL = "https://join.fflsynergy.com/";
    (`nav.*`, `footer.nav.*`, `footer.legal.*`) — nothing has to be re-authored
    or re-approved.
 
-     contact    /[locale]/contact     was in the header AND the footer
      gallery    /[locale]/gallery     was in the footer
      privacy    /[locale]/privacy     was in the footer's Legal column
      terms      /[locale]/terms       was in the footer's Legal column
+
+   ✅ `contact` was on this list and is now BUILT — /[locale]/contact. The form
+   is present and visibly DISABLED (no backend; the GHL webhook is unblocked),
+   following the LeadModal pattern. See HANDOFF.
 
    ✅ `blog` was on this list and is now BUILT — /[locale]/blog, twelve articles
    from fflsynergy.com/blog. Note that only the articles with an approved body

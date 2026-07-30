@@ -42,3 +42,13 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+
+# Raw asset drops — NOT tracked. The delivered/used versions live under
+# public/synergy, public/blog-gallery, public/services-gallery and
+# public/carriers. These are the unprocessed client dumps and the space-named
+# duplicates of the kebab-case folders (same bytes, different names).
+/public/New folder/
+/public/Insurance Carriers Logos/
+/public/blog gallery/
+/public/services gallery/
+/public/*.zip

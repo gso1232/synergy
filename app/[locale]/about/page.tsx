@@ -12,7 +12,9 @@ import FadeUp from "@/components/FadeUp";
 // `suppressHydrationWarning` to come off <html> in app/[locale]/layout.tsx.
 // Those two travel as a pair; see HANDOFF.md §8.
 import AboutPullQuote from "@/components/AboutPullQuote";
-import AboutParallaxImage from "@/components/AboutParallaxImage";
+// AboutParallaxImage import REMOVED 2026-07-30 — §5's image parallax was dropped
+// in favour of plain <Image> (real Synergy photos, no upscale). Re-add this line
+// to restore the parallax; see the §5 imagery note and the block below §5's h3.
 import AboutValueColumn from "@/components/AboutValueColumn";
 import AboutZoom from "@/components/AboutZoom";
 
@@ -137,23 +139,26 @@ const LOGO_CARRIERS = ["c1", "c2", "c8", "c7", "c6"] as const;
 /**
  * §5 imagery.
  *
- * 🟡 THESE THREE ARE LICENSED STOCK AND ARE PROVISIONAL. Synergy's vetted set
- * contains exactly three portrait-capable frames — gallery-advisor-explaining,
- * -team-meeting and -team-presentation — and all three are consumed by §2 and
- * §4, where each is the only asset that clears its slot. (why-g10 and why-g12
- * were struck off the vetted list on inspection: Balmain and Gucci belt
- * buckles.) So this section could not be filled from Synergy's own material at
- * the resolution its columns need.
+ * 🟢 2026-07-30 — NOW REAL SYNERGY PHOTOS. The last licensed stock on the page
+ * is gone. The three provisional Pexels frames (value-integrity / -education /
+ * -legacy, still on disk and still logged in CREDITS.md) are replaced by
+ * client-supplied photographs of the actual team:
  *
- * Candidates were measured and brought for approval; these are the three
- * recommended from that set. Pexels License, free for commercial use, no
- * attribution required — full derivation, rejected alternatives and the exact
- * licence line are in public/synergy/CREDITS.md. Each is one line to swap.
+ *   Integrity  about-value-rula-speaking.jpg   4640x6960  (founder on stage)
+ *   Education  about-value-training-skills.jpg 1080x1620  (office training)
+ *   Legacy     about-value-aiman-rula.jpg      1080x1620  (leadership portrait)
  *
- * Stored at 1200x1800. The parallax layer is 130% of the box, so the bar is
- * the LAYER's size, not the box's: at the widest container the box is 404x607
- * CSS and the layer 404x789, i.e. 809x1578 at 2x DPR. Cropped to the layer's
- * aspect these give 923x1800. Clears with margin.
+ * All three are EXACTLY 2:3 (0.6667), so the fixed 2:3 box performs NO crop.
+ * They SHIP AS SHOT — the Synergy logo baked into each frame is neither added
+ * nor cropped, on instruction.
+ *
+ * 🔴 THE PARALLAX IS DROPPED HERE, AND THAT IS A RESOLUTION DECISION. A plain
+ * image needs box@2x = 880x1320; all three clear it (the two 1080-wide frames
+ * by +22.7%). The old AboutParallaxImage needed the 130% LAYER (880x1716),
+ * which those two missed by 5.6% and would have upscaled. Clean, unmoving
+ * images that never upscale beat a moving one here. The COLUMN DRIFT
+ * (AboutValueColumn) is UNCHANGED — it carries no 130% image layer and does not
+ * bear on resolution. Restore path is in the block below §5's h3.
  */
 /**
  * §5 COLUMN DRIFT — direction per column, matching the reference exactly.
@@ -174,9 +179,9 @@ const COLUMN_DRIFT = [
 ] as const;
 
 const VALUE_IMAGES: Record<(typeof VALUES)[number], string> = {
-  v1: "value-integrity.jpg",
-  v2: "value-education.jpg",
-  v3: "value-legacy.jpg",
+  v1: "about-value-rula-speaking.jpg", // Integrity — founder on stage
+  v2: "about-value-training-skills.jpg", // Education — office training
+  v3: "about-value-aiman-rula.jpg", // Legacy — leadership portrait
 };
 
 export default async function AboutPage({
@@ -201,10 +206,24 @@ export default async function AboutPage({
           page runs a logo row and a three-column image grid that white ink
           cannot sit on unaided.
 
-          🟡 THE PHOTOGRAPH IS A PLACEHOLDER FOR SYNERGY'S OWN. Ziad still owes
-          original camera files. Family imagery, not a team photo: under an h1
-          reading "We Are Synergy" a family reads as WHO WE PROTECT, which is
-          true; a team photo of strangers would be a false claim.
+          🟢 2026-07-30 — NOW SYNERGY'S OWN PHOTOGRAPH. Replaced the family
+          placeholder with `about-hero-office.jpg` (client-supplied "OFFICE
+          PHOTO IMPORTANT.jpeg", the actual Synergy team). Under an h1 reading
+          "We Are Synergy" the real team is a TRUE claim — the earlier caveat
+          (a team photo of strangers would be false) is resolved: these are the
+          real people. Ships AS SHOT, including the Synergy logo baked into the
+          lower-right of the frame — not added here and not cropped out of the
+          file; on instruction these photos are not composited or re-branded.
+
+          ⚠️ RESOLUTION CAVEAT — a real downgrade from the 3840x2560 placeholder,
+          taken on instruction (authenticity over sharpness). Source is
+          1620x1080 (same 1.500 aspect as the placeholder, so the object-top
+          crop maths below are UNCHANGED). 2x DPR clearance at 1536 wide:
+          1620 / 3072 = 52.7% — it clears 1x (+5.5%) but is a 1.9x shortfall at
+          2x, so it renders soft on Retina/2x displays. Max crisp DPR 1.055x.
+          A higher-resolution original of this frame is the only fix. The lower
+          crop budget (12.1% of height at desktop) lands on the baked logo and
+          the floor, not on faces — heads still clear the nav.
       ===================================================================== */}
       <section className="relative isolate h-[100svh] min-h-[560px] overflow-hidden bg-navy">
         {/* ⚠️ `object-top`, NOT `object-center`, AND IT ONLY DOES ANYTHING AT
@@ -225,7 +244,7 @@ export default async function AboutPage({
             full frame height is shown and the vertical position has nothing
             to position. Horizontal stays centred at every width. */}
         <Image
-          src="/synergy/about-hero-family.jpg"
+          src="/synergy/about-hero-office.jpg"
           alt=""
           fill
           priority
@@ -825,27 +844,41 @@ export default async function AboutPage({
                       {t(`values.${v}.title`)}
                     </h3>
 
-                    {/* 16px label-to-image gap, measured.
+                    {/* 16px label-to-image gap, measured. 2:3 portrait, their
+                        exact ratio (394x591 at 1526).
 
-                        2:3 portrait, their exact ratio (394x591 at 1526).
-                        Every image in this section carries the site's shared
-                        scroll parallax — see AboutParallaxImage, which uses
-                        the Testimonials pairing (130% layer, ±10) from
-                        components/useParallax.ts. No new values. */}
-                    <AboutParallaxImage
-                      src={`/synergy/${VALUE_IMAGES[v]}`}
-                      alt={t(`values.${v}.imageAlt`)}
-                      sizes="(min-width: 1280px) 28vw, 440px"
-                      aspect="aspect-[2/3]"
-                      // CAPPED BELOW xl, and this is a resolution limit, not a
-                      // taste call. In the single-column layout the box grew to
-                      // the full container — 751px wide at 820 — and the
-                      // parallax layer is 130% of that, so the requirement was
-                      // 1502x2928 at 2x DPR against a 1200x1800 source: a 1.63x
-                      // upscale. At 440 the layer is 440x858, i.e. 880x1716,
-                      // which the source clears.
-                      className="mt-4 mx-auto w-full max-w-[440px] xl:max-w-none"
-                    />
+                        PLAIN <Image> IN A FIXED 2:3 BOX — the same shape §2 and
+                        §4 use. The parallax was dropped here (see the §5 imagery
+                        note above): all three real sources are exactly 2:3 and
+                        clear box@2x = 880x1320 with margin, so nothing crops and
+                        nothing upscales. The `max-w-[440px] xl:max-w-none`
+                        wrapper is kept verbatim, so the column measurements are
+                        unchanged.
+
+                        TO RESTORE PARALLAX: re-add the import on line ~15 and
+                        swap this wrapper/div for the tag below — and accept the
+                        5.6% upscale on the two 1080x1620 frames.
+
+                        <AboutParallaxImage
+                          src={`/synergy/${VALUE_IMAGES[v]}`}
+                          alt={t(`values.${v}.imageAlt`)}
+                          sizes="(min-width: 1280px) 28vw, 440px"
+                          aspect="aspect-[2/3]"
+                          className="mt-4 mx-auto w-full max-w-[440px] xl:max-w-none"
+                        />
+                    */}
+                    <div className="mt-4 mx-auto w-full max-w-[440px] xl:max-w-none">
+                      <div className="relative aspect-[2/3] w-full overflow-hidden">
+                        <Image
+                          src={`/synergy/${VALUE_IMAGES[v]}`}
+                          alt={t(`values.${v}.imageAlt`)}
+                          fill
+                          sizes="(min-width: 1280px) 28vw, 440px"
+                          quality={80}
+                          className="object-cover object-center"
+                        />
+                      </div>
+                    </div>
 
                     <p className="sem-body mt-6 text-ink">
                       {t(`values.${v}.body`)}
