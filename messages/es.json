@@ -263,7 +263,6 @@
   },
   "testimonials": {
     "eyebrow": "[MARCADOR — pendiente de aprobación]",
-    "disclaimer": "[MARCADOR — el cliente debe proporcionar el aviso legal]",
     "headline": "Lo Que Dicen Nuestros Clientes",
     "quotes": {
       "q1": {
@@ -767,5 +766,163 @@
       "terms": ""
     },
     "copyright": ""
+  },
+  "login": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "brandLine": "",
+    "backToSite": "",
+    "heading": "",
+    "subhead": "",
+    "emailLabel": "",
+    "passwordLabel": "",
+    "showPassword": "",
+    "hidePassword": "",
+    "keepSignedIn": "",
+    "forgot": "",
+    "submit": "",
+    "notLiveTitle": "",
+    "notLiveBody": ""
+  },
+  "admin": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "skipToContent": "",
+    "heading": "",
+    "intro": "",
+    "mockTitle": "",
+    "mockBody": "",
+    "sidebarLabel": "",
+    "sidebarOpen": "",
+    "sidebarClose": "",
+    "signOut": "",
+    "userName": "",
+    "userRole": "",
+    "nav": {
+      "dashboard": "",
+      "leads": "",
+      "agents": "",
+      "content": ""
+    },
+    "stats": {
+      "leads": "",
+      "leadsNew": "",
+      "apps": "",
+      "articles": "",
+      "caption": ""
+    },
+    "table": {
+      "searchLabel": "",
+      "searchPlaceholder": "",
+      "filterLabel": "",
+      "filterAll": "",
+      "sortBy": "",
+      "empty": "",
+      "resultCount": "",
+      "actionsLabel": "",
+      "rowActions": ""
+    },
+    "leads": {
+      "heading": "",
+      "note": "",
+      "cols": {
+        "name": "",
+        "email": "",
+        "phone": "",
+        "source": "",
+        "interest": "",
+        "consent": "",
+        "status": "",
+        "received": ""
+      },
+      "source": {
+        "contact": "",
+        "calculator": ""
+      },
+      "status": {
+        "new": "",
+        "contacted": "",
+        "qualified": "",
+        "closed": ""
+      },
+      "consent": {
+        "sms": "",
+        "email": "",
+        "none": ""
+      },
+      "actions": {
+        "view": "",
+        "assign": "",
+        "status": "",
+        "export": ""
+      }
+    },
+    "agents": {
+      "heading": "",
+      "note": "",
+      "cols": {
+        "name": "",
+        "email": "",
+        "phone": "",
+        "state": "",
+        "licensed": "",
+        "heard": "",
+        "stage": "",
+        "applied": ""
+      },
+      "licensed": {
+        "yes": "",
+        "no": ""
+      },
+      "stage": {
+        "touch": "",
+        "meet": "",
+        "licensed": "",
+        "appointed": ""
+      },
+      "actions": {
+        "view": "",
+        "advance": "",
+        "mentor": "",
+        "archive": ""
+      }
+    },
+    "content": {
+      "heading": "",
+      "note": "",
+      "cols": {
+        "title": "",
+        "slug": "",
+        "type": "",
+        "locale": "",
+        "status": "",
+        "compliance": "",
+        "updated": ""
+      },
+      "type": {
+        "article": "",
+        "page": ""
+      },
+      "status": {
+        "published": "",
+        "listing": "",
+        "draft": ""
+      },
+      "compliance": {
+        "screened": "",
+        "pending": "",
+        "blocked": ""
+      },
+      "actions": {
+        "view": "",
+        "preview": "",
+        "edit": ""
+      }
+    }
+  },
+  "cta": {
+    "quote": "",
+    "call": "",
+    "callAria": ""
   }
 }

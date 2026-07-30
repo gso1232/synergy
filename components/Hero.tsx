@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import CtaPair from "./CtaPair";
 
 // Kept for the one-edit revert back to the clip — see the MEDIA block below.
 // const HERO_VIDEO = "/hero-video.mp4";
@@ -65,6 +66,8 @@ export default function Hero() {
   // Read from there rather than duplicating a phone number into a second key
   // that could drift out of sync with it.
   const tNav = useTranslations("nav");
+  const tCta = useTranslations("cta");
+  const locale = useLocale();
   const reduce = useReducedMotion();
 
   const lines = [t("headlineA"), t("headlineB")];
@@ -225,36 +228,33 @@ export default function Hero() {
               custom={0.72}
               className="mt-5 flex flex-wrap gap-2.5"
             >
-              {/* ONE CTA, AND IT DIALS A REAL PHONE.
+              {/* THE SITE'S CTA PAIR — see components/CtaPair.tsx.
                   ---------------------------------------------------------
-                  There were two, both `href="#"`.
+                  HISTORY. This hero shipped two `href="#"` stubs, then a
+                  single "Talk to an advisor" dialling `nav.phoneHref` (the
+                  quote button was pulled because /contact did not exist yet
+                  and the lead modal is disabled).
 
-                  "Talk to an advisor" is the survivor because it has an
-                  honest destination: 407-434-0400 is Synergy's own number,
-                  it is already a live tel: link in the footer, and it is NOT
-                  shared with Checkmate (their only number is 833-997-6934).
-                  A phone call to a licensed advisor is exactly what the label
-                  promises, so nothing had to be re-worded.
+                  BOTH OF THOSE FACTS HAVE CHANGED. /contact is built, so the
+                  quote CTA has an honest destination again and `hero.ctaQuote`
+                  comes back — now read from the shared `cta` namespace so the
+                  hero cannot drift from the other pairs.
 
-                  It takes the PRIMARY styling — the solid white pill the
-                  quote button used to wear — rather than staying a glass
-                  ghost. A hero with a single low-emphasis CTA reads as an
-                  unfinished hero; this way the section keeps its visual
-                  weight and the one button on it works. To revert, put
-                  `liquid-glass ... text-white` back in place of
-                  `bg-white ... text-navy`.
-
-                  🔴 REMOVED: "Get a free quote" (`hero.ctaQuote`). There is
-                  no quote route and no working form — the lead modal is
-                  deliberately disabled and says so. The string is retained
-                  untouched in both message files; restoring it is putting
-                  this anchor back with a real href. */}
-              <a
-                href={tNav("phoneHref")}
-                className="inline-flex h-11 items-center rounded-full bg-white px-6 text-[14px] font-medium text-navy transition-transform duration-300 ease-out hover:-translate-y-0.5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-              >
-                {t("ctaCall")}
-              </a>
+                  🔴 "Talk to an advisor" IS RETIRED SITE-WIDE. It rendered
+                  twice under one label pointing at two different destinations
+                  (tel: here, /contact in WhatWeCover) — ambiguous in the copy
+                  and inconsistent in the code. `hero.ctaCall` is retained
+                  untouched in both message files, simply unrendered. The
+                  phone survives as the SECONDARY, labelled with the literal
+                  number so the destination is unambiguous. */}
+              <CtaPair
+                locale={locale}
+                variant="photo"
+                quoteLabel={tCta("quote")}
+                callLabel={tCta("call")}
+                callAria={tCta("callAria")}
+                phoneHref={tNav("phoneHref")}
+              />
             </motion.div>
 
             {/* ITIN tagline — last item in the same left stack */}

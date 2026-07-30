@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Synergy Insurance Group — Life Insurance & Tax-Free Retirement",
-    "description": "Life insurance and tax-free retirement plans from multiple top-rated carriers. Plain English guidance in English and Spanish. One free call."
+    "title": "Synergy Insurance Group — Life Insurance & Retirement Planning",
+    "description": "Life insurance and retirement planning from multiple top-rated carriers. Plain-English guidance in English and Spanish. One free call."
   },
   "nav": {
     "company": "Synergy Insurance Group",
@@ -33,7 +33,7 @@
     "headline": "Protecting Families. Building Futures.",
     "headlineA": "Protecting Families.",
     "headlineB": "Building Futures.",
-    "sub": "Life insurance and tax-free retirement from top-rated carriers. Plain-English guidance, in English or Spanish. One free call.",
+    "sub": "Life insurance and retirement planning from top-rated carriers. Plain-English guidance, in English or Spanish. One free call.",
     "ssn": "No Social Security Number required.",
     "ctaQuote": "Get a free quote",
     "ctaCall": "Talk to an advisor",
@@ -123,7 +123,7 @@
   "whatWeCover": {
     "eyebrow": "What we do",
     "heading": "Built around your family, your goals, and your future.",
-    "subhead": "Every plan is tailored. Every policy is explained. Nothing is rushed. From term life to tax-free retirement — protection matched to where your family is right now.",
+    "subhead": "Every plan is tailored. Every policy is explained. Nothing is rushed. From term life to retirement planning — protection matched to where your family is right now.",
     "cta": "Learn more",
     "ctaPrimary": "Get a free quote",
     "ctaSecondary": "Talk to an advisor",
@@ -143,8 +143,8 @@
       },
       "taxfree": {
         "eyebrow": "Retirement wealth",
-        "name": "Tax-Free Retirement",
-        "desc": "Build retirement wealth outside the traditional system — tax-free growth, no SSN required, ITIN friendly.",
+        "name": "Retirement Planning",
+        "desc": "Build retirement wealth outside the traditional system — no SSN required, ITIN friendly.",
         "alt": "A self-employed farmer working in a field at sunrise"
       },
       "final": {
@@ -263,7 +263,6 @@
   },
   "testimonials": {
     "eyebrow": "[PLACEHOLDER — awaiting approval]",
-    "disclaimer": "[PLACEHOLDER — client to supply results disclaimer]",
     "headline": "What Our Clients Say",
     "quotes": {
       "q1": {
@@ -768,5 +767,163 @@
       "terms": "Terms of Service"
     },
     "copyright": "© {year} Synergy Insurance Group. All rights reserved."
+  },
+  "login": {
+    "metaTitle": "Sign in — Synergy Insurance Group",
+    "metaDescription": "Staff and agent sign-in for Synergy Insurance Group.",
+    "brandLine": "The staff and agent portal for Synergy Insurance Group.",
+    "backToSite": "Back to synergy site",
+    "heading": "Sign in",
+    "subhead": "Use the email address Synergy set up for you.",
+    "emailLabel": "Email address",
+    "passwordLabel": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "keepSignedIn": "Keep me signed in",
+    "forgot": "Forgot your password?",
+    "submit": "Sign in",
+    "notLiveTitle": "Sign-in is not connected yet.",
+    "notLiveBody": "This screen is a design preview. Nothing is sent, no account is checked and no session is created. Call 407-434-0400 if you need access in the meantime."
+  },
+  "admin": {
+    "metaTitle": "Admin — Synergy Insurance Group",
+    "metaDescription": "Internal admin dashboard for Synergy Insurance Group.",
+    "skipToContent": "Skip to main content",
+    "heading": "Dashboard",
+    "intro": "Leads, agent applications and content in one place.",
+    "mockTitle": "Sample data — not connected.",
+    "mockBody": "Every row below is invented for this design preview. There is no database, no sign-in and no saving: sorting and filtering run in the browser and reset on reload.",
+    "sidebarLabel": "Admin sections",
+    "sidebarOpen": "Open navigation",
+    "sidebarClose": "Close navigation",
+    "signOut": "Sign out",
+    "userName": "Sample User",
+    "userRole": "Administrator",
+    "nav": {
+      "dashboard": "Dashboard",
+      "leads": "Leads",
+      "agents": "Agents",
+      "content": "Content"
+    },
+    "stats": {
+      "leads": "Total leads",
+      "leadsNew": "New this week",
+      "apps": "Applications pending",
+      "articles": "Articles published",
+      "caption": "Sample figures"
+    },
+    "table": {
+      "searchLabel": "Search",
+      "searchPlaceholder": "Search…",
+      "filterLabel": "Filter by status",
+      "filterAll": "All",
+      "sortBy": "Sort by {column}",
+      "empty": "Nothing matches that search.",
+      "resultCount": "{shown} of {total}",
+      "actionsLabel": "Actions",
+      "rowActions": "Actions for {name}"
+    },
+    "leads": {
+      "heading": "Leads",
+      "note": "From the contact form and the retirement calculator.",
+      "cols": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "source": "Source",
+        "interest": "Interest",
+        "consent": "Consent",
+        "status": "Status",
+        "received": "Received"
+      },
+      "source": {
+        "contact": "Contact form",
+        "calculator": "Calculator"
+      },
+      "status": {
+        "new": "New",
+        "contacted": "Contacted",
+        "qualified": "Qualified",
+        "closed": "Closed"
+      },
+      "consent": {
+        "sms": "SMS",
+        "email": "Email",
+        "none": "None"
+      },
+      "actions": {
+        "view": "View",
+        "assign": "Assign to agent",
+        "status": "Change status",
+        "export": "Export"
+      }
+    },
+    "agents": {
+      "heading": "Agents",
+      "note": "From the application form on the join page.",
+      "cols": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "state": "State",
+        "licensed": "Licensed",
+        "heard": "Heard via",
+        "stage": "Stage",
+        "applied": "Applied"
+      },
+      "licensed": {
+        "yes": "Yes",
+        "no": "Not yet"
+      },
+      "stage": {
+        "touch": "Get in Touch",
+        "meet": "Meet the Team",
+        "licensed": "Get Licensed",
+        "appointed": "Get Appointed & Start Selling"
+      },
+      "actions": {
+        "view": "View",
+        "advance": "Advance stage",
+        "mentor": "Assign mentor",
+        "archive": "Archive"
+      }
+    },
+    "content": {
+      "heading": "Content",
+      "note": "Articles and pages already on the site.",
+      "cols": {
+        "title": "Title",
+        "slug": "Slug",
+        "type": "Type",
+        "locale": "Locale",
+        "status": "Status",
+        "compliance": "Compliance",
+        "updated": "Updated"
+      },
+      "type": {
+        "article": "Article",
+        "page": "Page"
+      },
+      "status": {
+        "published": "Published",
+        "listing": "Listing row only",
+        "draft": "Draft"
+      },
+      "compliance": {
+        "screened": "Screened",
+        "pending": "Pending client",
+        "blocked": "Blocked"
+      },
+      "actions": {
+        "view": "View on site",
+        "preview": "Preview",
+        "edit": "Edit"
+      }
+    }
+  },
+  "cta": {
+    "quote": "Get a free quote",
+    "call": "Call 407-434-0400",
+    "callAria": "Call Synergy Insurance Group on 407-434-0400"
   }
 }

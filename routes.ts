@@ -186,3 +186,35 @@ export const joinHref = (locale: string) => routeHref(locale, "join");
    more honest than a link to a 404: the link asserts the document exists and
    is available, and it is not.
 --------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+   PORTAL PATHS — BUILT, ROUTED, AND DELIBERATELY UNLINKED.
+
+   These are NOT `RouteKey`s and they are NOT in HEADER_ROUTES or FOOTER_ROUTES,
+   and that is the whole point: this file is the one place that knows which
+   pages exist, so a route that must never appear in navigation still belongs
+   here — recorded, with the reason — rather than living as a bare string in a
+   component where the next person assumes it was forgotten.
+
+   The rule this file enforces is "a link is a promise that a page exists". The
+   inverse applies here: these pages exist and are deliberately not promised.
+   They are staff surfaces, not public ones. Nothing on the marketing site links
+   to them, they are `noindex` (set on `(portal)/layout.tsx`, inherited by every
+   route in the group) and `app/robots.ts` disallows them.
+
+   🔴 THEY ARE NOT PROTECTED. Phase 1 is DESIGN ONLY — no auth, no session, no
+   data. Being unlinked is obscurity, not access control, which is exactly why
+   the pages show mock data and nothing real. Do not put a real record behind
+   these URLs until the auth phase has shipped and been reviewed.
+--------------------------------------------------------------------------- */
+export const PORTAL_PATHS = {
+  login: "/login",
+  admin: "/admin",
+} as const;
+
+export type PortalKey = keyof typeof PORTAL_PATHS;
+
+/** Locale-aware href for a portal path. Same contract as `routeHref`. */
+export function portalHref(locale: string, key: PortalKey): string {
+  return `/${locale}${PORTAL_PATHS[key]}`;
+}

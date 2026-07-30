@@ -8,11 +8,6 @@ import {
   unstable_setRequestLocale,
 } from "next-intl/server";
 import { locales, type Locale } from "@/i18n";
-import SmoothScroll from "@/components/SmoothScroll";
-import LocaleSwitcher from "@/components/LocaleSwitcher";
-import SiteHeader from "@/components/SiteHeader";
-import Footer from "@/components/Footer";
-import Splash from "@/components/Splash";
 import "../globals.css";
 
 // Kufam — display / headings (matches reyou.life). Tops out at 500; headings get
@@ -101,41 +96,24 @@ export default async function LocaleLayout({
           keeping it would have downloaded 8 MB nobody renders. */}
       <body className="bg-cream font-body text-ink antialiased">
         <NextIntlClientProvider messages={messages}>
-          <Splash />
-          {/* Real global header — persists across every page and down the whole
-              scroll. It floats OVER the hero photo, so it is deliberately given
-              no layout offset: the hero card starts at the very top of the page
-              and the bar sits on the image. Any future page without a
-              full-bleed hero at the top will need its own top padding. */}
-          <SiteHeader />
-          {/* The footer is INSIDE SmoothScroll so it is part of the same
-              scrolled document Lenis drives, and it is mounted here rather
-              than per-page so every route ends the same way — including
-              /[locale]/calculator, which used to stop dead at the CTA.
+          {/* 🔴 THE MARKETING CHROME NO LONGER LIVES HERE. 2026-07-30.
+              Splash, SiteHeader, SmoothScroll (Lenis), Footer and LocaleSwitcher
+              moved to `(site)/layout.tsx`, and every public route moved into
+              that group. Route groups do not affect URLs, so nothing about the
+              public paths changed.
 
-              It also fixes something measured on the homepage: the
-              consultation section was the last element, so its bottom could
-              never reach the viewport top and only 53.5% of its parallax
-              travel was reachable. With a footer below it, the full ±10 runs. */}
-          <SmoothScroll>
-            {children}
-            <Footer />
-          </SmoothScroll>
-          {/* Locale switcher — a fixed pill, bottom-right, on every route.
-              ---------------------------------------------------------------
-              🔴 IT RENDERS NOTHING TODAY. `LOCALE_SWITCHER_READY` is `false`
-              inside the component and it returns null; the mount is here so
-              that turning it on is one constant, not a hunt through the tree.
-              es.json is 43.0% translated with the whole About page and the
-              homepage hero at zero, so a visitor clicking ES would get English
-              content at a Spanish URL. See the component docblock.
+              WHY: the portal routes (`(portal)/login`, `(portal)/admin`) must
+              not carry the marketing header/footer, and — the load-bearing
+              reason — they must not render INSIDE Lenis. SmoothScroll transforms
+              the scroll container, and a `position: fixed` child of a
+              transformed ancestor positions against that ancestor rather than
+              the viewport. The admin shell is a fixed/sticky sidebar, so it
+              would have broken exactly the way the mobile menu panel and
+              LocaleSwitcher already document.
 
-              OUTSIDE SmoothScroll, and that is deliberate: it is
-              `position: fixed`, so it must not sit inside the element Lenis
-              transforms. A fixed child of a transformed ancestor is positioned
-              against that ancestor instead of the viewport — the same trap the
-              mobile menu panel already documents in SiteHeader. */}
-          <LocaleSwitcher />
+              This layout is now the shared shell ONLY: html/body, fonts and the
+              next-intl provider. Anything visual belongs to a group below it. */}
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

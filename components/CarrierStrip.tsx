@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { LOGO_FILE, LOGO_DIR } from "@/lib/carrierLogos";
 import FadeUp from "./FadeUp";
 import { APPOINTMENTS } from "./Carriers";
 
@@ -37,43 +38,9 @@ import { APPOINTMENTS } from "./Carriers";
  * // ...marquee-row / marquee-track / marquee-left with set(false)+set(true)...
  */
 
-/** Confirmed-appointment key → logo file in `public/Insurance Carriers Logos/`.
- *  All 12 map to a real file; none needs upscaling at the 40px row height. */
-const LOGO_FILE: Record<string, string> = {
-  c1: "mutual-of-omaha.svg",
-  c2: "transamerica.svg",
-  c3: "americo.png",
-  c4: "american-amicable.png",
-  c5: "north-american.png",
-  c6: "global-atlantic.png",
-  c7: "athene.png",
-  c8: "corebridge-financial.png",
-  c9: "lincoln-financial.png",
-  c10: "nassau.webp",
-  c11: "foresters.svg",
-  c12: "liberty-bankers.png",
-  // 2026-07-30 — the 9 formerly held-back carriers, now confirmed (Ziad is
-  // contracted with all). One file per carrier; the 3 "-2" duplicate source
-  // files are skipped. Both rasters clear the 40px row with margin (aflac.png
-  // 375×122, national-life-group.png 272×120 → 3× native height); the 7 SVGs
-  // are vector. Nothing is upscaled.
-  c13: "aetna.svg",
-  c14: "aflac.png",
-  c15: "american-national.svg",
-  c16: "columbus-life.svg",
-  c17: "ethos.svg",
-  c18: "fg.svg",
-  c19: "national-life-group.png",
-  c20: "royal-neighbors.svg",
-  c21: "united-home-life.svg",
-};
-
-// The client folder "public/Insurance Carriers Logos/" has spaces, which are
-// fragile in URLs (a pre-encoded %20 gets double-encoded by the browser). The
-// 12 cleared logos are copied verbatim into space-free public/carriers/ — the
-// convention this codebase already documents — and served from there. The
-// original folder is left untouched.
-const LOGO_DIR = "/carriers";
+/* The key→file map and LOGO_DIR moved to lib/carrierLogos.ts on 2026-07-30
+   so /about §2b can render the same artwork from the same source of truth.
+   Nothing about this component's rendering changed. */
 
 export default function CarrierStrip() {
   const t = useTranslations("carriers");

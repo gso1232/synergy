@@ -2,9 +2,18 @@
 
 import { useId, useMemo, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
-import LeadModal from "./LeadModal";
+// import LeadModal from "./LeadModal";
+// 🔴 COMMENTED, NOT DELETED. LeadModal is a complete, working modal whose form
+// is deliberately disabled because the GHL webhook does not exist yet. Its one
+// and only trigger was this section's CTA, which now goes to /contact instead —
+// a page whose phone and email actually reach someone. The component file is
+// untouched; restoring is: uncomment this import, the `modalOpen` state, the
+// <LeadModal> mount at the bottom of this file, and swap the <Link> back for a
+// <button onClick={() => setModalOpen(true)}>. See HANDOFF.
 
 const usd = new Intl.NumberFormat("en-US", {
   style: "currency",
@@ -173,12 +182,13 @@ export default function Calculator({
   headingLevel?: 1 | 2;
 } = {}) {
   const t = useTranslations("calculator");
+  const locale = useLocale();
   const Heading = headingLevel === 1 ? "h1" : "h2";
   const uid = useId();
   const [monthly, setMonthly] = useState(300);
   const [age, setAge] = useState(35);
   const [retire, setRetire] = useState(65);
-  const [modalOpen, setModalOpen] = useState(false);
+  // const [modalOpen, setModalOpen] = useState(false); // see the LeadModal note above
 
   // Retirement age must always stay at least 5 years above current age.
   const handleAge = (v: number) => {
@@ -364,23 +374,26 @@ export default function Calculator({
         </FadeUp>
 
         <FadeUp index={3} className="mt-6 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setModalOpen(true)}
+          {/* WAS a <button> opening LeadModal. The modal's form cannot submit
+              (no webhook), so the CTA led to a dead end dressed as a form. It
+              is a real <Link> to /contact now — same label, a destination that
+              reaches a human. See the LeadModal note at the top of this file. */}
+          <Link
+            href={routeHref(locale, "contact")}
             className="inline-flex h-16 items-center justify-center rounded-[12px] bg-navy px-8 text-[17px] font-semibold text-cream transition-colors duration-300 hover:bg-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
           >
             {t("cta")}
-          </button>
+          </Link>
         </FadeUp>
       </div>
 
-      <LeadModal
+      {/* <LeadModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         monthly={usd.format(monthly)}
         age={age}
         retire={retire}
-      />
+      /> */}
     </section>
   );
 }

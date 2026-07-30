@@ -5,6 +5,8 @@ import Image from "next/image";
 // Restoring it needs this import back.
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
+import CtaPair from "@/components/CtaPair";
+import { carrierLogoSrc } from "@/lib/carrierLogos";
 // NOTE: no RouteTheme. This page is CREAM now, and <body> is already
 // `bg-cream`, so the canvas propagates the right colour to the overscroll
 // region with no help. RouteTheme and its CSS rule are both retained for the
@@ -33,8 +35,8 @@ import AboutZoom from "@/components/AboutZoom";
  *   §2  Info            1248px, entrance reveal   -> "Our Story": display
  *                                                    heading, 3 paras, image
  *                                                    right
- *   §2b Logo grid       inside §2                 -> 5 carrier wordmarks
- *                                                    🟡 AWAITING LOGO FILES
+ *   §2b Logo grid       inside §2                 -> 5 carrier LOGOS
+ *                                                    ✅ REAL ARTWORK (2026-07-30)
  *   §3  Pull-quote #1   715px, scrubbed reveal    -> "Insurance is not a
  *                                                    product. It is a promise."
  *   §4  Food & Drink    826px, entrance reveal    -> "Built on Trust. Driven
@@ -192,6 +194,8 @@ export default async function AboutPage({
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "about" });
   const tc = await getTranslations({ locale, namespace: "carriers" });
+  const tCta = await getTranslations({ locale, namespace: "cta" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   return (
     <main>
@@ -446,7 +450,24 @@ export default async function AboutPage({
                 Grid rows stretch to the tallest cell on their own, so nothing
                 needed the height for alignment. Content height, zero slack.
 
-                🔴 PUT `h-[131px]` BACK WHEN THE LOGO FILES LAND.
+                🔴 RESOLVED 2026-07-30 — AND `h-[131px]` IS **NOT** COMING
+                BACK. The artwork landed and the cells now hold real marks, but
+                131px is unachievable without upscaling two of them. Measured on
+                the real rendered grid (cell 190.9px wide at 1536, matching the
+                reference's 191.74):
+
+                  logo height   corebridge 367w   athene 368w   global-atl 405w
+                  131px (cap)      -3.9% SHORT     -3.6% SHORT     +6.1%
+                   56px            +7.1%           -3.6% SHORT     +7.1%
+                   48px  <-ship   +25.0%          +11.5%          +25.0%
+
+                At 131px the logo's width hits the 190.9px cell cap, so each
+                needs a 382px source and two do not have it. 48px clears all
+                three with margin and matches the homepage marquee's 40px band.
+                The cell keeps CONTENT height for the same reason it did when it
+                held type: a fixed 131px cell around a 48px mark reintroduces
+                exactly the dead space (and the long §2 → §3 seam) documented
+                above. Nothing is upscaled.
 
                 The row's own top margin halved with it — the old clamp was the
                 full section rhythm (130.8) sitting INSIDE a section, which is
@@ -459,9 +480,27 @@ export default async function AboutPage({
                     key={key}
                     className="flex items-center justify-center"
                   >
-                    <span className="text-center font-display text-[clamp(15px,1.15vw,19px)] font-medium leading-[1.25] tracking-[0.01em] text-ink">
-                      {tc(`names.${key}`)}
-                    </span>
+                    {/* THE DROP-IN SWAP THE NOTE ABOVE ANTICIPATED — the <span>
+                        of type is now the real mark. Same <li>, same grid, same
+                        gap, same centring; only the child changed, exactly as
+                        predicted. `alt` is `carriers.names.*`, the SAME
+                        translated string the homepage strip uses, so the two
+                        surfaces cannot name a carrier differently.
+
+                        Plain <img>, not next/image, deliberately: this mirrors
+                        CarrierStrip, the sources are already correctly sized
+                        (three are SVG), and the optimiser cannot improve a
+                        vector. `grayscale`/`opacity-80` are the homepage's
+                        treatment, kept so the two logo surfaces read as one
+                        system. Logos are exempt from contrast requirements
+                        (WCAG 1.4.11 excludes logotypes); no text moved. */}
+                    <img
+                      src={carrierLogoSrc(key)}
+                      alt={tc(`names.${key}`)}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-12 w-auto max-w-full object-contain opacity-80 grayscale"
+                    />
                   </li>
                 ))}
               </ul>
@@ -712,6 +751,30 @@ export default async function AboutPage({
                       sentences ship on the homepage as `carriers.subhead`. */}
                   <div className="mt-[clamp(24px,2.15vw,32.8px)] text-ink">
                     <p className="sem-body">{t("trust.p1")}</p>
+                    {/* ✅ THE CTA IS BACK — but NOT the one that was removed,
+                        and that distinction is the whole point.
+
+                        What was removed was `about.trust.ctaLabel` ("Open the
+                        retirement calculator") pointing at /calculator, and the
+                        note above is right that it misdirected: this section is
+                        about who Synergy is, not about a projection tool. That
+                        reasoning still stands and that label is still retired
+                        (the key stays untouched in both message files).
+
+                        What is here instead is the site's shared CTA pair —
+                        quote first, phone second — which is a CONVERSION
+                        moment rather than a story link, and /contact is a real
+                        built route now. The section no longer ends on a full
+                        stop with nothing to do next. See CtaPair.tsx. */}
+                    <CtaPair
+                      locale={locale}
+                      variant="cream"
+                      quoteLabel={tCta("quote")}
+                      callLabel={tCta("call")}
+                      callAria={tCta("callAria")}
+                      phoneHref={tNav("phoneHref")}
+                      className="mt-8"
+                    />
                   </div>
                 </div>
               </FadeUp>

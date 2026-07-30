@@ -9,6 +9,7 @@ import ServicesSequence, {
 import ServicesBreak from "@/components/ServicesBreak";
 import ServicesEssay, { type EssayBlock } from "@/components/ServicesEssay";
 import ServicesTable, { type TableRow } from "@/components/ServicesTable";
+import CtaPair from "@/components/CtaPair";
 
 /**
  * /[locale]/services — "What We Protect".
@@ -186,6 +187,8 @@ export default async function ServicesPage({
 }) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "services" });
+  const tCta = await getTranslations({ locale, namespace: "cta" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
 
   const items: SequenceItem[] = PRODUCTS.map(([key, src]) => ({
     key,
@@ -369,12 +372,13 @@ export default async function ServicesPage({
         {/* =================================================================
             CLOSING CTA — fflsynergy's own closing block.
 
-            🟡 NO BUTTON. Their page ends this block with a call-to-action
-            control; ours does not, for the same reason the About page's §4
-            pill was removed — there is no contact route and no working form
-            (the lead modal is deliberately disabled). The phone number in the
-            header and footer is the live path, and it is honest. One <Link>
-            to add the day /contact exists.
+            ✅ THE BUTTON IS BACK, AND THE NOTE THAT REMOVED IT IS STALE.
+            // was: "NO BUTTON ... there is no contact route and no working
+            // form ... One <Link> to add the day /contact exists."
+            /contact EXISTS now, so the condition that argued this section into
+            ending on a full stop no longer holds. It takes the shared pair —
+            see components/CtaPair.tsx — so this page ends the same way every
+            other conversion moment does: quote first, phone second.
         ================================================================= */}
         <section aria-labelledby="services-cta" className="sem-shell sem-pad-t">
           <div className="sem-inner">
@@ -385,6 +389,15 @@ export default async function ServicesPage({
               <p className="sem-body mt-6 max-w-[46ch] text-ink">
                 {t("cta.body")}
               </p>
+              <CtaPair
+                locale={locale}
+                variant="cream"
+                quoteLabel={tCta("quote")}
+                callLabel={tCta("call")}
+                callAria={tCta("callAria")}
+                phoneHref={tNav("phoneHref")}
+                className="mt-10"
+              />
             </FadeUp>
           </div>
         </section>

@@ -14,6 +14,122 @@ on this project look the way they do.
 > than by reasoning: the pull-quote reveal's floor opacity and the hero scrim's
 > shape. See §6a.
 >
+> 🔴 **NEWEST (2026-07-30, 6) — RECORD-CORRECTIONS + TWO ITEMS CLOSED.**
+> Two "blocked on client" items were STALE and one wasn't:
+> ✅ **CARRIER LOGOS — About grid now real artwork.** The 21 files landed some
+> time ago; the homepage marquee had been wired but the About §2b grid was still
+> typeset names. Fixed 2026-07-30: `<span>` → `<img>` in the same cell, sourcing
+> from a new `lib/carrierLogos.ts` shared with CarrierStrip. Measured on the
+> real 190.9px cell at `h-12`: corebridge **+24.8%**, athene **+11.5%**, global
+> **+25.0%** at 2× DPR; the two SVGs are vector. Nothing upscaled. 390 clean.
+> 🟡 One artwork caveat, pre-existing: `athene.png` is white-on-solid-navy so it
+> reads as a dark box on cream (same on the strip). Transparent-background file
+> needed from the carrier; do not edit the trademark.
+> **`h-[131px]` is NOT coming back.** Measured, it caps on width and needs a
+> 382px source; corebridge (367) and athene (368) fall −3.9% / −3.6% SHORT.
+> ✅ **TESTIMONIALS DISCLAIMER DELETED — SLOT, STRING AND FLAG.** These are
+> staff statements, not client results claims, so there is nothing to disclaim.
+> Removed from BOTH message files, the cols 10-12 markup is gone, and the old
+> two-purpose flag was **renamed** `TESTIMONIAL_EYEBROW_READY` because the
+> eyebrow (a separate open item with its own placeholder) still stays gated.
+> **Off the client list — do not re-request the disclaimer.**
+> ❌ **FOUNDER §8 stays blocked (accurate).** Verified: `about.founder.*` absent
+> from en.json; `public/synergy/founder-portrait.jpg` does not exist. The three
+> real Rula frames are already on /about §5 (and on /join), so borrowing would
+> repeat a face on one page. Ziad still owes bio copy + a portrait not already
+> in use.
+> ❌ **GHL WEBHOOK stays blocked (accurate).** No `.env` file, no `app/api`
+> directory, no `process.env` reference except `NEXT_DIST_DIR`. When an endpoint
+> arrives, two more items are stacked behind the same door: SMS/call consent
+> wording and a privacy policy.
+> **CLIENT LIST NOW:** founder bio + portrait · GHL endpoint · SMS/call consent
+> wording · privacy policy & terms · "$0 startup cost" cost claim · tax-treatment
+> answer blocking three blog articles · high-res office/team camera files ·
+> transparent-background athene.png. **Results disclaimer is REMOVED from this
+> list.**
+>
+> 🔴 **NEWEST (2026-07-30, 5) — SITE-WIDE CTA AUDIT + THE ONE PAIR.**
+> **✅ ZERO DEAD CTAs. Record this and stop re-reporting it.** A full sweep of
+> every button and link on all eight public pages found **no** dead control: every
+> CTA either resolves, or is visibly disabled with a notice (ContactForm,
+> JoinApplyForm, LeadModal, the /join "Agent portal" button). **The earlier claim
+> that stubs remained was reading COMMENTED-OUT code and RETIRED components** —
+> every surviving `href="#"` in the repo is inside a `/* */` block, or in
+> `components/Nav.tsx` (superseded by SiteHeader, imported nowhere) or
+> `components/TwoWaysIn.tsx` (removed from the homepage). Verified on the served
+> HTML: `href="#"` count is **0** on all eight routes. Grep the RENDERED output,
+> not the source, before ever claiming a stub again.
+> **THE PAIR.** Every primary conversion moment now renders `components/CtaPair.tsx`
+> and nothing else: PRIMARY "Get a free quote" → /contact, SECONDARY
+> "Call 407-434-0400" → `tel:+14074340400`. The secondary is a phone call because
+> **both forms on this site are disabled**, so the phone is the only channel that
+> reaches a human — a second link to /contact would be decoration. Placed on: the
+> homepage hero, WhatWeCover, /services closing, /about §4. **WhySynergy stays a
+> single CTA** (argument section, not a conversion point) and the WhoWeServe cards
+> and /join §6 are untouched by design.
+> **🔴 "Talk to an advisor" IS RETIRED SITE-WIDE.** It rendered twice under one
+> label pointing at **two different destinations** (`tel:` in the hero, `/contact`
+> in WhatWeCover). `hero.ctaCall` and `whatWeCover.ctaSecondary` are RETAINED
+> UNTOUCHED in both message files, simply unrendered. Verified 0 rendered
+> occurrences site-wide.
+> **LeadModal is unhooked but NOT deleted.** Its only trigger was the calculator
+> CTA, which now goes to /contact; the import, the `modalOpen` state and the
+> `<LeadModal>` mount are all commented in `Calculator.tsx` with a restore note,
+> and `LeadModal.tsx` is untouched. Re-wire it when the GHL webhook lands.
+> **Labels live in a shared `cta` namespace** (`cta.quote` / `cta.call` /
+> `cta.callAria`) rather than duplicated per-namespace — one edit keeps every pair
+> in step. Mirrored empty in es.json per §6e.
+> **MEASURED:** hero pair (over the photograph) **17.39:1 both buttons** — the
+> fills are OPAQUE on purpose so contrast never depends on the crop behind them;
+> cream pair primary **15.87:1**, secondary text **15.87:1**, its border **6.19:1**
+> vs cream (3.0 bar). Keyboard: both reachable in order, real `:focus-visible`
+> rings at **5.16:1**. 390px: `scrollWidth` 390 = clientWidth, zero sideways
+> scroll, on every changed page. `/join` "Join as agent" re-verified — it scrolls
+> to a real `#join-apply-heading` via Lenis with a `scrollIntoView` fallback.
+> 🟡 `/login` EXISTS NOW but stays UNLINKED until auth ships — the /join "Agent
+> portal" button remains a disabled `<button>`, not a link.
+>
+> 🔴 **NEWEST (2026-07-30, 4) — ADMIN + AGENT PORTAL, PHASE 1: DESIGN ONLY.**
+> Two new routes, `(portal)/login` and `(portal)/admin`. **NO backend, no auth,
+> no session, no Supabase, no RLS, no API route, no fetch, nothing persists.**
+> Every row comes from `lib/adminMock.ts` (hardcoded; emails on `example.com`,
+> phones in the reserved 555-01xx block, invented names — the content table's
+> rows are real repo facts and contain no personal data). Delete that file when
+> the real data layer lands; do not adapt it.
+> **🔴 THE ROUTE TREE WAS RESTRUCTURED.** `[locale]/layout.tsx` is now the shared
+> shell only (html/body, fonts, next-intl provider). The marketing chrome —
+> Splash, SiteHeader, SmoothScroll/Lenis, Footer, LocaleSwitcher — moved to
+> `[locale]/(site)/layout.tsx`, and all seven public routes moved into `(site)/`.
+> **Route groups do not change URLs**; every public path is byte-identical and
+> verified 200. A new public page belongs in `(site)/` — one added directly under
+> `[locale]/` would render with no header or footer.
+> WHY: the portal must not render inside Lenis. SmoothScroll transforms the
+> scroll container and a `position: fixed` child of a transformed ancestor
+> positions against that ancestor, not the viewport — the trap SiteHeader's
+> mobile panel and LocaleSwitcher already document. The admin's sidebar is
+> exactly that.
+> **🔴 NEITHER ROUTE IS PROTECTED.** They are unlinked (`PORTAL_PATHS` in
+> routes.ts is deliberately absent from HEADER_ROUTES/FOOTER_ROUTES), `noindex`
+> (set on the group layout, inherited) and disallowed in the new `app/robots.ts`
+> — but that is obscurity, not access control. It is survivable ONLY because
+> nothing real is behind it. **Do not put a genuine lead record there until auth
+> ships and is reviewed** — real leads are PII and these URLs are public.
+> **🟡 KNOWN LEAK:** next-intl serialises the WHOLE message catalogue into every
+> page, so `admin.*` / `login.*` strings now ship in the HTML of every public
+> page (verified: "Sample data" appears in `/en`). No secrets, but it advertises
+> that an admin area exists. Fix is to narrow the messages passed to
+> `NextIntlClientProvider` per route group. Not done — it touches every page.
+> **A11Y BUG FOUND AND FIXED IN BUILD:** the table scroller was `position:
+> static`, so it was not the containing block for its abs-positioned descendants
+> (`sr-only` text, the row-action popovers) — they escaped the `overflow-x:auto`
+> clip and extended the DOCUMENT to 1093px against a 568px viewport (the page
+> scrolled 524.8px sideways) while `body.scrollWidth` stayed 568, which is why a
+> naive body check misses it. `relative` on the wrapper fixes it; 390px now
+> measures 390/390, zero sideways scroll. Sort buttons use `aria-label` instead
+> of a trailing `sr-only` span (also removed 7 abs-positioned nodes).
+> AA all clears — gold #C9A84C is used at full strength ONLY on navy (7.61:1);
+> every gold on cream is gold-deep (5.16:1), because gold on cream is 2.09:1.
+>
 > 🔴 **NEWEST (2026-07-30, 3) — /join §4 STEPS ARE IMAGELESS NOW; that resolves
 > the step photo-collisions, and the step copy was tightened.** A cross-check
 > found the step frames md5-identical to /about's §5/§4 portraits (and the hero
@@ -484,7 +600,7 @@ exactly the footer's colour so that seam does not exist.
 |---|---|---|---|
 | 1 | Hero, static, **no headline at all** | h1 "We Are Synergy" + sub, 100svh | ✅ built. **We add a headline** — theirs is a silent photograph, which doesn't survive semantics or SEO. 🟡 photo is a placeholder |
 | 2 | Info, 1248px | "Our Story" — display heading + 3 paras, image right | ✅ built |
-| 2b | 5-col award/press logo grid | **5 carrier wordmarks** | ✅ built, 🟡 **AWAITING LOGO FILES** — see below |
+| 2b | 5-col award/press logo grid | **5 carrier LOGOS** | ✅ **DONE 2026-07-30** — real artwork, `h-12`, alt = `carriers.names.*` |
 | 3 | Pull-quote #1, 715px | *"Insurance is not a product. It is a promise."* | ✅ built |
 | 4 | Food & Drink, 826px | "Built on Trust. Driven by Results." + 2 images | ✅ built. 🔴 **their pill CTA is deliberately absent** — §9 |
 | 5 | Images grid, 1158px | "What We Stand For" — I Integrity / II Education / III Legacy | ✅ built. 🟡 provisional imagery |
@@ -507,12 +623,22 @@ reference grid is exactly five columns of 191.74px and twelve names crammed in
 would be a different component wearing its layout. These are the five with the
 widest consumer recognition — the row's job is reassurance.
 
-🟡 **THESE ARE WORDMARKS, NOT LOGOS, AND IT SHOWS.** The client confirmed the
-appointments but has sent no logo files. The cells are 191×131 and typeset names
-fill maybe a third of that, so the whitespace that would hold a mark is visibly
-empty. Honest, but not finished.
-**Drop-in swap:** replace the `<span>` with `<Image>` in the same cell. Grid,
-gap, 131px cap and centring are all on the `<li>`.
+✅ **REAL LOGOS SINCE 2026-07-30.** The drop-in swap happened exactly as
+predicted: same `<li>`, same grid, same gap, same centring — only the child
+changed, `<span>` → `<img>`. Source of truth is `lib/carrierLogos.ts`, shared
+with the homepage marquee, so the two surfaces cannot disagree about which mark
+belongs to which carrier. `alt` is `carriers.names.*`, the same translated
+string the strip uses. Logos are exempt from contrast rules (WCAG 1.4.11
+excludes logotypes) and no text moved.
+**Measured on the real 190.9px cell** (reference: 191.74) at `h-12`:
+`corebridge` **+24.8%**, `athene` **+11.5%**, `global-atlantic` **+25.0%**;
+`mutual-of-omaha` and `transamerica` are SVG. Nothing upscaled. At 390 the cell
+narrows to 119px and all five still clear.
+🟡 **ONE ARTWORK CAVEAT, NOT A BUG:** `athene.png` is a white wordmark on a
+SOLID NAVY PLATE, so on cream it reads as a dark box among four transparent
+marks (and `grayscale` makes it dark grey). Pre-existing — the homepage strip
+has always had it. Fixing it means a transparent-background file from the
+carrier or Ziad; do NOT edit a third-party trademark here.
 
 ### 🔴 §8 Staff — AWAITING CLIENT
 
@@ -847,7 +973,7 @@ ancestor positions against that ancestor — the same trap the mobile menu panel
 documents).
 
 **`LOCALE_SWITCHER_READY = false`. It renders `null`.** Same pattern as
-`HEADER_ASIDES_READY`, off for the same reason the lead form is disabled: **an
+`TESTIMONIAL_EYEBROW_READY` (was `HEADER_ASIDES_READY`), off for the same reason the lead form is disabled: **an
 affordance must not advertise a capability the site does not have.**
 
 Measured on the catalogue: **131 of 305 leaf strings translated — 43.0%.** Empty
@@ -1323,7 +1449,7 @@ oversized single gaps and one bare spacer.
 
 | # | where | was | now | why |
 |---|---|---|---|---|
-| 1 | §2b carrier cells | `h-[131px]` holding **21.9px** of type — **109.1 / 112.3 / 93.5** empty per cell | **`h-[56px]`** | 131 is the height the reference needs for logo ARTWORK. 🔴 **Put it back to 131 when the logo files land** |
+| 1 | §2b carrier cells | `h-[131px]` holding **21.9px** of type — **109.1 / 112.3 / 93.5** empty per cell | **content height**, logo `h-12` | ✅ **RESOLVED.** 131 is NOT coming back: measured on the real 190.9px cell, a 131px-tall logo caps on width and needs a 382px source — `corebridge` (367) and `athene` (368) fall **−3.9% / −3.6% SHORT**. `h-12` clears all three (+24.8 / +11.5 / +25.0%) |
 | 2 | §5 heading → grid | `clamp(48px,8.6vw,131.2px)` — **the full section rhythm, inside a section** | `clamp(32px,4.3vw,65.6px)`, measured **65.4** | the heading read as detached from its own three columns |
 | 3 | §2 → carrier row | same clamp, **158.3** | halved with #2 | as above |
 | 4 | §4 copy column | **327.4px** of ink top-aligned in a **562px** row → **234.6 empty below** | `justify-center` **and** the full `trust.p1` restored → **404.1** of ink, air **79 above / 79 below** | removing the pill had made this worse. `trust.p1`'s first sentence is fflsynergy verbatim and was unused — `trust.body` was only its second sentence. No cross-page duplication: `trust.p2` was **not** restored, because its first two sentences ship on the homepage as `carriers.subhead` |
@@ -1433,15 +1559,21 @@ retained untouched in both message files.
 ### 🟡 Placeholder strings — hidden, not fixed
 
 `testimonials.eyebrow` and `testimonials.disclaimer` still contain literal
-`[PLACEHOLDER — …]` text in `messages/en.json` (lines ~246–247) and were
-rendering on the deployed preview. Hidden behind `HEADER_ASIDES_READY = false`
-at `components/Testimonials.tsx:68`, which hides the eyebrow **and** the
-results-disclaimer.
+`[PLACEHOLDER — …]` text in `messages/en.json` and were rendering on the
+deployed preview.
 
-**Restore in one step:** set it `true` and replace both strings. The heading
-moves back to column 3 on its own. 🔴 **The disclaimer is a legal
-results-disclaimer for a US insurance site — the wording comes from the client.
-Do not write one.**
+🔴 **THE RESULTS-DISCLAIMER IS DELETED — SLOT, STRING AND FLAG (2026-07-30).**
+It was held open on the assumption these are CLIENT testimonials needing a
+results disclaimer. They are not: they are staff statements about how Synergy
+works, they make no claim about anyone's results, so there is nothing to
+disclaim. `testimonials.disclaimer` is removed from BOTH message files and the
+cols 10-12 markup is gone. **It is off the client list — do not re-request it.**
+
+**ONLY THE EYEBROW REMAINS GATED**, behind the renamed
+`TESTIMONIAL_EYEBROW_READY = false` (the old name promised two asides and one no
+longer exists). Its string is still `[PLACEHOLDER — awaiting approval]`.
+**Restore in one step:** set it `true` and replace that one string. The heading
+moves back to column 3 on its own.
 
 ### ✅ §4 pill CTA — REMOVED, and it stays removed until a page exists
 
@@ -1455,7 +1587,7 @@ naming a calculator cannot be reused for a story page.
 
 - **Founder bio + portrait for About §8** — and *only* a real portrait; see §6
 - **Results-disclaimer wording**
-- **Carrier logo files for About §2b** — appointments confirmed, artwork not
+- ~~**Carrier logo files for About §2b**~~ — ✅ **DELIVERED AND WIRED 2026-07-30.** 21 files in `public/carriers/`; homepage marquee and About grid both render real artwork from `lib/carrierLogos.ts`. Was never the gap it was recorded as — the files had landed and the homepage was already wired; only the About grid was still typeset names. // stale: appointments confirmed, artwork not
   sent. Five files needed
 - **Original camera files for the About hero** — the current photo is licensed
   stock and is explicitly a placeholder
@@ -1765,7 +1897,7 @@ feature and its gate together.
 | `app/[locale]/page.tsx:22` | `import Carriers` | full section stashed; its `APPOINTMENTS` array now feeds `CarrierStrip` |
 | `components/Footer.tsx` | the whole **Legal `<nav>`** | 🔴 `/privacy` + `/terms` are blocked — §4, §5 |
 | `components/Hero.tsx` | the second CTA (`hero.ctaQuote`) | removed, not commented — string retained in both message files |
-| `components/Testimonials.tsx:68` | `HEADER_ASIDES_READY = false` | hides the eyebrow **and** the results-disclaimer — §10 |
+| `components/Testimonials.tsx` | `TESTIMONIAL_EYEBROW_READY = false` | hides the **eyebrow only**. The results-disclaimer slot, its string and the old two-purpose flag are **DELETED** (2026-07-30) — these are staff statements, not client results claims, so there is nothing to disclaim |
 | `components/WhySynergy.tsx` | the eight-row block | ⚠️ references `why-g10` / `why-g12`, which carry **Balmain / Gucci** buckles. Uncommenting ships them |
 | `app/globals.css` | **`.about-gradient`** + the whole navy-lift derivation | 🔴 the About page is cream — §6a. Swapping the class on the wrapper is the entire restore |
 | `app/globals.css` | the **`[data-surface="dark"]` header block** | retired with the dark page. Its measurements are worth keeping for the next dark surface |

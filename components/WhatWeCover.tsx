@@ -6,6 +6,7 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
+import CtaPair from "./CtaPair";
 import { useParallax } from "./useParallax";
 
 // Three products (Final Expense dropped): Term (protect now), IUL (grow),
@@ -14,6 +15,8 @@ const CARDS = ["term", "iul", "taxfree"] as const;
 
 export default function WhatWeCover() {
   const t = useTranslations("whatWeCover");
+  const tCta = useTranslations("cta");
+  const tNav = useTranslations("nav");
   const locale = useLocale();
   const reduce = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
@@ -85,39 +88,25 @@ export default function WhatWeCover() {
           <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.55] text-white">
             {t("subhead")}
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            {/* `ctaPrimary` is "Get a free quote". href="#" — REPLACED with
-                /contact, on evidence rather than judgement: fflsynergy.com's
-                own three "Get a Free Quote" buttons are anchors to /contact,
-                and that page's submit reads "Request My Free Quote". The
-                client already answered this. See HANDOFF §4a. */}
-            <a
-              href={routeHref(locale, "contact")}
-              className="group inline-flex h-12 items-center gap-2 rounded-full bg-white px-7 text-[14px] font-medium text-navy shadow-[0_2px_18px_rgba(13,27,42,0.28)] transition-transform duration-300 ease-out-expo hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
-            >
-              {t("ctaPrimary")}
-              <span
-                aria-hidden="true"
-                className="transition-transform duration-200 ease-out group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
-              >
-                →
-              </span>
-            </a>
-            {/* `ctaSecondary` is "Talk to an advisor". href="#" — REPLACED
-                with /contact, which is the page that does exactly that and
-                whose phone number is live even while its form is not.
-                ⚠️ NOTE THE DIVERGENCE FROM THE HERO: the hero's identically
-                labelled CTA dials `nav.phoneHref` directly, because /contact
-                did not exist when that decision was made. Two destinations for
-                one label on one page is worth resolving — logged, not changed
-                here, because changing the hero is not this pass. */}
-            <a
-              href={routeHref(locale, "contact")}
-              className="inline-flex h-12 items-center rounded-full border border-white/70 bg-navy/30 px-7 text-[14px] font-medium text-white backdrop-blur-sm transition-colors duration-300 hover:border-white hover:bg-navy/40"
-            >
-              {t("ctaSecondary")}
-            </a>
-          </div>
+          {/* THE SHARED CTA PAIR — see components/CtaPair.tsx. Was a
+              hand-rolled pair: `ctaPrimary` ("Get a free quote") -> /contact
+              and `ctaSecondary` ("Talk to an advisor") -> /contact. Two
+              buttons, one destination: the secondary was a second door to the
+              same page, which is exactly what the pair is meant not to be.
+              🔴 "Talk to an advisor" is retired site-wide (it also rendered in
+              the hero pointing somewhere else). `whatWeCover.ctaPrimary` and
+              `ctaSecondary` are retained untouched in both message files and
+              are simply no longer rendered; the labels now come from the
+              shared `cta` namespace. */}
+          <CtaPair
+            locale={locale}
+            variant="photo"
+            quoteLabel={tCta("quote")}
+            callLabel={tCta("call")}
+            callAria={tCta("callAria")}
+            phoneHref={tNav("phoneHref")}
+            className="mt-7 justify-center"
+          />
         </FadeUp>
 
         {/* Three translucent cards */}

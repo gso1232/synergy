@@ -16,11 +16,13 @@ import { useParallax } from "./useParallax";
  *
  *   THEIR HEADER is three items on one row: eyebrow (cols 1-2), heading
  *   (cols 3-7) and a note (cols 10-12, "*individual experiences vary").
- *   Ours runs the heading alone. Both other slots are deliberately empty:
- *   fflsynergy publishes exactly one testimonial-related string — the section
- *   title — so there is nothing to source an eyebrow from, and the disclaimer
- *   is coming from the client rather than being written here or adapted from
- *   reyou's. The row closes up rather than being padded with invented copy.
+ *   Ours runs the heading alone. Their third slot — the results note — is NOT
+ *   reproduced at all: these quotes describe how Synergy works, not what anyone
+ *   earned or received, so there is no result to qualify. See the flag note
+ *   below. The eyebrow slot is empty for a different reason: fflsynergy
+ *   publishes exactly one testimonial-related string, the section title, so
+ *   there is nothing to source one from. The row closes up rather than being
+ *   padded with invented copy.
  *
  *   THEIR CARD, kept exactly:
  *     slide      438x296, padding 0 8px  ->  16px between cards
@@ -50,22 +52,30 @@ import { useParallax } from "./useParallax";
  * falsification the rule exists to prevent.
  */
 /**
- * ONE-LINE REVERT — flip to `true` when the client sends the real wording.
+ * ONE-LINE REVERT — flip to `true` when the eyebrow copy is approved.
  *
- * The header's eyebrow and results-disclaimer both still hold literal
- * "[PLACEHOLDER — …]" strings in messages/en.json, and those were rendering on
- * the deployed preview where a client would read them as a bug. They are
- * hidden rather than deleted: the markup, the grid columns, the strings and
- * their es.json mirrors are all untouched.
+ * 🔴 THE RESULTS-DISCLAIMER IS GONE — SLOT, STRING AND ALL (2026-07-30).
+ * // was: TESTIMONIAL_EYEBROW_READY, one flag gating BOTH the eyebrow and a
+ * // disclaimer slot in cols 10-12.
+ * It was held open on the assumption that these are CLIENT testimonials, which
+ * on a US insurance site would need a results disclaimer supplied by the client.
+ * They are not: they are staff statements about how Synergy works, they make no
+ * claim about anyone's results, and there is therefore nothing to disclaim. The
+ * markup, the grid columns and `testimonials.disclaimer` in BOTH message files
+ * are deleted rather than hidden — keeping a slot for a document nobody needs
+ * was the actual error. It is off the client list in HANDOFF too.
  *
- * The disclaimer wording is a legal results-disclaimer for a US insurance
- * site. It comes from the client. Do not write one here.
+ * WHAT SURVIVES, AND WHY THE FLAG IS RENAMED. The EYEBROW is a separate open
+ * item — its string is still a literal "[PLACEHOLDER — awaiting approval]" and
+ * it would read as a bug on a client preview, so it stays gated. The flag now
+ * names only the thing it actually governs; the old name promised two asides
+ * and one of them no longer exists.
  *
- * To restore: set this to `true`, replace `testimonials.eyebrow` and
- * `testimonials.disclaimer` in messages/en.json (and mirror in es.json).
- * Nothing else needs touching — the heading moves back to column 3 on its own.
+ * To restore the eyebrow: set this to `true` and replace
+ * `testimonials.eyebrow` in messages/en.json (and mirror in es.json). Nothing
+ * else needs touching — the heading moves back to column 3 on its own.
  */
-const HEADER_ASIDES_READY = false;
+const TESTIMONIAL_EYEBROW_READY = false;
 
 const QUOTES = ["q1", "q2", "q3"] as const;
 
@@ -136,15 +146,17 @@ export default function Testimonials() {
 
       <div className="relative z-10 px-5 py-14 md:px-8 lg:py-20">
         <div className="mx-auto">
-          {/* HEADER ROW — reyou's three parts on one line: eyebrow cols 1-2,
-              heading cols 3-7, disclaimer cols 10-12 hard right. items-center
-              plus cap-trim puts all three cap bands on one centre line, the
-              same mechanism as Where to Start.
+          {/* HEADER ROW. reyou runs three parts on this line — eyebrow
+              cols 1-2, heading cols 3-7, disclaimer cols 10-12 hard right.
+              WE RUN TWO: the disclaimer slot is deleted (see the note at the
+              top of this file — these are staff statements, not client results
+              claims, so there is nothing to disclaim). items-center plus
+              cap-trim puts both cap bands on one centre line, the same
+              mechanism as Where to Start.
 
-              Two of the three are currently hidden — see HEADER_ASIDES_READY
-              at the top of this file. */}
+              The eyebrow is currently hidden — see TESTIMONIAL_EYEBROW_READY. */}
           <div className="md:grid md:grid-cols-12 md:items-center md:gap-x-8">
-            {HEADER_ASIDES_READY && (
+            {TESTIMONIAL_EYEBROW_READY && (
               <div className="flex md:col-span-2">
                 <p className="flex h-full items-center gap-2 text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-cream">
                   <span
@@ -160,7 +172,7 @@ export default function Testimonials() {
                 edge instead of sitting indented against two empty columns. */}
             <div
               className={
-                HEADER_ASIDES_READY
+                TESTIMONIAL_EYEBROW_READY
                   ? "mt-6 md:col-span-5 md:col-start-3 md:mt-0"
                   : "mt-0 md:col-span-7 md:col-start-1"
               }
@@ -173,19 +185,6 @@ export default function Testimonials() {
               </h2>
             </div>
 
-            {/* DISCLAIMER — cols 10-12, right-aligned, exactly where reyou put
-                theirs. The STRING IS A PLACEHOLDER and must not ship: this is a
-                legal results-disclaimer on a US insurance site, so the wording
-                comes from the client, not from here and not from reyou's.
-                Hand the final line over as  testimonials.disclaimer  in
-                messages/en.json, with its mirror in es.json. */}
-            {HEADER_ASIDES_READY && (
-              <div className="mt-4 md:col-span-3 md:col-start-10 md:mt-0">
-                <p className="cap-trim cap-body text-[15px] leading-[1.45] tracking-[0.016em] text-cream/85 md:text-right">
-                  {t("disclaimer")}
-                </p>
-              </div>
-            )}
           </div>
 
           {/* THE THREE QUOTES — a real <ul>: three peer testimonials with no
