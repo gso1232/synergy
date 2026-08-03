@@ -13,7 +13,8 @@ import { locales, type Locale } from "@/i18n";
  *
  * The component is complete, mounted site-wide and verified; this constant is
  * the only thing standing between it and the page. It is the same pattern
- * `HEADER_ASIDES_READY` uses in components/Testimonials.tsx, and it is off for
+ * `TESTIMONIAL_EYEBROW_READY` uses in components/Testimonials.tsx (that flag was
+ * called `HEADER_ASIDES_READY` when this note was written), and it is off for
  * the same reason the lead form is disabled: AN AFFORDANCE MUST NOT ADVERTISE A
  * CAPABILITY THE SITE DOES NOT HAVE.
  *
@@ -31,9 +32,43 @@ import { locales, type Locale } from "@/i18n";
  * touch" failure in a different costume: the control works, and what it promises
  * does not exist.
  *
- * TO SHIP: set this `true`. Nothing else changes.
+ * 🔴 IT IS NOT "ENGLISH AT A SPANISH URL". IT IS BOTH LANGUAGES IN ONE COLUMN,
+ * AND THAT IS WORSE. Flipped to `true` and driven with a real click on 2026-08-02
+ * to see what a visitor would actually get. /es renders, top to bottom:
+ *
+ *     nav              Inicio · Nosotros · Servicios · Blog · Contacto ·
+ *                      Calculadora · Únete            SPANISH
+ *     hero headline    "Protecting Families. Building Futures."   ENGLISH
+ *     hero sub + SSN   English
+ *     hero CTA pair    "Get a free quote" ENGLISH, next to
+ *                      "Únete a nuestro equipo" SPANISH  <- SAME BUTTON ROW
+ *     "WHAT WE DO"     English
+ *     WhoWeServe       Spanish — EXCEPT one bullet, "Appointments with multiple
+ *                      top-rated carriers", which is the single empty
+ *                      `whoWeServe` key sitting between two Spanish bullets
+ *     "OUR CARRIERS"   English
+ *     <title>          English
+ *
+ * A reader who asks for Spanish and gets a page that changes language between
+ * two adjacent buttons, and mid-list inside one card, does not read that as
+ * "translation pending" — they read it as broken. The fallback is doing its job;
+ * the job is just not a shippable experience yet.
+ *
+ * ✅ **SHIPPED VISIBLE 2026-08-02.** The condition above is met and the flag is
+ * ON. What changed: es.json went 22.0% -> 100% of every PUBLIC namespace, and
+ * `content/blog/es/` went from an empty directory to nine translated articles
+ * plus three deliberate frontmatter-only stubs. The language-salad failure this
+ * flag existed to prevent — Spanish nav over an English hero, "Get a free quote"
+ * sitting beside "Únete a nuestro equipo" in the same button row — is gone,
+ * verified by fetching every public /es route and scanning the rendered HTML.
+ *
+ * 🟡 WHAT IS STILL ENGLISH, AND WHY IT DOES NOT BLOCK THIS: the `admin`
+ * namespace (126 keys). It is staff-only, `noindex`, robots-disallowed and
+ * reachable only behind auth — not a public surface, so no visitor can meet it.
+ *
+ * TO REVERT: set this `false`. Nothing else changes.
  */
-const LOCALE_SWITCHER_READY: boolean = false;
+const LOCALE_SWITCHER_READY: boolean = true;
 
 /**
  * Site-wide locale switcher — a fixed pill, bottom-right.

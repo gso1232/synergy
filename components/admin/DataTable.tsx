@@ -4,11 +4,13 @@ import { useId, useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 
 /**
- * The admin data table — sorting and filtering, over a hardcoded array.
+ * The admin data table — presentational sort/filter over rows passed in.
  *
- * 🔴 NO DATA PATH. `rows` is a prop, sourced from lib/adminMock.ts at build
- * time. Sorting and filtering are `useMemo` over that array in the browser.
- * Nothing fetches, nothing persists, nothing is written anywhere.
+ * READ-ONLY BY NATURE. `rows` is a prop; the server component fetches the real
+ * data (RLS-scoped) and formats each cell to a string before passing it here.
+ * Sorting and filtering are `useMemo` over that array in the browser — a view,
+ * not a data path. Editable data (agents) uses AgentsManager, not this. Omit
+ * `actions` for a table with no row controls (leads, content).
  *
  * ACCESSIBILITY, the parts that are easy to get wrong and are done properly:
  *   - the sort control is a real <button> INSIDE the <th>, and the <th> carries
@@ -73,9 +75,10 @@ export default function DataTable({
   rows: Row[];
   /** Status filter options; omit for no filter. */
   filters?: { value: string; label: string }[];
-  /** Row action labels. All render disabled — phase 1 wires nothing. */
-  actions: string[];
+  /** Row action labels. Omit for a READ-ONLY table (no actions column). */
+  actions?: string[];
 }) {
+  const hasActions = !!actions && actions.length > 0;
   const t = useTranslations("admin");
   const uid = useId();
   const [query, setQuery] = useState("");
@@ -169,7 +172,7 @@ export default function DataTable({
         // 568 clientWidth and the page scrolled 524.8px sideways, while
         // body.scrollWidth stayed 568 (which is why a naive body check misses
         // it). Adding `relative` returned it to 568 exactly.
-        className="relative overflow-x-auto rounded border border-ink/15 bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+        className="relative overflow-x-auto rounded-lg border border-ink/15 bg-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
       >
         <table className="w-full min-w-[760px] border-collapse text-left text-[14px]">
           <caption className="sr-only">{caption}</caption>
@@ -182,7 +185,7 @@ export default function DataTable({
                     key={c.key}
                     scope="col"
                     aria-sort={active ? (sort!.dir === "asc" ? "ascending" : "descending") : "none"}
-                    className="whitespace-nowrap px-4 py-3 font-semibold text-ink"
+                    className="whitespace-nowrap px-4 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/70"
                   >
                     {c.sortable ? (
                       <button
@@ -208,15 +211,23 @@ export default function DataTable({
                   </th>
                 );
               })}
-              <th scope="col" className="px-4 py-3 font-semibold text-ink">
-                {t("table.actionsLabel")}
-              </th>
+              {hasActions ? (
+                <th
+                  scope="col"
+                  className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-ink/70"
+                >
+                  {t("table.actionsLabel")}
+                </th>
+              ) : null}
             </tr>
           </thead>
           <tbody>
             {shown.length === 0 ? (
               <tr>
-                <td colSpan={columns.length + 1} className="px-4 py-8 text-center text-ink/80">
+                <td
+                  colSpan={columns.length + (hasActions ? 1 : 0)}
+                  className="px-4 py-8 text-center text-ink/80"
+                >
                   {t("table.empty")}
                 </td>
               </tr>
@@ -237,27 +248,28 @@ export default function DataTable({
                       </td>
                     );
                   })}
-                  <td className="px-4 py-3">
-                    <details className="relative">
-                      <summary className="inline-flex cursor-pointer list-none items-center rounded border border-ink/30 px-2.5 py-1 text-[13px] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep">
-                        {t("table.rowActions", { name: r.cells[columns[0].key] ?? r.id })}
-                      </summary>
-                      <ul className="absolute right-0 z-10 mt-1 w-max rounded border border-ink/20 bg-white p-1 shadow-lg">
-                        {actions.map((a) => (
-                          <li key={a}>
-                            {/* Disabled on purpose: phase 1 wires nothing. */}
-                            <button
-                              type="button"
-                              disabled
-                              className="block w-full cursor-not-allowed px-3 py-1.5 text-left text-[13px] text-ink/55"
-                            >
-                              {a}
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </details>
-                  </td>
+                  {hasActions ? (
+                    <td className="px-4 py-3">
+                      <details className="relative">
+                        <summary className="inline-flex cursor-pointer list-none items-center rounded border border-ink/30 px-2.5 py-1 text-[13px] text-ink focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep">
+                          {t("table.rowActions", { name: r.cells[columns[0].key] ?? r.id })}
+                        </summary>
+                        <ul className="absolute right-0 z-10 mt-1 w-max rounded border border-ink/20 bg-white p-1 shadow-lg">
+                          {actions!.map((a) => (
+                            <li key={a}>
+                              <button
+                                type="button"
+                                disabled
+                                className="block w-full cursor-not-allowed px-3 py-1.5 text-left text-[13px] text-ink/55"
+                              >
+                                {a}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </details>
+                    </td>
+                  ) : null}
                 </tr>
               ))
             )}

@@ -141,7 +141,7 @@ export default function HowItWorks() {
       // opens on 80, so both boundaries are 160px ink-to-ink — identical to
       // every other seam on the page, and all three sections are bg-cream so
       // there is no visible join.
-      className="bg-cream px-5 py-14 md:px-8 lg:py-20"
+      className="px-5 py-14 md:px-8 lg:py-20"
     >
       {/* No max-width cap, matching theirs and matching Why Synergy directly
           above — the container is the viewport minus 32px each side at md+.

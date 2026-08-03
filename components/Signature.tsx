@@ -150,10 +150,29 @@ function hash(s: string) {
  * re-hashed from the live DOM node; if they ever differ the mask is dropped and
  * the plain fill is rendered instead.
  */
+/**
+ * #RRGGBB (or #RGB) -> `rgba(r, g, b, a)`.
+ *
+ * Exists so the nib's GLOW can be derived from the same `color` prop as the
+ * stroke. A glow is the one place a stray colour hides: it is blurred, it is
+ * semi-transparent, and it only exists for the ~2s the draw is running.
+ */
+function rgba(hex: string, alpha: number): string {
+  const h = hex.replace("#", "");
+  const full = h.length === 3 ? h.split("").map((c) => c + c).join("") : h;
+  const n = parseInt(full, 16);
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`;
+}
+
 export default function Signature({
   text,
   fontUrl,
-  color = "#C9A84C",
+  // Default is NAVY, not the brand gold. The only caller passes a colour
+  // explicitly, so this changes nothing today — but a future caller that omits
+  // it will land on a light surface (the page is cream now), and gold there is
+  // 2.09:1. Defaulting to the value that is legal on the surface this component
+  // actually gets used on is the safer failure.
+  color = "#0D1B2A",
   className,
   onDone,
 }: SignatureProps) {
@@ -375,12 +394,27 @@ export default function Signature({
             {masked && (
               // The nib. Rides getPointAtLength as the mask advances and fades
               // out as the last stroke finishes — the one detail that sells it.
+              //
+              // 🔴 ITS FILL AND ITS GLOW ARE DERIVED FROM `color`. THEY USED TO
+              // BE HARD-CODED #F2DC96 (a pale gold) WITH A MATCHING
+              // rgba(242,220,150,.85) GLOW, AND THAT IS A BUG THAT ONLY SHOWS
+              // WHILE THE STROKE IS BEING DRAWN: the drawn part rendered in
+              // whatever `color` was, while the moving leading edge rendered
+              // bright gold. On the old navy splash the mismatch read as a warm
+              // spark and passed for intentional. On cream with a gold-deep
+              // signature it reads as a second, brighter gold — which is the
+              // one gold this codebase bans on light surfaces (#C9A84C is
+              // 2.09:1; #F2DC96 is worse still at 1.28:1).
+              //
+              // Deriving both from `color` means the tip cannot disagree with
+              // the stroke at any frame, for any value, ever again. Do not put
+              // a literal back here.
               <circle
                 ref={dotRef}
                 r={16}
-                fill="#F2DC96"
+                fill={color}
                 opacity={0}
-                style={{ filter: "drop-shadow(0 0 14px rgba(242,220,150,.85))" }}
+                style={{ filter: `drop-shadow(0 0 14px ${rgba(color, 0.85)})` }}
               />
             )}
           </>

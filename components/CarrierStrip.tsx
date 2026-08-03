@@ -52,7 +52,7 @@ export default function CarrierStrip() {
   }));
 
   return (
-    <section aria-label={t("ariaLabel")} className="bg-cream py-16 lg:py-20">
+    <section aria-label={t("ariaLabel")} className="py-16 lg:py-20">
       <FadeUp>
         <p className="px-6 text-center text-[13px] font-medium uppercase tracking-[0.16em] text-gold-deep lg:text-[14px]">
           {t("stripKicker")}

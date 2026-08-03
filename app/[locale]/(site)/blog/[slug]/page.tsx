@@ -5,6 +5,7 @@ import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import { Link } from "@/navigation";
 import FadeUp from "@/components/FadeUp";
 import ArticleEssay from "@/components/ArticleEssay";
+import RevealText from "@/components/RevealText";
 import { getArticle, getBuiltSlugs, splitSections } from "@/lib/blog";
 
 /**
@@ -262,7 +263,11 @@ export default async function ArticlePage({
       {/* `max-w-[20ch]` REMOVED long ago — it measured 707.2px at 1536 against
           a 552px body. The copy COLUMN is the only measure now, and at 832.1px
           it is wider than that cap ever was, so no cap can apply. */}
-      <h1 className="sem-h2 mt-6 font-display text-ink">{article.title}</h1>
+      <RevealText
+        as="h1"
+        text={article.title}
+        className="sem-h2 mt-6 font-display text-ink"
+      />
 
       <p className="blog-card-meta mt-6">
         <span className="blog-tag">{article.category}</span>

@@ -1,0 +1,186 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 340" width="1120" height="340" role="img" aria-label="Synergy Insurance Group">
+  <defs>
+    <!-- Gold gradients -->
+    <linearGradient id="goldEdge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBE38B"/>
+      <stop offset="18%" stop-color="#F6CE5C"/>
+      <stop offset="50%" stop-color="#D9A521"/>
+      <stop offset="82%" stop-color="#B8860B"/>
+      <stop offset="100%" stop-color="#8C6410"/>
+    </linearGradient>
+
+    <linearGradient id="goldText" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCE79A"/>
+      <stop offset="30%" stop-color="#F3CB58"/>
+      <stop offset="60%" stop-color="#D6A521"/>
+      <stop offset="100%" stop-color="#A9790F"/>
+    </linearGradient>
+
+    <linearGradient id="goldFigure" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBE08A"/>
+      <stop offset="55%" stop-color="#E0B233"/>
+      <stop offset="100%" stop-color="#B98713"/>
+    </linearGradient>
+
+    <!-- Blue gradients -->
+    <linearGradient id="blueBorder" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5FA8FF"/>
+      <stop offset="50%" stop-color="#1E5FD8"/>
+      <stop offset="100%" stop-color="#0B3AA0"/>
+    </linearGradient>
+
+    <radialGradient id="heartFill" cx="42%" cy="34%" r="75%">
+      <stop offset="0%" stop-color="#4E8FF5"/>
+      <stop offset="55%" stop-color="#1E5AD6"/>
+      <stop offset="100%" stop-color="#0A2E86"/>
+    </radialGradient>
+
+    <linearGradient id="shieldFace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0A0D14"/>
+      <stop offset="100%" stop-color="#05070C"/>
+    </linearGradient>
+
+    <radialGradient id="sparkle" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="35%" stop-color="#cfe3ff" stop-opacity=".7"/>
+      <stop offset="100%" stop-color="#cfe3ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Shield outline path (reused for clip + strokes) -->
+    <path id="shieldPath" d="M170 40
+      L300 40
+      Q300 40 300 40
+      L300 190
+      Q300 250 235 292
+      Q170 250 170 190
+      Z"/>
+  </defs>
+
+  <!-- ===================== EMBLEM ===================== -->
+  <g transform="translate(0,0)">
+
+    <!-- Outer gold shield -->
+    <path d="M110 78
+      C110 66 118 58 130 58
+      L340 58
+      C352 58 360 66 360 78
+      L360 200
+      C360 268 300 312 235 344
+      C170 312 110 268 110 200
+      Z"
+      fill="url(#goldEdge)"/>
+
+    <!-- Blue inner border -->
+    <path d="M126 86
+      C126 78 132 72 140 72
+      L330 72
+      C338 72 344 78 344 86
+      L344 198
+      C344 256 292 296 235 324
+      C178 296 126 256 126 198
+      Z"
+      fill="none" stroke="url(#blueBorder)" stroke-width="10" stroke-linejoin="round"/>
+
+    <!-- Dark shield face -->
+    <clipPath id="faceClip">
+      <path d="M131 88
+        C131 82 136 77 142 77
+        L328 77
+        C334 77 339 82 339 88
+        L339 197
+        C339 253 289 291 235 318
+        C181 291 131 253 131 197
+        Z"/>
+    </clipPath>
+    <path d="M131 88
+      C131 82 136 77 142 77
+      L328 77
+      C334 77 339 82 339 88
+      L339 197
+      C339 253 289 291 235 318
+      C181 291 131 253 131 197
+      Z"
+      fill="url(#shieldFace)"/>
+
+    <!-- Family silhouettes (inside face) -->
+    <g clip-path="url(#faceClip)" fill="url(#goldFigure)">
+      <!-- Father (left) -->
+      <circle cx="196" cy="118" r="16"/>
+      <path d="M196 138
+        C180 138 171 149 171 168
+        L171 300
+        L185 300
+        L185 220
+        L190 220
+        L190 300
+        L202 300
+        L202 220
+        L207 220
+        L207 300
+        L221 300
+        L221 168
+        C221 149 212 138 196 138 Z"/>
+
+      <!-- Mother (right, dress) -->
+      <circle cx="300" cy="118" r="16"/>
+      <path d="M300 138
+        C286 138 278 147 275 162
+        L263 262
+        C262 268 266 272 272 272
+        L289 272
+        L289 300
+        L311 300
+        L311 272
+        L328 272
+        C334 272 338 268 337 262
+        L325 162
+        C322 147 314 138 300 138 Z"/>
+
+      <!-- Child (front-left) -->
+      <circle cx="207" cy="200" r="12"/>
+      <path d="M207 215
+        C195 215 188 223 188 237
+        L188 300
+        L198 300
+        L198 256
+        L202 256
+        L202 300
+        L212 300
+        L212 256
+        L216 256
+        L216 300
+        L226 300
+        L226 237
+        C226 223 219 215 207 215 Z"/>
+    </g>
+
+    <!-- Heart with heartbeat (center-front) -->
+    <g clip-path="url(#faceClip)">
+      <path d="M279 182
+        C279 171 270 163 260 163
+        C253 163 248 166 245 172
+        C242 166 237 163 230 163
+        C220 163 211 171 211 182
+        C211 203 245 224 245 224
+        C245 224 279 203 279 182 Z"
+        fill="url(#heartFill)" stroke="#7FB2FF" stroke-width="1.4"/>
+      <!-- ECG line -->
+      <path d="M218 189 L232 189 L237 175 L245 205 L251 184 L255 189 L271 189"
+        fill="none" stroke="#EAF2FF" stroke-width="2.6"
+        stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Top sparkle -->
+    <circle cx="345" cy="82" r="26" fill="url(#sparkle)"/>
+    <path d="M345 64 L347 80 L345 100 L343 80 Z" fill="#ffffff" opacity=".9"/>
+    <path d="M327 82 L343 80 L363 82 L343 84 Z" fill="#ffffff" opacity=".9"/>
+  </g>
+
+  <!-- ===================== WORDMARK ===================== -->
+  <g fill="url(#goldText)">
+    <text x="430" y="180" font-family="Georgia, 'Times New Roman', serif"
+      font-size="118" font-weight="700" letter-spacing="4">SYNERGY</text>
+    <text x="434" y="238" font-family="Georgia, 'Times New Roman', serif"
+      font-size="47" font-weight="500" letter-spacing="13">INSURANCE GROUP</text>
+  </g>
+</svg>

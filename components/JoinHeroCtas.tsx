@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback } from "react";
+import Link from "next/link";
 
 /**
  * The /join hero's two CTAs.
@@ -54,38 +55,66 @@ import { useCallback } from "react";
  * `.page-header-offset` uses. If the bar's heights change, both move together.
  *
  * =========================================================================
- * 2. AGENT PORTAL — rendered, visible, and genuinely DISABLED.
+ * 2. AGENT PORTAL — ✅ LIVE FROM 2026-08-02. It was a disabled <button>.
  *
- * The portal does not exist. It ships visible so the decision is not quietly
- * forgotten, and disabled so it is not a link to nothing — exactly the
- * ContactForm precedent, which renders a complete form inside a
- * `<fieldset disabled>` because there is no endpoint yet. This is that pattern,
- * not a new one.
+ * 🔴 THE STALE CLAIM THAT KEPT IT DISABLED, RECORDED SO IT IS NOT REINSTATED.
+ * The old note here said the button was waiting on "a portal URL from the
+ * client". No such URL was ever coming, and nothing was blocked on the client:
+ * `/[locale]/login` already existed, was built, and worked. Auth had shipped —
+ * middleware.ts runs a fail-closed Supabase gate on /admin and
+ * (portal)/admin/layout.tsx re-reads the role from the database on every
+ * request. The button was inert because of a note that had stopped being true.
  *
- * It is a `<button disabled>` — NOT an `<a>` without an href and NOT a div:
- *   - `disabled` on a real button removes it from the tab order for free, so
- *     it cannot be focused, which is what "not a dead link" has to mean for a
- *     keyboard user.
- *   - `aria-disabled` is set as well. Belt and braces on purpose: `disabled`
- *     is what actually enforces it, `aria-disabled` is what some screen readers
- *     announce more reliably on a control that is styled as an affordance.
- *   - `aria-describedby` points at the visible "not yet available" note, so the
- *     reason is announced rather than being a purely visual grey-out. Colour
- *     alone would not satisfy 1.4.1.
+ * The client's decision, in their words: the portal works with auth and guards,
+ * agents need a way in, and a discoverable login is correct now. This CTA and
+ * `AGENT_LOGIN_LINK_READY` in components/SiteHeader.tsx were flagged as ONE
+ * question in two places and were flipped together. Flip them together or not
+ * at all.
  *
- * WHAT IT IS WAITING ON is recorded in HANDOFF: a portal URL from the client.
- * The day it arrives this becomes a `<Link>` and the note comes out.
+ * 🟡 WHAT IS STILL MISSING IS A DESTINATION, NOT A URL — an accepted
+ * intermediate state, not an oversight. `(portal)/` holds exactly `admin` and
+ * `login`; there is no agent route. login/actions.ts ends
+ * `redirect(role === "admin" ? /${locale}/admin : /${locale})`, so an AGENT who
+ * signs in correctly is returned to the PUBLIC HOMEPAGE, with no signed-in state
+ * rendered anywhere on the public site and `signOut` living only inside
+ * AdminShell. The door is findable; the room behind it is empty for a non-admin.
+ * Do NOT "fix" that by disabling this again.
+ *
+ * WHAT WENT WITH THE FLIP:
+ *   - `<button disabled>` -> `<Link href={`/${locale}/login`}>`. It is a real
+ *     anchor because it is navigation: it must work without JS and be
+ *     right-clickable, which a button calling router.push is not.
+ *   - `portalNote` ("The agent portal is not open yet.") is NO LONGER RENDERED.
+ *     It asserted something false the moment the link went live. The string is
+ *     RETAINED UNTOUCHED in both message files per the standing convention that
+ *     nothing is deleted, only unrendered — and the prop is still accepted so
+ *     restoring the disabled state is a revert, not a re-authoring.
+ *   - `aria-describedby` went with the note. There is nothing to describe now.
+ *   - `.join-cta--disabled` is unused by this component. The rule stays in
+ *     globals.css with its derivation — it is the only solved disabled-control
+ *     treatment on a dark photographic surface this codebase has.
+ *
+ * TREATMENT IS UNCHANGED: the ghost outline beside the filled primary. That is
+ * exactly what it should look like now — the measurement recorded on
+ * `.join-cta--disabled` showed the old "disabled" styling already read as a live
+ * ghost CTA (label 5.48:1, border 3.17:1, both clearing the LIVE bars). It is
+ * now a live ghost CTA, so those numbers are correct rather than misleading.
  */
 export default function JoinHeroCtas({
   applyLabel,
   portalLabel,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   portalNote,
   targetId,
+  locale,
 }: {
   applyLabel: string;
   portalLabel: string;
+  /** RETAINED, DELIBERATELY UNRENDERED. See the docblock — restoring the
+   *  disabled state is a revert, not a re-authoring. */
   portalNote: string;
   targetId: string;
+  locale: string;
 }) {
   const scrollToApply = useCallback(() => {
     const target = document.getElementById(targetId);
@@ -118,19 +147,12 @@ export default function JoinHeroCtas({
         {applyLabel}
       </button>
 
-      <button
-        type="button"
-        disabled
-        aria-disabled="true"
-        aria-describedby="join-portal-note"
-        className="join-cta join-cta--disabled"
-      >
+      {/* A real <Link>: navigation, so it must work without JS, be
+          right-clickable and openable in a new tab. Same reasoning as
+          LocaleSwitcher's anchors. */}
+      <Link href={`/${locale}/login`} className="join-cta join-cta--ghost">
         {portalLabel}
-      </button>
-
-      <p id="join-portal-note" className="join-portal-note">
-        {portalNote}
-      </p>
+      </Link>
     </div>
   );
 }

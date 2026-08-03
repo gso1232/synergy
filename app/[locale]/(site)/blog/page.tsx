@@ -3,6 +3,7 @@ import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import Image from "next/image";
 import FadeUp from "@/components/FadeUp";
 import BlogCard from "@/components/BlogCard";
+import RevealText from "@/components/RevealText";
 import { getAllArticles } from "@/lib/blog";
 
 /**
@@ -132,9 +133,12 @@ export default async function BlogIndexPage({
 
         <div className="sem-shell relative z-10 flex h-full flex-col justify-end pb-[32.8px]">
           <div className="sem-inner w-full">
-            <h1 id="blog-heading" className="sem-display max-w-[14ch] font-display text-cream">
-              {t("heading")}
-            </h1>
+            <RevealText
+              as="h1"
+              id="blog-heading"
+              text={t("heading")}
+              className="sem-display max-w-[14ch] font-display text-cream"
+            />
             <p className="sem-hero-sub mt-6 max-w-[32em] text-cream md:mt-8">
               {t("intro")}
             </p>

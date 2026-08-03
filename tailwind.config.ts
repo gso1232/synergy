@@ -44,12 +44,19 @@ const config: Config = {
         "amber-deep": "#8A5312",
       },
       fontFamily: {
-        // Kufam for display, Overpass for body and the data numerals.
+        // Kufam for display, IBM Plex Sans for body and the data numerals.
+        // `data` deliberately aliases `--font-body`: the figures and the copy
+        // are one face, and Plex's figures are tabular natively — see the note
+        // in app/[locale]/layout.tsx for why that decided the swap.
         display: ["var(--font-display)"],
         body: ["var(--font-body)"],
         data: ["var(--font-body)"],
         // Inter — VEX-spec hero only.
         hero: ["var(--font-hero)"],
+        // IBM Plex Mono — ADMIN ONLY. The variable is mounted on the (portal)
+        // layout, not the root, so `font-mono` resolves to the fallback stack
+        // anywhere else. Labels, sub-labels, units and figures in the admin.
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       screens: {
         card: "900px",

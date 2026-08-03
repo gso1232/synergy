@@ -1,233 +1,245 @@
 "use client";
 
-import { useRef } from "react";
-import Image from "next/image";
-import { useReducedMotion } from "framer-motion";
+import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { useParallax } from "./useParallax";
+import { useReducedMotion } from "framer-motion";
 
 /**
- * Testimonials — rebuilt on reyou.life's "What Patients Share", measured live at
- * a 1536 viewport, over the same scrubbed parallax background as Coverage.
+ * TESTIMONIALS — arrangement matched from beetogreen.com/en, studied live
+ * (Chrome, 2026-08-02). Their layout, our tokens.
  *
- *   container  100% - 64px, no cap — same as Why Synergy and Where to Start
- *   grid       12 cols, 32px gutter
- *   rhythm     heading row -> 64px -> cards        (theirs exactly)
+ * MEASURED FROM THE REFERENCE AND REPRODUCED:
+ *   quote      37.33px / 44.8 lh (1.2) / -0.02em / weight 500
+ *   lead-in    24.89px / weight 600, sitting to the RIGHT of the counter
+ *   counter    16px, "01 / 05" — ours reads 01 / 03, see §COUNT
+ *   arrows     44.4px circles, radius 50%, 1px border, ~8.9px apart, TOP-LEFT
+ *              in their own column, labelled "Previous/Next testimonial"
+ *   ring       viewBox 0 0 50 50, circle r=24, stroke-dasharray 150.8 (=2*pi*r),
+ *              stroke-width 2, animation 8s linear forwards
+ *   rhythm     44px between header -> quote -> author
+ * Their surface is white with near-black type; ours is cream with ink, and any
+ * gold is gold-deep. The arrangement is taken, the palette is not.
  *
- *   THEIR HEADER is three items on one row: eyebrow (cols 1-2), heading
- *   (cols 3-7) and a note (cols 10-12, "*individual experiences vary").
- *   Ours runs the heading alone. Their third slot — the results note — is NOT
- *   reproduced at all: these quotes describe how Synergy works, not what anyone
- *   earned or received, so there is no result to qualify. See the flag note
- *   below. The eyebrow slot is empty for a different reason: fflsynergy
- *   publishes exactly one testimonial-related string, the section title, so
- *   there is nothing to source one from. The row closes up rather than being
- *   padded with invented copy.
+ * ---------------------------------------------------------------------------
+ * §COUNT — THREE, not five. The counter is driven off QUOTES.length, so it can
+ * never drift from the data the way a hardcoded total would.
  *
- *   THEIR CARD, kept exactly:
- *     slide      438x296, padding 0 8px  ->  16px between cards
- *     card       422x296, radius 4, padding 32, flex-column, GAP 64
- *     surface    rgba(37,37,37,0.5) + backdrop-filter: blur(12px)
- *     order      ATTRIBUTION FIRST (Overpass 20/29), 64px, then the QUOTE
- *                (Kufam 26/33.8, ls -0.0162em). No quote-mark pseudo-element —
- *                the curly quotes are characters in the copy.
+ * §NO PHOTO, AND NO PLACEHOLDER FOR ONE. The reference pairs each name with a
+ * 71px circular portrait. We have no photographs of these three people, and a
+ * stock or invented face beside a NAMED attributed quote would be a
+ * fabrication. The photo, its circle and any initial-in-a-bubble stand-in are
+ * all absent — instead the closing row is rebalanced so both ends carry
+ * content: NAME bottom-left, the five-star rating bottom-right. Nothing sits in
+ * the space where an image would have been, so nothing reads as missing.
  *
- *   THE SLIDER IS DROPPED. They run 15 slides in a Swiper carousel with
- *   pagination; fflsynergy publishes three testimonials. A three-item carousel
- *   is a control that barely moves, so the cards render as a static row on the
- *   same 4-of-12 grid Where to Start uses. Card anatomy is untouched.
+ * 🔴 §NO ORG FIELD EXISTS. `testimonials.quotes.*` carries `name` and `quote`
+ * and nothing else — there is no organisation for any of the three. The
+ * reference shows "name + company"; we show the name alone rather than invent
+ * an employer. If the client supplies orgs it is one key per quote and one line
+ * here.
  *
- *   MOTION: the parallax is the only animation, which is true of their section
- *   too — no card entry tween, and no hover (dispatching pointerover /
- *   pointerenter / mouseover / mouseenter / mousemove on their slide and card
- *   changed no computed property).
+ * §THE LEAD-IN IS OUR OWN HEADING. The reference's bold phrase is its copy
+ * ("Don't just take our word for it…"). Ours is `testimonials.headline` —
+ * "What Our Clients Say" — placed in that exact slot, so the arrangement
+ * matches with ZERO new copy and the section still carries a real h2.
  *
- * COPY IS QUOTED, NOT WRITTEN. All three testimonials are reproduced verbatim
- * from fflsynergy.com's "What Our Clients Say", and the Spanish is the client's
- * own published translation, not ours. Two fragments overlap
- * checkmatefinancialgroup.com ("They made it simple," in Mark's quote; "every
- * option" in Brian & Jessica's) and are shipped unchanged: the rewrite rule
- * covers copy we author, never a quotation attributed to a named person.
- * Rewording someone's testimonial to dodge a phrase collision is the exact
- * falsification the rule exists to prevent.
+ * §QUOTES ARE VERBATIM. Standing Rule 3: attributed quotes are never reworded.
+ * The curly quote marks around them are decorative and `aria-hidden`, so the
+ * accessible name of the blockquote is the client's sentence and nothing else.
+ *
+ * §STARS. Client-instructed, and uniform: there is no per-testimonial rating in
+ * the data, so all three show five. They are gold-deep (5.16:1 on cream), well
+ * clear of the 3:1 bar rather than claimed as decorative, and the group carries
+ * a text alternative so the rating is not conveyed by shape alone.
+ *
+ * §TIMER. 8s per slide, matching the reference.
+ *
+ * 🔴 IT DOES NOT PAUSE ON HOVER. Removed on instruction 2026-08-02: the carousel
+ * keeps advancing under the pointer, and moving the pointer on or off the
+ * section neither pauses nor resets the 8s. There is no `mouseenter` /
+ * `mouseleave` handler on this component any more — do not reintroduce one
+ * "for polish", it is a decision.
+ *
+ * 🟡 IT STILL PAUSES ON FOCUS-IN, AND THAT IS A DIFFERENT THING. A keyboard
+ * user who has tabbed to an arrow is reading with no pointer to move; advancing
+ * them mid-sentence is the failure the pause exists to prevent, and WCAG 2.2.2
+ * requires a pause mechanism for auto-updating content. Hover was never what
+ * satisfied that — focus is. So the `hovered` flag is gone and `focused` is the
+ * whole pause. The `t-paused` class and the ring's `animation-play-state` follow
+ * `focused` alone, so the dial still never disagrees with the timer.
+ *
+ * `onBlurCapture` still ignores focus moving BETWEEN the two arrows, for the
+ * reason recorded below — that bug was independent of hover.
+ *
+ * Under reduced motion the timer never starts and the ring renders complete and
+ * static; the arrows still work.
  */
-/**
- * ONE-LINE REVERT — flip to `true` when the eyebrow copy is approved.
- *
- * 🔴 THE RESULTS-DISCLAIMER IS GONE — SLOT, STRING AND ALL (2026-07-30).
- * // was: TESTIMONIAL_EYEBROW_READY, one flag gating BOTH the eyebrow and a
- * // disclaimer slot in cols 10-12.
- * It was held open on the assumption that these are CLIENT testimonials, which
- * on a US insurance site would need a results disclaimer supplied by the client.
- * They are not: they are staff statements about how Synergy works, they make no
- * claim about anyone's results, and there is therefore nothing to disclaim. The
- * markup, the grid columns and `testimonials.disclaimer` in BOTH message files
- * are deleted rather than hidden — keeping a slot for a document nobody needs
- * was the actual error. It is off the client list in HANDOFF too.
- *
- * WHAT SURVIVES, AND WHY THE FLAG IS RENAMED. The EYEBROW is a separate open
- * item — its string is still a literal "[PLACEHOLDER — awaiting approval]" and
- * it would read as a bug on a client preview, so it stays gated. The flag now
- * names only the thing it actually governs; the old name promised two asides
- * and one of them no longer exists.
- *
- * To restore the eyebrow: set this to `true` and replace
- * `testimonials.eyebrow` in messages/en.json (and mirror in es.json). Nothing
- * else needs touching — the heading moves back to column 3 on its own.
- */
-const TESTIMONIAL_EYEBROW_READY = false;
-
 const QUOTES = ["q1", "q2", "q3"] as const;
+const MAX_STARS = 5;
+const HOLD_MS = 8000;
+
+/** Still gated: `testimonials.eyebrow` is a literal placeholder string. */
+const TESTIMONIAL_EYEBROW_READY = false;
 
 export default function Testimonials() {
   const t = useTranslations("testimonials");
   const reduce = useReducedMotion();
-  const sectionRef = useRef<HTMLElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
+  const [active, setActive] = useState(0);
+  /* 🔴 FOCUS IS THE WHOLE PAUSE. HOVER IS NOT TRACKED AT ALL.
+     There used to be a `hovered` flag OR'd with this one, and a long note about
+     why the two had to be separate — with a single boolean, moving the POINTER
+     off the section fired onMouseLeave and restarted the timer under a keyboard
+     user mid-read. That note is now moot rather than solved: hover no longer
+     pauses anything, so there is no second flag to cancel this one out. The
+     historical bug is recorded in HANDOFF; do not re-add a hover flag to "fix"
+     it. */
+  const [focused, setFocused] = useState(false);
+  const paused = focused;
 
-  // Same hook, same scrub — but ±10 rather than Coverage's ±16, and paired with
-  // a 130% wrapper instead of 160%. This is a deliberate, measured reduction.
-  //
-  // The window this section shows is the section height inside a wrapper that
-  // is taller than it, and the window SLIDES as you scroll. The band of the
-  // photograph visible at EVERY scroll position — the only band where a face is
-  // guaranteed never to be bisected by the section edge — is the intersection
-  // of the extremes:
-  //
-  //   wrapper 160% / travel 16%  ->  safe band 34.8%-65.3%   (30.5% of height)
-  //   wrapper 140% / travel 12%  ->  safe band 26.3%-73.7%   (47.4%)
-  //   wrapper 130% / travel 10%  ->  safe band 21.5%-78.5%   (56.9%)  <- shipped
-  //   wrapper 120% / travel  7%  ->  safe band 15.3%-84.7%   (69.3%)
-  //
-  // At 160/16 that band is so narrow that essentially all family photography
-  // fails it — people sit in the upper third of a sofa shot, and the previous
-  // two backgrounds were decapitated at one end of the travel or the other.
-  // 130/10 opens the band to 56.9% and puts this photograph's faces (26%-48%)
-  // inside it with ~4.5 points of margin at the top. Background still travels
-  // 26% of the section height, so it reads clearly as parallax.
-  useParallax(sectionRef, bgRef, { from: -10, to: 10, reduce });
+  const go = useCallback(
+    (dir: 1 | -1) => setActive((a) => (a + dir + QUOTES.length) % QUOTES.length),
+    [],
+  );
+
+  /* The auto-advance. Suppressed entirely under reduced motion and while
+     paused; re-armed on every slide change so the 8s always starts fresh. */
+  useEffect(() => {
+    if (reduce || paused) return;
+    const id = window.setTimeout(() => go(1), HOLD_MS);
+    return () => window.clearTimeout(id);
+  }, [active, paused, reduce, go]);
+
+  const q = QUOTES[active];
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  /* THE RATING IS DATA, READ PER TESTIMONIAL — not a hardcoded five.
+     An earlier build rendered five stars unconditionally, which would have
+     asserted a five-star rating for any future testimonial regardless of what
+     it actually scored. `quotes.*.rating` now carries the real value (all three
+     are 5, confirmed by the client and verified by Hamza) and the row follows
+     it. A missing, non-numeric or out-of-range value renders NO stars at all
+     rather than defaulting to five — an absent rating is silent, never invented.
+     Mirrored EMPTY in es.json on purpose: a rating is a number, not copy, so it
+     must not be translated; i18n.ts's fallback returns the English value. */
+  const ratingKey = `quotes.${q}.rating`;
+  const ratingNum = t.has(ratingKey) ? Number(t(ratingKey)) : NaN;
+  const showStars =
+    Number.isInteger(ratingNum) && ratingNum >= 1 && ratingNum <= MAX_STARS;
+
+  const arrow =
+    "grid h-11 w-11 shrink-0 place-items-center rounded-full border border-navy text-navy transition-colors hover:bg-navy hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep";
 
   return (
     <section
-      ref={sectionRef}
       aria-labelledby="testimonials-heading"
-      className="relative overflow-hidden bg-navy"
+      className={`py-[clamp(56px,7vw,104px)] ${paused ? "t-paused" : ""}`}
+      /* No onMouseEnter / onMouseLeave — see §TIMER. The timer keeps running
+         under the pointer and the pointer never resets it. */
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={(e) => {
+        // Only release when focus actually leaves the SECTION — moving between
+        // the two arrows must not momentarily un-pause the timer.
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+          setFocused(false);
+        }
+      }}
     >
-      {/* Full-bleed parallax photograph. The travelling layer is 130% of the
-          section starting 15% high, so ±10% of travel still never exposes an
-          edge (top reaches -2% at worst, bottom +102%). Coverage keeps 160/16;
-          see the note on useParallax above for why this one is shallower. */}
-      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
-        <div
-          ref={bgRef}
-          className="absolute inset-x-0 top-[-15%] h-[130%] will-change-transform"
-        >
-          <Image
-            src="/synergy/testimonials-family-sofa.jpg"
-            alt=""
-            fill
-            sizes="100vw"
-            quality={70}
-            // object-center, and the vertical half of that is a no-op BY
-            // CONSTRUCTION: the wrapper is always taller in aspect than the 3:2
-            // photograph at every width (1280 -> 1280x763, 390 -> 390x1405), so
-            // cover fits by HEIGHT and crops width. Nothing vertical is left to
-            // position — the full frame height always maps to the wrapper. That
-            // is exactly why the safe-band arithmetic above governs whether a
-            // face survives, and object-position cannot rescue it.
-            // Horizontally 50% is a real choice: on phone only ~19% of the
-            // width shows, and centre lands on the father-and-son look, which
-            // is the emotional centre of the frame.
-            className="ts-photo object-cover object-center"
-          />
-        </div>
-        <div className="ts-veil absolute inset-0" />
-      </div>
+      <div className="mx-auto w-full max-w-content px-5 md:px-7">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,240px)_minmax(0,1fr)] lg:gap-16">
+          {/* ---------- Arrows: their own column, top-left ---------- */}
+          <div className="flex items-start gap-2.5">
+            <button type="button" onClick={() => go(-1)} aria-label={t("prevLabel")} className={arrow}>
+              <span aria-hidden="true" className="text-[15px] leading-none">&larr;</span>
+            </button>
 
-      <div className="relative z-10 px-5 py-14 md:px-8 lg:py-20">
-        <div className="mx-auto">
-          {/* HEADER ROW. reyou runs three parts on this line — eyebrow
-              cols 1-2, heading cols 3-7, disclaimer cols 10-12 hard right.
-              WE RUN TWO: the disclaimer slot is deleted (see the note at the
-              top of this file — these are staff statements, not client results
-              claims, so there is nothing to disclaim). items-center plus
-              cap-trim puts both cap bands on one centre line, the same
-              mechanism as Where to Start.
+            {/* NEXT + the countdown ring. The ring is a sibling overlay sized to
+                the button, exactly as the reference builds it. `key={active}`
+                restarts the stroke from empty on every slide. */}
+            <span className="relative inline-grid place-items-center">
+              <svg
+                aria-hidden="true"
+                viewBox="0 0 50 50"
+                className="pointer-events-none absolute h-11 w-11 -rotate-90"
+              >
+                <circle
+                  key={active}
+                  cx="25"
+                  cy="25"
+                  r="24"
+                  fill="none"
+                  stroke="#7D641F"
+                  strokeWidth="2"
+                  className="t-ring"
+                  style={{ ["--t-dur" as string]: `${HOLD_MS}ms` }}
+                />
+              </svg>
+              <button type="button" onClick={() => go(1)} aria-label={t("nextLabel")} className={arrow}>
+                <span aria-hidden="true" className="text-[15px] leading-none">&rarr;</span>
+              </button>
+            </span>
+          </div>
 
-              The eyebrow is currently hidden — see TESTIMONIAL_EYEBROW_READY. */}
-          <div className="md:grid md:grid-cols-12 md:items-center md:gap-x-8">
-            {TESTIMONIAL_EYEBROW_READY && (
-              <div className="flex md:col-span-2">
-                <p className="flex h-full items-center gap-2 text-[11px] font-semibold uppercase leading-none tracking-[0.16em] text-cream">
-                  <span
-                    aria-hidden="true"
-                    className="h-1.5 w-1.5 shrink-0 rounded-full bg-cream"
-                  />
-                  <span className="cap-trim cap-body">{t("eyebrow")}</span>
+          {/* ---------- Content ---------- */}
+          <div className="min-w-0">
+            {/* Header row: counter left, the bold lead-in right. */}
+            <div className="flex flex-wrap items-baseline gap-x-5 gap-y-2">
+              <p
+                aria-live="polite"
+                className="shrink-0 text-[16px] leading-[1.5] text-ink/70"
+              >
+                {pad(active + 1)} / {pad(QUOTES.length)}
+              </p>
+              {TESTIMONIAL_EYEBROW_READY ? (
+                <p className="text-[clamp(11px,0.75vw,11.5px)] font-semibold uppercase tracking-[0.16em] text-gold-deep">
+                  {t("eyebrow")}
                 </p>
-              </div>
-            )}
-
-            {/* With the asides hidden the heading takes the section's own left
-                edge instead of sitting indented against two empty columns. */}
-            <div
-              className={
-                TESTIMONIAL_EYEBROW_READY
-                  ? "mt-6 md:col-span-5 md:col-start-3 md:mt-0"
-                  : "mt-0 md:col-span-7 md:col-start-1"
-              }
-            >
+              ) : null}
               <h2
                 id="testimonials-heading"
-                className="cap-trim cap-display font-display font-medium text-[clamp(20px,2.35vw,34px)] leading-[1.2] tracking-[-0.0162em] text-cream"
+                className="font-display text-[clamp(18px,1.95vw,30px)] font-medium leading-[1.2] tracking-[-0.015em] text-ink"
               >
                 {t("headline")}
               </h2>
             </div>
 
-          </div>
+            {/* The quote. 44px below the header, as measured. */}
+            <blockquote className="mt-11 font-display text-[clamp(24px,2.92vw,44px)] font-medium leading-[1.2] tracking-[-0.02em] text-ink">
+              <span aria-hidden="true">&ldquo;</span>
+              {t(`quotes.${q}.quote`)}
+              <span aria-hidden="true">&rdquo;</span>
+            </blockquote>
 
-          {/* THE THREE QUOTES — a real <ul>: three peer testimonials with no
-              inherent order, so a list is the honest structure and <blockquote>
-              carries the quotation semantics. */}
-          <ul className="xl:grid xl:grid-cols-12 xl:gap-x-8">
-            {QUOTES.map((q, i) => (
-              <li
-                key={q}
-                className={[
-                  // Cards pulled in so the photograph reads AROUND them rather
-                  // than through them. The 12-col relationship is untouched —
-                  // each still occupies its 4-col track at xl — but px-4 insets
-                  // the card inside that track, so the visible gutter between
-                  // cards goes 32 -> 64 and the outer edges gain 16 each. At md
-                  // the centred stack drops from 8 of 12 columns to 6, which is
-                  // where most of the extra photograph comes from on tablet.
-                  "mt-10 px-4 md:mx-auto md:mt-16 md:w-[calc((100%_-_352px)_/_2_+_160px)] md:px-0 xl:mx-0 xl:mt-16 xl:w-auto xl:px-4",
-                  i === 0
-                    ? "xl:col-span-4 xl:col-start-1"
-                    : i === 1
-                      ? "xl:col-span-4 xl:col-start-5"
-                      : "xl:col-span-4 xl:col-start-9",
-                ].join(" ")}
-              >
-                {/* padding 24, not reyou's 32 — the cards are smaller now, and
-                    32 inside a narrower card left the quote squeezed. The 64px
-                    gap between attribution and quote is theirs, unchanged. */}
-                <figure className="ts-card flex h-full flex-col gap-16 rounded-[4px] p-6">
-                  {/* Attribution first, then the quote — their order, which
-                      reads as a person speaking rather than a pull-quote with a
-                      credit tacked on. figcaption is the accessible home for
-                      the attribution regardless of visual position. */}
-                  <figcaption className="text-[clamp(16px,1.3vw,20px)] leading-[1.45] text-cream">
-                    {t(`quotes.${q}.name`)}
-                  </figcaption>
-                  <blockquote className="font-display font-normal text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
-                    {t(`quotes.${q}.quote`)}
-                  </blockquote>
-                </figure>
-              </li>
-            ))}
-          </ul>
+            {/* Closing row, 44px below: name left, stars right. This is the row
+                that replaces the reference's portrait — see §NO PHOTO. */}
+            <div className="mt-11 flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
+              <p className="font-display text-[18px] leading-tight text-ink">
+                {t(`quotes.${q}.name`)}
+              </p>
+
+              {showStars ? (
+                <p
+                  role="img"
+                  aria-label={t("rating", { n: ratingNum })}
+                  className="flex shrink-0 items-center gap-1 text-[18px] leading-none"
+                >
+                  {Array.from({ length: MAX_STARS }, (_, i) => (
+                    <span
+                      key={i}
+                      aria-hidden="true"
+                      /* Earned stars gold-deep (5.16:1 on cream). Unearned ones
+                         are a HOLLOW glyph at ink/50 (3.27:1) — they carry
+                         meaning when a rating is below five, so they clear 3:1
+                         rather than being claimed as decorative, and the shape
+                         differs too so it is never colour alone. */
+                      className={i < ratingNum ? "text-gold-deep" : "text-ink/50"}
+                    >
+                      {i < ratingNum ? "★" : "☆"}
+                    </span>
+                  ))}
+                </p>
+              ) : null}
+            </div>
+          </div>
         </div>
       </div>
     </section>

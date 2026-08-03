@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
 import ContactForm from "@/components/ContactForm";
+import RevealText from "@/components/RevealText";
 
 /**
  * /[locale]/contact
@@ -28,7 +29,7 @@ import ContactForm from "@/components/ContactForm";
  *               `position:absolute; opacity:0`, laid OVER the image, awaiting
  *               a GSAP reveal that never fires under automation
  *               img 752 x 709.6 flush at 0,0 (margin -160 / -32), see below
- *               phone mt 64: 24px icon + 12px gap + 20/29 w400 Overpass
+ *               phone mt 64: 24px icon + 12px gap + 20/29 w400 IBM Plex Sans
  *               paragraph mt 32, 15/21.75 ls 0.243, full 720 column
  *        RIGHT  heading 34/40.8 w400 ls -0.5508 Kufam, mb 32   🔴 see §1 RIGHT
  *               paragraph 15/21.75, mb 64
@@ -41,13 +42,13 @@ import ContactForm from "@/components/ContactForm";
  *           The earlier inventory recorded the four x-positions but read them
  *           as four equal columns. The wide one is the address. Ours now
  *           carries their proportion — see `.contact-details` in globals.
- *        labels h3 11/16.5 uppercase Overpass, values 15/21.75; label-to-value
+ *        labels h3 11/16.5 uppercase IBM Plex Sans, values 15/21.75; label-to-value
  *        baseline delta 39px (2.6em of their body), value-to-value ~42.5px
  *        their four are Email / Phone / Locations / Socials; ours are
  *        Phone / Email / Office / Hours, the address in the wide slot as theirs
  *
  * THEIR EYEBROW, MEASURED BUT NOT ADOPTED: a 6x6 dot marker, an 8px gap, then
- * an 11/16.5 uppercase Overpass h2, sitting in grid columns 1-2 with the
+ * an 11/16.5 uppercase IBM Plex Sans h2, sitting in grid columns 1-2 with the
  * heading pushed to column 3. It is a genuine part of their §2 and §3. Our
  * system has no eyebrow-marker pattern anywhere — `.sem-eyebrow` is a size
  * step, not a marker — so introducing one here would make /contact the only
@@ -310,9 +311,11 @@ export default async function ContactPage({
                   rail and its derivation are in globals.css. */}
               <div className="contact-hero-right">
                 <FadeUp index={1}>
-                  <h2 className="sem-h3 font-display text-ink">
-                    {t("agentHeading")}
-                  </h2>
+                  <RevealText
+                    as="h2"
+                    text={t("agentHeading")}
+                    className="sem-h3 font-display text-ink"
+                  />
                   <p className="sem-body contact-lead-body text-ink">
                     {t("agentBody")}
                   </p>
@@ -345,9 +348,12 @@ export default async function ContactPage({
                 their contact page at all; the h1 is the only thing above the h3
                 step. Ours opened this section at `sem-h2` (57.4), which made
                 the detail block compete with the page title. */}
-            <h2 id="contact-details" className="sem-h3 font-display text-ink">
-              {t("detailsHeading")}
-            </h2>
+            <RevealText
+              as="h2"
+              id="contact-details"
+              text={t("detailsHeading")}
+              className="sem-h3 font-display text-ink"
+            />
           </FadeUp>
           <dl className="contact-details">
             <div>

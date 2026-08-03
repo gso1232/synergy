@@ -6,6 +6,7 @@ import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
+import RevealText from "./RevealText";
 import CtaPair from "./CtaPair";
 import { useParallax } from "./useParallax";
 
@@ -29,19 +30,43 @@ export default function WhatWeCover() {
   // under reduced motion; the background then sits static.
   useParallax(sectionRef, bgRef, { reduce });
 
+  /**
+   * THE CARD ENTRANCE — OPTION 4, approved 2026-08-03, chosen from four
+   * candidates rendered on this section's own copy in a `_reveal-lab` demo
+   * route (since deleted).
+   *
+   * translateY 24 -> 0 AND scale 0.97 -> 1, 900ms,
+   * cubic-bezier(0.77, 0, 0.175, 1), 100ms per card.
+   *
+   * 🔴 NO OPACITY CHANNEL, AND THAT IS THE WHOLE CHANGE. The previous version
+   * faded `opacity: 0 -> 1` over 850ms. These cards carry white and gold-pale
+   * type on a translucent panel over a photograph, and a group fade drags the
+   * TEXT and its BACKING toward the page colour together — measured on the
+   * demo's equivalent pair, gold-deep on cream fell to 1.40:1 at alpha 0.25 and
+   * 2.05:1 at alpha 0.50, recovering to 5.16:1 only at full opacity. Transform
+   * only means the card is at full contrast on its first painted frame.
+   *
+   * ⚠️ `reduce` IS DELIBERATELY NOT CONSULTED HERE ANY MORE. Reduced motion is
+   * enforced by the `[data-reveal]` rule in globals.css, which is resolved
+   * before hydration; a JS branch resolves after first paint and was measured
+   * stranding cards at their hidden state. `reduce` is still read above for
+   * useParallax, which is a scrub and genuinely needs the JS value.
+   *
+   * The easing matches `useMaskReveal`'s so the box and the words inside it
+   * read as one gesture; 900ms is shorter than the 1200ms text reveal so the
+   * card settles before its own copy finishes arriving.
+   */
   const group: Variants = {
     hidden: {},
-    show: { transition: { staggerChildren: 0.09, delayChildren: 0.04 } },
+    show: { transition: { staggerChildren: 0.1 } },
   };
   const rise: Variants = {
-    hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 18 },
-    show: reduce
-      ? { opacity: 1, transition: { duration: 0.7 } }
-      : {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.85, ease: [0.22, 1, 0.36, 1] },
-        },
+    hidden: { y: 24, scale: 0.97 },
+    show: {
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.9, ease: [0.77, 0, 0.175, 1] },
+    },
   };
 
   return (
@@ -79,12 +104,16 @@ export default function WhatWeCover() {
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold">
             {t("eyebrow")}
           </p>
-          <h2
+          {/* The section heading reveals word-by-word under a mask. It keeps
+              its `id` because `aria-labelledby="cover-heading"` on the section
+              points at it — the split is visual only and leaves textContent
+              intact, so the accessible name is unchanged. */}
+          <RevealText
+            as="h2"
             id="cover-heading"
+            text={t("heading")}
             className="mt-2.5 font-display font-medium text-[clamp(25px,2.6vw,34px)] leading-[1.06] tracking-[-0.02em] text-white"
-          >
-            {t("heading")}
-          </h2>
+          />
           <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.55] text-white">
             {t("subhead")}
           </p>
@@ -102,9 +131,12 @@ export default function WhatWeCover() {
             locale={locale}
             variant="photo"
             quoteLabel={tCta("quote")}
-            callLabel={tCta("call")}
-            callAria={tCta("callAria")}
-            phoneHref={tNav("phoneHref")}
+            secondary={{
+              kind: "tel",
+              label: tCta("call"),
+              aria: tCta("callAria"),
+              href: tNav("phoneHref"),
+            }}
             className="mt-7 justify-center"
           />
         </FadeUp>
@@ -132,6 +164,9 @@ export default function WhatWeCover() {
               // two-thirds. Revisit when that article is written.
               href={routeHref(locale, "services")}
               variants={rise}
+              // `data-reveal` is the hook for the reduced-motion rule in
+              // globals.css. Removing it silently breaks reduced motion here.
+              data-reveal
               className="cover-card group flex min-h-[360px] flex-col rounded-[4px] p-10 backdrop-blur-[12px] transition-[transform,box-shadow,background-color] duration-300 ease-out-expo hover:-translate-y-1 motion-reduce:hover:translate-y-0"
             >
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white">

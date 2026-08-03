@@ -44,7 +44,7 @@ export default function CalculatorPage({
   unstable_setRequestLocale(locale);
 
   return (
-    <main className="page-header-offset bg-cream">
+    <main className="page-header-offset">
       <Calculator headingLevel={1} />
     </main>
   );

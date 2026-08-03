@@ -11,7 +11,7 @@ import {
   routeHref,
   type RouteKey,
 } from "@/routes";
-import Logo from "./Logo";
+import LogoLockup from "./LogoLockup";
 
 /**
  * The bar is a three-column grid with the logo dead centre, so the nav is
@@ -26,8 +26,86 @@ import Logo from "./Logo";
 // The split is over HEADER_ROUTES_TEXT, not HEADER_ROUTES: `join` lives in the
 // route list but is rendered by the PILL below, so it must not also appear as a
 // text link. Deriving the text list in routes.ts keeps the two in step.
-const LEFT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(0, 2);
-const RIGHT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(2);
+/**
+ * 🔴 THE AGENT LOGIN LINK IS BUILT AND SHIPPED OFF. FLIP THIS WHEN AN AGENT WHO
+ * SIGNS IN HAS SOMEWHERE TO ARRIVE.
+ *
+ * Same pattern as `LOCALE_SWITCHER_READY` in LocaleSwitcher.tsx, off for the
+ * same reason the lead form is disabled: AN AFFORDANCE MUST NOT ADVERTISE A
+ * CAPABILITY THE SITE DOES NOT HAVE.
+ *
+ * THE SECURITY OBJECTION IS GONE. It used to be that /login was unlinked because
+ * /admin was unprotected and a link would have signposted it. That is no longer
+ * true: middleware.ts runs a fail-closed Supabase gate on /admin, and
+ * (portal)/admin/layout.tsx re-verifies the user and reads the role from the
+ * database on every request. Two layers. Linking this is SAFE.
+ *
+ * ✅ **ON, ON INSTRUCTION (2026-08-02).** The client's call, in their words: the
+ * portal works with auth and guards, agents need a way in, and a discoverable
+ * login is correct now. This flag and the /join "Agent portal" CTA were flagged
+ * as ONE decision in two places and were flipped together — see JoinHeroCtas.
+ *
+ * 🟡 THE OBJECTION THAT WAS OVERRULED IS KEPT HERE, BECAUSE IT IS STILL TRUE AND
+ * IT NAMES THE NEXT PIECE OF WORK. Measured in the tree:
+ *
+ *   - (portal)/ contains exactly two routes: `admin` and `login`. There is no
+ *     agent route.
+ *   - login/actions.ts ends `redirect(role === "admin" ? /admin : /${locale})`.
+ *     An AGENT who signs in correctly is sent to the PUBLIC HOMEPAGE.
+ *   - Nothing on the public site renders a signed-in state, and `signOut` exists
+ *     only inside AdminShell. So that agent lands on a page identical to the one
+ *     they started on, with no confirmation they are signed in and no way to
+ *     sign out.
+ *   - There is no `signUp` anywhere; accounts are created by hand.
+ *
+ * So the door is now findable and the room behind it is still empty for a
+ * non-admin. That is a deliberate, accepted intermediate state — NOT an
+ * oversight to be "fixed" by hiding the link again. The fix is an agent
+ * destination plus a signed-in state on the public site.
+ *
+ * TO REVERT: set this `false`. It removes the bar link AND the mobile panel
+ * entry. The strings (`nav.login`) stay in both message files either way, per
+ * the standing convention that nothing is deleted, only unrendered.
+ */
+const AGENT_LOGIN_LINK_READY: boolean = true;
+
+/**
+ * 🔴 THE SPLIT IS DERIVED, NOT HARD-CODED, AND IT NOW LEANS LEFT ON TIES.
+ *
+ * It shipped as `slice(0, 2)` / `slice(2)` — the old 2 / 4. Then it was
+ * `Math.ceil(length / 2)`, an even 3 / 3: Home · About · Services left, Blog ·
+ * Contact · Calculator right.
+ *
+ * 🔴 BLOG MOVED TO THE LEFT ON INSTRUCTION (2026-08-02), NEXT TO SERVICES. That
+ * makes the split 4 / 2, and `Math.ceil((length + 1) / 2)` is the formula that
+ * produces it without reordering anything: it puts the LARGER half on the left,
+ * breaking ties left. Blog already sits directly after Services in
+ * HEADER_ROUTES_TEXT, so widening the left half to four simply carries it over
+ * with no change to reading order. Today, on six text keys:
+ *
+ *     LEFT   Home · About · Services · Blog
+ *     RIGHT  Contact · Calculator          (+ the Join pill, see below)
+ *
+ * This is consistent with the balance the bar was always built around, stated
+ * in this file's own earlier note: the heavier half belongs on the LEFT because
+ * the Join pill already weights the right. A seventh text route becomes 4 / 3
+ * (ceil(8/2) = 4), still heavier-left; an eighth becomes 5 / 3.
+ *
+ * 🟡 THE PILL IS NOT IN THIS COUNT and cannot be. It renders from
+ * `HEADER_PILL_ROUTE`, sits outside both `<ul>`s at the far right, and is a CTA
+ * rather than a nav destination. So the bar is 4 links / 2 links + 1 pill: the
+ * left carries more names, the right carries fewer names but the call to action,
+ * which is where a CTA belongs.
+ *
+ * 🔴 THE SPLIT IS DESKTOP-ONLY. Below 900px BOTH `<ul>`s are `hidden` and the
+ * bar is logo + hamburger; the mobile panel renders HEADER_ROUTES_TEXT as ONE
+ * stacked list in source order (Home · About · Services · Blog · Contact ·
+ * Calculator), so "left vs right" does not exist at 768 or 390 and Blog simply
+ * sits fourth in the stack. Nothing about this change is visible below 900.
+ */
+const SPLIT_AT = Math.ceil((HEADER_ROUTES_TEXT.length + 1) / 2);
+const LEFT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(0, SPLIT_AT);
+const RIGHT_LINKS: readonly RouteKey[] = HEADER_ROUTES_TEXT.slice(SPLIT_AT);
 
 /** /{locale}/about, either locale, with or without a trailing slash. */
 const isAboutRoute = (pathname: string | null) =>
@@ -242,14 +320,14 @@ const DIR_DELTA = 8;
  *               at rest, then rises 28px and settles to 40px.
  *   timing      200ms `ease` on both height and transform, matching theirs
  *               exactly. Threshold 60px, matching theirs exactly.
- *   layout      links SPLIT either side of the centred logo — Home/About left,
- *               Services/Contact right — with the navy Join pill at the far
- *               right end.
+ *   layout      links SPLIT either side of the centred logo — Home/About/
+ *               Services/Blog left, Contact/Calculator right — with the navy
+ *               Join pill at the far right end.
  *
  * Gold is never text on cream: #C9A84C on #F8F4EE is 2.09:1. Hover is
  * gold-deep #7D641F at 5.16:1.
  */
-export default function SiteHeader() {
+export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
   const t = useTranslations("nav");
   const pathname = usePathname();
   // Every href is built from the locale this bar is rendering in, so following
@@ -567,8 +645,33 @@ export default function SiteHeader() {
         className="grid h-full grid-cols-[1fr_auto_1fr] items-center"
         style={{ paddingInline: "var(--nav-inset)" }}
       >
+        {/* 🔴 THE THREE COLUMNS ARE PLACED EXPLICITLY, AND THAT IS A BUG FIX,
+            NOT TIDYING. Found by measuring the bar at 768 while confirming the
+            nav split (3/3 at the time, 4/2 now — the bug is independent of the
+            split, it is about a hidden grid item collapsing a column).
+
+            Both link lists are `hidden card:flex`, i.e. `display: none` below
+            900px. A `display: none` grid ITEM is not placed in the grid at all
+            — it does not occupy its cell, it is removed from auto-placement
+            entirely. So below 900 the remaining two children slid up a column:
+            the LOGO auto-placed into column 1 and the right-hand group into the
+            `auto` column, leaving column 3 empty. Measured at 768 before the
+            fix, on `grid-cols-[1fr_auto_1fr]` computing 305.763 / 32 / 305.763:
+
+              logo    135.1 -> 280.0   centre 207.5   (content centre is 376.4)
+              burger  360.4 -> 404.4   with 348px of empty bar to its right
+
+            A centred logo 168.9px left of centre and a hamburger stranded in
+            the middle of the bar. `justify-self-center` was doing its job — it
+            was centring the logo in the WRONG COLUMN.
+
+            `col-start-*` pins each child to its own track, so a hidden list
+            leaves an empty cell rather than collapsing the row. This is why the
+            phone bar looked fine on the DESKTOP-first reading of this file and
+            wrong on the device.
+        */}
         {/* LEFT — starts exactly on the headline's left edge */}
-        <ul className="hidden items-center gap-8 card:flex">
+        <ul className="col-start-1 hidden items-center gap-8 card:flex">
           {LEFT_LINKS.map((key) => (
             <li key={key}>
               <NavLink routeKey={key} className={linkClass} />
@@ -587,21 +690,58 @@ export default function SiteHeader() {
         <Link
           href={routeHref(locale, "home")}
           aria-label={t("company")}
-          className="flex items-center justify-self-center"
+          className="col-start-2 flex items-center justify-self-center"
         >
           {/* The wordmark follows the surface. `light` is the wordmark
               recoloured to ink, which is right on cream and unreadable on the
               dark bar; `dark` is the gold artwork exactly as supplied — the
               same variant the footer already uses on the same #0D1B2A. Nothing
-              is recoloured for this and no mark is invented. */}
-          <Logo
-            variant={surface === "dark" ? "dark" : "light"}
-            className="site-header__logo h-11 w-auto card:h-12"
-          />
+              is recoloured for this and no mark is invented.
+
+              🔴 SUPERSEDED — THE HEADER NOW RENDERS THE SUPPLIED LOCKUP.
+              `public/synergy-logo.svg`, 1120x340 (3.29:1), delivered 2026-08-02.
+              It has now replaced the inline <Logo> at EVERY live placement —
+              this bar, the mobile panel, the footer, the login navy panel and
+              the Engine hub — via <LogoLockup>, which is the one place the file
+              path, the alt policy and the sizing ladder live. The three notes
+              below are why that swap is a trade, not a pure upgrade.
+
+              1. IT HAS NO LIGHT VARIANT, AND CANNOT HAVE ONE. <Logo> recolours
+                 its wordmark to ink #1A1A1A on light surfaces, for the reason
+                 written above: gold type on cream is 2.09:1. This lockup bakes
+                 the gold gradient (#FCE79A -> #A9790F) into the file, so the
+                 same wordmark now ships on BOTH surfaces. That is legal —
+                 WCAG 1.4.3 exempts "text that is part of a logo or brand name"
+                 from contrast entirely — but it is a deliberate reversal of an
+                 accessibility decision this codebase made on purpose, not an
+                 oversight. Measured: the gradient's darkest stop #A9790F is
+                 3.6:1 on cream, its lightest #FCE79A is 1.1:1.
+
+              2. ITS SUBLINE IS BELOW READING SIZE HERE. "INSURANCE GROUP" is
+                 47px in a 340px canvas. At `card:h-12` x the bar's scale(1.3333)
+                 it renders 8.8px at rest and 6.6px scrolled. For 11px it would
+                 need an 80px-tall lockup, and the scrolled bar is 70px. It
+                 therefore functions as texture, not as type — acceptable only
+                 because `aria-label` carries the full company name and the
+                 subline says nothing the name does not.
+
+              3. ITS WORDMARK IS LIVE <text>, NOT OUTLINES. font-family is
+                 "Georgia, 'Times New Roman', serif" with no @font-face, so a
+                 client without Georgia (most Linux, many Android) substitutes.
+                 Measured: the lockup's content box is 4046px wide with Georgia
+                 and 3823px without — a 5.5% shift, and different letterforms.
+                 The fix is to outline the two <text> nodes to <path>; until
+                 then the mark is not pixel-stable across platforms.
+
+              WHY <img> AND NOT next/image: an SVG has no intrinsic raster to
+              optimise, so the image pipeline would only add a proxy hop. It is
+              `priority`-equivalent by being inline in the bar, and it must not
+              lazy-load — it is above the fold on every route. */}
+          <LogoLockup className="site-header__logo h-11 w-auto card:h-12" />
         </Link>
 
         {/* RIGHT — ends exactly on the headline's right edge */}
-        <div className="flex items-center justify-end gap-8">
+        <div className="col-start-3 flex items-center justify-end gap-8">
           <ul className="hidden items-center gap-8 card:flex">
             {RIGHT_LINKS.map((key) => (
               <li key={key}>
@@ -609,6 +749,71 @@ export default function SiteHeader() {
               </li>
             ))}
           </ul>
+
+          {/* AGENT LOGIN — the portal's front door, public from today.
+              ---------------------------------------------------------------
+              🔴 THIS REVERSES A DELIBERATE DECISION, AND THE REASON IT WAS MADE
+              NO LONGER HOLDS. /login was unlinked everywhere because the portal
+              was design-only: HANDOFF records "NO backend, no auth, no session"
+              and "NEITHER ROUTE IS PROTECTED... that is obscurity, not access
+              control". Linking it then would have signposted an open /admin.
+
+              That is now stale. Auth shipped: middleware.ts runs a FAIL-CLOSED
+              Supabase gate on /admin (no verified user -> redirect to /login,
+              and a thrown getUser also denies), and (portal)/admin/layout.tsx
+              re-checks the user and reads the role from the database on every
+              request. Two layers. So the thing the unlinking protected is now
+              protected by auth, and a login link is just a login link.
+
+              NOT `<NavLink>` AND NOT IN routes.ts. Both are for MARKETING
+              routes: routes.ts is the list of public pages the header, the
+              mobile panel and the footer all render, and adding `login` to it
+              would put "Login" in the footer sitemap and the mobile nav as a
+              seventh peer of Home/About/Services. This is a utility entry with
+              one home — the top-right of the bar — so it is written here and
+              PORTAL_PATHS in routes.ts stays absent from the nav lists.
+
+              "AGENT LOGIN", NOT "LOGIN". There is no public signup (HANDOFF:
+              "logins is on the client checklist, not automated"), so a bare
+              "Login" invites a member of the public to look for an account they
+              cannot create. The qualifier says who it is for before the click.
+
+              TREATMENT: quieter than the nav links and much quieter than the
+              Join pill — same 15px column but `font-medium` against their
+              `font-semibold`, no pill, no border. It reads as utility chrome
+              rather than a sixth destination competing with the CTA. */}
+          {AGENT_LOGIN_LINK_READY && (
+            <Link
+              href={`/${locale}/login`}
+              className={`${linkClass} hidden !font-medium card:inline-block`}
+            >
+              {t("login")}
+            </Link>
+          )}
+
+          {/* ADMIN ENTRY — RENDERS ONLY FOR A VERIFIED ADMIN.
+              ---------------------------------------------------------------
+              🔴 `isAdmin` IS THE SERVER'S VERDICT, not a client guess. It is
+              computed in (site)/layout.tsx from getUserAndRole() — a verified
+              user whose DB role is 'admin' — and passed in as a prop. For
+              everyone else it is false and this link is NEVER RENDERED, so an
+              agent or a logged-out visitor has no `/admin` link in their HTML at
+              all. This is convenience, not a gate: the boundary is the
+              middleware + the admin layout, both of which still deny a non-admin
+              who reaches /admin by any other means. Not in routes.ts, for the
+              same reason as the login link — it is a utility entry with one home
+              (this bar), not a public marketing route, so it must not leak into
+              the footer sitemap or the mobile nav list.
+              `!font-semibold` (against login's `!font-medium`) so an admin's own
+              tool reads a touch stronger than the generic portal door. */}
+          {isAdmin && (
+            <Link
+              href={`/${locale}/admin`}
+              className={`${linkClass} hidden !font-semibold card:inline-block`}
+            >
+              {t("admin")}
+            </Link>
+          )}
 
           {/* WAS the one destination on this bar that was not ours — an
               external target="_blank" link to join.fflsynergy.com. That
@@ -623,7 +828,8 @@ export default function SiteHeader() {
               `HEADER_ROUTES_TEXT` is that list minus this key, and it is what
               the left/right split maps — otherwise "Join" would render as a
               seventh text link a few pixels from this pill, and the split
-              around the centred logo would go 2/5 instead of 3/3. */}
+              around the centred logo would be thrown off (it would go 5/2
+              instead of the intended 4/2). */}
           <Link
             href={routeHref(locale, HEADER_PILL_ROUTE)}
             // The pill is a nav item now, so it marks the current page like
@@ -695,7 +901,9 @@ export default function SiteHeader() {
               paddingInline: "var(--nav-inset)",
             }}
           >
-            <Logo variant="light" className="h-9 w-auto" />
+            {/* 36px — deliberately below the 48px header reference; this is
+                a panel header, not the bar. */}
+            <LogoLockup className="h-9 w-auto" />
             <button
               type="button"
               onClick={close}
@@ -746,6 +954,38 @@ export default function SiteHeader() {
             >
               {t("join")}
             </Link>
+
+            {/* AGENT LOGIN — the panel's copy of the bar's utility link.
+                The desktop entry is `hidden card:inline-block`, so without this
+                the portal would be unreachable on every phone: a real feature
+                that exists only above 900px. It sits BELOW the Join CTA and in
+                the quiet type, not in the big stacked list above, because it is
+                the same kind of thing here as it is up there — chrome, not a
+                destination competing with the nav.
+                Navy on cream, 15.87:1. */}
+            {AGENT_LOGIN_LINK_READY && (
+              <Link
+                href={`/${locale}/login`}
+                onClick={close}
+                className="mt-6 self-start text-[15px] font-medium text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+              >
+                {t("login")}
+              </Link>
+            )}
+
+            {/* The mobile twin of the admin entry. Same server-side gate — the
+                desktop link is `hidden card:inline-block`, so without this an
+                admin on a phone would have no way to the panel. Rendered only
+                when isAdmin; a non-admin's panel never contains it. */}
+            {isAdmin && (
+              <Link
+                href={`/${locale}/admin`}
+                onClick={close}
+                className="mt-4 self-start text-[15px] font-semibold text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+              >
+                {t("admin")}
+              </Link>
+            )}
           </div>
         </div>
       )}

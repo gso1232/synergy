@@ -393,9 +393,12 @@ export default async function ServicesPage({
                 locale={locale}
                 variant="cream"
                 quoteLabel={tCta("quote")}
-                callLabel={tCta("call")}
-                callAria={tCta("callAria")}
-                phoneHref={tNav("phoneHref")}
+                secondary={{
+                  kind: "tel",
+                  label: tCta("call"),
+                  aria: tCta("callAria"),
+                  href: tNav("phoneHref"),
+                }}
                 className="mt-10"
               />
             </FadeUp>

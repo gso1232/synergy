@@ -68,8 +68,11 @@ export function isCurrentRoute(
 
 /**
  * Header nav order. Split either side of the centred logo by SiteHeader —
- * the first two go left, the rest go right, which keeps the three-column
- * balance the bar was built around.
+ * heavier-half-LEFT, at `ceil((length + 1) / 2)`. On today's six text keys that
+ * is 4 / 2 (Home · About · Services · Blog left; Contact · Calculator right),
+ * after Blog was moved left on instruction. It used to say "the first two go
+ * left, the rest go right" (the old 2 / 4) and then split evenly 3 / 3; both are
+ * gone. See SPLIT_AT in SiteHeader.tsx.
  *
  * `calculator` is here even though it was never in the nav before. It is a
  * built, live page that had NO entry in any navigation: the only ways in were
@@ -88,7 +91,12 @@ export function isCurrentRoute(
  * SiteHeader therefore splits `HEADER_ROUTES_TEXT` (this list minus `join`)
  * around the centred logo, not this list. Adding `join` to the text split
  * would print "Join" twice — once as a link and once as the pill a few pixels
- * away — and would make the split 2 left / 5 right instead of 3 / 3.
+ * away — and would throw off the left/right balance the bar is built around.
+ *
+ * 🔴 ORDER IS LOAD-BEARING NOW. Blog sits immediately after Services here so
+ * that the heavier-left split (SPLIT_AT in SiteHeader) carries Blog onto the
+ * LEFT beside Services. Reordering this array reorders the nav — desktop split
+ * AND the mobile stacked panel both read it in this order.
  */
 export const HEADER_ROUTES: readonly RouteKey[] = [
   "home",

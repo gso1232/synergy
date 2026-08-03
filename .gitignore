@@ -52,3 +52,14 @@ yarn-error.log*
 /public/blog gallery/
 /public/services gallery/
 /public/*.zip
+chrome/
+lighthouse-reports/
+
+# 🔴 ENV FILES WITH A DISGUISING SUFFIX. `.env.local.txt` was staged by a
+# `git add -A` on 2026-08-03 and caught before the commit. It holds a
+# SUPABASE_SERVICE_ROLE_KEY. None of the patterns above match it: `.env.local`
+# is an exact name, and `.env*.local` requires the name to END in `.local`, so a
+# trailing `.txt` (or `.bak`, or `.old`) slips past all of them. Match on the
+# PREFIX instead, which a suffix cannot defeat.
+.env*
+!.env.example

@@ -1929,3 +1929,129 @@ The in-article sticky image column (`ARTICLE_FRAMES`, `ArticleEssay`'s
 `.essay-sticky`) is commented out, not deleted; all 12 articles are text-only,
 the copy re-centred via `.essay-grid--textonly`. The `article-*.jpg` frame files
 remain on disk for restore.
+
+## Who We Serve — the six photographic cards (2026-08-02)
+
+The three flat card fills (`bg-navy` / `bg-gold-deep` / `bg-gold`) were replaced
+by one photograph per card. Six files, all **Pexels License** —
+<https://www.pexels.com/license/> — *"All photos and videos on Pexels are free to
+use."* / *"Attribution is not required."* Free for commercial use, no attribution
+required; credited here as good practice, as everywhere else in this file.
+
+**Every file was opened and LOOKED AT before it was chosen.** Titles were not
+trusted — see the rejections below, both of which are exactly that trap.
+
+### Sizing — one square source per card, and why
+
+The card box was measured on the built page, not assumed:
+
+| width | card box | aspect | needs at 2x |
+|---|---|---|---|
+| 1536 | 480.3 x 680 | 0.706 | 961 x 1360 |
+| 768 | 712.8 x 560 | 1.273 | 1426 x 1120 |
+| 390 | 350.4 x 460 | 0.762 | 701 x 920 |
+
+One file has to serve a 0.706 portrait crop AND a 1.273 landscape crop through
+`object-cover`. A **1600 x 1600** square covers both: portrait 1130 x 1600
+(**+17.6% / +17.6%** over the 1536 requirement), landscape 1600 x 1257
+(**+12.2% / +12.2%** over the 768 requirement). **Nothing is upscaled** — every
+source is downsampled into it, scale factors below.
+
+| card | file | Pexels | photographer | source px | square side | scale |
+|---|---|---|---|---|---|---|
+| Families 1 — "Advice before paperwork" | `who-families-advice-agent-documents.jpg` | [8441811](https://www.pexels.com/photo/an-agent-showing-documents-to-an-elderly-man-8441811/) | Kampus Production | 6016 x 4016 | 4016 | 0.398 |
+| Families 2 — "Never tied to one carrier" | `who-families-carriers-comparing-papers.jpg` | [8296998](https://www.pexels.com/photo/8296998/) | Mikhail Nilov | 4000 x 6000 | 4000 | 0.400 |
+| Families 3 — "ITIN-friendly, all fifty states" | `who-families-itin-mother-children.jpg` | [38186906](https://www.pexels.com/photo/38186906/) | Jose Jimenez | 5568 x 3712 | 3712 | 0.431 |
+| Agents 1 — "A desk, not a shortcut" | `who-agents-training-briefing.jpg` | [7647924](https://www.pexels.com/photo/7647924/) | RDNE Stock project | 4778 x 3185 | 3185 | 0.502 |
+| Agents 2 — "A real office behind you" | `who-agents-office-team-session.jpg` | [5324985](https://www.pexels.com/photo/5324985/) | Anna Shvets | 6240 x 4160 | 4160 | 0.385 |
+| Agents 3 — "Contracts you can read" | `who-agents-contract-signing.jpg` | [7841499](https://www.pexels.com/photo/close-up-shot-of-a-person-writing-on-a-contract-7841499/) | RDNE Stock project | 5637 x 3758 | 3758 | 0.426 |
+
+**What each file actually shows, verified by opening it:**
+
+- **8441811** — an advisor in shirt and tie holding an "Application Form" out to
+  two seated older clients, laptop on the low table. Fits "advice before
+  paperwork" literally: the form is being *explained*, not filled.
+- **8296998** — two hands turning printed documents in ring binders beside a
+  desk calculator, no faces at all. 🟡 **The weakest fit of the six.** It reads
+  as documents-side-by-side, which is the card's second bullet ("Options set
+  side by side, in plain language"), but it reads as bookkeeping more than as
+  carrier comparison. Flagged rather than glossed; swap if a better frame turns
+  up.
+- **38186906** — a mother outdoors in late-afternoon light with two young
+  children, all three faces complete and clear of every edge. Chosen for the
+  ITIN card because ITIN applicants are overwhelmingly immigrant families; the
+  photograph depicts the audience and asserts nothing.
+- **7647924** — an experienced agent in a suit at the front of a training room,
+  colleagues seated at the table. 🟡 Sparse composition (a large dark monitor
+  fills the right of the frame), kept because the alternative failed harder —
+  see the rejections.
+- **5324985** — a team round a table listening to a colleague at a flip chart,
+  warm brick wall. Two faces complete.
+- **7841499** — close-up of a contract on a desk: one hand pointing at the
+  signature line, another signing. No faces.
+
+### 🔴 REJECTED — and these are the "check the file, not the filename" trap
+
+- **Pexels `7414038`**, titled **"Office Team Sitting at the Table"** — the file
+  shows three people at a table in a **domestic kitchen**: gas hob, microwave
+  and a fridge all in frame. Nothing about it is an office. Rejected for
+  "A real office behind you".
+- **Pexels `8117435`**, "Colleagues having a Discussion" — a whiteboard in
+  **Cyrillic** and a laptop covered in **branded stickers**. Third-party
+  branding in frame is a Standing Rule 9 disqualifier outright, and Cyrillic
+  signage on a Florida brokerage is simply wrong.
+- **Pexels `8123797`**, "Man in business attire discussing… in front of his
+  colleagues" — the best *composition* of any candidate, and rejected anyway:
+  the whiteboard behind him legibly reads **"Agenda: VR training / Client
+  development / Marketing research"**. Legible on-image text asserting a
+  business Synergy is not in. Cropping the board out was tried and rendered — it
+  forces the crop so far right that the subject's head leaves the 480 x 680
+  frame entirely. Dropped rather than shipped with the text dimmed.
+- **Pexels `7845232`**, "People Inside the Office" — a real office, but with
+  **bright pink walls**, which fights navy/cream/gold and reads startup, not
+  brokerage.
+- **Pexels `8120834`**, "A Family Sitting at the Living Room" — two adults and a
+  child in a large sparse loft, subjects small in a wide frame. Wrong register
+  and wrong composition for a portrait card.
+
+### 🔴 Synergy's own photography cannot fill these cards, and the numbers say so
+
+Checked before going external, per Standing Rule 9. Every own landscape in
+`public/New folder/` is **1620 x 1080**; cropped to the card's 0.706 aspect that
+yields **763 x 1080 — 20.6% short on width and 20.6% short on height** against
+the 961 x 1360 the 1536 card needs at 2x. The `gallery-*` re-crops fail by
+14-22% *and* are already-rendered faces from /about. Only `RULA SPEAKING.jpg`
+(4640 x 6960) clears, and that face is already on /about and /join. **Not
+upscaled, not stretched — reported and sourced externally instead.**
+
+### AA — measured per pixel on the real files, worst case, all three widths
+
+Text is cream `#F8F4EE`; the bullet dots and the CTA rule are gold-pale
+`#EFE1B0`. Backdrop is the photograph composited under `.who-card-scrim` (a
+full-card navy wash at 0.65 ramping to 0.88 at the bottom — the derivation, and
+why it is a full-card wash rather than the reference's bottom-only gradient, is
+on the rule in globals.css).
+
+Worst composited pixel across the **entire copy band** (4%-96% of card height,
+inset by the card padding), sampled at every pixel:
+
+| card | 1536 | 768 | 390 |
+|---|---|---|---|
+| Families 1 | 5.00 / 4.19 | 4.99 / 4.18 | 5.00 / 4.19 |
+| Families 2 | 5.15 / 4.32 | 5.16 / 4.33 | 5.06 / 4.24 |
+| Families 3 | 5.02 / 4.21 | **4.96 / 4.16** | 5.03 / 4.22 |
+| Agents 1 | 6.11 / 5.12 | 4.96 / 4.16 | 6.12 / 5.13 |
+| Agents 2 | 5.20 / 4.36 | 5.16 / 4.32 | 5.15 / 4.32 |
+| Agents 3 | 4.96 / 4.16 | 4.96 / 4.16 | 4.97 / 4.17 |
+
+(format: cream / gold-pale · bars: cream **4.5**, gold-pale **3.0**)
+
+**Site-worst cream 4.96:1** (Families 3 at 768) and **site-worst gold-pale
+4.16:1**. 18 of 18 combinations pass with no exemption claimed.
+
+🔴 **AND THE GUARANTEE DOES NOT DEPEND ON THESE SIX FILES.** The scrim's 0.65
+base clears both bars against a **clipped-white pixel** (L 1.0 — the worst any
+photograph can present): cream **4.96**, gold-pale **4.16**. So a future swap
+into any of these six slots cannot fail contrast, whatever the image. That is
+the property a rotating six-card set needs, and it is why the base is 0.65 and
+not the 0.62 that merely satisfies today's files.

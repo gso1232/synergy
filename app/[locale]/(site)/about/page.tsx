@@ -19,6 +19,7 @@ import AboutPullQuote from "@/components/AboutPullQuote";
 // to restore the parallax; see the §5 imagery note and the block below §5's h3.
 import AboutValueColumn from "@/components/AboutValueColumn";
 import AboutZoom from "@/components/AboutZoom";
+import RevealText from "@/components/RevealText";
 
 /**
  * /[locale]/about — "We Are Synergy".
@@ -253,7 +254,23 @@ export default async function AboutPage({
           fill
           priority
           sizes="100vw"
-          quality={74}
+          /* 🔴 q88, UP FROM q74 — THE ONLY HONEST SHARPENING AVAILABLE HERE.
+             The client reports this hero as soft. It is: the file is 1620x1080
+             and a 1536-wide hero needs 3072px at 2x, so it is 47.3% short and
+             the browser upscales it ~1.9x. THERE IS NO SHARPER SOURCE — the
+             original ("OFFICE PHOTO IMPORTANT.jpeg") is the same 1620x1080, and
+             every other own office frame on disk is too. Upscaling to fake it is
+             refused (Standing Rule 9).
+             What CAN be recovered is compression damage, which the upscale was
+             magnifying. Measured (variance-of-Laplacian on the served
+             derivative): q74 = 665, q82 = 705, **q88 = 809**, q92 = 852, against
+             the uncompressed file's ceiling of 923. q88 recovers 22% of the lost
+             detail; q92 buys 6% more for another 60KB of AVIF.
+             ⚠️ COST, FLAGGED AGAINST THE PERFORMANCE BRIEF: this is the LCP
+             image and AVIF goes 239KB -> 374KB. Sharpness was asked for
+             explicitly, so it wins here — but the two asks pull opposite ways
+             and this is where they meet. */
+          quality={88}
           className="object-cover object-top"
         />
         {/* The header veil is BACK, and it is now load-bearing again. It was
@@ -291,9 +308,11 @@ export default async function AboutPage({
             {/* Still CREAM — this is the one place on the page where type sits
                 on a photograph, and the scrim under it is measured for exactly
                 this pairing. Everything below the hero is ink on cream. */}
-            <h1 className="sem-display max-w-[14ch] font-display text-cream">
-              {t("hero.headline")}
-            </h1>
+            <RevealText
+              as="h1"
+              text={t("hero.headline")}
+              className="sem-display max-w-[14ch] font-display text-cream"
+            />
             {/* `.sem-hero-sub`, not `.sem-body` — 20.5px / 30.75 / w600 at
                 desktop, which is SEM's notice block measured live. Full
                 derivation, including why our size ramp deliberately is NOT a
@@ -350,9 +369,12 @@ export default async function AboutPage({
           <div className="sem-inner">
             <div className="grid grid-cols-1 items-start gap-y-12 lg:grid-cols-[1.25fr_1fr] lg:gap-x-[var(--sem-gap-lg)]">
               <FadeUp>
-                <h2 id="about-story" className="sem-display font-display text-ink">
-                  {t("story.eyebrow")}
-                </h2>
+                <RevealText
+                  as="h2"
+                  id="about-story"
+                  text={t("story.eyebrow")}
+                  className="sem-display font-display text-ink"
+                />
                 {/* Their left wrapper is a flex column with a 32.8px gap. */}
                 <div className="mt-8 space-y-6 text-ink">
                   <p className="sem-body">{t("story.p1")}</p>
@@ -770,9 +792,12 @@ export default async function AboutPage({
                       locale={locale}
                       variant="cream"
                       quoteLabel={tCta("quote")}
-                      callLabel={tCta("call")}
-                      callAria={tCta("callAria")}
-                      phoneHref={tNav("phoneHref")}
+                      secondary={{
+                        kind: "tel",
+                        label: tCta("call"),
+                        aria: tCta("callAria"),
+                        href: tNav("phoneHref"),
+                      }}
                       className="mt-8"
                     />
                   </div>
@@ -854,9 +879,12 @@ export default async function AboutPage({
         <section aria-labelledby="about-values" className="sem-shell sem-pad-t">
           <div className="sem-inner">
             <FadeUp>
-              <h2 id="about-values" className="sem-h2 font-display text-ink">
-                {t("values.headline")}
-              </h2>
+              <RevealText
+                as="h2"
+                id="about-values"
+                text={t("values.headline")}
+                className="sem-h2 font-display text-ink"
+              />
             </FadeUp>
 
             {/* HALVED. The old clamp was the full SECTION rhythm (130.8 at 1536)

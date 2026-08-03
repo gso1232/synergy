@@ -65,6 +65,46 @@
   outline-offset: 2px;
 }
 
+/* ---------------------------------------------------------------------------
+   🔴 THE REDUCED-MOTION GUARANTEE FOR SCROLL REVEALS. IT LIVES IN CSS BECAUSE
+   IT CANNOT LIVE IN JAVASCRIPT.
+
+   Every scroll entrance on this site is framer-motion writing inline styles
+   (`FadeUp`, the WhatWeCover card grid) or `useMaskReveal` writing them
+   directly. The obvious implementation is to read `useReducedMotion()` and skip
+   the animation. THAT IMPLEMENTATION IS BROKEN, and it was shipped and measured
+   broken twice before this rule existed.
+
+   THE REASON IS TIMING, NOT LOGIC. `useReducedMotion()` — and any
+   `matchMedia` read — resolves inside an effect, AFTER first paint. It has to:
+   a synchronous read during render would not match the server-rendered HTML and
+   would throw a hydration mismatch. So the element ALWAYS mounts in its
+   pre-reveal state first. Whatever the effect then does is too late, and the
+   two obvious repairs both fail:
+     - withdraw the variants  -> framer has nothing left to animate to, and the
+                                 element is stranded at the hidden state
+                                 (measured: cards frozen at opacity 0, invisible)
+     - re-point `animate`     -> races the mount; measured still at opacity 0
+
+   A media query has no such gap. The engine resolves it before React hydrates,
+   and `!important` outranks the inline styles framer writes, so the very first
+   painted frame is already correct and stays correct.
+
+   `transform: none` is as load-bearing as the opacity: Option 4's pre-reveal
+   state is `translateY(24px) scale(0.97)` with NO opacity channel, so an
+   opacity-only reset would leave every block visibly offset and undersized.
+
+   HOOKS: `[data-reveal]` is on `FadeUp` and on each card in the WhatWeCover
+   grid. `useMaskReveal` needs no hook — it returns before splitting anything
+   when the query matches, so there are no masks in the DOM to reset.
+--------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
 /* DARK AND MID SURFACES set the token for everything inside them. Written on
    the surface itself rather than on `.surface *` on purpose: custom properties
    inherit, so the NEAREST enclosing surface wins automatically. A descendant
@@ -194,6 +234,46 @@ button.bg-white {
    (CLS 0.00244, sourced to the header's right-hand group). */
 html {
   scrollbar-gutter: stable;
+}
+
+/* ---------------------------------------------------------------------------
+   THE PAGE SURFACE — a gradient, not a flat fill.
+
+   #F8F4EE -> #F4EFE4, top to bottom, over the whole document.
+
+   WHY IT LIVES ON <body> AND NOT ON A WRAPPER. Two reasons, both already
+   documented in this file and in HANDOFF:
+
+   1. The CANVAS. The area exposed by overscroll rubber-banding is painted from
+      the canvas, which the browser propagates from <body> (or <html> if it has
+      one). A wrapper cannot reach there — that finding is the whole reason
+      RouteTheme.tsx exists. A gradient on a wrapper would leave the top and
+      bottom rubber-band bands flat cream against a page that is not.
+   2. It is genuinely BENEATH everything. Every section with a surface of its
+      own — the footer photograph, the hero photos, the navy login panel, the
+      glass panels — paints over this and is unaffected.
+
+   STATIC, NOT SCROLL-SHIFTING. Default `background-attachment: scroll`, so the
+   gradient is painted ONCE across the document's own height and travels with
+   the content. `fixed` was considered and rejected: it locks the gradient to
+   the viewport, which means every screenful shows the FULL range top-to-bottom
+   and the effect reads as a wash rather than as depth. Document-height is what
+   makes it barely-there — on a 7000px homepage the whole 0.043 luminance drop
+   is spread over 7000px, roughly 0.0006 per 100px.
+
+   `background-color` is set as well, and is not redundant: it is the fallback
+   if the gradient fails to paint, and it is what the canvas falls back to.
+
+   🔴 THE SEVEN PAGE SECTIONS NO LONGER PAINT `bg-cream`. They tiled the full
+   height of every page with opaque cream, so a gradient under them would have
+   been invisible on every pixel. They are transparent now BY DESIGN — they are
+   page surface, not surfaces of their own. Anything that IS its own surface
+   still paints: see the list above. Do not re-add `bg-cream` to a full-width
+   section wrapper without re-reading this.
+--------------------------------------------------------------------------- */
+body {
+  background-color: #f8f4ee;
+  background-image: linear-gradient(180deg, #f8f4ee 0%, #f4efe4 100%);
 }
 
 /* Dark routes paint the CANVAS, not just the page.
@@ -549,8 +629,11 @@ html[data-route-theme="dark"] {
    A fixed gold would: #C9A84C on cream is 2.09:1, under the 3:1 that 1.4.11
    asks of a meaningful non-text graphic.
 
-   2px at a 6px offset clears Overpass's descenders at 15px, so it reads as an
-   underline rather than a strikethrough on the "g" in "Legacy"-style labels.
+   2px at a 6px offset clears the body face's descenders at 15px, so it reads as
+   an underline rather than a strikethrough on the "g" in "Legacy"-style labels.
+   RE-CHECKED against IBM Plex Sans on the 2026-08-03 swap and it still holds:
+   Plex's descender measures 0.2031em, identical to Overpass's, which is 3.05px
+   at 15px against the 6px offset. The offset was never close to the limit.
 --------------------------------------------------------------------------- */
 .nav-link[aria-current="page"] {
   text-decoration-line: underline;
@@ -815,21 +898,89 @@ html[data-route-theme="dark"] {
    visual) and add only the two things it does not give us: a 44px pointer
    target, and a focus ring that is actually visible on the thumb.
 --------------------------------------------------------------------------- */
+/* 🔴 UPGRADED 2026-08-02 FROM `accent-color` TO A CUSTOM TRACK + THUMB, AS
+   PART OF THE CALCULATOR POLISH. It is STILL a native `<input type="range">` —
+   arrows, Home/End, PageUp/Down and the value all come from the platform, so no
+   mechanic changed; only the paint did. The component already feeds `--fill`
+   (the filled fraction) inline, which `accent-color` ignored and this consumes.
+
+   🔴 THE FILL AND THUMB BORDER ARE gold-deep #7D641F, NOT brand gold #C9A84C,
+   AND THAT IS AN AA DECISION. These sit on the WHITE input card. A slider's
+   fill and thumb are meaningful graphical controls (1.4.11, 3:1 bar); gold on
+   white is 2.09:1 and FAILS, gold-deep is 5.16:1 and clears it with room. The
+   older `.slider` further down still uses brand gold on white and is a standing
+   exception to re-measure; this control is the corrected pattern. The unfilled
+   track is ink at 0.12 — decorative, so it is exempt, and the thumb + readout
+   pill both carry the value regardless. */
 .calc-slider {
-  accent-color: #0d1b2a;
+  -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
-  height: 44px; /* touch target; the control still paints at its native size */
+  height: 44px; /* touch target; the visible track/thumb paint smaller */
   background: transparent;
+}
+
+.calc-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    #7d641f var(--fill, 50%),
+    rgba(26, 26, 26, 0.12) var(--fill, 50%)
+  );
+}
+.calc-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(26, 26, 26, 0.12);
+}
+.calc-slider::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: #7d641f;
+}
+
+.calc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: -8px; /* centre the 22px thumb on the 6px track */
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #7d641f;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.22);
+  transition: box-shadow 0.15s ease;
+}
+.calc-slider::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid #7d641f;
+  box-shadow: 0 2px 8px rgba(13, 27, 42, 0.22);
 }
 
 .calc-slider:focus {
   outline: none;
 }
 .calc-slider:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 4px rgba(125, 100, 31, 0.55);
+  box-shadow:
+    0 2px 8px rgba(13, 27, 42, 0.22),
+    0 0 0 4px rgba(125, 100, 31, 0.4);
 }
 .calc-slider:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 4px rgba(125, 100, 31, 0.55);
+  box-shadow:
+    0 2px 8px rgba(13, 27, 42, 0.22),
+    0 0 0 4px rgba(125, 100, 31, 0.4);
+}
+
+/* Reduced motion: the thumb's hover/focus box-shadow tween is the only motion
+   on the slider; drop it so the ring appears instantly. */
+@media (prefers-reduced-motion: reduce) {
+  .calc-slider::-webkit-slider-thumb {
+    transition: none;
+  }
 }
 
 /* Custom range sliders: 2px ink-10% track, gold fill left of thumb,
@@ -900,6 +1051,551 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   box-shadow:
     0 2px 8px rgba(13, 27, 42, 0.18),
     0 0 0 4px rgba(125, 100, 31, 0.4);
+}
+
+/* ===========================================================================
+   ⚠️ RETIRED — THE BLOB AURORA. NOTHING RENDERS THIS. Kept, not deleted.
+
+   Built 2026-08-02 from a WRITTEN DESCRIPTION of the client's login reference,
+   before the reference itself was supplied. It turned out to be a WebGL fragment
+   shader, not CSS blobs, so the whole approach was replaced by
+   `components/SmokeyBackground.tsx` — see `.auth-screen` above.
+
+   It is kept because it is the only solved pure-CSS answer to "animated colour
+   field behind a card" on this project: no GPU, no canvas, ~1KB, and it degrades
+   to a static composition under reduced motion. If the shader is ever judged too
+   heavy, or a surface needs this effect without WebGL, this is the fallback that
+   does not need re-deriving. The rules below still work as written.
+   ===========================================================================
+   Adapts the reference login's animated BLUE blobs to our palette:
+   the hues are gold #C9A84C, navy-lift #1C3A5A and amber #E0A458, never blue.
+
+   🔴 THE CARD, NOT THE BLOBS, CARRIES AA. The blobs are decorative and can be
+   as bright as they like; what must stay legible is the cream text, and that
+   sits on `.auth-card` — navy at 0.82 with a blur. Even where the brightest
+   gold blob is directly behind the card, the 0.82 navy dominates the composite,
+   so cream #F8F4EE clears 4.5:1 with wide margin (verified on the built page).
+   Blob opacities are therefore a taste decision, not a contrast one.
+
+   🔴 IT FREEZES UNDER REDUCED MOTION. The drift is the only motion on the page;
+   the media query below drops the animation and leaves the blobs where they
+   rest, so the composition is identical, just still.
+   =========================================================================== */
+/* 🔴 THE FALLBACK SURFACE, AND IT IS LOAD-BEARING. `SmokeyBackground` paints
+   NOTHING when `getContext("webgl")` returns null — old hardware, a blocklisted
+   driver, a crashed GPU process. This gradient is what shows through in that
+   case, so it has to be a finished-looking surface in its own right, not a
+   placeholder. It is the same cream -> gold ramp the shader interpolates
+   between, just static: if WebGL dies the page loses its motion, not its
+   design.
+
+   🔴 IT HAS BEEN DARK -> LIGHT -> DARK, AND THE CURRENT STATE IS NAVY.
+   Pass 1 was a dark aurora built from a written description. Pass 2 went light
+   ("gold and white instead of blue and black") once the real shader arrived.
+   Pass 3 (2026-08-03) is navy on instruction — the client wants the dark login
+   look behind the glassy card. Each flip re-derived every ink on the surface
+   from scratch; none of the previous tables survive. */
+.auth-screen {
+  background:
+    radial-gradient(120% 130% at 50% 0%, #16293c 0%, #0d1b2a 55%, #070e18 100%);
+}
+
+.auth-aurora {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.auth-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  will-change: transform;
+}
+
+.auth-blob--gold {
+  width: 46vmax;
+  height: 46vmax;
+  top: -14%;
+  left: -8%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(201, 168, 76, 0.5),
+    rgba(201, 168, 76, 0) 68%
+  );
+  animation: auth-drift-a 24s ease-in-out infinite alternate;
+}
+
+.auth-blob--navy {
+  width: 52vmax;
+  height: 52vmax;
+  right: -12%;
+  bottom: -18%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(28, 58, 90, 0.8),
+    rgba(28, 58, 90, 0) 70%
+  );
+  animation: auth-drift-b 28s ease-in-out infinite alternate;
+}
+
+.auth-blob--ember {
+  width: 38vmax;
+  height: 38vmax;
+  right: 8%;
+  top: 6%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(224, 164, 88, 0.28),
+    rgba(224, 164, 88, 0) 66%
+  );
+  animation: auth-drift-c 32s ease-in-out infinite alternate;
+}
+
+@keyframes auth-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(8vw, 6vh, 0) scale(1.12);
+  }
+}
+@keyframes auth-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-7vw, -5vh, 0) scale(1.08);
+  }
+}
+@keyframes auth-drift-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(-5vw, 7vh, 0) scale(1.15);
+  }
+}
+
+/* THE GLASS CARD — dark, on a DARK field again (2026-08-03).
+   ---------------------------------------------------------------------------
+   🔴 THE WORST BACKDROP FLIPPED BACK, AND THAT IS THE WHOLE RE-DERIVATION.
+   A translucent DARK card takes on whatever is behind it:
+
+     field light (previous pass)  card gets LIGHTER as backdrop brightens
+                                  -> worst case = the PALEST smoke pixel
+     field navy  (now)            card can only get darker than the brightest
+                                  smoke -> worst case = the BRIGHTEST pixel
+
+   The brightest pixel is the veiled gold peak (see the `veil` prop in
+   SmokeyBackground — the bare gold is capped by a 0.5 navy wash). At card alpha
+   0.82 over that peak the composite is **rgb(30,35,31), L 0.0165**, against the
+   previous light-field composite of rgb(55,66,77) / L 0.0555. Everything inside
+   the card therefore gained contrast rather than losing it:
+
+     element                        light field   navy field
+     ------------------------------ -----------   ----------
+     card heading / body  cream           9.34        14.42
+     controls             gold-pale       7.83        12.09
+     field underline      cream/50        3.66         5.40
+     field focus border   gold            4.48         6.91
+
+   Every value clears with more room than before, so nothing inside the card had
+   to move. The one thing that DID have to move is the border.
+
+   🔴 THE BORDER IS A CREAM HAIRLINE AGAIN. On the light field it was navy/0.35,
+   because a dark card needed a dark edge to separate from a bright background.
+   On navy that edge is invisible — navy on navy. It is cream at 0.14, which
+   reads as the glass highlight the reference has and measures 2.6:1 against the
+   card. That is BELOW the 3:1 non-text bar and it is deliberate: this border is
+   pure decoration, not a boundary anything depends on. The card is separated
+   from the field by its own 0.82 fill (the field around it is materially
+   lighter) plus a 70px shadow, so removing the hairline entirely would cost
+   nothing functional. Contrast with the calculator/chip borders, which ARE the
+   only boundary and are held to 3:1. */
+.auth-card {
+  background: rgba(13, 27, 42, 0.82);
+  border: 1px solid rgba(248, 244, 238, 0.14);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow:
+    0 1px 0 rgba(248, 244, 238, 0.08) inset,
+    0 30px 70px -30px rgba(0, 0, 0, 0.7);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-blob {
+    animation: none;
+    will-change: auto;
+  }
+}
+
+/* ===========================================================================
+   THE ADMIN DASHBOARD — TOP BAR + SILK BACKDROP (2026-08-03).
+   Visual only. No data path, guard, action or policy is touched by this block.
+
+   🔴 THE CONTRAST STRATEGY IS STRUCTURAL, NOT NUMERIC. Solving AA for text over
+   a MOVING, multi-hued shader cannot be done honestly — the worst pixel changes
+   every frame. So the rule is: NO DATA IS EVER COMPOSITED OVER THE SHADER.
+   Cards are opaque; every number, label and table cell sits on white or cream
+   exactly as before, and their ratios are unchanged (ink 17.40, ink/80 9.17,
+   gold-deep 5.65 on white). The shader is visible only in the page gutters and
+   faintly through the bar.
+
+   The few things that DO sit on a scrimmed shader are measured against the
+   shader's WORST (darkest) reachable pixel, #0F0D0A — the ink-deep end of the
+   palette — never against an average:
+
+     scrim   surface                ink        gold-deep
+     ------  ---------------------  ---------  ---------
+     0.80    cream over silk        10.21      3.32  FAIL
+     0.86    cream over silk        11.75      3.82  FAIL
+     0.88    cream over silk (PAGE) ~12.3      ~4.0  FAIL
+     0.94    cream over silk (BAR)  14.02      4.55  pass
+
+   🔴 gold-deep IS NOT A TEXT COLOUR ON THE PAGE SCRIM. At 0.88 it is ~4.0,
+   under the 4.5 bar, which is why the greeting and headings are INK and gold
+   appears only as the nav's active marker — a non-text graphic on the 3:1 bar,
+   where 3.82 clears. Do not "brand" this text gold; it was checked.
+
+   PAGE 0.88 and BAR 0.94 are different on purpose: the gutters are where the
+   silk is allowed to read, and the bar is where legibility wins.
+   =========================================================================== */
+.admin-page {
+  background-color: #f8f4ee;
+}
+
+/* Fixed, so the silk does not scroll with a long table — a backdrop that
+   travels with the content reads as a texture stuck to the page rather than a
+   surface behind it. `-z-10` inside the page's own stacking context. */
+.admin-silk-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.admin-silk-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(248, 244, 238, 0.88);
+}
+
+/* Everything above the backdrop. A single stacking rule rather than z-index
+   sprinkled per component. */
+.admin-topbar,
+.admin-main,
+.admin-skip {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- THE BAR ---------- */
+/* 🔴 `fixed`, NOT `sticky` — REQUIRED BY THE HIDE-ON-SCROLL. A sticky element
+   is still in flow, so translating it off-screen leaves a 64px hole that the
+   content does not close, and the page visibly gains a gap when the bar hides.
+   Fixed takes it out of flow; `.admin-main` pays the 64px back as padding-top.
+   SiteHeader is `fixed` for exactly this reason. */
+.admin-topbar {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.1);
+  /* 0.94 — the first alpha at which gold-deep clears 4.5 here. See the table. */
+  background: rgba(248, 244, 238, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Hidden = pushed up by its own height plus the border. `-101%` rather than
+   `-100%` so a sub-pixel rounding seam can never leave a 1px line on screen. */
+.admin-topbar[data-hidden="true"] {
+  transform: translateY(-101%);
+}
+
+/* 🔴 REDUCED MOTION: the bar STOPS HIDING rather than hiding instantly. The
+   component already returns early on the preference (so `data-hidden` never
+   becomes true), and this is the belt to that braces — if the attribute is ever
+   set by another path, the bar stays put instead of jump-cutting. */
+@media (prefers-reduced-motion: reduce) {
+  .admin-topbar {
+    transition: none;
+    will-change: auto;
+  }
+  .admin-topbar[data-hidden="true"] {
+    transform: none;
+  }
+}
+
+.admin-topbar__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 24px;
+  min-height: 64px;
+}
+
+.admin-topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 0;
+}
+
+.admin-wordmark {
+  font-family: var(--font-display), serif;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: #1a1a1a;
+  white-space: nowrap;
+}
+
+.admin-topbar__divider {
+  width: 1px;
+  height: 22px;
+  background: rgba(26, 26, 26, 0.15);
+}
+
+.admin-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  /* The bar must never be the thing that makes the page scroll sideways. */
+  scrollbar-width: none;
+}
+.admin-nav::-webkit-scrollbar {
+  display: none;
+}
+
+/* 44px tall for the pointer target even though the label is 14px. The active
+   marker is a RULE under the label, not a colour swap — 1.4.1 is not satisfied
+   by colour alone, and this bar carries one ink at two opacities. */
+.admin-nav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: rgba(26, 26, 26, 0.66);
+  border-radius: 8px;
+  transition: color 0.18s ease, background-color 0.18s ease;
+}
+.admin-nav__link:hover {
+  color: #1a1a1a;
+  background: rgba(26, 26, 26, 0.04);
+}
+.admin-nav__link[aria-current="true"] {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.admin-nav__link[aria-current="true"]::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  border-radius: 2px;
+  /* gold-deep as a NON-TEXT marker: 4.55 on this bar, 3:1 bar. */
+  background: #7d641f;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-nav__link {
+    transition: none;
+  }
+}
+
+.admin-topbar__user {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.admin-topbar__identity {
+  display: none;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.25;
+  min-width: 0;
+}
+@media (min-width: 768px) {
+  .admin-topbar__identity {
+    display: flex;
+  }
+}
+
+.admin-topbar__email {
+  font-size: 13px;
+  font-weight: 500;
+  color: #1a1a1a;
+  max-width: 26ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-topbar__role {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  /* 🔴 ink/70, NOT ink/60 — A MEASURED FAIL, CAUGHT ON THE LIVE PAGE.
+     I estimated ink/60 against an assumed mid-tone and wrote "7.6" here. Read
+     off the ACTUAL canvas, the silk's darkest reachable pixel is rgb(17,16,13),
+     which puts the bar's worst composite at rgb(234,230,225) — and ink/60 there
+     is **4.24**, under the 4.5 bar for a 10px label. ink/70 is 5.10.
+     The lesson: sample the shader, do not assume its range. */
+  color: rgba(26, 26, 26, 0.7);
+}
+
+.admin-signout {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(26, 26, 26, 0.2);
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: transparent;
+  white-space: nowrap;
+  transition: background-color 0.18s ease, border-color 0.18s ease;
+}
+.admin-signout:hover {
+  background: rgba(26, 26, 26, 0.05);
+  border-color: rgba(26, 26, 26, 0.35);
+}
+@media (prefers-reduced-motion: reduce) {
+  .admin-signout {
+    transition: none;
+  }
+}
+
+/* ---------- CONTENT ---------- */
+/* padding-top pays back the now-`fixed` bar's 64px, plus the section's own 32. */
+.admin-main {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 96px 24px 96px;
+}
+
+/* 🔴 THE GREETING WAS 14px ink/70 AND READ AS METADATA. The client's word was
+   "too subtle". It is now the largest thing on the page: the display face at
+   clamp(30 → 44px), full ink, tight leading, with the h1 beneath it.
+
+   FULL INK, NOT ink/70 — at this size the softened ink read as disabled text,
+   and solid ink measures 12.33 against the page scrim's worst pixel (the real
+   shader's darkest sample, rgb(17,16,13)) against a 4.5 bar. There is no reason
+   to spend contrast on a greeting.
+
+   `min-height` still reserves the line so the page does not jump when the
+   client-side clock resolves — the placeholder character is gone (see the
+   component; an invisible NBSP in source is a trap). It is `1.15em` to match
+   the line-height below, not the old 1.4em, or it reserves too much. */
+.admin-greeting {
+  min-height: 1.15em;
+  font-family: var(--font-display), serif;
+  font-size: clamp(30px, 3.6vw, 44px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: #1a1a1a;
+}
+
+/* (The h1 steps down to a section label so the greeting can lead. That is done
+   with Tailwind classes on the element in AdminDashboard, NOT here — a custom
+   rule would lose to the utilities already on it and the override would be
+   invisible to the next reader.) */
+
+.admin-skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: 12px 16px;
+  background: #f8f4ee;
+  color: #1a1a1a;
+  font-weight: 600;
+}
+.admin-skip:focus {
+  left: 8px;
+  top: 8px;
+  z-index: 50;
+}
+
+/* ===========================================================================
+   OFF-SCREEN RENDER SKIPPING (2026-08-03, performance pass).
+
+   Baseline Lighthouse on the production build showed **Style & Layout at
+   2614ms — MORE than Script Evaluation's 1799ms**. The dominant cost on this
+   site is not JS parsing, it is laying out and painting a very long page whose
+   sections are all in the layout tree from the first frame.
+
+   `content-visibility: auto` lets the browser SKIP layout and paint for a
+   subtree while it is outside the viewport, and do it only when the section
+   scrolls near. Nothing about the section's design, animation or markup
+   changes — it is a rendering hint, not a style.
+
+   🔴 `contain-intrinsic-size: auto <n>` — THE `auto` KEYWORD IS LOAD-BEARING
+   AND ITS ABSENCE IS THE CLASSIC WAY THIS BREAKS. Without an intrinsic size a
+   skipped section collapses to zero height, the page shortens, the scrollbar
+   jumps and CLS explodes. With a FIXED size it is only correct if the guess is
+   exact. `auto <n>` makes the browser use <n> until it has rendered the section
+   once, then REMEMBER the real measured height for the rest of the session — so
+   the guess only ever applies before first paint of that section, and the
+   scroll height is correct from then on.
+
+   🔴 WHERE THIS IS *NOT* APPLIED, DELIBERATELY:
+     · the hero and anything above the fold — never skipped, so no first-paint
+       change is possible;
+     · any section containing `position: sticky` — containment breaks sticky
+       against an ancestor, which would visibly change /services and /blog;
+     · TheEngine — its SVG diagram is an absolutely-positioned layer whose
+       coordinates depend on the stage box, and it already pauses its own canvas
+       off-screen via IntersectionObserver, so the win is small and the risk is
+       real.
+
+   ⚠️ **MEASURED, AND NOT APPLIED. NOTHING USES THESE CLASSES.**
+   Applied to the footer and benchmarked on the production build, 2 clean runs
+   per config with no competing process:
+
+     base   Perf 55 / 64   TBT 1374 / 1233 ms   LCP 5.0 / 3.8 s
+     +cv    Perf 54 / 54   TBT 1228 / 3261 ms   LCP 5.3 / 4.3 s
+
+   ✅ CLS was IDENTICAL to five decimal places across all four runs (0.00015),
+   so the change WAS visually null — the containment did not shift anything.
+   ❌ But there is NO demonstrable speed gain, and the machine's own run-to-run
+   variance (9 Lighthouse points, TBT swinging 1233-3261ms on the SAME build) is
+   larger than any effect. Shipping an unproven rendering-containment change to
+   a client site for zero measured benefit is the wrong trade, so it is reverted.
+
+   The rules are KEPT because the analysis behind them is sound and the target is
+   real (Style & Layout 2614ms > Script Evaluation 1799ms). If this is revisited,
+   benchmark on a QUIET machine with >=5 runs per config and take the median —
+   two runs cannot resolve an effect this small.
+   =========================================================================== */
+.cv-defer {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 600px;
+}
+
+/* The site footer: always below the fold, static content, no sticky child and
+   no scroll-driven animation. The safest possible candidate. */
+.site-footer-cv {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1008,19 +1704,47 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    the heading's trimmed height and centres its content, so the two cap bands
    share a centre line — not a baseline, not a top edge.
 
-   We use the same fonts they do (Kufam display, Overpass body), so the trim
-   ratios are derived from our own loaded font metrics rather than copied:
+   The trim ratios are derived from our own loaded font metrics rather than
+   copied:
 
      cap  = actualBoundingBoxAscent('H') / fontSize
      trim-top    = (lineHeight - (fbAscent + fbDescent)) / 2 + (fbAscent - cap)
      trim-bottom = (lineHeight - (fbAscent + fbDescent)) / 2 + fbDescent
 
-     Kufam    cap 0.7188  fbAsc 0.9000  fbDesc 0.4000   @lh 1.2 -> 0.1312 / 0.35
-     Overpass cap 0.7031  fbAsc 0.8825  fbDesc 0.3825   @lh 1.5 -> 0.2969 / 0.50
+     Kufam         cap 0.7188  fbAsc 0.9000  fbDesc 0.4000  @lh 1.2 -> 0.1312 / 0.35
+     IBM Plex Sans cap 0.7031  fbAsc 1.0132  fbDesc 0.2718  @lh 1.5 -> 0.4176 / 0.3793
 
-   Those land within 0.04px of reyou's shipped values at the same sizes, which
-   is the confirmation that the mechanism was read correctly. Expressed in em so
-   they hold through every clamp() step of the fluid type.
+   `fbAscent` / `fbDescent` are the face's own normalised ascent and descent.
+   They are read off the `ascent-override` / `descent-override` that next/font's
+   `adjustFontFallback` emits on the `*_Fallback_*` @font-face — next/font
+   computes those FROM the real font's metrics, which is exactly the number this
+   formula wants, and it is where the original Overpass figures came from.
+
+   🔴 THESE MOVED WHEN THE BODY FACE CHANGED, AND THAT IS THE WHOLE POINT.
+   2026-08-03: the body face went Overpass -> IBM Plex Sans (see the note in
+   `app/[locale]/layout.tsx` — the reason is tabular figures). Plex's cap height
+   is IDENTICAL to Overpass's at 0.7031, which is a coincidence and is NOT what
+   these values depend on. What changed is the vertical proportion around it:
+
+     Overpass       fbAsc 0.8767  fbDesc 0.3803  ->  0.2951 / 0.5018
+     IBM Plex Sans  fbAsc 1.0132  fbDesc 0.2718  ->  0.4176 / 0.3793
+
+   Plex carries a much taller ascent and a much shallower descent, so the trim
+   moves ~0.12em UP at the top and ~0.12em DOWN at the bottom. Leaving the old
+   0.2969 / 0.50 in place would have left every cap-trimmed row ~2.5px too tall
+   at 21px and optically low in its band — a silent, site-wide misalignment that
+   nothing would have thrown an error about.
+
+   ⚠️ THE OVERPASS ROW ABOVE IS RE-MEASURED, NOT THE ONE THAT SHIPPED. The
+   shipped pair was 0.2969 / 0.50, derived when next/font emitted 0.8825 /
+   0.3825 for Overpass; today's next/font emits 0.8767 / 0.3803 for the same
+   face and the same formula lands on 0.2951 / 0.5018. That 0.0018em drift
+   (0.04px at 21px) is version noise in next/font's metric extraction, not a
+   change in the typeface, and it is recorded here because it is also the
+   CONFIRMATION that this derivation reproduces the original method rather than
+   inventing a new one.
+
+   Expressed in em so they hold through every clamp() step of the fluid type.
 --------------------------------------------------------------------------- */
 .cap-trim {
   display: flow-root;
@@ -1041,10 +1765,12 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   --cap-t: 0.1312em;
   --cap-b: 0.35em;
 }
-/* Overpass, line-height 1.5 — the eyebrow and the step title row */
+/* IBM Plex Sans, line-height 1.5 — the eyebrow and the step title row.
+   🔴 Was 0.2969 / 0.5 for Overpass. Re-derived with the face, in the same
+   commit, per the note above. */
 .cap-body {
-  --cap-t: 0.2969em;
-  --cap-b: 0.5em;
+  --cap-t: 0.4176em;
+  --cap-b: 0.3793em;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1596,8 +2322,21 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    SEPARATION IS DONE BY WHITESPACE, THE PHOTOGRAPHS AND THE TYPE SCALE.
    There are no rules, bands or cards on this page — see the note below.
 --------------------------------------------------------------------------- */
+/* 🔴 NO BACKGROUND. It used to be a flat #F8F4EE, which was correct when the
+   page surface was flat cream too.
+
+   Against the body gradient it is not. `.about-page` wraps the whole body of
+   /about (y 900-7027) and /services (y 900-11398). Measured on the built pages:
+   at its TOP the gradient beneath is #F8F3ED and the flat fill was #F8F4EE —
+   invisible. At its BOTTOM the gradient has reached #F4F0E5 while the fill was
+   still #F8F4EE, so the wrapper ended ~0.04 of luminance LIGHTER than the
+   surface either side of it: a full-width step at the seam, on the two longest
+   pages on the site, exactly where a long scroll makes it most visible.
+
+   Removing the fill lets the gradient through and the seam disappears. This
+   element carries no text of its own, so nothing about contrast changes. */
 .about-page {
-  background-color: #f8f4ee;
+  background-color: transparent;
 }
 
 /* 🔴 THE GOLD HAIRLINES ARE GONE. ALL OF THEM. DO NOT REINTRODUCE THEM.
@@ -1885,7 +2624,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    (0.9615x `.sem-body` at every width): 20.50 / 18.43 / 16.50. Within 0.05px
    of their real value at 1536 and at 820.
 
-   WEIGHT 600, NOT THEIR 700. This is the body face (Overpass), where 700 is
+   WEIGHT 600, NOT THEIR 700. This is the body face (IBM Plex Sans), where 700 is
    available and the "never above 500" rule does not apply — that rule is about
    the display face. 700 next to a w400 Kufam h1 reads as two competing bolds;
    600 carries the same presence without fighting the headline.
@@ -3267,6 +4006,50 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    page carries an eyebrow above the h1, so its copy block begins at 57.8% of
    the hero instead of at the headline. Same hard bottom edge, no foot ramp —
    that rule is unchanged and is why the last stop holds to 100%. */
+/* ---------------------------------------------------------------------------
+   .join-hero-veil-top — A JOIN-ONLY NAV VEIL, AND IT EXISTS BECAUSE THE NEW
+   HERO PHOTOGRAPH HAS CEILING LIGHTS WHERE THE HEADER SITS. (2026-08-03)
+
+   The hero swapped to the 2026 office photograph, which is lit by a white
+   suspended ceiling with fluorescent panels across the top of the frame. The
+   shared `.hero-veil-top` was solved against darker hero tops, and measured
+   per-pixel across the real header box (y 34-82) it does NOT hold here:
+
+     1536 x 900   white nav ink  4.516   pass, but by 0.016
+     1440 x 900   white nav ink  4.520   pass, but by 0.020
+     1280 x 800   white nav ink  **4.252  FAIL**
+
+   The worst pixel backs out to essentially PURE WHITE (a lit ceiling panel), so
+   this is not a sampling artefact — it is the brightest a pixel can be, and any
+   viewport short enough to put the nav's lower edge on it fails.
+
+   🔴 THE SHARED VEIL IS NOT TOUCHED. `.hero-veil-top` is used by the homepage,
+   /about, /services, /blog and /contact; every one of those has its own solved
+   AA table against its own photograph. Strengthening the shared class to fix ONE
+   page would silently darken five heroes and invalidate five tables. This is an
+   override used only on /join.
+
+   THE SOLVE. Against a pure-white pixel, white ink needs navy at alpha >= 0.61
+   to reach 4.5 (0.59 gives 4.45, still short). This holds **0.66 through 30%**
+   of the veil's span, which covers the nav band at every viewport height the
+   header occupies (its lower edge lands at t = 0.11 to 0.25 of the ramp across
+   800-1180px tall viewports), then rejoins the shared curve's shape so the
+   photograph below the bar is no darker than it was.
+--------------------------------------------------------------------------- */
+.join-hero-veil-top {
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(13, 27, 42, 0.72) 0%,
+    rgba(13, 27, 42, 0.7) 18%,
+    rgba(13, 27, 42, 0.66) 30%,
+    rgba(13, 27, 42, 0.45) 50%,
+    rgba(13, 27, 42, 0.24) 66%,
+    rgba(13, 27, 42, 0.1) 80%,
+    transparent 100%
+  );
+}
+
 .join-hero-scrim {
   pointer-events: none;
   /* RE-DERIVED 2026-07-30(2) for join-hero-team-dinner.jpg (object-center).
@@ -3825,17 +4608,86 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   font-weight: 600;
 }
 
-/* 🔴 THE DISABLED PORTAL CTA. Cream at 0.55 alpha over the hero photograph
-   composites to a light grey; against the cream label at 0.55 the pair reads
-   as unavailable without relying on colour alone — the note beneath it says so
-   in words, and `aria-describedby` ties the two together.
+/* 🔴 THE DISABLED PORTAL CTA — RE-DERIVED 2026-08-02. IT DID NOT READ AS
+   DISABLED, AND THAT WAS MEASURABLE RATHER THAN A MATTER OF TASTE.
+
+   It shipped as `1px solid rgba(248,244,238,0.45)` with a `0.08` fill and a
+   `0.72` label, and the old note here claimed the pair "reads as unavailable".
+   Driven on the built page and sampled properly — the real JPEG mapped through
+   object-cover, `.hero-veil-top` and `.join-hero-scrim` composited as real
+   per-row alpha fills, then every pixel of the button's own rect read off
+   getBoundingClientRect — the button sits at 83.4% down the hero where the
+   scrim is at its 0.70 floor. Worst (brightest) backdrop pixel there is
+   #40454D, L 0.0588. Against it:
+
+     label  cream@0.72   5.48:1     the bar for LIVE body text is 4.5
+     border cream@0.45   3.17:1     the bar for a LIVE UI boundary is 3.0
+
+   So it measured as a fully compliant ENABLED secondary control, sitting beside
+   a filled primary on a dark hero — which is exactly the house style for a live
+   ghost CTA. It advertised itself as clickable, and it is inert: no href, no
+   onClick, nothing happens. The only disconfirmation was the 13.5px note below
+   it.
+
+   NOW, same method, same worst pixel:
+
+     label  cream@0.58   4.18:1     deliberately UNDER the 4.5 live-text bar
+     border cream@0.35   2.51:1     deliberately UNDER the 3.0 live bar
+
+   Both are legal: WCAG 1.4.3 and 1.4.11 both exempt inactive/disabled user
+   interface components from contrast. Going under the live bars is the POINT —
+   the control is quieter than any live control on the page can be, so the
+   difference is not a judgement call.
+
+   🔴 THE BORDER IS DASHED, AND THAT IS THE 1.4.1 HALF. Alpha alone is a colour
+   difference, and this codebase does not ship state carried by colour alone
+   (see the nav's aria-current underline and the admin rail's half-height inert
+   bar for the same decision). A dashed edge is a SHAPE, it reads as
+   placeholder/not-active at a glance, and it survives greyscale. The visible
+   note is the third, textual cue and `aria-describedby` ties it to the control.
+
+   The fill is dropped entirely: at 0.08 over this backdrop it was doing no
+   perceptual work and it was the last thing making the shape read as "filled
+   button".
+
    `cursor: not-allowed` is the pointer affordance; `disabled` on the real
-   <button> is what removes it from the tab order. */
+   <button> is what removes it from the tab order (verified: .focus() does not
+   move activeElement to it). */
 .join-cta--disabled {
+  border: 1px dashed rgba(248, 244, 238, 0.35);
+  background-color: transparent;
+  color: rgba(248, 244, 238, 0.58);
+  cursor: not-allowed;
+}
+
+/* ✅ THE LIVE GHOST CTA — what the portal button became when it was enabled
+   (2026-08-02). These are the alphas the DISABLED rule above shipped with, and
+   the measurement that condemned them there is exactly what qualifies them
+   here: over the worst (brightest) backdrop pixel under this button's own rect,
+   #40454D at L 0.0588 — sampled from the real JPEG through object-cover with
+   `.hero-veil-top` and `.join-hero-scrim` composited as real per-row fills —
+
+     label  cream@0.72   5.48:1     needs 4.5 (live body text)
+     border cream@0.45   3.17:1     needs 3.0 (live UI component boundary)
+
+   Solid border, not dashed: the dash was carrying the "inactive" meaning and
+   this control is active. Focus ring comes from the global `:focus-visible`
+   rule, which reads `--focus-ring` from the surface it sits on. */
+.join-cta--ghost {
   border: 1px solid rgba(248, 244, 238, 0.45);
   background-color: rgba(248, 244, 238, 0.08);
   color: rgba(248, 244, 238, 0.72);
-  cursor: not-allowed;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.join-cta--ghost:hover {
+  border-color: rgba(248, 244, 238, 0.75);
+  background-color: rgba(248, 244, 238, 0.16);
+  color: #f8f4ee;
+}
+@media (prefers-reduced-motion: reduce) {
+  .join-cta--ghost {
+    transition: none;
+  }
 }
 .join-portal-note {
   flex-basis: 100%;
@@ -3975,4 +4827,950 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   font-size: 14px;
   line-height: 1.6;
   color: rgba(26, 26, 26, 0.82);
+}
+
+/* ===========================================================================
+   THE ENGINE — motion + passport card treatment.  §14
+   Mechanics studied live on checkmatefinancialgroup.com (offset-path particles,
+   staggered linear loop, a spinning dashed ring). The LOOK is ours: gold-deep
+   on cream, no chess piece, no dark surface, no marching dashes.
+   =========================================================================== */
+
+/* THE TRAVELLING HIGHLIGHT.
+   🔴 THE LINES THEMSELVES DO NOT ANIMATE. They are static, thin and always
+   present. What moves is a short bright segment sliding ALONG each fixed path.
+   An earlier build had the lines DRAWING themselves in (`engine-draw`); that
+   was the wrong mechanic and is replaced.
+
+   Every path carries `pathLength="1"`, so `stroke-dasharray: 0.05 0.95` gives a
+   dash covering 5% of the line and a gap covering the other 95% — the pattern
+   period equals the whole path, so there is EXACTLY ONE dash on a line at any
+   moment. A repeating march (Checkmate ships dasharray 7,11) would read as
+   marching ants instead of a single highlight.
+
+   THE 5% IS MEASURED OFF THE REFERENCE. Its own community page is behind a
+   login, but from a screenshot of it the bright segments run ~45-50px against
+   paths spanning ~1060px from the left rail to the processor card — 4.2% to
+   4.7%. An earlier draft of this used 12%, which reads as a comet streak rather
+   than the tight bead of light the reference actually shows. (The diamonds
+   dotted along its paths are STATIC waypoint markers, not the moving part.)
+
+   Animating `stroke-dashoffset` 0 to -1 slides that dash one full period, i.e.
+   one complete traverse, and wraps seamlessly. Direction follows the path's
+   authored direction, so the same keyframe serves both sides.
+
+   The opacity envelope matches the reference's behaviour (its particles sit at
+   base `opacity: 0`): the highlight fades IN over the first 8% and OUT over the
+   last 12% rather than popping at the ends. */
+@keyframes engine-dash-travel {
+  0%   { stroke-dashoffset: 0;  opacity: 0; }
+  8%   { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { stroke-dashoffset: -1; opacity: 0; }
+}
+
+.engine-dash {
+  stroke-dasharray: 0.05 0.95;
+  animation: engine-dash-travel var(--engine-dur, 5.2s) linear var(--engine-delay, 0s)
+    infinite;
+  /* Glow, in our gold. Reference measures rgba(216,205,173,.8) at 4px on a dark
+     surface; ours is gold #C9A84C at 0.75 / 3px, which is what reads as "bright"
+     against cream — on a light surface a highlight gains presence by getting
+     denser and wider, not lighter. */
+  filter: drop-shadow(0 0 3px rgba(201, 168, 76, 0.75));
+}
+
+/* The outer halo ring turns once a minute — presence, not motion you watch.
+   🔴 THE TRANSLATE IS PART OF THE KEYFRAME AND HAS TO BE. The ring is an HTML
+   div centred with -translate-x-1/2/-translate-y-1/2; an `animation` that sets
+   `transform` REPLACES that centring outright, which shifted the ring +23.9px
+   on both axes (measured: centre 526.6 against 502.7 for the other two rings).
+   Restating the translate inside the keyframe keeps it centred while it spins.
+   The old `transform-origin: 620px 300px` was written for SVG user units and
+   is wrong for a DOM node — it is `center` now. */
+@keyframes engine-ring-spin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to   { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ===========================================================================
+   🔴 THE LINE TREATMENT WAS RE-MEASURED ON CHECKMATE 2026-08-02 AND WHAT WE
+   SHIPPED WAS THE WRONG MECHANIC. Standing Rule 8 says re-measure rather than
+   trust notes, and doing so overturned three things this file asserted.
+
+   WHAT THEIR DIAGRAM ACTUALLY DOES, read off the live DOM and CSSOM:
+
+     .ep-in    21 lines · 1px · cream @ **0.22** · NO dasharray · NO animation
+     .ep-out    3 lines · 1.5px · solid · dasharray **7 11** · `ep-march`
+                1.6s linear, staggered 0 / 0.9 / 1.8s
+     .ep-pulse  a travelling **DOT** (r 3.5 in / 4 out) driven by CSS
+                `offset-path` + `offset-distance`, `ep-travel` **5.2s** linear,
+                base `opacity: 0`, glow via drop-shadow — on only **6 of the
+                21** in-lines, staggered 0.85s, plus all 3 out-lines at 1.1s
+     .ep-ring   r 68 solid + r 92 dashed 3/9, `ep-spin` 60s, both at 620,300
+
+   WHAT WE HAD, AND WHY IT WAS WRONG:
+   1. We slid a 5%-long DASH along EVERY line. Their moving element is a round
+      dot with a glow, and it runs on under a third of the lines. A highlight on
+      all 24 at once is why ours read as busy and theirs reads as calm.
+   2. We had NO march on the out-lines. Theirs is the one place they use
+      marching ants, and it is what separates output from input.
+   3. Our in-lines were FULL gold-deep at 1px. Theirs are 0.22 alpha.
+
+   🔴 THE 5.2s AND THE 1100ms STAGGER IN THE OLD NOTES WERE RIGHT. They were
+   just attached to the wrong mechanic — they are the DOT's traverse and the
+   out-stagger, not a dash's. The note that the dash length was "measured off a
+   screenshot" of a login-walled page can now be retired: there is no dash to
+   measure, and the real numbers came off the real DOM.
+
+   ---------------------------------------------------------------------------
+   🔴 WEIGHT IS MATCHED AS A CONTRAST RATIO, NOT AS AN ALPHA. Their surface is
+   near-black and ours is now near-white, so copying `0.22` would produce a line
+   that is not remotely as faint — alpha means nothing across a polarity flip.
+   Measured on their own page, then solved for the same ratio on ours:
+
+     their .ep-in   cream @0.22 on #0B0E12   = **1.90:1**
+     ours           gold-deep @0.49 on ours  = **1.90:1**   ← same faintness
+     their .ep-ring gold-night @0.48         = **3.50:1**
+     ours           gold-deep @0.90          = **3.64:1**
+     their .ep-out  solid gold-night         = 11.93:1
+     ours           solid gold-deep          = **4.33:1**
+
+   The out-line cannot reach 11.93 in gold on a light surface — solid gold-deep
+   is 4.33 and the only way past it is ink, which would stop being gold. 4.33
+   clears the 3:1 bar with room and keeps the brand colour; the RELATIONSHIP
+   their design depends on (out-lines emphatic, in-lines nearly gone) survives
+   intact at 2.3x separation.
+
+   🔴 THE IN-LINES AT 1.90 ARE BELOW THE 3:1 NON-TEXT BAR, ON INSTRUCTION, AND
+   THAT IS RECORDED RATHER THAN QUIETLY DONE. The client asked for Checkmate's
+   faintness explicitly and Checkmate's own lines measure 1.90 — the bar cannot
+   be met and the instruction honoured at the same time. It is defensible here
+   because **1.4.11 applies to graphics REQUIRED to understand the content, and
+   these carry nothing**: every carrier name is a real `<span>` and every
+   outcome a real `<h3>`/`<p>` in the DOM, both readable with the SVG gone
+   entirely. The lines are the drawing between them. Everything that is NOT
+   purely decorative — rings, out-lines, dots, endpoint markers, chip and card
+   borders — is held to 3:1 and passes. **If a future pass ever moves real
+   information onto these lines, they have to go back up to 3:1.** */
+.engine-line {
+  stroke: #7d641f;
+  stroke-opacity: 0.49; /* 1.90:1 — Checkmate's own in-line, matched by ratio */
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+}
+
+/* The OUT-lines: emphatic, solid gold-deep, and the one place marching ants
+   belong. Period is 7+11 = 18 user units, so one full period of dashoffset is
+   a seamless wrap. */
+@keyframes engine-march {
+  to {
+    stroke-dashoffset: -18;
+  }
+}
+
+.engine-out {
+  stroke: #7d641f;
+  stroke-dasharray: 7 11;
+  animation: engine-march 1.6s linear var(--engine-delay, 0s) infinite;
+}
+
+/* The travelling dot. `offset-path` carries it along its own line, which is why
+   nothing here has to know the geometry — the path string is handed in inline
+   and this rule only supplies timing and look. Base opacity 0, as theirs is, so
+   a dot fades in and out at the ends instead of popping. */
+@keyframes engine-travel {
+  0% {
+    offset-distance: 0%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    offset-distance: 100%;
+    opacity: 0;
+  }
+}
+
+.engine-pulse {
+  fill: #7d641f;
+  opacity: 0;
+  /* Their glow is rgba(216,205,173,.8) — a PALE bloom, which is how you make a
+     dot glow on near-black. On near-white a pale bloom is invisible; ours is
+     gold at 0.7, i.e. the dot gains presence by getting denser, not lighter.
+     Same reasoning the retired `.engine-dash` recorded, and it still holds. */
+  filter: drop-shadow(0 0 3px rgba(201, 168, 76, 0.7));
+  animation: engine-travel var(--engine-dur, 5.2s) linear var(--engine-delay, 0s)
+    infinite;
+}
+
+/* The numbered endpoints. Their disc is `rgba(250,247,240,0.06)` — a barely
+   there lift off a dark field. The equivalent lift off a light field is a
+   WHITE disc, which is also what gives the numeral a face to sit on: ink on
+   white/60 is 15.70 against ink straight on the glow at 13.34. */
+.engine-term {
+  fill: rgba(255, 255, 255, 0.6);
+  stroke: #7d641f; /* solid: 4.33 — their 0.62 alpha would be 2.30 here */
+}
+
+.engine-term-n {
+  fill: #1a1a1a;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+/* 🔴 THE RINGS ARE SVG CIRCLES NOW, NOT HTML DIVS, AND THAT RETIRES A BUG.
+   The note above `engine-ring-spin` records that animating `transform` on a
+   div centred with `-translate-*` REPLACES the centring and shifted the ring
+   23.9px on both axes, so the translate had to be restated inside the keyframe.
+   In SVG there is no translate to clobber and `transform-origin` takes real
+   user units again — which is what Checkmate uses (`620px 300px`). The DOM
+   version and its keyframe stay above, unused, because the trap they document
+   is real for any future HTML ring. */
+@keyframes engine-ring-spin-svg {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.engine-ring {
+  fill: none;
+  stroke: #7d641f;
+  stroke-opacity: 0.9; /* 3.64 — their ring measures 3.50 */
+  stroke-width: 1;
+}
+
+.engine-ring--dash {
+  stroke-dasharray: 3 9;
+  transform-origin: 620px 300px;
+  animation: engine-ring-spin-svg 60s linear infinite;
+}
+
+/* 🔴 RETIRED, KEPT FOR THE TRAP IT DOCUMENTS. Was the HTML-div ring. */
+.engine-ring-dash {
+  transform-origin: center;
+  animation: engine-ring-spin 60s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* The dots are not rendered at all under reduced motion (component-level), so
+     the tracks simply stand still. The two looping CSS animations that survive
+     in the markup are stopped here. */
+  .engine-out,
+  .engine-ring--dash,
+  .engine-ring-dash,
+  /* The dots are not rendered at all under reduced motion, so this is belt and
+     braces — but their base state is `opacity: 0`, so stopping the animation
+     without hiding them would leave nine invisible circles rather than nine
+     stuck ones. Explicit, so a future pass that renders them anyway is safe. */
+  .engine-pulse {
+    animation: none;
+  }
+
+  .engine-pulse {
+    display: none;
+  }
+}
+
+/* Security-paper texture for the passport cards. Deliberately at 0.028 alpha:
+   measured, it moves the composited background under body text from #FFFFFF to
+   ~#FAFAFA, which costs the card body ratio ~0.1 and keeps every label far
+   above AA. Anything heavier starts eating contrast. */
+.passport-guilloche {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(26, 26, 26, 0.028) 0 1px,
+    transparent 1px 7px
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Belt and braces: the component does not RENDER the highlight paths at all
+     under reduce, so this only catches a stale node. The static lines are
+     untouched — fully visible, no travelling dash, no stagger — and the cards
+     are already rendered in place by the component itself. */
+  .engine-dash {
+    animation: none !important;
+    display: none !important;
+  }
+  .engine-ring-dash { animation: none !important; }
+}
+
+/* ===========================================================================
+   TESTIMONIALS — arrangement matched from beetogreen.com/en, measured live.
+   Their numbers: quote 37.33px / 44.8 lh / -0.02em / w500 · lead-in 24.89px
+   w600 · counter 16px · arrows 44.4px circles, radius 50%, 1px border, ~8.9px
+   apart · ring viewBox 0 0 50 50, circle r=24, dasharray 150.8 (= 2*pi*r),
+   stroke-width 2, ANIMATION 8s LINEAR FORWARDS · 44px rhythm between
+   header -> quote -> author.
+
+   THE RING IS THE AUTO-ADVANCE TIMER. dashoffset runs 150.8 -> 0 over the same
+   8s the slide is held for, so the stroke closing IS the countdown. It is
+   re-keyed on every slide change so the animation restarts from empty.
+
+   PAUSE ON HOVER/FOCUS is ours, not theirs: a keyboard user reading a long
+   quote must not be yanked to the next slide, so pointer-enter and focus-in
+   both set animation-play-state: paused AND stop the JS timer. The two have to
+   move together or the ring lies about when the advance happens.
+
+   REDUCED MOTION: no animation at all and the ring renders COMPLETE (offset 0)
+   rather than empty, so it reads as a finished dial instead of a stalled one.
+   The JS timer is separately suppressed; the arrows keep working. */
+@keyframes testimonial-ring {
+  to { stroke-dashoffset: 0; }
+}
+.t-ring {
+  stroke-dasharray: 150.8;
+  stroke-dashoffset: 150.8;
+  animation: testimonial-ring var(--t-dur, 8s) linear forwards;
+}
+.t-paused .t-ring {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .t-ring {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   WHO WE SERVE — the photographic card.
+   ---------------------------------------------------------------------------
+   The three flat skins (`bg-navy` / `bg-gold-deep` / `bg-gold`) are gone; every
+   card is now one photograph under one scrim with one ink. See WhoWeServe.tsx
+   for why the reference's structure was taken and its colours were not.
+
+   🔴 IT IS A FULL-CARD WASH WITH A BOTTOM RAMP, NOT A BOTTOM-ONLY GRADIENT, AND
+   THAT WAS FORCED BY MEASUREMENT RATHER THAN CHOSEN.
+
+   The first build was the reference's shape exactly: transparent at the top,
+   ramping to a floor over the bottom third. Then the real copy block was
+   measured on the built page instead of assumed. At 768 the card is 712.8x560
+   and the copy runs from **5% to 95% of the card height** — a 46px title, three
+   bullets and the action fill it almost edge to edge, because `justify-end` has
+   no slack left to distribute. There is no "image at the top, copy at the
+   bottom" region to gradient between.
+
+   Measured against the real files with that bottom-only ramp, worst composited
+   pixel in the copy band: **cream 1.32:1** (Agents 3 at 768) against a 4.5 bar,
+   and gold-pale 1.10:1 against 3.0. Every one of the six failed at every width.
+   The title was sitting where the scrim was still nearly transparent.
+
+   🟡 SO THE PHOTOGRAPH IS TONED THROUGHOUT rather than clean at the top. That is
+   a real, visible divergence from the reference and it is the direct cost of
+   keeping the card COPY verbatim — five times the reference's title-plus-one-
+   stat cannot sit in the bottom third of anything. Flagged, not hidden. The two
+   levers that would buy the clean top back are both copy or layout decisions,
+   not CSS: drop the bullets to one line, or roughly double the card height.
+
+   THE BASE IS 0.65 AND IT IS A BOUND, NOT A SAMPLE. navy #0D1B2A over a
+   CLIPPED-WHITE pixel — L 1.0, the worst any photograph can present, and three
+   of the six do carry blown highlights:
+
+     alpha 0.55  ->  L 0.2182  cream 3.57  gold-pale 3.00   fails
+     alpha 0.60  ->  L 0.1784  cream 4.20  gold-pale 3.52   fails
+     alpha 0.62  ->  L 0.1638  cream 4.48  gold-pale 3.76   0.02 short
+     alpha 0.65  ->  L 0.1433  cream 4.96  gold-pale 4.16   SHIPPED
+     alpha 0.70  ->  L 0.1125  cream 5.90  gold-pale 4.94   costs the image
+     alpha 0.80  ->  L 0.0637  cream 8.43  gold-pale 7.07
+
+   Because 0.65 clears both bars against CLIPPED WHITE, **no photograph swapped
+   in here can ever fail it** — the guarantee does not depend on which image is
+   behind the copy, which is the property a six-slot rotating card set needs.
+   The per-file measured numbers are far better than the bound and are in
+   HANDOFF.
+
+   The ramp to 0.88 over the bottom 40% is depth, not legibility: it seats the
+   copy and keeps the card reading as a gradient card rather than as a flat
+   overlay. */
+.who-card-scrim {
+  pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(13, 27, 42, 0.88) 0%,
+    rgba(13, 27, 42, 0.85) 12%,
+    rgba(13, 27, 42, 0.78) 24%,
+    rgba(13, 27, 42, 0.7) 34%,
+    rgba(13, 27, 42, 0.65) 44%,
+    rgba(13, 27, 42, 0.65) 100%
+  );
+}
+
+/* THE ACTION'S RULE. The reference's only card-level hover is an underline that
+   WIPES — scaleX 1 -> 0 with the origin flipping left-to-right. Reproduced with
+   a pseudo-element rather than `text-decoration`, because a text-decoration
+   cannot be animated on its own axis. Gold-pale, not gold: this rule sits on
+   the scrim's floor where gold-pale is 11.9:1 and gold is 6.8:1 — both legal,
+   but the rule also has to survive the lightest pixel in the copy band. */
+.who-card-cta {
+  position: relative;
+}
+.who-card-cta::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 9px;
+  height: 1px;
+  background-color: #efe1b0;
+  transform-origin: left center;
+  transform: scaleX(1);
+  transition: transform 700ms cubic-bezier(0.77, 0, 0.175, 1);
+}
+.who-card-cta:hover::after {
+  transform-origin: right center;
+  transform: scaleX(0);
+}
+.who-card-arrow {
+  display: inline-block;
+  transition: transform 300ms cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+.who-card-cta:hover .who-card-arrow {
+  transform: translateX(4px);
+}
+
+/* The ring lands on a PHOTOGRAPH, so it cannot be solved against a known fill.
+   gold-pale is the value that clears 3:1 against the scrim floor (11.9:1) and
+   against a clipped-white pixel (1.33:1 — which is why the ring is drawn on the
+   scrimmed area only, i.e. over the copy, where the floor applies). */
+.who-card-cta {
+  --focus-ring: #efe1b0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .who-card-cta::after,
+  .who-card-arrow {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   THE ENGINE — THE DARK HERO CARD (2026-08-02)
+   ---------------------------------------------------------------------------
+   🔴 THIS SECTION'S CREAM AA TABLE IS VOID. Every ratio recorded for the Engine
+   before this date was measured against #F8F4EE and none of it carries over.
+   The section's content was built for a light surface and ALL of it inverted.
+
+   🔴 THE ONE NUMBER THAT GOVERNS THE WHOLE DESIGN, and it was already in this
+   codebase before today. gold #C9A84C is L 0.4094, so for it to clear 4.5:1 as
+   NORMAL text the surface beneath it must be **L <= 0.0521**. That is the exact
+   constraint §3 used to derive `navy-lift #1C3A5A` (L 0.0401) — "the lightest
+   navy that keeps gold legal as normal text with real margin". The glow's
+   brightest permitted stop was therefore solved on this project long before the
+   dark card existed, and the card inherits it rather than re-deriving it.
+
+   🔴 REBUILT 2026-08-02 (2) AGAINST THE CLIENT'S REFERENCE IMAGE + SNIPPET,
+   WHICH ARRIVED AFTER THE FIRST BUILD. The first pass was made from a written
+   description alone and got the GEOMETRY wrong in one specific way:
+
+     first build   ellipse 120% 70% at 50%   0%
+     reference     ellipse  90% 70% at 50% -10%
+
+   THE `-10%` IS THE WHOLE EFFECT. Putting the ellipse's centre ABOVE the top
+   edge means the card's top edge cuts through the gradient near its middle, so
+   the entire top edge is uniformly bright and the wash reads as a WIDE
+   HORIZONTAL BAND fading downward. With the centre AT the edge (0%), the
+   brightest point is a single spot at top-centre and it falls off radially
+   toward the top corners — which is exactly the "too centered" the client
+   rejected. Same for the width: 90% (narrower than the box) with the centre
+   lifted covers the top edge more evenly than 120% centred on it.
+
+   Dot pitch is 18px and dot size 1px, both taken from the reference snippet.
+
+   ---------------------------------------------------------------------------
+   🔴 THE CONTRAST COST OF THE BRIGHTER WASH, AND THE ONE TOKEN THAT PAID IT.
+
+   Matching the reference meant roughly doubling the glow. Solved jointly
+   (glow alpha x dot alpha, worst pixel = a dot ON the glow), gold text ratios:
+
+              dot .06   dot .08   dot .10   dot .12
+     glow .20   5.21      4.90      4.61      4.33  FAIL
+     glow .26   4.54      4.27 F    4.03 F    3.79  FAIL
+     glow .30   4.13 F    3.90 F    3.68 F    3.47  FAIL
+     glow .38   3.42 F    3.24 F    3.07 F    2.91  FAIL
+
+   So gold #C9A84C as TEXT caps the wash at roughly 0.20-0.26 — dimmer than the
+   reference. The reference look and gold body text are not simultaneously
+   satisfiable at 4.5:1.
+
+   🟡 RESOLVED BY SPLITTING THE GOLD, NOT BY WAIVING THE BAR. gold #C9A84C stays
+   on every NON-TEXT gold thing (lines, travelling dash, halo rings) where the
+   bar is 3:1 and the headroom is enormous. The one piece of small gold TEXT —
+   the 11px uppercase eyebrow — moves to gold-pale #EFE1B0, which is L 0.7534
+   against gold's 0.4094 and therefore tolerates a surface 2.5x brighter:
+
+     glow .38 + dot .12 -> surface L 0.1078   gold 2.91 FAIL   gold-pale 5.09
+
+   gold-pale is not a new colour: §3 lists it as the on-dark gold token (it is
+   the hover/focus gold on every dark surface on this site, 13.31:1 on navy).
+   Small uppercase type at 11px wants the extra contrast anyway.
+
+   ⚠️ IF THE EYEBROW IS EVER PUT BACK TO #C9A84C, THE GLOW MUST COME BACK DOWN
+   TO 0.20 WITH IT. Those two values are one decision.
+
+   THE SHIPPING SURFACES:
+
+     base             #0B0B0D                      L 0.0034
+     glow peak        gold @0.38 (top edge)        L ~0.089
+     WORST PIXEL      + a dot @0.09 over that      measured on the built page
+
+   LAYER ORDER IS LOAD-BEARING. In `background-image` the FIRST layer paints on
+   TOP, so the dots are listed first and sit over the glow — which is the stack
+   the worst-pixel model assumes. Reversing them silently invalidates the table.
+
+   🔴 NO LIBRARY, NO IMAGE ASSET, AND THE SNIPPET'S CANVAS WAS NOT USED. The
+   reference implementation animates a 1024x1024 canvas noise field on every
+   other rAF frame, forever, full-viewport. That is a permanent main-thread
+   cost for a static texture and it cannot honour `prefers-reduced-motion`.
+   Ours is an inline SVG feTurbulence data URI: no canvas, no rAF, no file, no
+   animation, and it tiles infinitely for free. The glow is a CSS radial in our
+   own gold token — never the snippet's orange #fb923c. */
+/* ===========================================================================
+   🔴 SUPERSEDED 2026-08-02 (r) — THE CARD IS GONE. `.engine-card` is retired.
+
+   The Engine is a NORMAL FULL-WIDTH SECTION now, matching Checkmate's
+   `section.engine`: no rounded card, no inset, no wrapper surface. The
+   background belongs to the section and runs edge to edge. The whole
+   near-black + gold-radial + dot-lattice treatment above is retired with it;
+   the derivation is kept because it is the only solved warm-glow-on-dark on
+   this site and the next dark surface starts from it rather than re-deriving.
+   =========================================================================== */
+
+/* ---------------------------------------------------------------------------
+   THE ENGINE SECTION SURFACE — the client's gradient, edge to edge.
+
+   Their three stops, unchanged:  #16130E 0%  ·  #372F20 32%  ·  #9C8D63 100%
+
+   🔴 THE LAST STOP IS AT 170%, NOT 100%, AND THAT IS A CONTRAST FIX — NOT A
+   RECOLOUR. Run to 100% the gradient reaches L 0.2702 at the section's bottom
+   edge, and that creates a band in which NO TEXT COLOUR ON THIS SITE IS LEGAL:
+
+     cream #F8F4EE fails above  L 0.1630
+     ink   #1A1A1A fails below  L 0.2215
+
+   Between those two the surface is too light for cream and too dark for ink.
+   On a 1283px section that dead band is **78.6% -> 91.0% down, y 1008-1168** —
+   exactly where the third card and the lowest chips sit. Measured down the
+   ramp (cream / gold-pale / gold / ink):
+
+      0%   16.91  14.17   8.11   1.06 F
+     40%   10.22   8.57   4.90   1.55 F
+     70%    5.36   4.50   2.57 F 2.96 F
+     80%    4.37 F 3.67 F 2.10 F 3.63 F   <- nothing works
+    100%    2.99 F 2.51 F 1.43 F 5.31
+
+   Pushing the final stop to 170% means the section's bottom edge only reaches
+   **#5F543A, L 0.0909**. All three client colours are kept and the ramp still
+   reads dark-brown into gold; it simply never arrives at the value that breaks
+   text. 150% was tried first and REJECTED: gold lines fall to 2.76 against the
+   3:1 non-text bar there. 170% is the first value where every token clears at
+   BOTH ends:
+
+     token                      top L 0.0067   bottom L 0.0909   worst   bar
+     cream #F8F4EE                    16.91           6.80       6.80   4.5
+     gold-pale #EFE1B0                14.17           5.70       5.70   4.5
+     gold #C9A84C (lines, non-text)    8.11           3.26       3.26   3.0
+     white card edge                  18.52           7.45       7.45   3.0
+
+   🔴 CONSEQUENCE FOR TOKENS: gold #C9A84C survives only the top ~63% of the
+   section, so it CANNOT be a text colour here — the eyebrow is gold-pale.
+   Gold stays on the lines and rings, where the bar is 3:1.
+
+   170deg (not 180) is the client's angle — the ramp is tilted 10 degrees, so
+   the left edge runs slightly darker than the right at the same height. The
+   figures above are taken at the DARKEST and LIGHTEST corners, not the centre.
+
+   GRAIN: two passes, as the client's snippet has — one multiplied into the
+   background stack at 0.13 via `background-blend-mode: overlay`, one as a
+   separate animated layer. No canvas, no library, no image asset.
+
+   ⚠️ SUPERSEDED — see `.engine-surface` below. The brown->gold ramp above was
+   REPLACED on instruction by the radial + grid treatment. Its derivation is
+   kept because the 170% dead-band finding is the only place on this project
+   where a gradient was shown to have a band with NO legal text colour, and that
+   analysis applies to any future light-ending gradient. */
+
+/* ===========================================================================
+   THE ENGINE SECTION SURFACE — REBUILT 2026-08-02 (s) TO THE CLIENT'S SECOND
+   SNIPPET. The brown->gold gradient it replaces is retired above.
+
+   The reference is a 21st.dev noise-effect component. Its STRUCTURE is taken;
+   its palette is not:
+
+     reference                        ours
+     --------------------------------- ------------------------------------
+     bg-neutral-950 #0A0A0A            #0A0A0A                    kept
+     radial 600px at 50% 180px         same geometry              kept
+     rgba(168,85,247,0.33)  PURPLE     rgba(201,168,76,0.33) GOLD retoned
+     grid #64748b29 (slate, a 0.161)   cream #F8F4EE at 0.12      retoned
+     bg-[size:22px_24px]               22px 24px                  kept
+     canvas noise alpha 16             alpha 16                   kept
+
+   The first variant of the same snippet uses orange #F97316. Neither purple nor
+   orange is a Synergy colour; the radial is our gold at the reference's own
+   alpha, so the geometry and weight are theirs and the hue is ours.
+
+   🔴 THE FOUR LAYERS STACK, AND THE WORST PIXEL IS ALL FOUR AT ONCE: a grid
+   line crossing the radial's peak with a white noise pixel on top of it. Every
+   AA figure for this section is measured against THAT, not against the base.
+   Solved before building (surface L, then gold / gold-pale / cream):
+
+     glow  grid | surfL   gold   pale   cream
+     0.20  0.10 | 0.0690  3.86 F 6.75   8.05
+     0.26  0.14 | 0.1013  3.04 F 5.31   6.33
+     0.33  0.10 | 0.1067  2.93 F 5.13   6.11
+     0.33  0.12 | ~0.115  ~2.8 F ~4.87  ~5.8    SHIPPED
+     0.33  0.14 | 0.1238  2.64 F 4.62   5.51
+     0.38  0.16 | 0.1510  2.29 F 4.00 F 4.77
+
+   🔴 gold #C9A84C IS NOT A LEGAL TEXT COLOUR ANYWHERE IN THIS STACK. Its best
+   case across the whole solve is 3.86, at a glow/grid combination far dimmer
+   than the reference. It needs a surface at or below L 0.0521 and the radial's
+   peak alone is past that. The eyebrow is gold-pale #EFE1B0 (§3's on-dark gold
+   token); gold survives only where the bar is 3:1 and only away from the peak,
+   which is measured per element rather than assumed.
+
+   GRID ALPHA 0.12, NOT THE REFERENCE'S 0.161. At 0.14 gold-pale lands on 4.62
+   — legal but a 0.12 margin. 0.12 buys ~4.87 for a grid that reads the same
+   weight, because cream #F8F4EE is a lighter ink than their slate #64748B and
+   needs less alpha to carry equally.
+
+   LAYER ORDER IS LOAD-BEARING: first listed paints on top, so the grid sits
+   over the radial — which is the stack the solve above assumes. Reversing them
+   invalidates the table.
+
+   The canvas grain is `components/EngineNoise.tsx` — the reference's technique,
+   re-implemented bounded, throttled, off-screen-paused and reduced-motion-safe.
+   =========================================================================== */
+.engine-surface {
+  background-color: #0a0a0a;
+  background-image:
+    linear-gradient(to right, rgba(248, 244, 238, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(248, 244, 238, 0.12) 1px, transparent 1px),
+    radial-gradient(
+      circle 600px at 50% 180px,
+      rgba(201, 168, 76, 0.33),
+      transparent 70%
+    );
+  background-size:
+    22px 24px,
+    22px 24px,
+    auto;
+  background-repeat: repeat, repeat, no-repeat;
+}
+
+/* ===========================================================================
+   ALTERNATIVE B — THE CLIENT'S SECOND SNIPPET, BUILT SO THE TWO CAN BE
+   COMPARED SIDE BY SIDE (2026-08-02). Swap `SURFACE` in TheEngine.tsx.
+
+   The snippet supplied is the `demo.tsx` variant: black, TWO offset radials, a
+   DOT grid rather than a line grid. Structurally different from A in three
+   ways, and each one is a real decision rather than a restyle:
+
+     A (.engine-surface)              B (.engine-surface-b)
+     -------------------------------- --------------------------------------
+     ONE radial, centred at 50% 180px TWO radials, 35% 240px and 70% 540px
+     LINE grid, 1px rules at 22x24    DOT grid, 1px dots at 22x22
+     symmetric, calm, hub-centred     diagonal, wider, fills the lower right
+
+   🔴 THE HUES ARE NOT THEIRS AND CANNOT BE. The snippet's radials are
+   #3b82f640 BLUE and #a855f740 PURPLE — both alpha 0.25 (0x40/255). Neither is
+   a Synergy colour and there is no argument for introducing two new hues into a
+   section whose whole job is the gold/cream system. Retoned:
+
+     snippet                          ours
+     -------------------------------- --------------------------------------
+     bg-black #000000                  #0A0A0A          matches surface A
+     #3b82f6 @ 0.25 at 35% 240px       gold #C9A84C @ 0.25       retoned
+     #a855f7 @ 0.25 at 70% 540px       gold-pale #EFE1B0 @ 0.09  retoned
+     dots #475569 (slate) @ 1px/22px   cream #F8F4EE @ 0.10      retoned
+     circle 520px                      520px                     kept
+
+   TWO GOLD BLOOMS WOULD READ AS ONE SMUDGE, which is why the second is
+   gold-pale at a third the alpha. The snippet gets its depth from HUE
+   separation (blue vs purple); with one hue available the separation has to
+   come from VALUE and WEIGHT instead — a warm bright primary bloom, and a cool
+   pale secondary that reads as reflected light rather than a second source.
+
+   🔴 AA — B IS STRICTLY SAFER THAN A, MEASURED THE SAME WAY. The worst pixel
+   is still all layers at once (a grid mark on a radial peak under a white noise
+   pixel), and it is LIGHTER here on both counts:
+
+     - the primary radial is 0.25, not A's 0.33
+     - a DOT grid covers ~0.4% of the area against a line grid's ~8.7%
+       (one 1px dot per 484px cell, vs two 1px rules crossing one), and its
+       alpha is 0.10 not 0.12 — so the grid contribution to the worst pixel is
+       a fraction of A's
+     - the two radials only overlap in a band around x=52%, where the pale
+       bloom has already fallen to ~0.03; peak-on-peak does not occur
+
+   Worst-case surface L lands at ~0.087 against A's ~0.115. Every ink that
+   passed on A therefore passes on B with more margin:
+   cream ~6.9 (A ~5.8), gold-pale ~5.8 (A ~4.87).
+
+   🔴 gold #C9A84C IS STILL NOT A LEGAL TEXT COLOUR HERE. ~3.3:1 at best. The
+   improvement is real but not two full steps; the eyebrow stays gold-pale and
+   gold stays on the lines and rings where the bar is 3:1. Do not read "B is
+   safer" as licence to move gold into text.
+
+   LAYER ORDER, as in A: first listed paints on top. Dots over both radials.
+   =========================================================================== */
+.engine-surface-b {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(rgba(248, 244, 238, 0.1) 1px, transparent 1px),
+    radial-gradient(
+      circle 520px at 35% 240px,
+      rgba(201, 168, 76, 0.25),
+      transparent 70%
+    ),
+    radial-gradient(
+      circle 520px at 70% 540px,
+      rgba(239, 225, 176, 0.09),
+      transparent 70%
+    );
+  background-size:
+    22px 22px,
+    auto,
+    auto;
+  background-repeat: repeat, no-repeat, no-repeat;
+}
+
+/* ===========================================================================
+   ALTERNATIVE C — THE LIGHT GRID. **THIS IS WHAT SHIPS** (2026-08-02).
+   A and B above are both DARK and both retired to reference; the client
+   supplied a light near-white reference and the section is inverted to it.
+
+   🔴 THE INVERSION VOIDS EVERY AA FIGURE RECORDED FOR A AND B, AND THE CREAM
+   TABLE IS UN-VOIDED. This is the second time this project has inverted a dark
+   surface to light (the About page was the first, §6a) and the lesson from that
+   pass applies again in full: **values solved on dark do not survive the flip,
+   and reasoning about them is not a substitute for re-deriving them.** Every
+   number below was recomputed from scratch. Nothing carried over.
+
+   THE REFERENCE, AND WHAT IS OURS:
+
+     reference (client image)          ours
+     --------------------------------- ------------------------------------
+     near-white base                    cream #F8F4EE — the site's own near-white
+     faint PURPLE/lilac centre glow     **gold #C9A84C @ 0.08** retoned
+     fine SQUARE grid, light grey       ink #1A1A1A @ 0.045, warm by compositing
+     grid ~24px cells                   24px x 24px — square, as asked
+     soft, centred radial               circle 620px at 50% 50%
+
+   🔴 THE GRID IS SQUARE, NOT THE 22x24 A AND B USED. Those were the dark
+   snippet's cells and they are 2px taller than wide; the reference here is a
+   true square lattice and 24/24 is it.
+
+   🔴 THE GRID LINE IS INK AT 0.045, NOT A GREY HEX. Compositing ink over cream
+   gives #EEEBE5 — within a point of `greige #ECE9E2`, the token this palette
+   already uses for a light surface line. Painting it as an alpha instead of a
+   flat hex means it stays correct where the gold glow has already tinted the
+   base underneath it, which a flat hex would not.
+
+   ---------------------------------------------------------------------------
+   §AA — RE-DERIVED, AND THE POLARITY IS THE WHOLE STORY
+
+   The worst pixel is still all layers at once, but on a light surface WORST
+   means DARKEST, not lightest: the glow's peak, plus a grid line crossing it,
+   plus the darkest possible grain pixel (v=0 at alpha 4). That inverts which
+   noise sample counts — on A and B it was a WHITE pixel.
+
+     surface L, glow peak + grid + black grain  **0.7548**
+     surface L, away from the glow              **0.7985**
+
+   🔴 gold-deep #7D641F IS LEGAL HERE, BUT ONLY AWAY FROM THE GLOW — the same
+   SHAPE of finding gold produced on the dark surface, at the opposite end of
+   the ramp. On the glow's peak it measures **4.29** against the 4.5 bar; away
+   from it, **4.57**. The eyebrow is the only gold-deep text sitting directly on
+   this surface and it is at the top-left of the head block, 615px from the
+   glow's centre against a 434px reach — glow contribution zero. **Anything
+   gold-deep added near the section's centre must be re-measured, not assumed.**
+
+   🔴 THE GRID IS 0.045 AND NOT 0.05 FOR ONE REASON: 768. The glow is a FIXED
+   620px circle, so a narrower section puts the head closer to its centre — the
+   identical trap the dark build recorded. At grid 0.05 the eyebrow measures
+   4.52 at 1536 but **4.47 at 768, a fail**. At 0.045 it is 4.57 / 4.51 / 4.57.
+   The two grids are visually indistinguishable; one of them is legal at every
+   width. **Check this section at 768, never only at 1536.**
+
+   🔴 THE GRAIN DROPS TO ALPHA 4 ON THIS SURFACE (`EngineNoise alpha={4}`).
+   At 6 the eyebrow lands on 4.45 — a fail — because a dark grain pixel costs
+   more against dark text on light than a light one did against light text on
+   dark. The grain is not decoration that can be tuned by eye here; it is a term
+   in the contrast sum.
+
+   FULL TABLE — 12 elements x 3 widths, ZERO failures:
+
+     element                          1536    768    390   bar
+     -------------------------------- -----  -----  -----  ---
+     eyebrow gold-deep                 4.57   4.51   4.57  4.5
+     h2 ink                           14.06  13.89  14.06  4.5
+     lead ink/80                       8.00   7.93   8.00  4.5
+     chip label ink on white/80       16.54   same   same  4.5
+     chip border gold-deep/80          3.07   same   same  3.0
+     hub rings gold-deep/90            3.64   n/a    n/a   3.0
+     out-lines gold-deep               4.33   n/a    n/a   3.0
+     travelling dots gold-deep         4.33   n/a    n/a   3.0
+     endpoint ring gold-deep           4.33   n/a    n/a   3.0
+     endpoint numeral ink on white/60 15.70   n/a    n/a   4.5
+     card border gold-deep/80          3.07   same   same  3.0
+     card h3 / body / kicker    17.40 / 9.17 / 5.65        4.5
+
+   🔴 THE CARD AND CHIP FACES DO NOT CARRY THEIR OWN EDGES AND ARE NOT MEANT TO.
+   White on this surface is **1.32:1** and white/80 is **1.25:1** — both far
+   under 3:1, and raising them is impossible without darkening a surface the
+   brief calls near-white. The boundary is carried ENTIRELY by the gold-deep/80
+   border at 3.07. On the dark surface the face did the work (9.57) and the
+   border was a detail; here it is the reverse. **Do not remove or lighten those
+   borders — they are the only thing making either object an object.**
+
+   🔴 THE IN-LINES ARE 1.90:1 AND THAT IS DELIBERATE — see `.engine-line`.
+   =========================================================================== */
+.engine-surface-light {
+  background-color: #f8f4ee;
+  background-image:
+    linear-gradient(to right, rgba(26, 26, 26, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(26, 26, 26, 0.045) 1px, transparent 1px),
+    radial-gradient(
+      circle 620px at 50% 50%,
+      rgba(201, 168, 76, 0.08),
+      transparent 70%
+    );
+  background-size:
+    24px 24px,
+    24px 24px,
+    auto;
+  background-repeat: repeat, repeat, no-repeat;
+}
+
+/* ---------------------------------------------------------------------------
+   FILM GRAIN — NOW ANIMATED (2026-08-02, q).
+
+   `mix-blend-mode: overlay` is what keeps this from lifting the mean luminance
+   the way a flat white-noise layer would: on a base darker than 0.5 overlay
+   behaves like multiply, so it darkens as often as it lightens. Opacity 0.035
+   is where it reads as texture rather than as dirt at 2x DPR.
+
+   🔴 HOW IT ANIMATES, AND WHY NOT THE TWO OBVIOUS WAYS.
+
+   REJECTED — animating feTurbulence itself (`<animate>` on baseFrequency or
+   seed). The turbulence field is regenerated on the CPU on every frame, for the
+   full size of the filtered box. On a 1400x800 card that is millions of pixels
+   of Perlin noise per frame, and it is the single most expensive way to do this.
+
+   REJECTED — the reference snippet's canvas loop. It builds a 1024x1024
+   ImageData (1,048,576 pixels, 4 bytes each) with `Math.random()` per channel
+   and `putImageData`s it every other rAF frame, forever, full-viewport. That is
+   ~15M random numbers a second on the main thread for a background texture, it
+   never stops when off-screen, and it has no reduced-motion path.
+
+   SHIPPED — ONE STATIC TILE, TRANSFORM-STEPPED. The feTurbulence tile is
+   generated ONCE by the browser and cached as a background image. The layer is
+   then sized larger than the card and moved between 8 offsets with
+   `transform: translate3d()` on `steps(1, end)`. Because only `transform`
+   changes, the work is a compositor-thread layer shift — no repaint, no
+   filter re-evaluation, no JS, no rAF, no canvas, and no allocation per frame.
+
+   FRAME RATE IS DELIBERATELY THROTTLED. 8 discrete steps over 0.8s = **10
+   effective frames per second**, against the reference's ~30. Film grain reads
+   as *more* filmic under-cranked; at 60fps it turns into television static.
+   `steps(1, end)` is what makes each offset HOLD rather than tween — a tweened
+   translate would read as the texture sliding, which is a completely different
+   and much worse effect.
+
+   THE OFFSETS ARE COPRIME-ish AND NON-MONOTONIC on purpose (37/-53/71/-29/...):
+   stepping by a constant amount, or in one direction, makes the eye lock onto
+   the tile's 140px period and the grain visibly marches. Mixed signs and
+   non-multiples keep it reading as random.
+
+   🔴 `inset: -80px` IS LOAD-BEARING. The layer is inset NEGATIVELY so that after
+   the largest offset there is still tile covering every edge of the card. At
+   `inset: 0` the translate would drag the layer off its own box and leave an
+   un-grained band along one edge on every step.
+
+   AA IS UNAFFECTED BY THE MOTION. Translating a statistically uniform noise
+   field does not change its distribution — the same range of values passes over
+   every pixel whatever the offset. The worst case is therefore the same one the
+   static grain already had, and it is measured with the grain composited in. */
+.engine-grain {
+  position: absolute;
+  inset: -80px;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: engine-grain 0.8s steps(1, end) infinite;
+}
+
+@keyframes engine-grain {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  12.5% {
+    transform: translate3d(37px, -53px, 0);
+  }
+  25% {
+    transform: translate3d(-71px, 29px, 0);
+  }
+  37.5% {
+    transform: translate3d(19px, 61px, 0);
+  }
+  50% {
+    transform: translate3d(-43px, -17px, 0);
+  }
+  62.5% {
+    transform: translate3d(67px, 23px, 0);
+  }
+  75% {
+    transform: translate3d(-11px, -67px, 0);
+  }
+  87.5% {
+    transform: translate3d(53px, 41px, 0);
+  }
+}
+
+/* 🔴 REDUCED MOTION FREEZES IT TO A STILL GRAIN — it does not remove it. The
+   texture is part of the surface, not an animation; deleting it would change
+   what the card looks like rather than how much it moves. `will-change` is
+   dropped too, so no layer is promoted for something that never moves. */
+@media (prefers-reduced-motion: reduce) {
+  .engine-grain {
+    animation: none;
+    will-change: auto;
+    transform: none;
+  }
+}
+
+/* THE CARRIER CHIPS BECAME DARK GLASS, AND THAT IS A HIERARCHY DECISION, NOT
+   ONLY A CONTRAST ONE. They were white pills with ink labels. Twenty-one white
+   pills on a near-black field is a large bright area that competes with the
+   three passport cards for attention — and the cards are the point of the
+   right-hand side. Dark glass makes the chips recede.
+
+   BORDER cream@0.40, NOT cream@0.25. A chip edge is a UI component boundary and
+   needs 3:1. Measured against the worst surface: 0.25 -> 2.09 (fails),
+   0.30 -> 2.41, 0.35 -> 2.76, **0.40 -> 3.15 (passes)**. The obvious-looking
+   hairline was two full steps under the bar. */
+/* 🔴 INVERTED WITH THE SURFACE (2026-08-02). The dark-glass values above are
+   the derivation for a DARK field and are void here — the section is near-white
+   now. The hierarchy argument they made still holds and simply flips: 21 chips
+   must recede so the three cards can carry the section. On light, receding
+   means a face barely lifted off the surface (white/80 = 1.25:1) and an edge
+   doing all the work.
+
+   BORDER gold-deep/80, NOT gold/80 OR ink/25. A chip edge is a component
+   boundary and needs 3:1 against the WORST surface pixel (glow peak + grid line
+   + dark grain). Measured there: gold @0.80 = 1.61 (fails badly — gold is far
+   too light to edge anything on cream, the same finding Standing Rule 7 records
+   for text), gold-deep @0.50 = 1.92, @0.60 = 2.23, **@0.80 = 3.07 (passes)**.
+   Solid gold-deep would be 4.33 but reads as a hard outline on 21 objects. */
+.engine-chip {
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(125, 100, 31, 0.8);
 }

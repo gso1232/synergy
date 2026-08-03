@@ -32,7 +32,12 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    ".next-build/types/**/*.ts"
+    ".next-build/types/**/*.ts",
+    ".next-perf-before/types/**/*.ts",
+    ".next-perf-after/types/**/*.ts",
+    ".next-perf-final/types/**/*.ts",
+    ".next-base/types/**/*.ts",
+    ".next-opt/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

@@ -1,0 +1,91 @@
+-- =============================================================================
+-- 0003_applications.sql  —  Synergy portal, /join APPLY INTAKE.
+--
+-- Adds the table behind the /join application form. Depends on
+-- 0001_auth_profiles.sql (public.current_app_role) and 0002_crm.sql (it REUSES
+-- public.agent_heard rather than declaring a second copy of the same enum).
+-- RUN 0001, THEN 0002, THEN THIS. Run once.
+--
+-- WHY THIS TABLE EXISTS: the GHL webhook Ziad was to supply does not exist, so
+-- the apply form had no destination and shipped inert. Rather than keep it dead
+-- or fake a success, applications are stored here and read in the admin panel.
+-- When the webhook arrives it becomes an ADDITIONAL forwarding step; this table
+-- stays as the system of record.
+-- =============================================================================
+
+
+-- -----------------------------------------------------------------------------
+-- APPLICATIONS — /join submissions.
+--
+-- 🔴 THIS IS THE FIRST TABLE ON THIS PROJECT WRITTEN BY AN ANONYMOUS PUBLIC
+-- FORM, AND THAT CHANGES THE THREAT MODEL. `leads` and `agents` are written
+-- server-side only; this one is fed by anyone who can reach /join. The controls,
+-- in order of how much they actually carry:
+--
+--   1. NO INSERT POLICY BELOW. RLS is on and there is no `for insert` policy for
+--      anon or authenticated, so a browser holding the publishable key CANNOT
+--      write this table at all — not with a crafted fetch, not from the console.
+--      The only write path is the server action, which uses the SECRET key and
+--      bypasses RLS. A visitor cannot address the table directly.
+--   2. The server action validates every field (presence, length ceilings, email
+--      and phone shape, state against the real 51-value list, enum membership)
+--      and rate-limits per IP. See app/[locale]/(site)/join/actions.ts.
+--   3. The column types are the last backstop: `heard` is an ENUM, so a junk
+--      value is rejected by Postgres even if validation were bypassed, and the
+--      text columns are length-capped by CHECK constraints so a single row
+--      cannot be used to dump megabytes into the table.
+--
+-- Length caps are deliberately generous — they exist to bound abuse, not to
+-- reject real people. 200 chars of surname is already absurd; 2 KB of it is an
+-- attack.
+-- -----------------------------------------------------------------------------
+create table public.applications (
+  id           uuid        primary key default gen_random_uuid(),
+  first_name   text        not null check (length(first_name) between 1 and 100),
+  last_name    text        not null check (length(last_name)  between 1 and 100),
+  email        text        not null check (length(email)      between 3 and 254),
+  phone        text        not null check (length(phone)      between 7 and 32),
+  state        text        not null check (length(state)      between 2 and 40),
+  licensed     boolean     not null,
+  heard        public.agent_heard,          -- nullable: the field is optional
+  consent      boolean     not null default false,
+  -- Operational, not personal: lets an admin see a burst from one source and
+  -- lets us purge a spam run without hand-picking rows. NOT shown in the UI.
+  received_at  timestamptz not null default now(),
+  created_at   timestamptz not null default now()
+);
+
+-- An admin opens this table sorted by arrival, every time.
+create index applications_received_at_idx
+  on public.applications (received_at desc);
+
+
+alter table public.applications enable row level security;
+
+-- -----------------------------------------------------------------------------
+-- RLS — ADMIN MAY READ. NOBODY ELSE, AND NOBODY MAY WRITE.
+--
+--   role                 SELECT          INSERT  UPDATE  DELETE
+--   anon (logged out)    nothing         no      no      no
+--   authenticated agent  nothing         no      no      no
+--   authenticated admin  every row       no      no      no
+--   service_role         bypasses RLS (server-only secret key; never in a browser)
+--
+-- 🔴 AN AGENT SEES ZERO ROWS, NOT "THEIR OWN". Applications are recruiting
+-- records about people who are not yet users; there is no ownership column and
+-- an agent has no business reading any of them. Enabling RLS with only the
+-- admin SELECT policy below means every other role is denied by default — the
+-- deny is structural, not a rule that could be mis-written.
+--
+-- 🔴 NO UPDATE OR DELETE POLICY, ADMIN INCLUDED. Same posture as `leads`: an
+-- application is a record of something that happened and is not editable from
+-- the app. If triage state is wanted later, add a status column plus a narrow
+-- admin UPDATE policy — do not open the table wholesale.
+-- -----------------------------------------------------------------------------
+create policy "applications_select_admin"
+  on public.applications
+  for select
+  to authenticated
+  using ( public.current_app_role() = 'admin' );
+
+-- (Intentionally no insert/update/delete policies. See the box above.)

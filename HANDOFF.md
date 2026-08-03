@@ -14,6 +14,2224 @@ on this project look the way they do.
 > than by reasoning: the pull-quote reveal's floor opacity and the hero scrim's
 > shape. See §6a.
 >
+> 🔴 **NEWEST (2026-08-02, l) — SIGN-IN SHIPPED VISIBLE · WHO-WE-SERVE CARDS ARE
+> PHOTOGRAPHS · SPANISH PASS 1 (HOMEPAGE + CHROME COMPLETE).**
+>
+> **1 · AGENT LOGIN IS PUBLIC NOW, ON INSTRUCTION.**
+> `AGENT_LOGIN_LINK_READY` is `true` (SiteHeader bar + mobile panel) AND the
+> /join hero's "Agent portal" CTA is a real `<Link>` to `/{locale}/login`. **They
+> were flagged as one question in two places and were flipped together — flip
+> them together or not at all.** `.join-cta--disabled` is retired from that
+> component and replaced by `.join-cta--ghost`; the rule and its derivation stay
+> in globals.css as the only solved disabled-control treatment on a dark
+> photographic surface. `join.hero.portalNote` ("The agent portal is not open
+> yet.") is **retained in both message files and deliberately unrendered** — it
+> became false the moment the link went live — and the prop is still accepted so
+> restoring the disabled state is a revert, not a re-authoring.
+> 🟡 **THE OBJECTION WAS OVERRULED, NOT REFUTED, AND IT NAMES THE NEXT JOB.**
+> `(portal)/` still holds only `admin` and `login`; `login/actions.ts` still ends
+> `redirect(role === "admin" ? /{locale}/admin : /{locale})`, so a non-admin who
+> signs in lands on the PUBLIC HOMEPAGE with no signed-in state rendered anywhere
+> and `signOut` living only inside AdminShell. **The door is findable and the
+> room behind it is empty for an agent. That is an accepted intermediate state —
+> do not "fix" it by hiding the link again.**
+>
+> **2 · THE WHO-WE-SERVE CARDS ARE PHOTOGRAPHS. THE THREE FLAT SKINS ARE GONE.**
+> `bg-navy` / `bg-gold-deep` / `bg-gold` and their three ink triplets are deleted;
+> every card is one photograph, one scrim, one ink. Six new files, all Pexels
+> License, full table + per-file "what it actually shows" + rejections + AA in
+> `public/synergy/CREDITS.md`.
+> 🔴 **THE SCRIM IS A FULL-CARD WASH, NOT THE REFERENCE'S BOTTOM GRADIENT, AND
+> MEASUREMENT FORCED THAT.** Built the reference's shape first, then measured the
+> real copy block on the built page: at 768 the card is 712.8x560 and the copy
+> runs **5% to 95% of card height** — title + three bullets + action fill it, and
+> `justify-end` has no slack to distribute. With the bottom-only ramp the worst
+> composited pixel was **cream 1.32:1** against a 4.5 bar. All six failed at all
+> three widths. Now a **0.65 base wash ramping to 0.88**, which clears both bars
+> against a **clipped-white pixel** — so the guarantee holds for ANY future image
+> swap, not just these six. Re-measured per pixel on the real files: **18 of 18
+> pass**, site-worst cream **4.96**, site-worst gold-pale **4.16**.
+> 🟡 **COST, FLAGGED NOT HIDDEN:** the photograph is toned throughout instead of
+> clean at the top. That is the direct price of keeping the card COPY verbatim —
+> five times the reference's title-plus-one-stat cannot live in a bottom third.
+> The only levers are copy or card height, both client decisions.
+> 🔴 **A BUG INTRODUCED AND CAUGHT BY MEASURING: `sizes` MUST DECLARE THE CARD'S
+> LARGER SIDE, NOT ITS WIDTH.** The source is SQUARE and the card is taller than
+> wide at two of three breakpoints, so `object-cover` scales to fill the HEIGHT.
+> Shipped first as the measured widths (`480px` at lg+); the browser then picked
+> a **480x480** candidate for a **480x680** box — a silent 1.42x vertical upscale
+> on the widest layout. Now `680px / 720px / 460px`.
+> 🔴 **SYNERGY'S OWN PHOTOGRAPHY CANNOT FILL THESE CARDS.** Every own landscape is
+> 1620x1080; at the card's 0.706 aspect that is 763x1080, **20.6% short on both
+> axes** against the 961x1360 needed at 2x. Only `RULA SPEAKING.jpg` clears and
+> that face is already on /about and /join. Same conclusion as entry (j) reached
+> about the cut-out. **Do not re-derive this a third time.**
+>
+> 🔴 **NEWEST (2026-08-03, ab) — FAVICON + OG · PERF PASS · /join HERO SWAPPED ·
+> SPLASH SCOPED TO HARD LOADS · /about HERO SHARPENED · FAQ AUDIT.**
+>
+> **1 · FAVICON.** 🔴 THE LOCKUP CANNOT BE A FAVICON — `synergy-logo.svg` is
+> 1120x340 (3.29:1); at 32px it would be 32x10. The SVG contains a SEPARABLE
+> SQUARE CREST (shield + figures + sparkle, x 110-371 / y 40-320) with the
+> wordmark starting at x=430, so the crest was extracted to its own square
+> viewBox with ~6% padding. Shipped via Next FILE CONVENTIONS —
+> `app/favicon.ico` (multi-size 16/32/48, hand-built ICO since sharp cannot emit
+> one), `app/icon.svg`, `app/apple-icon.png` (180, flattened on navy so iOS does
+> not matte it black). 🔴 `icons` is deliberately NOT declared in metadata as
+> well: Next fingerprints the file-convention assets, and a second hand-written
+> set would emit unfingerprinted duplicates and pin a stale favicon in cache.
+> OG/Twitter added with `metadataBase` (absolute URLs are mandatory — relative OG
+> images are dropped by every scraper) + a generated 1200x630 `public/og-image.png`.
+> ✅ Verified on a production build: all four assets 200, and the served HTML
+> carries `rel="icon"` x2 + `apple-touch-icon` + 6 og: + 3 twitter: tags.
+>
+> **2 · PERFORMANCE — ⚠️ LIGHTHOUSE COULD NOT BE RUN.** No Chromium is installed
+> on this machine (checked Chrome and Edge across all standard paths) and
+> Lighthouse requires one, so there is **no before/after Lighthouse score and I
+> will not invent one.** What was measured instead is production bundle size.
+> 🔴 **A NEGATIVE RESULT, KEPT:** `next/dynamic` on `EngineNoise` made the
+> homepage **WORSE — 166 kB -> 167 kB** (an 8 KB dependency-free leaf loses to
+> the chunk + loader overhead). It was REVERTED and the measurement recorded in
+> TheEngine.tsx so it is not "optimised" again. The same change on `AdminSilk`
+> (15 KB shader) DID pay: **/admin 112 kB -> 109 kB**, kept.
+> 🟡 **WHAT CAPS THE HOMEPAGE:** 87.5 kB of the 166 kB is the shared chunk, and
+> the largest single piece is framer-motion (53.6 kB), used by the hero and most
+> sections. Removing it means rewriting the animations — which the brief forbids.
+> Everything else is already optimal: next/font (self-hosted, swap,
+> adjustFontFallback), next/image with AVIF+WebP, static generation for all 42
+> pages, route-level code splitting.
+>
+> **3 · /join HERO SWAPPED** to `join-hero-team-2026.jpg` (copied out of
+> `public/New folder/` — spaces in a public path are fragile). 1620x1080, ar
+> 1.500 — **IDENTICAL dimensions to the outgoing image**, so the crop maths carry
+> over and the 2x shortfall is unchanged: **clears 1x (+5.5%), 47.3% short at 2x
+> on a 1536 box**. No upscaling.
+> 🔴 **IT BROKE THE NAV AND A JOIN-ONLY VEIL WAS ADDED.** The photo has a lit
+> white suspended ceiling exactly where the header sits. Per-pixel over the real
+> header box: 1536x900 = 4.516 (passes by 0.016), 1440x900 = 4.520, **1280x800 =
+> 4.252 FAIL**. The worst pixel backs out to essentially PURE WHITE, so it is the
+> brightest a pixel can be, not a sampling artefact. New `.join-hero-veil-top`
+> holds 0.66 through 30% of the ramp (>= 0.61 is required against pure white).
+> 🔴 THE SHARED `.hero-veil-top` IS UNTOUCHED — it serves 5 other routes, each
+> with its own solved table. **Re-run exhaustively at 9 viewport sizes: nav
+> 5.93-9.73 · eyebrow 7.51-8.09 · h1 7.80-7.87 · sub 6.61-9.23, ALL PASS.**
+>
+> **4 · SPLASH — HARD LOADS ONLY.** 🔴 The old docblock claimed it never replayed
+> on client-side navigation; that was true only WITHIN one layout. Splash lives in
+> `(site)/layout.tsx` and `(portal)/` is a SEPARATE ROUTE GROUP, so
+> `/en/login -> /en` unmounted and remounted it and `useState(true)` replayed it.
+> Fixed with a MODULE-SCOPE flag: created once per document, survives every
+> client-side navigation, dies on a real load — which is exactly first-visit +
+> refresh. 🔴 sessionStorage would be WRONG (it survives refreshes, so the splash
+> would never play on one); `performance.navigation.type` alone is insufficient
+> (a soft nav creates no new entry). ⚠️ The flag is set when the panel LIFTS, not
+> on mount, because Strict Mode double-mounts and would otherwise skip it in dev.
+> ✅ **Verified on a production build: 15 sampled states across `/en -> /en/about`
+> and `/en/login -> /en`, ZERO replays.**
+>
+> **5 · /about HERO — NO SHARPER SOURCE EXISTS.** `about-hero-office.jpg` is
+> 1620x1080 and so is its original (`New folder/OFFICE PHOTO IMPORTANT.jpeg`) —
+> as is every other own office frame on disk. The softness is real and already
+> documented as a client-instructed trade (authenticity over sharpness; the
+> 3840x2560 file it replaced is a family placeholder of strangers). Upscaling
+> refused. What WAS recoverable is compression damage, magnified by the ~1.9x
+> browser upscale: measured variance-of-Laplacian on the served derivative,
+> **q74 = 665 -> q88 = 809** (+22%), against the uncompressed ceiling of 923.
+> ⚠️ COST: this is the LCP image; AVIF 239 KB -> 374 KB. Sharpness was asked for
+> explicitly so it wins, but item 2 and item 5 pull opposite ways here.
+>
+> **6 · FAQ — DOES NOT EXIST. HANDOFF's "unbuilt" status is ACCURATE.** No
+> `/faq` route (no directory), no FAQ component, no accordion anywhere, no `faq`
+> key in routes.ts / nav / footer / either message file. Every "FAQ" string in the
+> repo is a COMMENT describing the client's own FAQ as a COPY SOURCE (services
+> §4's unspent prose, blog article structure, HowItWorks, WhySynergy). Nothing
+> links to a FAQ, so there is no 404 to fix. Not built, as instructed.
+>
+> 🔴 **(2026-08-03, aa) — DASHBOARD BAR HIDES ON SCROLL · GREETING
+> PROMOTED · LOGIN FIELD ANATOMY REBUILT. ✅ ALL 14 AUTH FILES BYTE-IDENTICAL.**
+>
+> **1 · THE ADMIN BAR HIDES ON SCROLL DOWN, REVEALS ON UP.** SiteHeader's exact
+> mechanic and constants (HIDE_AFTER 120, DIR_DELTA 8). 🔴 THE DEBOUNCE IS AN
+> ACCUMULATOR, NOT A TIMER — a timer adds latency to the one gesture that must
+> feel instant. ✅ **PROVEN: 8 alternating ±3px jitter reversals produced ZERO
+> flips; a decisive 40px up-scroll revealed it immediately.** 🔴 The bar had to
+> become `fixed` (was `sticky`) — a sticky element is still in flow, so
+> translating it away leaves a 64px hole; `.admin-main` pays the height back as
+> padding. 🔴 NOT copied from SiteHeader: its Lenis polling — the portal is
+> deliberately outside SmoothScroll, so the native listener is the whole story
+> and the polling would wait 4s for an instance that never arrives. Focus forces
+> the bar visible (tabbing to an off-screen link is a literal focus trap), and
+> reduced motion switches the behaviour OFF rather than making it a jump-cut.
+>
+> **2 · THE GREETING LEADS THE PAGE.** 14px ink/70 → display face, 44px at
+> desktop, full ink. 🔴 IT IS STILL A `<p>`, NOT AN `<h1>` — the h1 is
+> "Dashboard" because that names the page; a greeting names nobody, and
+> promoting it would tell a screen reader the page is called "Good morning,
+> Aiman". The h1 steps down VISUALLY to a 17px label (done with utilities on the
+> element, not a CSS rule that would lose to them). Full ink not ink/70: at that
+> size softened ink read as disabled, and solid measures 12.33.
+>
+> **3–6 · THE LOGIN FIELD ANATOMY WAS BROKEN, AND IT WAS ARITHMETIC.** The
+> floating label was `absolute top-3` with a base `-translate-y-6`, so its raised
+> position was **−12px — twelve pixels above its own container**, in space
+> nothing reserved. That produced all three reported symptoms: it landed in the
+> subhead on the first field, on the email underline for the password field, and
+> crossed THROUGH the input's text on the way up ("pushes the label into the
+> input text"). `scale-75` about `origin-[0]` shifted its optical left edge, the
+> "misaligned at the end".
+> ✅ **FIXED LABELS ABOVE THE INPUT.** A floating label shares one box with the
+> value, so every fix is a negotiation over the same 20px; a label in its own
+> block cannot overlap at any width, size or locale — the failure mode is removed
+> rather than tuned. Fields are boxed, icon and show/hide centre on the INPUT's
+> own relative box (the old `bottom-1.5` pinned the toggle to the group's base).
+> **VERIFIED: zero label/input overlap in empty+blur, filled+focused AND
+> filled+blur, at 1440 and 390; fields aligned; toggle centred; 0 overflow.**
+> 🔴 **BORDER cream/40 — cream/30 MEASURED 2.55, A FAIL.** With boxed fields the
+> border IS the boundary (1.4.11, 3:1). Swept on the card's worst composite
+> rgb(30,40,45): /30 = 2.55 FAIL, /35 = 2.97 short, **/40 = 3.44 PASS**. Same
+> shape of finding the retired underline produced.
+> **4 · "STAFF & AGENT PORTAL" REMOVED** — it was the ONLY text sitting directly
+> on the moving smoke, and had cost two AA re-derivations (ink/80 on the light
+> field; then full cream after cream/70 measured 3.68 and failed). Deleting it
+> removes the only element whose contrast depended on the shader's brightest
+> pixel. `login.metaLabel` kept in both message files, unrendered.
+> **5 · LOGO** — 48 → 56px, `mb-10`; with the meta line gone the block had lost
+> 30px and sat too close to the card.
+> **AA on the rebuilt form** (worst card composite): label cream/85 **10.32** ·
+> input text **11.61** · icon cream/55 **4.70** · border cream/40 **3.44** ·
+> focus border gold **6.60** · show-hide **9.73** · forgot **11.54** · heading
+> **13.77** · subhead **8.36** · button navy-on-gold **7.61**.
+>
+> ✅ **AUTH-UNCHANGED DIFF — 14 files, sha256 before vs after: IDENTICAL.**
+> `lib/supabase/{auth,server,client,admin}.ts`, `lib/auth-domain.ts`,
+> `middleware.ts`, `(portal)/admin/{layout,actions}`, `(portal)/login/actions.ts`,
+> `(portal)/layout.tsx`, all four migrations. The form's contract is intact:
+> `useFormState(signIn.bind(null, locale))`, `name="email"`/`"password"`,
+> `autoComplete="username"`/`"current-password"`, `aria-invalid` +
+> `aria-describedby`. Guards re-verified live: **/en/admin → 307 → /en/login**.
+> tsc clean, domain tests 22/22.
+>
+> 🟡 **ITEM 7 (agent approval) — PROPOSED, NOT BUILT.** See the session report.
+> The short version for anyone reading this later: **admin-created accounts ARE
+> already an approval gate**, so the question is whether the client wants a NEW
+> self-service request→approve flow. Nothing was changed pending that decision.
+>
+> 🔴 **(2026-08-03, z) — DASHBOARD REDESIGN: TOP NAV, GREETING, LEADS AS
+> A FULL-WIDTH TABLE, SILK BACKDROP. VISUAL ONLY — ✅ ALL 15 DATA-PATH FILES ARE
+> BYTE-IDENTICAL (sha256 compared before/after the pass).**
+>
+> **1 · LEADS IS A FULL-WIDTH TABLE.** `LeadsExplorer` (260px selector + detail
+> pane) is RETIRED, not deleted. 🔴 The instruction named only "the left
+> selector column", but removing it alone would leave the detail pane with
+> nothing driving it — the client chose the full-width table. Eight columns, the
+> same `DataTable` Agents and Content use, so the dashboard reads as one surface.
+> Every cell is read straight off the row `getLeads()` ALREADY returned;
+> `sms_consent` + `email_optin` are collapsed into one displayed "Consent" cell
+> using the existing translated `leads.consent.*` strings. No column renamed, no
+> value recomputed, no field dropped from the query.
+>
+> **2 · DEMO AGENTS CLEARED — PREVIEW FIXTURES ONLY.** The four invented rows in
+> `admin-preview/page.tsx` are now `[]`. ✅ **NOTHING WAS DELETED FROM THE
+> DATABASE**, and could not have been: that route has no Supabase client, and
+> `agents` RLS deliberately has NO delete policy (0002: "Deactivate instead").
+> The empty array is deliberate — it exercises the Agents EMPTY STATE, which had
+> never been rendered. If real seeded rows exist in Supabase they are untouched.
+>
+> **3 · TIME-AWARE GREETING.** "Good morning/afternoon/evening, {name}".
+> 🔴 COMPUTED ON THE CLIENT ON PURPOSE — a server render would use the Vercel
+> box's clock and could tell an Orlando admin "Good evening" at 2pm. Held behind
+> a mounted flag (so no hydration mismatch), which costs a one-line
+> flash-of-nothing — chosen over being wrong. 🔴 The name is DERIVED from the
+> verified identity's local-part (`aiman@…` → "Aiman"), not hard-coded: hard-
+> coding breaks the moment a second admin exists, and adding `profiles.full_name`
+> to the read would have been a DATA change this pass was forbidden from making.
+>
+> **4 · NAV MOVED TO A TOP BAR** — `AdminTopShell`. `AdminShell` (the collapsible
+> rail with its focus-trapped drawer) is retired, not deleted; restoring it is
+> swapping one import. Nav items are still in-page anchors. The active section is
+> tracked by IntersectionObserver so the bar is right when you scroll by hand,
+> and marks with `aria-current="true"` (not `"page"` — these are fragments in one
+> document). Active state is a RULE under the label, not colour alone (1.4.1).
+>
+> **5 · THE SILK BACKDROP** — `AdminSilk`, the client's 21st.dev "Silk" recipe.
+> Shader math is theirs; four things are not: **our palette** (ink-deep → navy →
+> gold → gold-pale, not their brighter #FFC300), **reduced-motion** (theirs has
+> none; ours draws one still frame and never loops), **no pointer interaction**
+> (cursor-reactive liquid behind a data table is the "loud" the brief forbids —
+> and SmokeyBackground already taught us the idle state IS hovered), and
+> **timeScale −0.18 not −0.537** (drift, not churn).
+> 🔴 **THE AA STRATEGY IS STRUCTURAL, NOT NUMERIC.** Contrast over a moving
+> multi-hued field cannot be solved honestly — the worst pixel changesevery frame.
+> So NO DATA IS EVER COMPOSITED OVER THE SHADER: cards stay opaque and every
+> number/label/cell keeps its existing ratios (ink 17.40, ink/80 9.17, gold-deep
+> 5.65 on white). The shader shows only in the gutters and faintly through the
+> bar. Scrims: page 0.88 cream, bar 0.94 cream + blur.
+> 🔴 **ONE MEASURED FAIL, CAUGHT BY SAMPLING THE ACTUAL CANVAS.** I estimated the
+> role label at ink/60 = "7.6". Read off the real shader, its darkest reachable
+> pixel is **rgb(17,16,13)**, putting the bar's worst composite at rgb(234,230,225)
+> — ink/60 there is **4.24, a FAIL** for a 10px label. Now ink/70 = **5.79**.
+> *Sample the shader; do not assume its range.*
+> Measured on the live page against that worst pixel: greeting ink/70 **5.42** ·
+> h1 ink **12.33** · nav inactive **5.10** · nav active **14.04** · gold-deep
+> marker **4.56** · sign-out **14.04**. All clear.
+>
+> ✅ **DIFF PROOF — 15 data-path files, sha256 before vs after: IDENTICAL.**
+> `lib/admin/data.ts`, `lib/supabase/{auth,server,admin}.ts`, `lib/auth-domain.ts`,
+> `middleware.ts`, `(portal)/admin/{layout,actions}.ts(x)`,
+> `(portal)/login/actions.ts`, `(site)/join/actions.ts`, all four migrations,
+> `lib/types.ts`. Also verified: `AdminDashboard` contains **zero** DB/network
+> calls (its only match is a comment), `admin/page.tsx` still calls
+> `getUserAndRole()` + `getLeads()` + `getAgents()` identically, and the sign-out
+> form still posts the same `locale` field.
+>
+> 🟡 **CMS ("Aiman edits any site text/image from the dashboard") — PARKED, NOT
+> BUILT, AND THE CLIENT'S OWN REASONING IS THE RECORD:** it is weeks of work, a
+> serious security surface, and — the decisive one — **it would bypass every
+> compliance safeguard on this project.** Free-text editing puts "guaranteed",
+> "tax-free" and "A-rated" back on the site with nothing screening them, undoing
+> the twelve struck source lines documented in §13b and Standing Rule 6. If it is
+> ever built it needs its own compliance-gated project with a review step between
+> authoring and publish. Aiman remains admin over leads/agents/applications.
+>
+> 🔴 **NEWEST (2026-08-03, y) — ADMIN DESIGN PREVIEW, DEVELOPMENT ONLY.**
+> `(portal)/admin-preview` renders the full admin dashboard with MOCK data and
+> no auth, so the design can be reviewed without credentials. Added because the
+> client wanted to SEE the panel and had lost the admin password — and resetting
+> a password is theirs to do, not mine.
+>
+> 🔴 **TWO INDEPENDENT LOCKS, AND BOTH ARE LOAD-BEARING:**
+> (1) `if (process.env.NODE_ENV !== "development") notFound()` is the first
+> statement — fails closed, including on an unset NODE_ENV.
+> (2) **IT TOUCHES NO DATABASE.** Every row is a hard-coded fixture in the file;
+> there is no Supabase client, no `getLeads`/`getAgents`, no cookie read. Even if
+> lock 1 were defeated there is no code path that can return a real record.
+> ✅ **VERIFIED WITH A REAL PRODUCTION BUILD, not asserted.** `NEXT_DIST_DIR=
+> .next-build next build && next start -p 3100`:
+> **`/en/admin-preview` → 404 · `/en/admin` → 307 (guard intact) · `/en/login` →
+> 200 · `/en/join` → 200.** The service-role leak gate also passed on that build
+> (40 client files scanned, nothing found).
+> 🔴 **IT IS A SIBLING OF `admin/`, NOT NESTED UNDER IT** — deliberately. Nesting
+> would put it under the admin layout's guard (defeating the purpose) and would
+> mean any future guard there silently starts or stops applying to it.
+> 🟡 **MUTATIONS ARE REFUSED HERE, BY DESIGN.** AgentsManager's controls RENDER
+> (it is a design preview) but its server actions call `requireAdmin()` and deny
+> an unauthenticated caller. A preview must not be a write path.
+> 🟡 Fixtures use `@example.com` (RFC 2606) and 555-01xx numbers (reserved for
+> fiction), so nothing can collide with a real person or dial a real line if
+> screenshotted. Dates are fixed strings so screenshots stay comparable.
+>
+> **THE DASHBOARD VIEW WAS EXTRACTED to `components/admin/AdminDashboard.tsx`**
+> so the real page and the preview render the SAME markup and cannot drift — a
+> preview showing a stale design is worse than none. 🔴 That component performs
+> NO authorisation and must never be given any; the boundary stays
+> `(portal)/admin/layout.tsx` + middleware, both untouched. `(portal)/admin/
+> page.tsx` is now thin: guard (in the layout) → fetch → render.
+> **TO DELETE THE PREVIEW LATER:** remove `app/[locale]/(portal)/admin-preview/`.
+> Nothing imports or links to it.
+>
+> 🔴 **(2026-08-03, x) — LOGIN FIELD IS NAVY AGAIN + SMOKE IS TRULY
+> MOUSE-INDEPENDENT · /join FORM SUBMITS TO SUPABASE · COMPANY-DOMAIN LOGIN
+> ENFORCED. ⚠️ ENTRY (v)'s LIGHT-FIELD AA TABLE IS VOID.**
+>
+> **1 · THE SMOKE'S MOUSE COUPLING IS GONE — ENTRY (w) DID NOT FIX IT.** (w)
+> added a time-driven orbit but KEPT a `hoverRef.current ? mouse : orbit`
+> ternary. 🔴 THE CANVAS IS THE ENTIRE PAGE BACKGROUND, so simply RESTING the
+> cursor anywhere over the login screen latched `live` to true and pinned the
+> ripple centre to a stationary mouse — the orbit only ran when the pointer left
+> the window. Net symptom: moved when you moved the mouse, stalled when you
+> didn't. **The lesson: "hover hands control to the pointer" is fine for a small
+> widget and wrong for a full-viewport background, because the idle state IS
+> hovered.** Now: the ripple centre is `cos(t*0.2)`/`sin(t*0.16)` and nothing
+> else, the three mouse listeners are DELETED (not bypassed), the `mouseRef`/
+> `hoverRef` pair is gone, and the canvas is `pointer-events: none`.
+> ✅ **PROVEN EMPIRICALLY, not by construction:** the same shader rendered at
+> t=0 vs t=3 with identical time-derived input changes **79.5% of pixels**
+> (t=0→t=7: 69%). Motion comes from time alone.
+>
+> **2 · THE FIELD IS NAVY (#0D1B2A), NOT WHITE.** One token — the shader's
+> `u_base` — because it interpolates `mix(u_base, u_color, glow)`. Verified: the
+> ramp runs exactly navy `(13,27,42)` → gold `(201,168,76)`.
+> 🔴 **IT CREATED A DEAD BAND AND NEEDED A MEASURED VEIL.** On the bare navy→gold
+> field, ink is 1.00 on the navy end and cream is **2.09 on the gold end** —
+> NEITHER ink clears both ends, the same failure the retired About gradient
+> documents. No colour solves it; the SURFACE had to come into range. A
+> `rgba(13,27,42,0.5)` wash over the canvas caps the peak at rgb(107,98,59).
+> Veil 0.40 lands on L 0.1627 against a 0.1629 ceiling — a 0.0002 margin, not
+> shippable; **0.50 is the shipped value.**
+> 🔴 **cream/70 ON THE SMOKE MEASURED 3.68 — A FAIL — AND IS NOW SOLID CREAM
+> (5.61).** There is no headroom to soften ink that sits directly on the smoke.
+> **AA, worst (brightest) field pixel; card composite rgb(30,40,45):**
+> meta + back link cream **5.61** · card heading cream **13.77** · body cream/75
+> **8.36** · field text **12.24** · controls gold-pale **11.54** · underline
+> cream/50 **4.56** · focus border gold **6.60** · button navy-on-gold **7.61**.
+> All clear; every in-card value GAINED over the light field.
+>
+> **3 · /join APPLY FORM SUBMITS FOR REAL** — `0003_applications.sql`,
+> `(site)/join/actions.ts`, `lib/supabase/admin.ts`, `JoinApplyForm` (now a
+> client component). 🔴 **THE ONE `ok` RETURN SITS AFTER THE INSERT'S ERROR
+> CHECK** — no row, no success. Failure paths (validation / throttle / no secret
+> key / rejected insert) all render an error naming the phone. Success REPLACES
+> the form so it cannot be double-submitted.
+> 🔴 **RLS — `applications` IS ADMIN-READ-ONLY AND NOBODY CAN WRITE IT VIA THE
+> API.** anon: nothing. authenticated agent: **zero rows** (no ownership column;
+> applications are about people who are not users). admin: SELECT every row.
+> **No INSERT/UPDATE/DELETE policy exists for any API role**, so the publishable
+> key cannot write it from a browser at all — the only writer is the server
+> action's service-role client. Abuse controls, in order of what actually holds:
+> (1) no client write path; (2) server-side validation of every field + fixed
+> row shape (never spread from FormData); (3) CHECK length caps + enum types;
+> (4) generic errors, DB messages never echoed. ⚠️ **THE RATE LIMIT (5/IP/10min)
+> IS IN-MEMORY** — per instance, resets on deploy, does not coordinate across
+> serverless regions. It is a speed bump, stated as one. If real abuse appears
+> the fix is Turnstile/hCaptcha or a KV limiter; both need a client decision.
+> 🔴 **CONSENT WORDING IS NOW URGENT.** The checkbox VALUE is stored against a
+> real person's phone number; the LABEL is still the placeholder.
+>
+> **4 · LOGIN RESTRICTED TO @fflsynergy.com — FOUR LAYERS, ALL SERVER-SIDE.**
+> `lib/auth-domain.ts`, `0004_company_domain.sql`, `login/actions.ts`.
+> (a) **No public signup** — no `signUp`/OTP/OAuth call exists anywhere
+> (asserted by a test that greps call syntax). Accounts are admin-created.
+> (b) **Creation-time DB trigger** `before insert on auth.users` — catches the
+> dashboard, Admin API, invites and any future provider, i.e. every path that
+> never touches our code, and protects against the admin's own typo.
+> (c) **Sign-in gate** — reads `data.user.email` (the VERIFIED address, never the
+> typed one), requires `email_confirmed_at`, and **calls `signOut()` before
+> returning** so a denied user is not left holding the session
+> `signInWithPassword` already minted. Returns the same generic "invalid" as
+> every other failure, so it cannot enumerate accounts or reveal the domain.
+> (d) **Role is not self-assignable** — unchanged from 0001: no UPDATE policy on
+> `profiles`, `handle_new_user` hard-codes `'agent'`, role read from the table
+> not a JWT claim. New company accounts are agents; the one admin was elevated by
+> hand.
+> 🔴 **EXACT DOMAIN MATCH, NOT A SUFFIX TEST** — in both the TS and the SQL.
+> `endsWith('.fflsynergy.com')` accepts `fflsynergy.com.evil.com`;
+> `includes(...)` accepts `notfflsynergy.com`; a naive split accepts
+> `a@fflsynergy.com@evil.com`. All three are covered by tests.
+> ✅ **PROOF TESTS: `node scripts/test-auth-domain.mjs` — 22/22 pass**, and the
+> no-signup assertion was NEGATIVE-CONTROLLED (a planted `signUp` call made it
+> fail, as it must). Two bugs in the TEST itself were found and fixed: a drift
+> guard that flagged a domain written in a COMMENT, and a `|| true` that on
+> Windows made a real `signUp` hit report as PASSING.
+> ⚠️ **OPERATOR STEPS in 0004 §4** — audit pre-existing non-company accounts
+> (the trigger is forward-only), confirm roles, elevate the admin.
+>
+> 🔴 **(2026-08-03, w) — LOGIN SMOKE SELF-ANIMATES · JOIN "COME AND TALK"
+> BLOCK REMOVED · ADMIN-ONLY /admin LINK IN THE HEADER. Two auth changes
+> (form-submit, domain-restricted login) were PROPOSED and are NOT built.**
+>
+> **1 · THE LOGIN SMOKE ANIMATES ON ITS OWN NOW.** `SmokeyBackground.tsx`. It
+> already advanced `iTime` every frame, but idle it pinned the ripple centre
+> dead-centre, so the only PROMINENT motion came from the cursor dragging that
+> centre. Now when the pointer is off the canvas the centre traces a slow
+> Lissajous orbit (`cos(t*0.2)` / `sin(t*0.16)`, different freqs so it never
+> loops obviously) and the field folds continuously with no mouse. Hover hands
+> control back to the real pointer. 🔴 Reduced motion is unaffected: the loop
+> still never runs, so `draw(0)` is the one frame shown — the orbit evaluates
+> once at t=0 to a fixed point, a still image. ⚠️ NOT OBSERVED MOVING — rAF does
+> not fire in the preview pane, so the motion is verified by construction; the
+> still frame renders (gold→cream ramp intact, context alive). A human should
+> confirm the churn in a real browser.
+>
+> **2 · JOIN §6 "Come and talk to us." REMOVED.** `(site)/join/page.tsx`. The
+> full-bleed navy closing band is gone on instruction. Beyond the instruction it
+> was self-contradicting: its body read "There is no application form on this
+> page" — written before §5 (the apply form) existed, so it told the reader the
+> form they had just scrolled past was not there. 🔴 The instruction called it
+> "above the apply section"; it was actually the LAST section, below §5 — there
+> is only one such block, so removal is unambiguous. Strings
+> `join.cta.heading/body/button` kept in both message files, unrendered. Verified
+> live: apply (`#join-apply-heading`) is now the last section, seam to the footer
+> is a clean single `sem-pad-y` gap (0px extra), only the hero remains navy, no
+> overflow.
+>
+> **3 · ADMIN-ONLY /admin LINK, SERVER-GATED.** `(site)/layout.tsx` +
+> `SiteHeader.tsx` + `nav.admin` ("Admin", both locales, a Rule-4 wayfinding
+> label). The layout is now `async` and reads `getUserAndRole()`; `isAdmin =
+> role === "admin"` is passed to SiteHeader, which renders an /admin link
+> (desktop + mobile panel) ONLY when true. 🔴 SERVER-SIDE by design — a
+> non-admin's HTML never contains the link at all (verified: absent for an
+> anonymous visitor; the agent-login link still shows). It is NOT in routes.ts,
+> so it cannot leak into the footer sitemap. 🔴 CONVENIENCE, NOT THE BOUNDARY —
+> the middleware and (portal)/admin/layout guards are untouched and still deny
+> any non-admin who reaches /admin by other means.
+> ⚠️ **COST, FLAGGED:** reading the session cookie in `(site)/layout` opts the
+> public pages into DYNAMIC rendering (they were static per locale). The
+> middleware already authenticates every request, so the marginal cost is one
+> role query for signed-in users and a null short-circuit for anonymous ones.
+> If static marketing pages must be preserved, the fallback is a client-side
+> check in SiteHeader (weaker: link exists in JS, forceable via devtools, still
+> grants no access). Left as the client's call.
+>
+> **4 · TWO AUTH CHANGES PROPOSED, NOT BUILT** — the /join form actually
+> submitting, and login restricted to @fflsynergy.com with admin-only for the
+> existing admin. Both are written up in the session report for approval; NO auth
+> logic was touched. The existing guards, RLS and the least-privilege
+> profile-on-signup trigger (`0001_auth_profiles.sql`) all stand unchanged.
+>
+> 🔴 **NEWEST (2026-08-03, v) — THE LOGIN BACKGROUND IS THE CLIENT'S ACTUAL
+> WebGL SHADER NOW, RECOLOURED GOLD-ON-WHITE. ⚠️ THE (u) BLOB AURORA AND ITS AA
+> TABLE ARE VOID — the surface flipped from dark to light and every ink on it
+> was re-derived.**
+>
+> **WHY IT CHANGED:** entry (u) built a CSS blob aurora from a WRITTEN
+> DESCRIPTION, because the reference images never arrived. The client then
+> supplied the actual source — a GLSL fragment shader — and asked for "the
+> background exactly like it but gold and white instead of blue and black".
+>
+> **1 · THE SHADER MATH IS THEIRS, VERBATIM. EXACTLY ONE LINE DIFFERS.**
+> `components/SmokeyBackground.tsx`. The distortion loop, wave, glow curve and
+> time scale are character-for-character the reference's — that is what makes the
+> smoke fold the way it does.
+>
+>     reference   fragColor = vec4(u_color * glow, 1.0);      blue on black
+>     ours        fragColor = vec4(mix(u_base, u_color, glow), 1.0);
+>
+> Theirs MULTIPLIES, so glow 0 is black. Ours INTERPOLATES between two real
+> colours: gold `#C9A84C` smoke on cream `#F8F4EE`. 🔴 Multiplying cannot produce
+> this — `white * glow` is grey, not white-to-gold. Verified on the live canvas:
+> pixels ramp `(248,244,238)` → `(216,193,129)` → `(201,168,76)`.
+>
+> **2 · FOUR DEFECTS IN THE REFERENCE'S HOST CODE, NOT COPIED.** The GLSL is
+> sound; the React around it is not.
+> 🔴 **THE SERIOUS ONE: IT RECOMPILES THE PROGRAM ON EVERY MOUSE PIXEL AND LEAKS
+> A rAF LOOP EACH TIME.** Its effect deps are `[isHovering, mousePosition, color]`
+> with `mousePosition` written from `mousemove`, and its cleanup never calls
+> `cancelAnimationFrame`. Move the mouse for five seconds → hundreds of
+> concurrent render loops, forever. FIXED: pointer state in REFS, effect runs
+> once, loop cancelled in cleanup.
+> Also fixed: it reassigns `canvas.width` every frame (reallocates the drawing
+> buffer even when unchanged); it has NO reduced-motion path; it never pauses on
+> a hidden tab or releases GPU objects.
+>
+> **3 · TWO BUGS I INTRODUCED AND CAUGHT BY MEASURING — BOTH RENDERED WHITE.**
+> 🔴 `WEBGL_lose_context.loseContext()` IN CLEANUP POISONS THE CANVAS PERMANENTLY.
+> `getContext` returns the same object for a canvas forever, and React StrictMode
+> mounts effects TWICE — the first cleanup killed the context, the second mount
+> drew into a dead one. Measured `gl.isContextLost() === true` on the live page.
+> Deleting the program/shaders/buffer is sufficient; the context dies with the
+> element.
+> 🔴 `preserveDrawingBuffer: true` IS REQUIRED, NOT AN OPTIMISATION TOGGLE. WebGL
+> CLEARS the drawing buffer after every composite by default. The loop hides
+> that; the moment the loop is NOT running the single still frame is wiped and
+> the canvas goes blank — i.e. exactly the reduced-motion path and the hidden-tab
+> path. ✅ **This is now empirically proven: rAF does NOT fire in the preview pane,
+> and the smoke still renders — what is on screen IS the persisted still frame.**
+>
+> **4 · FIELDS REBUILT TO THE REFERENCE'S UNDERLINE + FLOATING LABEL.** Boxed
+> inputs → bottom-rule fields with a label that scales down and rises, plus
+> lucide `User`/`Lock` icons inside the label and `ArrowRight` on the button.
+> `lucide-react@1.28.0` INSTALLED (it was not a dependency).
+> ✅ Their label logic is correct and is preserved: base state RAISED,
+> `peer-placeholder-shown` pushes it DOWN. Written the obvious way round the
+> label drops back over typed text on blur. **Verified all four states with
+> transitions suppressed: empty+blur down (1.0/0), filled+blur UP (0.75/−24),
+> filled+focus up, back-to-empty down.**
+> 🔴 Their `-z-10` on the label is DROPPED — on our translucent card it hides the
+> label behind the CARD, not behind the input. `pointer-events-none` does the job
+> with no stacking risk. Their bare `duration-300` (no transition-property, so it
+> animates `all`) is narrowed to `transition-[transform,color]`.
+>
+> **5 · AA RE-DERIVED — THE WORST CASE INVERTED WITH THE SURFACE.**
+> On a dark field a translucent dark card could only get darker, so contrast could
+> only improve. On a LIGHT field it gets lighter, so **the worst backdrop is now
+> the smoke's PALEST pixel** (cream, glow 0). Card composite `rgb(55,66,77)`:
+>
+> | element | ratio | bar |
+> |---|---|---|
+> | card heading / body — cream | 9.34 | 4.5 |
+> | show-hide, forgot — gold-pale | 7.83 | 4.5 |
+> | Sign-in button — navy on gold | 7.61 | 4.5 |
+> | field focus border — gold | 4.48 | 3.0 |
+> | **field underline — cream/50** | **3.66** | 3.0 |
+> | meta + back link — ink/80 over gold end | 5.22 | 4.5 |
+> | meta + back link — ink/80 over cream end | 8.66 | 4.5 |
+>
+> 🔴 **THE UNDERLINE FAILED AT cream/30 (2.27) AND WAS RAISED TO cream/50.** With
+> no fill and no box, the bottom rule is the only thing marking the field's
+> extent — a component boundary owing 3:1. cream/42 was still short at 2.97.
+> 🔴 **gold-deep IS ILLEGAL ON THE SMOKE — 2.47 AGAINST ITS GOLD END.** The usual
+> "gold text on light" token cannot be used for anything sitting directly on this
+> background, because the surface swings cream→gold across the viewport and must
+> clear at BOTH ends. ink/80 is the only safe ink there.
+>
+> 🟡 **THE CARD IS STILL DARK ON A NOW-LIGHT FIELD, AND THAT IS A JUDGEMENT CALL.**
+> The client asked for a dark glassy card (entry u) and separately for a gold/white
+> background (this entry); both are honoured literally. A light card would sit
+> cream-on-cream against the smoke's pale end and need a hard border to exist —
+> the same face-vs-surface problem the Engine's light surface documents. Flip by
+> inverting `.auth-card` and the inks in LoginForm.
+> ⚠️ The `.auth-aurora` / `.auth-blob` CSS is RETIRED but kept — it is the only
+> solved no-WebGL answer to this effect and is the natural fallback if the shader
+> is ever judged too heavy.
+> ✅ AUTH UNCHANGED AGAIN — verified: `username`/`current-password` intact, real
+> `<label for>` on both fields, required, disabled Forgot, no Google / no
+> "continue with" / no sign-up, form action bound. 0 overflow and no horizontal
+> scroll at 390; console clean.
+>
+> 🔴 **NEWEST (2026-08-02, u) — FIVE UNRELATED CHANGES: WHO-WE-SERVE HEADING
+> REMOVED · BLOG MOVED LEFT IN THE NAV · CALCULATOR OVERFLOW FIXED + POLISHED ·
+> LOGIN REDESIGNED TO A DARK GLASS CARD. All verified live; auth unchanged.**
+>
+> **1 · WHO-WE-SERVE — THE BIG H2 IS GONE.** `components/WhoWeServe.tsx` no
+> longer renders the "Built for the people…" headline; the block is the eyebrow
+> + the Families/Agents tabs only, gap tightened mt-7 → mt-5. 🔴 The section's
+> `aria-labelledby="who-we-serve-heading"` id MOVED to the eyebrow `<p>` (it
+> pointed at the removed h2 — a dangling reference otherwise). The `heading`
+> string stays in both message files, unrendered. Verified: 0 h2 in the section,
+> eyebrow carries the accessible name.
+>
+> **2 · BLOG MOVED TO THE LEFT NAV, NEXT TO SERVICES.** `SiteHeader.tsx`
+> `SPLIT_AT` is now `Math.ceil((length + 1) / 2)` — heavier-half-left, ties left.
+> On six text keys that is **4 / 2**: LEFT Home · About · Services · Blog; RIGHT
+> Contact · Calculator (+ Join pill). 🔴 Desktop-only: below 900 both `<ul>`s are
+> hidden and the mobile panel is ONE stacked list in `HEADER_ROUTES_TEXT` order,
+> so Blog is simply fourth in the stack. Verified left/right at 1536, mobile
+> order + 0 overflow at 390. routes.ts comments updated (order is now
+> load-bearing — Blog must stay after Services).
+>
+> **3 · CALCULATOR — OVERFLOW FIXED, THEN POLISHED.** `components/Calculator.tsx`.
+> 🔴 THE FIX: the unit ("by age 65") was INLINE with the figure at up to 56px
+> and `whitespace-nowrap`, and the figure itself can be **eleven glyphs**
+> ("$34,997,914" at max sliders), so the line ran past the navy box. The unit
+> moved to ITS OWN LINE under the number and the figure ceiling dropped 112 →
+> 76px. Verified: the **widest possible value $34,997,914 sits inside the box at
+> 1536 / 768 / 390**, 0 overflow. Result now reads: eyebrow "Indexed policy
+> value" / figure / "by age 65" — a divergence from BeeToGreen's inline unit,
+> made because their number never gets wide and a currency total does.
+> POLISH: `.calc-slider` upgraded from bare `accent-color` to a custom
+> gold-deep track + white thumb (still a native range — no mechanic changed);
+> value promoted to a baseline readout beside its label; cards gained a hairline
+> + soft shadow. 🔴 ALL LOCKED MECHANICS CONFIRMED UNCHANGED live: defaults
+> 300/35/65, ranges 50-2000/18-60/55-75, FV formula, $495,212 at defaults, the
+> three-card Equivalent-to row, disclaimer, short-runway note, CTA → /contact.
+> AA: result gold-on-navy 7.61; slider fill gold-deep-on-white 5.65 (brand gold
+> would be 2.09 and fail — this is the corrected token).
+>
+> **4 · LOGIN REDESIGNED — CENTRED DARK GLASS CARD ON A NAVY/GOLD AURORA.**
+> `(portal)/login/page.tsx` + `components/admin/LoginForm.tsx` +
+> `.auth-*` in globals.css. Was a split-screen (navy panel / white form). Now:
+> the logo lockup ABOVE a centred glass card (Checkmate's composition), on an
+> animated blob field. 🔴 ADAPTED TO OUR PALETTE — the reference's BLUE blobs are
+> gold + navy-lift + amber, never blue. 🔴 NO GOOGLE / "OR CONTINUE WITH" /
+> SIGN-UP — we have no social auth and no public registration; verified absent.
+> Fields gained decorative (`aria-hidden`) mail/lock icons; floating labels,
+> show/hide, disabled "Forgot", generic error codes and the denied notice all
+> preserved.
+> 🔴 AUTH IS UNTOUCHED — reskin only. Verified: form still posts (the `signIn`
+> action binding is unchanged), `autocomplete="username"` + `current-password`
+> intact (password managers still work), the /admin guard and role redirect in
+> actions.ts are not touched. AA on the glass card measured against the BRIGHTEST
+> blob behind it (card is navy@0.82 + blur, opaque enough that the blob cannot
+> lift it): cream 13.87, field text 12.34, gold-pale controls 11.63, gold focus
+> border 6.65. Blobs FREEZE under `prefers-reduced-motion` (rule verified). No
+> real horizontal scroll at 1280 or 390 (the oversized blobs are clipped by
+> `overflow:hidden`, not scrollable).
+> 🟡 **COPY: I KEPT OUR APPROVED "Sign in" / existing subhead, NOT the target's
+> "Welcome Back" / "Sign in to continue".** Authoring new marketing-adjacent
+> strings needs client approval (Standing Rule 5); the existing `login.heading` /
+> `login.subhead` already say the same thing and are approved. If "Welcome Back"
+> is wanted, it is a two-string approval, not a build.
+> 🟡 **IMAGES 3 AND 4 WERE NOT RECEIVED** (same as the prior two turns) — built
+> from the written description, and Checkmate's login composition (logo-above-
+> card) measured live.
+>
+> 🔴 **NEWEST (2026-08-02, t) — THE ENGINE IS LIGHT NOW, AND CHECKMATE'S LINE
+> MECHANIC WAS RE-MEASURED AND FOUND TO BE SOMETHING ELSE ENTIRELY. ⚠️ THE (s)
+> AND (r) SURFACES AND BOTH THEIR AA TABLES ARE VOID. THE CREAM/LIGHT TABLE IS
+> UN-VOIDED AND REBUILT BELOW.**
+>
+> **1 · THE SURFACE IS NEAR-WHITE — `.engine-surface-light`.** Client supplied a
+> light reference (near-white, faint centre glow, fine SQUARE grid). Retoned:
+> base **cream #F8F4EE**, glow **gold @0.08** (`circle 620px at 50% 50%`), grid
+> **ink @0.045 at 24x24** (square, not the dark builds' 22x24), grain **alpha 4**.
+> The two dark surfaces stay in globals.css as derivations; only C renders.
+>
+> 🔴 **ON A LIGHT SURFACE THE WORST PIXEL IS THE DARKEST ONE, NOT THE LIGHTEST.**
+> Every dark-build figure assumed a WHITE grain pixel as worst case. Inverted,
+> the worst case is a BLACK one, and that single flip is what forced grain
+> alpha 6 → 4: at 6 the gold-deep eyebrow measures **4.45, a fail**.
+> 🔴 **THE GRID IS 0.045 AND NOT 0.05 BECAUSE OF 768.** The glow is a FIXED
+> 620px circle, so a narrower section puts the head inside it — measured live,
+> the eyebrow is **382px from the glow centre at 768** against a 434px reach
+> (glow α 0.0096 there), and 0px inside it at 1536 and 390. At grid 0.05 that
+> gives 4.47 at 768 — a fail that does not exist at desktop. At 0.045: **4.57 /
+> 4.54 / 4.57**. Same trap the (s) entry recorded for the lead. **Check 768.**
+>
+> **AA — 12 elements x 3 widths, ZERO failures.** Worst-pixel surface L **0.7548**
+> (glow peak + grid line + black grain); away from the glow **0.7985**.
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow gold-deep | 4.57 | **4.54** | 4.57 | 4.5 |
+> | h2 ink | 14.06 | 13.98 | 14.06 | 4.5 |
+> | lead ink/80 | 8.00 | 7.93 | 8.00 | 4.5 |
+> | chip label ink on white/80 | 16.54 | same | same | 4.5 |
+> | chip border gold-deep/80 | 3.07 | same | same | 3.0 |
+> | hub rings gold-deep/90 | 3.64 | n/a | n/a | 3.0 |
+> | out-lines / dots / endpoint ring gold-deep | 4.33 | n/a | n/a | 3.0 |
+> | endpoint numeral ink on white/60 | 15.70 | n/a | n/a | 4.5 |
+> | card border gold-deep/80 | 3.07 | same | same | 3.0 |
+> | card h3 / body / kicker | 17.40 / 9.17 / 5.65 | same | same | 4.5 |
+> | **in-lines gold-deep/49** | **1.90** | n/a | n/a | — see below |
+>
+> 🔴 **gold-deep IS LEGAL HERE ONLY AWAY FROM THE GLOW — 4.29 on its peak.** Same
+> shape of finding gold produced on the dark surface, opposite end of the ramp.
+> The eyebrow is the only gold-deep text sitting directly on this surface.
+> 🔴 **THE CARD AND CHIP FACES DO NOT CARRY THEIR OWN EDGES.** White on this
+> surface is **1.32:1**, white/80 is **1.25:1**, and no value fixes that without
+> darkening a surface the brief calls near-white. The gold-deep/80 border at 3.07
+> is the entire boundary. On dark the face did the work (9.57) and the border was
+> a detail; here it is exactly reversed. **Do not lighten those borders.**
+>
+> **2 · WE HAD THE WRONG LINE MECHANIC. Rule 8 re-measurement overturned it.**
+> Read off their live DOM/CSSOM, not off notes:
+>
+> | | ours (before) | Checkmate (measured) |
+> |---|---|---|
+> | moving element | a 5% DASH sliding the path | a **DOT** on CSS `offset-path`, r3.5 |
+> | how many | **all 24** lines | **6 of 21** in-lines + all 3 out |
+> | in-lines | full gold-deep, 1px | cream **@0.22**, 1px, **static, no animation** |
+> | out-lines | no march | **dasharray 7 11**, `ep-march` 1.6s, stagger 0.9s |
+> | hub | bloom + 2 small rings | **2 rings only** (r68 solid, r92 dashed 3/9, 60s) |
+>
+> 🔴 **THE OLD 5.2s AND 1100ms WERE RIGHT NUMBERS ON THE WRONG THING** — they are
+> the dot's traverse and out-stagger. The note that the dash length was "measured
+> off a screenshot" of a login-walled reference is **retired with the dash**.
+> 🔴 **WEIGHT IS MATCHED AS A CONTRAST RATIO, NOT AN ALPHA** — copying `0.22`
+> across a polarity flip means nothing. Their in-line measures **1.90:1** on
+> their black; ours is **gold-deep @0.49 = 1.90:1** on our white. Their ring
+> 3.50 → ours 3.64. Their out-line 11.93 → ours 4.33 (solid gold-deep; 11.93 is
+> unreachable in gold on light, and ink would stop being gold — the RELATIONSHIP,
+> out-lines emphatic over in-lines nearly gone, survives at 2.3x separation).
+> 🔴 **THE IN-LINES AT 1.90 ARE BELOW THE 3:1 NON-TEXT BAR, ON INSTRUCTION.**
+> Defensible because 1.4.11 covers graphics *required to understand content* and
+> these carry none — every carrier name is a real `<span>`, every outcome a real
+> `<h3>`/`<p>`, all readable with the SVG deleted. Everything not purely
+> decorative is held to 3:1 and passes. **If information ever moves onto these
+> lines they go back to 3:1.**
+>
+> **3 · THE STAGE IS A 3:2 GRID COLUMN AGAIN, AND THAT IS WHAT FIXED THE CURVE.**
+> The curve FORMULA was never wrong — `M sx sy C mx sy, mx ey, ex ey`, mx the
+> midpoint, identical to theirs. The BOX was: theirs is `.engine-stage`
+> `aspect-ratio: 3/2` at 666x444 in the left column of a `1.55fr 1fr` grid; ours
+> stretched the same maths across the full 1144. **Verified live: our first path
+> now emits `M 162 78 C 345 78, 345 300, 528 300` — character-for-character
+> theirs.** Stage measures 666x444, viewBox 900x600, 21 in / 3 out / 2 rings /
+> 3 endpoints / 9 dots / 21 chips.
+> 🔴 **THE HUB MOVED BACK TO 68.889%, NOT 50%** (their `.engine-core` left, and
+> their rings' `cx="620"`). This reverses the pass whose own note says "not 68.9%
+> of a narrower stage".
+> ✅ **FOUR WORKAROUNDS DELETED BY THE UNIFORM SCALE:** `preserveAspectRatio="none"`,
+> the `vector-effect` stroke correction, HTML circles for rings (so they could not
+> be squashed to ellipses), and the **JS ResizeObserver** — including the
+> documented trap where a fresh RO never fired and rendered the diagram EMPTY.
+> Percentages and viewBox units are now the same coordinate; nothing is measured
+> in JS. Chips scale with the column, as Checkmate's do (`width: 12.9%`).
+>
+> **4 · THE HUB IS CLEANED UP. THE BLOOM IS DELETED, NOT RESTYLED.** The 132px
+> gold radial-gradient halo was the "glow artifact" — Checkmate has no equivalent,
+> and on near-white it read as a printing defect. 🔴 **MEASUREMENT SAYS THEY HAVE
+> TWO RINGS, NOT ONE** (r68 solid + r92 dashed spinning); both are kept, and the
+> lines stop exactly on r92 by construction. If one ring is wanted, drop the
+> dashed one — but the two-ring count is what they actually ship.
+> 🟡 **THE LOCKUP-IN-A-CIRCLE PROBLEM IS UNCHANGED AND STILL OPEN.** It is 3.29:1
+> horizontal; a circle has no width that flatters it. It is now sized to the inner
+> ring minus 6px a side (~92px at 1536) so it cannot overrun the ring at any
+> width, but it is SMALLER than the flat 150px it was and the subline suffers.
+> Checkmate's hub holds a TALL mark (204x320 at 64px wide) — that is why theirs
+> fits. Real fixes remain a square/stacked Synergy mark, or the crest.
+>
+> **5 · CARD BADGES ARE 01/02/03, WAS I/II/III** — the new endpoint discs put a
+> "02" at the end of the line pointing at a card stamped "II". Same ordinal, two
+> indexes. The passport stamp keeps its rotation, border and face; only the
+> glyphs changed. Revert = the `NUMERAL` constant.
+>
+> **VERIFIED LIVE:** section 1521x1054, padding 106.47/53.235, stage 666x444,
+> cards 430 wide, base `rgb(248,244,238)`, grid `24px 24px`, eyebrow
+> `rgb(125,100,31)`, h2 `rgb(26,26,26)`, **h1 count 1**, **0 overflowing elements
+> at 1521 / 753 / 390**, reduced-motion block covers `.engine-out`,
+> `.engine-ring--dash` and `.engine-pulse`.
+> ⚠️ **NOT VISUALLY CONFIRMED — the preview pane does not composite, so
+> screenshots time out and rAF does not run.** Same limitation entry (s) records.
+> Geometry, colour, counts and contrast are verified by measurement on the real
+> DOM; **a human should look at it once in a real browser.**
+> 🟡 **IMAGES 1 AND 2 (ours vs Checkmate) WERE NOT RECEIVED** — only the light-grid
+> reference came through. The line work was matched against checkmatefinancialgroup.com
+> measured live instead, which is what Rule 8 asks for anyway.
+>
+> 🔴 **(2026-08-02, s) — ENGINE SURFACE REPLACED AGAIN: DARK + GOLD
+> RADIAL + LINE GRID + CANVAS GRAIN. THE (r) BROWN→GOLD RAMP AND ITS AA TABLE
+> ARE VOID.** Checkmate's LAYOUT and sizing from (r) are untouched — only the
+> surface and the grain changed.
+>
+> **THE REFERENCE'S STRUCTURE, OUR PALETTE:**
+>
+> | reference (21st.dev snippet) | ours |
+> |---|---|
+> | `bg-neutral-950` #0A0A0A | **#0A0A0A** kept |
+> | radial `circle 600px at 50% 180px` | **same geometry** kept |
+> | `rgba(168,85,247,0.33)` **PURPLE** | **`rgba(201,168,76,0.33)` GOLD** retoned |
+> | grid `#64748b29` (slate @0.161) | **cream #F8F4EE @0.12** retoned |
+> | `bg-[size:22px_24px]` | **22px 24px** kept |
+> | canvas noise alpha 16 | **alpha 16** kept |
+>
+> The snippet's other variant is orange `#F97316`. Neither purple nor orange is
+> a Synergy colour; the radial keeps their geometry and their alpha, the hue is
+> ours.
+>
+> 🔴 **FOUR LAYERS STACK AND THE WORST PIXEL IS ALL FOUR AT ONCE** — a grid line
+> crossing the radial's peak with a white canvas-noise pixel on top. Every
+> figure below is against that. Solved BEFORE building:
+>
+>     glow  grid | surfL   gold   pale   cream
+>     0.20  0.10 | 0.0690  3.86 F 6.75   8.05
+>     0.33  0.10 | 0.1067  2.93 F 5.13   6.11
+>     0.33  0.12 | ~0.115  ~2.8 F ~4.87  ~5.8    SHIPPED
+>     0.33  0.14 | 0.1238  2.64 F 4.62   5.51
+>     0.38  0.16 | 0.1510  2.29 F 4.00 F 4.77
+>
+> 🔴 **gold #C9A84C IS NOT A LEGAL TEXT COLOUR ANYWHERE IN THIS STACK** — best
+> case across the whole solve is **3.86**, at a glow/grid pair far dimmer than
+> the reference. The eyebrow is **gold-pale #EFE1B0**. Gold survives only as
+> NON-TEXT (3:1) and only away from the radial peak.
+> **GRID AT 0.12, NOT THE REFERENCE'S 0.161** — at 0.14 gold-pale lands on 4.62,
+> a 0.12 margin; 0.12 buys ~4.87 for the same visual weight, because cream is a
+> lighter ink than their slate and needs less alpha to read equally.
+>
+> **AA — 10 elements × 3 widths, ZERO failures:**
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow gold-pale | 5.41 | 5.41 | 5.41 | 4.5 |
+> | h2 cream | 6.29 | 5.98 | 5.93 | 4.5 |
+> | lead **cream/90** | 5.78 | 5.08 | 5.33 | 4.5 |
+> | chip label cream | 9.47 | 5.63 | 6.37 | 4.5 |
+> | chip border cream/55 | 4.65 | **3.23** | 3.53 | 3.0 |
+> | lines + dash gold *(on-path)* | **4.74** | n/a | n/a | 3.0 |
+> | halo rings gold-pale/70 | 4.99 | n/a | n/a | 3.0 |
+> | card face vs surface | 9.57 | 9.78 | 12.50 | 3.0 |
+> | · card h3 / body / kicker | 17.40 / 9.17 / 5.65 | same | same | 4.5 |
+>
+> 🟡 **THE LEAD WENT cream/80 → cream/90, AND THE REASON IS A TRAP WORTH
+> KEEPING.** The radial is a FIXED 600px circle, so on a narrower section it
+> covers proportionally more of the width and the head sits closer to its peak.
+> At 1536 cream/80 measured 5.32; at **768 it measured 4.41 — a fail that does
+> not exist at desktop**. Anything added near the top of this section must be
+> checked at 768, not just at 1536.
+> 🔴 **"LINES GOLD @RADIAL PEAK 2.78" IS A FALSE POSITIVE — DO NOT CHASE IT.**
+> Sampling the surface at y=180 (the radial's centre) and asking whether gold
+> would pass there gives 2.78, but **no line is there**: the SVG starts at
+> y=388 and the radial's reach ends at y=600. Walking every path and taking the
+> worst point any line ACTUALLY occupies gives **4.74**. Measure on-path, not at
+> an arbitrary y.
+>
+> **THE GRAIN IS A CANVAS NOW — `components/EngineNoise.tsx`**, on instruction,
+> replacing the transform-stepped CSS tile (`.engine-grain` stays in globals.css
+> unused; it is the cheaper approach if performance ever decides this again).
+> 🔴 **THE TECHNIQUE IS THE REFERENCE'S; THE IMPLEMENTATION IS NOT.** Theirs is
+> `fixed inset-0` full-VIEWPORT with no bounds, no pause and no reduced-motion
+> path. Cost from its own constants: 1024² px × 1 `Math.random()` per px ×
+> ~30 redraws/s = **~31M random calls/second, forever**, plus a fresh 4 MB
+> ImageData per redraw (~120 MB/s of garbage). Four changes, same look:
+> **512 not 1024** (4× less area; it was resolving finer than the upscale keeps)
+> · **time-throttled to ~12fps, not `frame % 2`** (frame-counting doubles to
+> 60/s on a 120Hz display; a timestamp gate is refresh-rate independent) ·
+> **IntersectionObserver stops it off-screen** · **one ImageData reused** instead
+> of allocating per frame. Net **~3.1M calls/s, ~10× cheaper, and zero when not
+> on screen**. Reduced motion draws one still frame and never loops.
+> ⚠️ **THE ANIMATION COULD NOT BE OBSERVED IN THE PREVIEW HARNESS** — `rAF` does
+> not fire when the pane is not compositing (`rafFiresInThisPane: false`), so the
+> loop, the throttle and the IO pause are verified by construction, not by
+> watching frames. The FIRST frame is confirmed drawn on the real canvas
+> (512×512, alpha 16, 17 distinct grey levels, `image-rendering: pixelated`,
+> z-index −10). **A human should confirm the shimmer once in a real browser.**
+>
+> No overflow at any width (1521/1521 · 753/753 · **390/390, 0 overflowing**),
+> h1 count 1. Layout, Checkmate sizing and copy all unchanged from (r).
+>
+> 🔴 **(2026-08-02, r) — THE CARD IS GONE. THE ENGINE IS A FULL-WIDTH
+> SECTION MATCHED TO CHECKMATE. ⚠️ ITS BROWN→GOLD SURFACE AND AA TABLE ARE VOID
+> — superseded by (s). The Checkmate layout measurements in it still stand.**
+>
+> `.engine-card` is RETIRED — no card, no inset, no radius. The section paints
+> its own surface edge to edge via `.engine-surface`, matching Checkmate's
+> `section.engine`. The whole near-black + gold-radial + dot-lattice derivation
+> is kept in globals.css because it is the only solved warm-glow-on-dark on this
+> site, but nothing renders it.
+>
+> **CHECKMATE MEASURED LIVE AT 1536 (client 1521), AND WHAT OURS DOES:**
+>
+> | | Checkmate | ours | |
+> |---|---|---|---|
+> | section pad | 106.47 / 53.235 | **106.47 / 53.235** | ✅ exact |
+> | container | max-w 1200, pad 28 | **1200 / 28** | ✅ exact |
+> | grid cols | 666.2 / 429.8 | **666 / 430** | ✅ |
+> | grid gap | 48 | **48** | ✅ |
+> | head block | 720 wide | **720** | ✅ |
+> | eyebrow | 11.52px / ls 1.84 | **11.5 / 1.84** | ✅ |
+> | h2 | 56 / lh 58.24 / ls −0.728 | **55.5 / 57.7 / −0.72** | ✅ (clamp at 3.65vw) |
+> | lead | 22 / lh 33 | **21.75 / 32.6** | ✅ |
+> | chip | 85.9 × 31.9, 10.5px, r8 | **86 × 32, 10.5px, r8** | ✅ |
+> | chip grid | 3 cols pitch 90, rows 52 | **3 cols, 86+4=90, 52** | ✅ |
+> | hub | 88 | **88** | ✅ |
+> | card | 429.8 × 231.1, r14, gap 11.9 | **430 × 204, r14, gap 12** | ✅ size, ⚠️ height |
+> | **section h** | **1283** | **1054** | ⚠️ |
+>
+> 🟡 **THE TWO HEIGHT DELTAS ARE CONTENT, NOT SIZING, AND MUST NOT BE "FIXED" BY
+> PADDING.** Our card is 204 tall against their 231 and our section 1054 against
+> their 1283, because **our card copy is shorter than theirs** — theirs carries a
+> rate/premium readout and a "why it surfaced" block that Standing Rule 6 forbids
+> us from publishing. Every SIZING value matches; the height falls out of honest
+> copy. Padding to 1283 would be inventing whitespace to hit a number.
+> ⚠️ **THIS REVERSED ENTRIES (p) AND (q).** Those passes drove the height DOWN
+> on instruction (1187 → 952 → 807 as a card). Matching Checkmate put it back to
+> 1054 as a section. The client approved the reversal explicitly. The compressed
+> constants are in (q) if it is ever wanted back.
+>
+> 🔴 **THE GRADIENT'S LAST STOP IS AT 170%, NOT 100%, AND THAT IS A CONTRAST FIX,
+> NOT A RECOLOUR.** The client's three stops are unchanged:
+> `#16130E 0% · #372F20 32% · #9C8D63 100%`. Run to 100% the surface reaches
+> **L 0.2702** at the bottom edge, and that opens a band where **NO TEXT COLOUR
+> ON THIS SITE IS LEGAL** — cream fails above L 0.1630, ink fails below L 0.2215,
+> and between them nothing works. On a 1283px section that dead band is
+> **78.6% → 91.0% down (y 1008–1168)**, exactly where the third card and lowest
+> chips sit. Measured down the ramp (cream / gold-pale / gold / ink):
+>
+>      0%   16.91  14.17   8.11   1.06 F
+>     40%   10.22   8.57   4.90   1.55 F
+>     70%    5.36   4.50   2.57 F 2.96 F
+>     80%    4.37 F 3.67 F 2.10 F 3.63 F   <- nothing works
+>    100%    2.99 F 2.51 F 1.43 F 5.31
+>
+> Pushing the final stop to 170% means the bottom edge only reaches **#5F543A,
+> L 0.0909**. All three colours kept, ramp still reads brown→gold, dead band
+> gone. **150% was tried and REJECTED — gold lines fall to 2.76 against the 3:1
+> bar there. 170% is the first value where every token clears at both ends.**
+>
+> 🔴 **gold #C9A84C CANNOT BE TEXT ON THIS SURFACE.** It needs a background ≤
+> L 0.0521 and the ramp passes that ~63% down, so a gold eyebrow would fail on
+> the lower half. The eyebrow is **gold-pale #EFE1B0**. Gold stays on the lines,
+> where the bar is 3:1.
+>
+> **AA — 11 elements × 3 widths = 33, ZERO failures**, each measured against the
+> surface at that element's OWN position on the ramp (the 170deg tilt means the
+> worst corner is sampled, not the centre):
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow gold-pale | 11.59 | 11.49 | 12.83 | 4.5 |
+> | h2 cream | 12.25 | 13.04 | 14.54 | 4.5 |
+> | lead cream/80 | 7.79 | 8.32 | 9.05 | 4.5 |
+> | chip label cream (lowest chip) | 6.72 | 8.95 | 8.93 | 4.5 |
+> | chip border **cream/55** | 3.67 | 4.47 | 4.47 | 3.0 |
+> | lines + dash gold (lowest) | **3.15** | 3.19 | 3.23 | 3.0 |
+> | halo rings **gold-pale/70** | 3.62 | 3.65 | 3.69 | 3.0 |
+> | card face vs gradient | 6.83 | 6.72 | 6.64 | 3.0 |
+> | · card h3 ink | 17.40 | 17.40 | 17.40 | 4.5 |
+> | · card body ink/80 | 9.17 | 9.17 | 9.17 | 4.5 |
+> | · card kicker gold-deep | 5.65 | 5.65 | 5.65 | 4.5 |
+>
+> 🟡 **TWO TOKENS FAILED ON FIRST BUILD AND WERE RAISED, NOT WAIVED.** The chip
+> border at cream/40 measured **2.69** on the lowest chip (the surface is lighter
+> down there than it was on the near-black card) → **cream/55 = 3.67**. The halo
+> rings at gold/70 measured **2.31** → **gold-pale/70 = 3.62**. Both failures are
+> the same cause: values solved against a uniformly dark card do not survive a
+> surface that gets lighter downward.
+> ✅ **THE THREE CARDS STAY LIGHT, and that is what makes the gradient tractable
+> at all** — a white card works at ANY point on the ramp, so every value inside
+> it stays valid (ink 17.4, ink/80 9.17, gold-deep 5.65). Checkmate's own cards
+> are near-white (rgb 251,251,250) on their dark section, so this also matches
+> them. Restyling them dark would put their internals back on a shifting surface
+> and reopen the dead-band problem inside each card.
+> **Grain: TWO passes, as the client's snippet has** — one blended into the
+> background stack via `background-blend-mode: overlay`, one as the separate
+> animated `.engine-grain` layer (renamed from `.engine-card__grain`; still the
+> transform-stepped tile at 10fps, still frozen under reduced motion).
+> **No overflow at any width** (1521/1521 · 753/753 · **390/390, 0 overflowing**),
+> h1 count 1. Copy unchanged — every string still Synergy's own, nothing from
+> Checkmate.
+>
+> 🔴 **(2026-08-02, q) — ENGINE CARD COMPRESSED TO A TRUE LANDSCAPE, AND
+> THE GRAIN IS ANIMATED. ⚠️ SUPERSEDED BY (r): the card no longer exists and its
+> AA table is void. The compressed geometry constants are here if wanted back.**
+>
+> **1 · SHORTER AND WIDER. THE PASSPORT CARDS WERE THE WHOLE PROBLEM.**
+>
+> | width | before (p) | after (q) | Δ |
+> |---|---|---|---|
+> | 1536 | 1473 × 952 · **1.55** | **1489 × 807 · 1.84** | −145 tall, +16 wide |
+> | 768 | 705 × 1027 · 0.69 | **721 × 895 · 0.81** | −132 tall, +16 wide |
+> | 390 | 350 × 1547 · 0.23 | **366 × 1412 · 0.26** | −135 tall, +16 wide |
+>
+> Now **wider than the homepage hero's aspect** (1521 × 900 = 1.69).
+>
+> 🔴 **THE FIX WAS TO LAY EACH PASSPORT CARD OUT HORIZONTALLY, NOT TO MOVE THE
+> THREE CARDS.** Each card was a STACKED passport: a full-width header row
+> (numeral badge + kicker + a rule beneath both) sitting ABOVE the h3 and body.
+> That header band cost **48px of pure height per card**, and three of them
+> stacked in the right column was the single largest thing forcing the section
+> portrait. The numeral badge now sits BESIDE the text column, so its 36px
+> OVERLAPS the copy's height instead of adding to it, and the rule moved under
+> the kicker inside the text column — the passport reading survives, the header
+> band does not. **224 → 186px per card, 114px off the section, zero copy
+> change.** The three cards stay in the right-hand column: moving them to a
+> horizontal row would have broken the carriers → hub → cards left-to-right
+> reading that is the entire point of the diagram.
+> The rest: outer inset `px-5 md:px-6` → `px-3 md:px-4` and cap 1560 → 1720
+> (+16px width), card column 468 → 500, stage `min-h` 520 → 440, head→stage gap
+> 32 → 24, card padding 18 → 16, card gap 10 → 8.
+>
+> **2 · THE GRAIN ANIMATES. ONE STATIC TILE, TRANSFORM-STEPPED.**
+> 🔴 **BOTH OBVIOUS TECHNIQUES WERE REJECTED FOR MEASURED REASONS.**
+> · *Animating `feTurbulence`* (`<animate>` on baseFrequency/seed) regenerates
+> the Perlin field on the CPU every frame across the whole filtered box — on a
+> 1489×807 card that is >1M pixels of noise per frame. The most expensive
+> option available.
+> · *The reference snippet's canvas loop* builds a 1024×1024 ImageData
+> (1,048,576 px × 4 channels) with `Math.random()` per channel and
+> `putImageData`s it every other rAF frame, forever, full-viewport — roughly
+> **15M random numbers per second on the main thread** for a background texture,
+> with no off-screen pause and no reduced-motion path.
+> ✅ **SHIPPED:** the feTurbulence tile is generated ONCE and cached as a
+> background image; the layer is then moved between **8 offsets** with
+> `transform: translate3d()` on `steps(1, end)`. Only `transform` changes, so it
+> is a compositor-thread layer shift — **no repaint, no filter re-evaluation, no
+> JS, no rAF, no canvas, no per-frame allocation.** Verified in the CSSOM: the
+> animation's animated properties are `["composite","transform"]` and nothing
+> else; there are **2 animations on the entire page**.
+> **FRAME RATE IS DELIBERATELY THROTTLED: 8 steps / 0.8s = 10 effective fps**
+> (the snippet runs ~30). Film grain reads as *more* filmic under-cranked; at
+> 60fps it becomes television static. `steps(1, end)` makes each offset HOLD —
+> a tweened translate would read as the texture sliding, a completely different
+> and much worse effect.
+> 🟡 **THE OFFSETS ARE NON-MONOTONIC AND NON-MULTIPLE ON PURPOSE**
+> (37/−53/71/−29/…): stepping by a constant, or in one direction, lets the eye
+> lock onto the tile's 140px period and the grain visibly marches.
+> 🔴 **`inset: -80px` IS LOAD-BEARING** — the layer overhangs the card so every
+> edge is still covered after the largest offset; at `inset: 0` a translate would
+> drag it off its own box and leave an un-grained band. The card's
+> `overflow-hidden` clips the overhang. **The component must NOT put `inset-0`
+> on the grain span** — equal specificity, and it would win by source order.
+> ⚠️ **A NAIVE OVERFLOW COUNTER WILL INTERMITTENTLY FLAG THE GRAIN.** Its layout
+> box moves with the transform, so `getBoundingClientRect().right` exceeds the
+> client width on some steps. It is visually clipped and
+> `scrollWidth === clientWidth` at every breakpoint. Test page overflow with
+> `scrollWidth`, not by counting element rects, or exclude `.engine-card__grain`.
+> ✅ **REDUCED MOTION FREEZES IT TO A STILL GRAIN RATHER THAN REMOVING IT** — the
+> texture is part of the surface, not an animation; deleting it would change what
+> the card looks like rather than how much it moves. `will-change` is dropped too
+> so no layer is promoted for something static. Verified present in the CSSOM.
+>
+> **AA — RE-MEASURED WITH THE GRAIN COMPOSITED IN. 11 elements × 3 widths = 33,
+> ZERO failures.** The grain is modelled at its worst case: a pure-white noise
+> pixel through `mix-blend-mode: overlay` at 0.035. Translating a statistically
+> uniform field does not change its distribution, so the animation cannot make
+> this worse than the still frame.
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow gold-pale | 7.40 | 7.09 | 6.92 | 4.5 |
+> | h2 cream | 9.45 | 9.00 | 8.58 | 4.5 |
+> | sub cream/80 | 7.54 | 7.24 | 6.97 | 4.5 |
+> | chip label cream | 11.98 | 11.46 | 10.06 | 4.5 |
+> | chip border cream/40 | 3.50 | 3.45 | **3.28** | 3.0 |
+> | lines + dash gold | 7.02 | 7.02 | 7.02 | 3.0 |
+> | halo rings gold/70 | 4.16 | 4.16 | 4.16 | 3.0 |
+> | card face vs field | 14.76 | 16.05 | 16.05 | 3.0 |
+> | · card h3 ink | 17.40 | 17.40 | 17.40 | 4.5 |
+> | · card body ink/80 | 9.17 | 9.17 | 9.17 | 4.5 |
+> | · card kicker gold-deep | 5.65 | 5.65 | 5.65 | 4.5 |
+>
+> Grain costs **0.32 at worst** (eyebrow 7.72 → 7.40). Grain `z-index: -10`, so
+> it can never sit above content. No page overflow at any width, h1 count 1.
+>
+> 🔴 **NEWEST (2026-08-02, p) — ENGINE CARD REBUILT AGAINST THE REFERENCE, AND
+> MADE HERO-WIDE. ⚠️ THE AA TABLE IN THIS ENTRY IS SUPERSEDED BY (q) ABOVE.**
+>
+> The client's reference IMAGE and SNIPPET arrived after (o) was built from a
+> written description alone. Two things were wrong and both are now fixed.
+>
+> **1 · THE GLOW GEOMETRY. `-10%` IS THE ENTIRE EFFECT.**
+>
+>     (o) built    ellipse 120% 70% at 50%   0%
+>     reference    ellipse  90% 70% at 50% -10%
+>
+> Putting the ellipse's centre **above** the top edge means the card's top edge
+> cuts the gradient near its middle, so the whole top edge is uniformly bright
+> and the wash reads as a WIDE HORIZONTAL BAND fading down. With the centre AT
+> the edge the brightest point is a single spot at top-centre that falls off
+> toward the corners — the "too weak / too centered" the client rejected. Dot
+> pitch **18px**, dot size 1px, both taken from the snippet (was 22px).
+>
+> 🔴 **THE BRIGHTER WASH COST ONE TOKEN, AND THE NUMBER IS EXACT.** Solved
+> jointly (glow alpha × dot alpha, worst pixel = a dot ON the glow), gold TEXT:
+>
+>              dot .06   dot .08   dot .10   dot .12
+>     glow .20   5.21      4.90      4.61      4.33 F
+>     glow .26   4.54      4.27 F    4.03 F    3.79 F
+>     glow .38   3.42 F    3.24 F    3.07 F    2.91 F
+>
+> **gold #C9A84C as text caps the wash at ~0.20–0.26. The reference needs 0.38.
+> The two are not simultaneously satisfiable at 4.5:1.** Measured on the built
+> page at the eyebrow's actual position (5% down the card, local glow alpha
+> 0.233, surface L 0.0542): plain gold measures **4.41 — it fails by 0.09.**
+> 🟡 **RESOLVED BY SPLITTING THE GOLD, NOT BY WAIVING THE BAR.** gold #C9A84C
+> stays on every NON-TEXT gold thing — lines, travelling dash, halo rings —
+> where the bar is 3:1 and the headroom is huge. The one piece of small gold
+> TEXT, the 11px uppercase eyebrow, is **gold-pale #EFE1B0** (L 0.7534 vs gold's
+> 0.4094, so it tolerates a surface 2.5× brighter): **7.72:1**. gold-pale is not
+> a new colour — §3 lists it as the on-dark gold token.
+> ⚠️ **PUTTING THE EYEBROW BACK TO #C9A84C MEANS TAKING THE GLOW BACK TO 0.20.
+> THEY ARE ONE DECISION.**
+> 🔴 **THE SNIPPET'S CANVAS WAS DELIBERATELY NOT USED.** It animates a 1024×1024
+> noise field on every other rAF frame, forever, full-viewport — a permanent
+> main-thread cost for a static texture that cannot honour reduced-motion. Ours
+> is an inline SVG `feTurbulence` data URI: no canvas, no rAF, no file, no
+> animation. Its orange `#fb923c` is not used either; the wash is our gold.
+>
+> **2 · HERO-WIDE. THE CARD WAS PORTRAIT AND IS NOW LANDSCAPE.**
+> **1164 × 1187 (aspect 0.98) → 1473 × 952 (aspect 1.55)**, against the hero's
+> 1521 × 900 (1.69). Three changes bought the 235px:
+> · **It breaks out of `max-w-content`** — the only thing on the page that does.
+> The hero is full-bleed 100vw, so a card held to the 1220px text column can
+> never read as hero-proportioned. `max-w-[1560px]` + a 20/24px inset gives
+> 1473px, near-full-bleed with just enough cream either side that it still reads
+> as a CARD — and the inset is what keeps the 32px radius visible at all.
+> · **The head is two columns at lg** (eyebrow + h2 left, sub right, baseline
+> aligned): 260px → ~120px for the same copy. Nothing cut, rearranged.
+> · **Card column 394 → 468px**, so the body wraps shorter: passport cards
+> **251 → 224px** each. Stage `min-h` 700 → 520.
+> **RESTACK BELOW lg IS UNCHANGED AND ALREADY CORRECT:** the diagram is
+> `hidden lg:block` so it is not rendered at all; carriers become a wrapped
+> 21-item text list and the passport cards stack beneath. Verified: at 768 and
+> 390 `diagramVisible: false`, `chipList.items: 21`. **768 → 705 × 1027 ·
+> 390 → 350 × 1547**, both deliberately portrait because a landscape diagram
+> cannot hold on a phone.
+>
+> **AA — 11 elements × 3 widths = 33 measurements, ZERO failures**, measured on
+> the built page against the real gradient at each element's own rect:
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow **gold-pale** | 7.72 | 7.37 | 7.21 | 4.5 |
+> | h2 cream | 9.73 | 9.26 | 8.90 | 4.5 |
+> | sub cream/80 | 7.59 | 7.28 | 7.09 | 4.5 |
+> | chip label cream on glass | 12.42 | 11.56 | 10.06 | 4.5 |
+> | chip border cream/40 | 3.53 | 3.46 | **3.28** | 3.0 |
+> | lines + dash **gold** | 7.12 | 7.12 | 7.12 | 3.0 |
+> | halo rings gold/70 | 4.20 | 4.20 | 4.20 | 3.0 |
+> | card face vs field | 14.69 | 16.08 | 16.27 | 3.0 |
+> | · card h3 ink | 17.40 | 17.40 | 17.40 | 4.5 |
+> | · card body ink/80 | 9.17 | 9.17 | 9.17 | 4.5 |
+> | · card kicker gold-deep | 5.65 | 5.65 | 5.65 | 4.5 |
+>
+> Effective glow alpha at the top edge **0.282** (the 0.38 stop sits at t=0,
+> which is above the card). No overflow at any width (1521/1521 · 753/753 ·
+> **390/390, 0 overflowing elements**), h1 count 1. Reduced motion unchanged:
+> the component does not render the highlight paths under `reduce`, CSS forces
+> `display:none` as belt-and-braces, and the grain is static so it has nothing
+> to suppress.
+> **UNCHANGED FROM (o), AS APPROVED:** passport cards light, chips dark glass,
+> centre logo untouched, moving dash re-toned to gold.
+>
+> 🔴 **NEWEST (2026-08-02, o) — THE ENGINE IS A DARK HERO CARD. ITS CREAM AA
+> TABLE IS VOID. + THE WHO-WE-SERVE HEADING WAS HALVED. ⚠️ THE AA TABLE IN THIS
+> ENTRY IS SUPERSEDED BY (p) ABOVE — the glow and dot alphas both changed.**
+>
+> **1 · "WHO WE'RE HERE FOR" HEADING — 92px → 47px.** It was the largest type on
+> the site after the Hero h1, and an h2 that rivals the h1 flattens the page
+> hierarchy. Measured at 1536: **3 lines / 270.5px tall → 2 lines / 98.3px
+> (−64%)**; the eyebrow-to-tabs header block went **416 → 243.8px (−172px)**.
+> 🟡 **FOUR VALUES MOVED TOGETHER AND THE OTHER THREE ARE NOT COSMETIC.**
+> Tracking **−0.03 → −0.018em** (negative tracking is a DISPLAY-SIZE correction;
+> at 47px the old value welds letters), leading **0.98 → 1.06** (sub-1 leading
+> collides once the type is small enough), measure **72% → 26ch** (a percentage
+> measure re-wraps at every width for no typographic reason; a `ch` cap is tied
+> to the face, so the sentence breaks in the same place at 1536 / 768 / 390 —
+> all three render 2 lines). Weight stays 500, Kufam's ceiling. Copy and the
+> For Families / For Agents tabs untouched.
+>
+> **2 · THE ENGINE NOW SITS IN AN INSET DARK HERO CARD.** Near-black
+> `#0B0B0D`, a warm-gold radial glow at the top fading down into black, a CSS
+> dot lattice and SVG-turbulence film grain. **No library, no image asset, no
+> shadcn, no Unsplash** — CSS gradients plus one inline `feTurbulence` data URI.
+> ⚠️ **BUILT FROM A WRITTEN DESCRIPTION. The client referenced an attached image
+> and a code snippet; NEITHER REACHED THE SESSION.** If the attachment pins down
+> dot pitch, glow radius or fade depth, this is the thing to re-derive against.
+>
+> 🔴 **THE OLD CREAM AA TABLE FOR THIS SECTION IS VOID — every value in entries
+> (a)–(d) was measured against `#F8F4EE` and NONE carries over.**
+>
+> 🔴 **THE ONE NUMBER THAT GOVERNS THE CARD WAS ALREADY IN THIS FILE.** gold
+> `#C9A84C` is L 0.4094, so for it to clear 4.5:1 as normal text the surface
+> beneath must be **L ≤ 0.0521** — the exact constraint §3 used to derive
+> `navy-lift #1C3A5A`. The glow's brightest permitted stop was solved on this
+> project long before the dark card existed.
+>
+> **THE THREE SURFACES:** base `#0B0B0D` **L 0.0034** · glow peak gold@0.20
+> **L 0.0241** · **WORST PIXEL = glow + a dot@0.055 → L 0.0369**, still 29%
+> under the ceiling.
+> 🔴 **THE WORST CASE IS GLYPH-OVER-DOT-OVER-GLOW, NOT GLYPH-OVER-GLOW.** A dot
+> stacks on the glow and contrast is worst-pixel. Every figure below is measured
+> against 0.0369, never against the base.
+> 🟡 **THE DOT GRID IS THE RISK, NOT THE GLOW — the opposite of how it looks.**
+> Glow at α 0.25 still gives gold 5.53; dots at α 0.14 drop gold to **4.62**,
+> 0.12 from failing. So the glow was tuned for LOOK and the dots for SAFETY
+> (α 0.055). **In `background-image` the FIRST layer paints on TOP** — the dots
+> are listed first and sit over the glow, which is the stack the measurement
+> assumes. Reversing them silently invalidates the table.
+>
+> **AA — 11 elements × 3 widths = 33 measurements, ZERO failures**, computed on
+> the built page from each element's real rect against the analytic gradient:
+>
+> | element | 1536 | 768 | 390 | bar |
+> |---|---|---|---|---|
+> | eyebrow **gold** (was gold-deep) | 5.96 | 5.51 | **5.43** | 4.5 |
+> | h2 **cream** (was ink) | 12.61 | 11.79 | 11.54 | 4.5 |
+> | sub **cream/80** (was ink/80) | 9.41 | 8.55 | 8.44 | 4.5 |
+> | chip label cream on glass | 13.77 | 12.19 | 11.35 | 4.5 |
+> | chip border **cream/40** | 3.59 | 3.51 | **3.44** | 3.0 |
+> | lines + travelling dash **gold** | 7.77 | 7.77 | 7.77 | 3.0 |
+> | halo rings **gold/70** | 4.44 | 4.44 | 4.44 | 3.0 |
+> | passport card face vs field | 16.62 | 17.14 | 17.72 | 3.0 |
+> | · card h3 ink *(unchanged)* | 17.40 | 17.40 | 17.40 | 4.5 |
+> | · card body ink/80 *(unchanged)* | 9.17 | 9.17 | 9.17 | 4.5 |
+> | · card kicker gold-deep *(unchanged)* | 5.65 | 5.65 | 5.65 | 4.5 |
+>
+> 🔴 **gold-deep #7D641F MEASURES 1.71:1 ON THIS CARD AND FAILS OUTRIGHT.** It is
+> a dark-on-light token. Plain gold is the legal gold on dark — the exact mirror
+> of the §6a cream-page rule where gold is unusable and gold-deep is the only
+> legal gold. **Neither token ever crosses over.**
+> 🔴 **THE CHIP BORDER WAS TWO STEPS UNDER THE BAR AT THE OBVIOUS VALUE.** A chip
+> edge is a UI component boundary needing 3:1. cream@0.25 → **2.09 (fails)**,
+> 0.30 → 2.41, 0.35 → 2.76, **0.40 → 3.15 (passes)**.
+> ✅ **THE PASSPORT CARDS STAY WHITE, AND THAT ISOLATED THE CHANGE.** Three
+> bright documents on a dark field is the figure/ground idea, the passport
+> metaphor needs them to read as paper, and — the practical win — **every value
+> INSIDE them is unchanged and still valid**, because their surface is still
+> white. Restyling them dark would kill gold-deep inside them too, make the
+> guilloché texture (ink@0.028) invisible, and force a full re-derivation.
+> ✅ **CHIPS BECAME DARK GLASS ON HIERARCHY GROUNDS, not only contrast.** 21
+> white pills on near-black is a large bright area competing with the cards,
+> which are the point of the right-hand side.
+> ✅ **THE CENTRE LOGO NEEDED NOTHING AND READS BETTER HERE.** `LogoLockup` bakes
+> the gold gradient `#FCE79A → #A9790F` and HANDOFF records it "has no light
+> variant and cannot have one" — gold on cream was the compromise. On near-black
+> it is in its native home; the footer and the login panel already ship this
+> exact file on `#0D1B2A`. Logo text is 1.4.3-exempt regardless.
+>
+> **HOW IT SITS IN THE CREAM PAGE.** Inset, not full-bleed — cream visible on
+> all four sides, `rounded-[32px]` (up from the cards' 24px; 24 on a 1187px-tall
+> object reads as a sharp corner). Section padding is **symmetric now**
+> (`py clamp(48,6vw,96)`, was `pt 40–80 / pb 28–53`) because a dark object needs
+> even breathing room or it reads as pasted. Measured at 1536: card **1164×1187**,
+> cushions **91.3px above and below**, seams to the neighbouring sections
+> **0.000px** both ends, no overflow at any width (1521/1521 · 753/753 ·
+> **390/390, 0 overflowing elements**), h1 count 1.
+> 🔴 **NO CONFLICT WITH THE BODY GRADIENT (§ entry i).** The `<section>` is still
+> transparent — the CARD paints, and a card is exactly the kind of thing allowed
+> its own surface, like the hero card, the footer photograph and the login panel.
+> **Do not move this fill onto the section.**
+> ✅ **IT FIXES A PREVIOUSLY FLAGGED PROBLEM.** Entry (a) recorded
+> `WhoWeServe → TheEngine` as `sameSurface: true`, cushion 135.1px, with the note
+> that the boundary "is now invisible, which is a design choice worth
+> confirming". The dark card gives that boundary back.
+>
+> ✅ **SPANISH PASS 3 (2026-08-02, n) — THE SITE IS BILINGUAL. THE SWITCHER IS
+> LIVE.** `LOCALE_SWITCHER_READY = true`. Approved by the client after review of
+> the flagged compliance list.
+> **THE BLOG IS TRANSLATED.** `content/blog/es/` now holds **nine full article
+> bodies** (~9,500 words) plus **three frontmatter-only stubs**. All nine live
+> ES articles return **200 and render Spanish**; the three tax-blocked slugs
+> (`iul-self-employed`, `iul-vs-401k-construction`, `nurses-tax-free-retirement`)
+> return **404 in ES exactly as they do in EN** — the stubs exist ONLY so the
+> /es/blog listing rows are Spanish, and `hasBody:false` keeps them unbuilt and
+> unlinked. **Do not add bodies to those three until Ziad's tax answer lands.**
+> **VERIFIED, NOT ASSERTED.** Switcher present and path-preserving on **16/16**
+> route+locale combinations (every public route × en/es, including a blog
+> article): `/es/blog/term-life-insurance` ⇄ `/en/blog/term-life-insurance`.
+> A rendered-HTML sweep for 19 English tell-strings across 12 public /es routes
+> returns **clean on all 12**.
+> **KEYS STILL FALLING BACK: 150, and NONE of them is public.** admin 126
+> (staff-only, noindex, robots-disallowed, behind auth) · `carriers.names.c1–c21`
+> (brand names — the fallback returns the identical string) ·
+> `testimonials.quotes.*.rating` (a number, not copy). Filtering out admin and
+> the deliberate set leaves **zero**.
+> 🔴 **THE COMPLIANCE SCREEN NOW COVERS THE ARTICLES TOO, AND EVERY HIT WAS
+> RESOLVED BY READING IT IN CONTEXT RATHER THAN BY SUPPRESSING THE REGEX:**
+> `final-expense-insurance.mdx` trips `garantizad*` **8 times** — every one is
+> **"emisión garantizada"**, the standard industry name for *guaranteed issue*,
+> matching the English term for term. `mortgage-protection-insurance.mdx` trips
+> once on **"deuda garantizada con su casa"** — a security interest, not an
+> outcome. `life-insurance-orlando.mdx` trips once on **"lo que el contrato
+> garantiza frente a lo que proyecta una ilustración"** — the compliant
+> contract-vs-illustration distinction, carried straight from the English.
+> **None is a guaranteed-outcome claim.**
+> 🔴 **THE MEDICAL-EXAM QUALIFIER SURVIVED INTO THE ARTICLES.** Every Spanish
+> assertion across `final-expense`, `itin-holders` and `life-insurance-orlando`
+> reads *"no se requiere examen médico para la mayoría de los solicitantes de
+> entre 50 y 85 años"*. A regex sweep for the bare unqualified form returns
+> **zero** in both the message catalogue and the article bodies. This is the
+> /blog-vs-/services contradiction §"An internal inconsistency on the client's
+> own site" documents — **it must not come back loose in either language.**
+> 🟡 **`whySynergy.rows.r4` and `.r7` ARE NOW TRANSLATED** ("plan de retiro libre
+> de impuestos"), on the client's explicit approval of the tax-language list.
+> They still render nowhere (only r1–r3 are used, by TheEngine).
+>
+> 🔴 **SPANISH PASS 2 (2026-08-02, m) — EVERY PUBLIC UI NAMESPACE IS 100%. THE
+> BLOG BODIES ARE NOT, AND THAT IS THE ONE THING BLOCKING THE SWITCHER.**
+> **74.8%** of leaf strings (523/699), up from 35.8%. **DONE, all at 100%:**
+> meta · nav · hero · two · whatWeCover · whoWeServe · howItWorks · consultation ·
+> calculator · leadModal · **about** · **services** · **contact** · **join** ·
+> **login** · blog(chrome) · footer · engine · cta. Metadata (title +
+> description) is translated for every route. All seven public /es routes return
+> **200** and a scan of the rendered HTML for 19 English tell-strings comes back
+> **clean on all seven**.
+> 🔴 **THE BLOG IS THE GAP AND IT IS NOT COSMETIC.** `content/blog/es/` is an
+> EMPTY DIRECTORY and `resolveFile()` in `lib/blog.ts` **falls back to the
+> English file**, so `/es/blog` today lists English titles, English excerpts and
+> English categories under Spanish chrome, and every article body is English.
+> Nine live articles, ~9,500 words. **The three tax-blocked articles stay unbuilt
+> in Spanish exactly as in English.**
+> 🟡 **`admin` (126 keys) is untranslated by choice** — staff-only, `noindex`,
+> robots-disallowed, not a public surface.
+> **TERMINOLOGY — CLIENT-SPECIFIED, APPLIED GLOBALLY.** "top-rated carriers" is
+> **"aseguradoras mejor calificadas"**. It replaced 8 occurrences of
+> "aseguradoras de primer nivel", which was the term the pre-existing es.json had
+> used; zero occurrences of the old term remain. Register is US-Hispanic neutral
+> (Mexican/Central American), `usted` throughout, never Spain forms.
+> 🔴 **THE MEDICAL-EXAM QUALIFIER SURVIVED, AND IT WAS VERIFIED BY REGEX, NOT BY
+> EYE.** Both Spanish assertions read *"no se requiere examen médico para la
+> mayoría de los solicitantes de entre 50 y 85 años"* — a sweep for the bare
+> unqualified form returns **zero**. This is the /blog-vs-/services contradiction
+> §"An internal inconsistency on the client's own site" documents; it must not
+> come back loose in either language.
+> **A COMPLIANCE REGEX SCREEN RUNS OVER es.json** (garantiz*/garantía · libre de
+> impuestos · sin/exento de impuestos · crecimiento del mercado · a prueba de
+> recesión · A-rated/AM Best · uncapped income · examen médico). **11 keys trip
+> it; all 11 are reviewed and listed in the session report.** None is a new claim
+> the English did not already make. Re-run it after every batch.
+> ⚠️ **`LOCALE_SWITCHER_READY` IS STILL `false`, DELIBERATELY.** The instruction
+> was to ship it visible; the same instruction said not to flip it until the
+> flagged strings are approved. It is held on BOTH counts — the flagged list is
+> unapproved AND the blog bodies still fall back to English, which is the exact
+> mixed-language failure the flag exists to prevent.
+>
+> **3 · SPANISH — PASS 1 DONE, es.json IS NOT COMPLETE AND MUST NOT BE MARKED SO.**
+> **22.0% -> 35.8%** of leaf strings (154 -> 250 of 699). **Every namespace the
+> HOMEPAGE renders is now 100%**: meta · nav · hero · two · whatWeCover ·
+> whoWeServe · howItWorks · consultation · calculator · engine · cta · footer ·
+> blog(chrome). Verified live: /es renders Spanish end to end, including the two
+> strings that used to break language mid-row — `cta.quote` ("Get a free quote"
+> beside "Únete a nuestro equipo") and the single empty `whoWeServe` bullet.
+> **STILL EMPTY, and this is the remaining job:** services 95 · join 76 ·
+> contact 39 · about 30 · login 20 · leadModal 14 · admin 126, plus **all nine
+> live blog articles** (`content/blog/es/` is an EMPTY DIRECTORY; the three
+> tax-blocked articles stay unbuilt in Spanish exactly as in English).
+> 🟡 **FOUR CATEGORIES ARE EMPTY ON PURPOSE — DO NOT "FIX" THEM.**
+> `carriers.names.c1–c21` (brand names; the fallback returns the identical
+> string) · `carriers.ratings.*` (empty in English too) ·
+> `testimonials.quotes.*.rating` (a number, not copy — §the testimonials entry) ·
+> **`whySynergy.rows.r4` and `.r7`, which contain "tax-free retirement" in the
+> ENGLISH source.** Those two were deliberately NOT translated: authoring
+> "libre de impuestos" is exactly the assertion that is pending Ziad. They render
+> nowhere today (only r1/r2/r3 are used, by TheEngine).
+> 🔴 **A COMPLIANCE SCREEN NOW EXISTS AND SHOULD BE RE-RUN AFTER EVERY BATCH.**
+> Regexes for garantiz*/garantía · libre de impuestos · sin/exento de impuestos ·
+> crecimiento del mercado · a prueba de recesión · A-rated/AM Best · uncapped
+> income. Current state: **3 hits, 0 real violations.** Two are
+> `calculator.disclaimer` matching on *"no están garantizados"* — the compliant
+> NEGATION, a true false-positive worth keeping. The third is real and
+> **PRE-EXISTING, NOT WRITTEN THIS PASS**: `nav.servicesMenu.taxfree` =
+> **"Retiro Libre de Impuestos"**. It is rendered ONLY by `components/Nav.tsx`,
+> which is superseded and imported nowhere — a latent string, not a live claim.
+> **Flagged for Ziad; not silently edited.**
+> ⚠️ **`LOCALE_SWITCHER_READY` IS STILL `false`.** The instruction was to ship it
+> visible; it is held because the same instruction said not to mark es.json
+> complete until the flagged strings are approved, and /es/services, /es/join,
+> /es/contact, /es/about and every blog article still fall back to English. The
+> mixed-language failure the flag exists to prevent is fixed on the HOMEPAGE and
+> not yet elsewhere. **One line to flip when pass 2 lands.**
+>
+> 🔴 **(2026-08-02, k) — HEADER SPLIT, DISABLED-CTA FIX, TESTIMONIALS
+> TIMER, LOCALE SWITCHER READ. FIVE SEPARATE PIECES.**
+>
+> **1 · THE HERO-ALT CLEANUP WAS ALREADY COMPLETE. NOTHING TO DO, VERIFIED
+> RATHER THAN ASSUMED.** Entry (j) below is accurate in full. Re-checked on the
+> filesystem this pass: `HeroAlt.tsx` / `HomeSections.tsx` absent from
+> `components/`; `(site)/` holds only about · blog · calculator · contact · join
+> · layout.tsx · page.tsx (**no `hero-alt/`**); `public/hero/` does not exist;
+> `.env.local` holds three Supabase keys and **no `HERO_VARIANT` of any kind**;
+> a repo-wide grep for `HERO_VARIANT|hero-alt|HeroAlt|house-cutout|HomeSections`
+> returns **three hits, all inside this file**; `(site)/page.tsx` has no
+> `searchParams` and no `hero=` reference. `Hero.tsx` untouched, live hero
+> renders exactly as before (screenshotted at 1536: porch family photo, one h1,
+> both CTAs).
+>
+> **2 · "WHO WE'RE HERE FOR" CARD RESTYLE — NOT BUILT. IMAGE CANDIDATES ONLY,
+> BY INSTRUCTION.** See the shortlist in the session report; nothing was
+> downloaded and `WhoWeServe.tsx` is unchanged. 🔴 **THE MEASURED CONSTRAINT
+> THAT DECIDES THIS:** the card box is **475 × 680** at 1536 (3-up in the 1620
+> container, `lg:min-h-[680px]`), so a full-bleed image needs **950 × 1360** at
+> 2× DPR. **Synergy's own photography cannot fill it.** Every own landscape is
+> **1620 × 1080** (`SYNERGY OFFICE INSIDE`, `SYNERGY AGENTS`, `AGENT SPEAKING`,
+> `OFFICE PHOTO IMPORTANT` in `public/New folder/`); cropped to the card's 0.699
+> aspect that yields **756 × 1080 — 20% short on width, 21% on height.** The
+> gallery re-crops fail too and are already-used faces (§the gallery table).
+> Only `RULA SPEAKING.jpg` (4640 × 6960) clears, and that face is already on
+> /about and /join. **So these six cards are a stock brief, not an own-photo
+> brief** — the same conclusion (j) reached about the cut-out, for the same
+> reason, and it should not be re-derived a third time.
+>
+> **3 · THE HEADER NAV SPLIT WAS 2 / 4 WHILE routes.ts DOCUMENTED 3 / 3.** The
+> code said `HEADER_ROUTES_TEXT.slice(0, 2)`; the docblock in routes.ts said in
+> as many words that the split was 3 / 3 and that adding `join` "would make the
+> split 2 left / 5 right instead of 3 / 3". **The comment was describing an
+> intention the code never implemented.** It is now `SPLIT_AT =
+> Math.ceil(HEADER_ROUTES_TEXT.length / 2)` — DERIVED, so a seventh route makes
+> it 4 / 3 (heavier half LEFT, because the pill already weights the right)
+> rather than silently drifting back. Landed:
+>
+>     LEFT   Home · About · Services
+>     RIGHT  Blog · Contact · Calculator   + the Join pill beyond them
+>
+> Measured at **1536**: left ink 76.4→284.7, logo 681.3→839.5 (**centre 760.4 =
+> content centre 760.4, exact**), right ink 1111→1334.8, pill 1366.8→1444.4
+> against a content right edge of 1444.6. Left group starts on the inset, pill
+> ends on it. No horizontal overflow (1521 = 1521).
+>
+> 🔴 **AND CONFIRMING IT AT 768 FOUND A REAL PRE-EXISTING BUG, WHICH IS FIXED.**
+> Both link lists are `hidden card:flex`. **A `display: none` grid item is not
+> placed in the grid at all** — so below 900px the logo auto-placed into
+> **column 1** and the right-hand group into the `auto` column, leaving column 3
+> empty. Measured at 768 before the fix, on tracks `305.763 / 32 / 305.763`:
+> logo centre **207.5** against a content centre of **376.4** (168.9px off), and
+> the hamburger stranded at **360.4→404.4** with 348px of empty bar to its
+> right. `justify-self-center` was centring the logo in the wrong column.
+> Fixed with explicit `col-start-1 / col-start-2 / col-start-3`, so a hidden
+> list leaves an empty cell. After: **768** logo centre 376.4 = 376.4, burger
+> 666.2→710.2 (hard right), scrollWidth 753 = 753. **390** logo centre 195.2 =
+> 195.2, scrollWidth 390 = 390. **This only ever looked right on a
+> desktop-first reading of the file.**
+>
+> **4 · THE /join "AGENT PORTAL" BUTTON — THE LINK WAS NEVER THE PROBLEM, THE
+> STYLING WAS.** Diagnosed before touching it. It renders
+> `<button type="button" disabled aria-disabled="true"
+> aria-describedby="join-portal-note">` with **no href and no onClick prop at
+> all** (read off React's own props on the live node): clicking it cannot do
+> anything, and it is genuinely out of the tab order (`.focus()` does not move
+> `activeElement` to it). All correct. **What was wrong is that it did not LOOK
+> disabled** — and that is measurable, not taste. It sits at **83.4% down the
+> hero**, where `.join-hero-scrim` is at its 0.70 floor; sampling the real JPEG
+> through object-cover with `.hero-veil-top` and `.join-hero-scrim` composited
+> as real per-row fills, the worst (brightest) backdrop pixel under its own rect
+> is **#40454D, L 0.0588**. Against that:
+>
+>     label  cream@0.72   5.48:1     LIVE body text needs 4.5
+>     border cream@0.45   3.17:1     a LIVE UI boundary needs 3.0
+>
+> **It measured as a fully compliant ENABLED ghost CTA, beside a filled primary,
+> on a dark hero — the house style for a live secondary.** Now
+> `1px dashed cream@0.35` (**2.51:1**), no fill, label cream@0.58 (**4.18:1**) —
+> both deliberately UNDER the live bars, which 1.4.3 and 1.4.11 permit because
+> both exempt inactive components. **The dash is the 1.4.1 half**: alpha alone
+> is colour, a dashed edge is shape and survives greyscale. Full derivation on
+> the rule in globals.css.
+> 🔴 **THE HEADER HAS NO SIGN-IN AT ALL, AND THAT IS NOT A STYLING BUG EITHER.**
+> `AGENT_LOGIN_LINK_READY = false` (SiteHeader.tsx) gates the bar entry AND the
+> mobile-panel entry; the live bar renders exactly Home · About · Services ·
+> [logo] · Blog · Contact · Calculator · Join, and a query for `a[href*=login]`
+> across the whole page returns **zero**. The string is `nav.login` =
+> **"Agent Login"**, not "Sign In". **DECISION RESERVED BY THE CLIENT — do not
+> flip it unasked.**
+> 🟡 **JoinHeroCtas' docblock WAS STALE AND IS CORRECTED IN FILE.** It said the
+> button was waiting on "a portal URL from the client". No such URL is coming:
+> `/login` exists and works, `(portal)/` holds only `admin` and `login`, and
+> `login/actions.ts` sends a non-admin to `/${locale}` — the public homepage.
+> **The missing thing is a DESTINATION, not a URL**, and it is the SAME open
+> decision as `AGENT_LOGIN_LINK_READY`. Flip the two together or neither.
+>
+> **5 · THE TESTIMONIALS TIMER NO LONGER PAUSES ON HOVER.** Removed on
+> instruction. `hovered` and both mouse handlers are gone; **`focused` is the
+> whole pause** and still satisfies 2.2.2 (a keyboard user mid-read is the case
+> the pause exists for; a pointer resting on the section is not). The
+> hover/focus-cancellation bug recorded in entry (h) is now MOOT rather than
+> solved — there is no second flag left to cancel the first. **Do not re-add a
+> hover flag to "fix" it.**
+> **PROVEN WITH REAL INPUT, per (h)'s own warning about synthetic events.** Two
+> independent checks. (a) React's props on the live `<section>` are exactly
+> `aria-labelledby · className · onFocusCapture · onBlurCapture · children` —
+> **no `onMouseEnter`, no `onMouseLeave`**, so no code path exists. (b) A real
+> pointer parked on the section (and directly on the Next arrow — `:hover` true
+> on both, `activeElement` still BODY) for **48 consecutive samples over 19.2s**:
+> `t-paused` **never once applied**, and the counter advanced **02 → 03 at
+> t=5.61s** (mid-cycle — the hover did NOT reset it) and **03 → 01 at t=13.60s**,
+> 7993ms later. Hover neither pauses nor restarts the 8s.
+>
+> **6 · THE LOCALE SWITCHER WORKS. IT IS STILL OFF, AND THE REASON IS WORSE THAN
+> THE FILE SAID.** `LOCALE_SWITCHER_READY` was flipped `true`, driven, and put
+> back to `false`. **The switch itself is verified**: a real click on ES
+> navigated /en → /es and re-rendered every nav href into the new locale (Inicio
+> · Nosotros · Servicios · Blog · Contacto · Calculadora · Únete). Placement
+> confirmed live — `position: fixed`, z-30, **32.8px from the bottom**, cream
+> pill, real `<a>`s with `hreflang`/`lang`, EN gold-deep + `aria-current="page"`,
+> ES ink, **no flags**.
+> 🔴 **BUT /es IS NOT "ENGLISH AT A SPANISH URL" — IT IS BOTH LANGUAGES IN ONE
+> COLUMN.** Read off the live page: nav Spanish · hero headline, sub and SSN
+> line **English** · **the hero CTA pair splits mid-row — "Get a free quote"
+> English beside "Únete a nuestro equipo" Spanish** · "WHAT WE DO" English ·
+> WhoWeServe Spanish **except one bullet** ("Appointments with multiple
+> top-rated carriers", the single empty `whoWeServe` key) sitting between two
+> Spanish bullets inside one card · "OUR CARRIERS" English · `<title>` English.
+> A reader who asked for Spanish and gets a language change between two adjacent
+> buttons does not read "translation pending", they read "broken". The fallback
+> is working correctly; the result is not shippable. **Recommendation: stays
+> hidden until es.json carries real copy. Same logic as the disabled lead form.**
+> **FLAGS: NONE, AND THAT DECISION IS ALREADY IN THE FILE AND STILL RIGHT.**
+> SEM uses national flags (UK / PT). Ours must not: a Spain flag for a US
+> Hispanic (largely Mexican and Central American) audience names the wrong
+> country; a US flag for English makes a nationality claim about the READER; and
+> a globe is a language-agnostic glyph that says nothing about WHICH two
+> languages. **Language is not nationality. Text codes only — "EN / ES".**
+>
+> 🔴 **NEWEST (2026-08-02, j) — "TYPE BEHIND IMAGE" HERO: TRIED, REJECTED,
+> DELETED. DO NOT REBUILD IT.**
+>
+> An alternative homepage hero was built and compared against the live one, on
+> the brün model — one huge display word ("Synergy") with a cut-out object
+> standing in front of it, so the word reads behind and around the object. **The
+> live family-photo hero WON and is now permanent.** `components/Hero.tsx` was
+> never touched at any point; there is nothing to revert on it.
+>
+> **DELETED IN FULL:** `components/HeroAlt.tsx` · `components/HomeSections.tsx`
+> (a shared section list that existed only so the two pages could differ by
+> exactly one element) · `app/[locale]/(site)/hero-alt/` · the `?hero=alt`
+> query-param toggle and its `searchParams` block in `(site)/page.tsx` ·
+> `public/hero/house-cutout.png` · the stray `NEXT_PUBLIC_HERO_VARIANT` line in
+> `.env.local`. `(site)/page.tsx` is back to its pre-toggle form and back to
+> STATIC rendering — reading `searchParams` had opted it into dynamic.
+>
+> ---
+>
+> 🔴 **WHY IT WAS REJECTED, SO THE NEXT PERSON DOES NOT RE-DERIVE IT.**
+>
+> The design was sound and it measured fine. What killed it was the ASSET, and
+> that problem is structural rather than a matter of searching harder:
+>
+> **The effect requires a genuinely transparent cut-out.** The word has to show
+> through the empty space around the object — that is the whole trick. A
+> rectangular photo cannot produce it. Synergy's own photography has no
+> pre-isolated house and never will without a dedicated shoot.
+>
+> **The free stock pool does not contain one at usable quality.** Pexels and
+> Unsplash are JPEG-only, so they are out by definition. Pixabay is the only
+> free source carrying real alpha PNGs: 35 transparent house PNGs were pulled
+> and probed. Most are illustration or 3D fantasy asset. Seven were photographic
+> houses. Every one failed on two independent counts:
+>
+>   - **The base of the cut-out is destroyed.** Rooflines and sides cut cleanly
+>     (sky-against-roof is easy segmentation), but the bottom is a soft
+>     eraser-brush smear where the lawn was rubbed out — torn grass, floating
+>     turf, a pale halo against cream. Fatal here specifically, because in this
+>     composition the object's BASE is what crosses the word.
+>   - **Resolution.** Trimmed to actual content the best were 1081x611 and
+>     1028x480, against ~1400 device px needed at 2x. Pixabay's public CDN caps
+>     at `_1280`; originals need an account.
+>
+> A `mask-image` fade on the bottom 12% was tried as mitigation. It softened the
+> ragged base rather than fixing it, and it was still visible.
+>
+> **THE MEASUREMENTS, so they are not redone.** Word occlusion by opaque cut-out
+> pixels, per letter, taken from real layout rects against the PNG's real alpha:
+>
+>   1536   13.5% of letter-box area   S 0 · y 0 · n 0 · e 1 · r 20 · g 32 · y 46
+>    768    4.1%                      S-r 0 · g 8 · y 21
+>    390    0%  (restacked, no overlap)
+>
+> The relationship worked — "Syne" always clear, house over the tail — and every
+> AA figure passed (eyebrow gold-deep 5.16, word ink 15.87, sub 15.86, SSN line
+> 6.14, CTAs 15.87 / 15.84). **The layout was not the problem. The image was.**
+>
+> **IF IT IS EVER REVISITED**, the only routes that work are: a commissioned
+> shoot of a real Synergy-sold property against sky, cut properly; a paid
+> licensed cut-out at 4000px+; or a different object with a clean silhouette —
+> the Synergy shield from `public/synergy-logo.svg` is already vector, already
+> transparent, already ours, and already means protection.
+>
+> 🔴 **NEWEST (2026-08-02, i) — THE PAGE SURFACE IS A GRADIENT. THE FLAT-CREAM
+> AA TABLE IS VOID.**
+>
+> ```css
+> body { background-color: #f8f4ee;
+>        background-image: linear-gradient(180deg, #f8f4ee 0%, #f4efe4 100%); }
+> ```
+>
+> **ON `<body>`, `background-attachment: scroll` (default).** Painted once across
+> the document's own height, so it travels with the content — static, not
+> scroll-shifting and not animated. `fixed` was considered and rejected: it locks
+> the gradient to the viewport, every screenful then shows the full range, and it
+> reads as a wash rather than as depth. Document-height is what makes it
+> barely-there — on the 7,522px homepage the whole 0.043 luminance drop is spread
+> over 7,522px, about **0.0006 per 100px**.
+>
+> **WHY `<body>` AND NOT A WRAPPER.** The overscroll rubber-band area is painted
+> from the CANVAS, propagated from body. A wrapper cannot reach it — that finding
+> is the entire reason `RouteTheme.tsx` exists (§8). A gradient on a wrapper would
+> leave the top and bottom rubber-band bands flat while the page is not.
+>
+> 🔴 **ELEVEN THINGS HAD TO STOP PAINTING FLAT CREAM, OR THE GRADIENT WOULD HAVE
+> BEEN INVISIBLE ON EVERY PIXEL.** `<body>` already carried `bg-cream`, and seven
+> section components painted opaque `bg-cream` on their own outer `<section>`.
+> Between them they tiled the full height of every page. Now transparent:
+>
+> | | |
+> |---|---|
+> | `app/[locale]/layout.tsx` `<body>` | `WhySynergy` · `HowItWorks` · `TheEngine` |
+> | `Testimonials` · `WhoWeServe` | `Calculator` · `CarrierStrip` |
+> | `.about-page` in globals.css (was a hardcoded `#f8f4ee`) | `(site)/calculator/page.tsx` `<main>` |
+> | `(site)/join/page.tsx` `<main>` | `Footer` (see below) |
+>
+> They are PAGE SURFACE, not surfaces of their own. Anything that genuinely has
+> its own surface still paints and is unaffected: the two navy sections, the hero
+> card's photograph, the footer photograph, the navy login panel, glass panels.
+> **Do not re-add `bg-cream` to a full-width section wrapper without reading the
+> block above `body` in globals.css.**
+>
+> **`.about-page` WAS THE REAL BUG.** It wraps the whole body of /about
+> (y 900–7027) and /services (y 900–11398) in a flat `#F8F4EE`. At its top the
+> gradient beneath is `#F8F3ED` — invisible. At its BOTTOM the gradient has
+> reached `#F4F0E5` while the fill was still `#F8F4EE`: the wrapper ended ~0.04
+> of luminance LIGHTER than the surface either side, a full-width step on the two
+> longest pages on the site.
+>
+> **THE FOOTER'S MELT AND SCRIM MOVED WITH IT.** Both opened on
+> `rgba(248,244,238,·)`, correct against flat cream and 0.043 too light against
+> the gradient at the point they meet. Both are `rgba(244,239,228,·)` now, and
+> `CREAM` in `scripts/measure-footer-aa.mjs` tracks them. **Those three values and
+> the body gradient's end stop are one number in four places.**
+>
+> **SEAMS — MEASURED, NOT EYEBALLED.** Every boundary between `main`'s children is
+> flush to three decimals (899.984 · 1920.125 · 3184.094 · 4371.578 · 5232.453 ·
+> 5990.828 · 6608.891), zero margins, max vertical gap **0.000px** on /, /about
+> and /services. No stripe of gradient can appear at a seam. The 15px to the right
+> of every full-bleed section is the `scrollbar-gutter: stable` reservation on
+> `<html>` (body 1521 vs html 1536) — scrollbar space, not exposed page, and it
+> predates the gradient unchanged.
+>
+> ---
+>
+> 🔴 **THE OLD FLAT-CREAM AA TABLE IS VOID.** Every value measured against a flat
+> `#F8F4EE` page is superseded. Text on the gradient now sits on its LOCAL colour,
+> which is a function of its own document position. Re-measured by walking every
+> text node on every page and computing the surface at each block's document y:
+>
+> **530 blocks across /, /about, /services, /join, /calculator, /contact at
+> 1536 / 768 / 390 — ZERO failures.** Worst instance of each token:
+>
+> | token | worst surface | ratio | bar |
+> |---|---|---|---|
+> | `#7D641F` gold-deep | `#F5F0E7` | **5.00** | 3.0 / 4.5 |
+> | `#1A1A1A` @0.70 | `#F5F0E6` | **6.04** | 4.5 |
+> | `#1A1A1A` @0.72 | `#F4F0E5` | **6.44** | 4.5 |
+> | `#1A1A1A` @0.75 | `#F7F3EC` | **7.26** | 4.5 |
+> | `#1A1A1A` @0.80 | `#F6F1E8` | **8.51** | 4.5 |
+> | `#1A1A1A` @0.82 | `#F5F0E6` | **9.03** | 4.5 |
+> | `#0D1B2A` navy | `#F4EFE5` | **15.21** | 4.5 |
+> | `#1A1A1A` ink | `#F4EFE5` | **15.22** | 4.5 |
+>
+> **THE BOUNDING ARGUMENT, WHICH IS WHAT MAKES THIS DURABLE.** The gradient's
+> range is closed at `[#F8F4EE, #F4EFE4]`. Every token clears its bar at the
+> DARKER end (gold-deep 4.93, ink 15.18, ink/70 6.02 — see the token table at the
+> head of globals.css), so no block at any width, on any page, at any document
+> length can fail from the gradient alone. A new token must be checked against
+> `#F4EFE4`, not against `#F8F4EE`.
+>
+> **FOOTER (text over the photograph), re-run with the new scrim:** 1536 **20/20**
+> tightest 6.81 · 768 **21/21** tightest 4.79 · 390 **21/21** tightest 4.75. The
+> small breakpoints tightened ~0.18 because the scrim now mixes a slightly darker
+> cream. **4.75:1 is the site floor** and it is the first thing to re-check if the
+> end stop ever moves.
+>
+> 🔴 **NEWEST (2026-08-02, h) — TESTIMONIALS REBUILT TO THE beetogreen.com/en
+> ARRANGEMENT.** The staggered fan from entry (g) is REPLACED. Studied live in
+> Chrome and reproduced: quote **37.33px / 44.8 lh (1.2) / −0.02em / w500** ·
+> lead-in **24.89px w600** · counter **16px "NN / NN"** · arrows **44.4px
+> circles, radius 50%, 1px border, ~8.9px apart, TOP-LEFT in their own column** ·
+> ring **viewBox 0 0 50 50, circle r=24, dasharray 150.8 (=2πr), stroke-width 2,
+> `animation: 8s linear forwards`** · **44px rhythm** header → quote → author.
+> Ours measures 44px header→quote, 44px quote→author; quote 44px at 1536 (=37.4
+> at their 1280), counter 16px, arrows 44px r50%. Their surface is white with
+> near-black type; ours is cream/ink and any gold is gold-deep.
+> 🟡 **ONE TYPE DEVIATION, FORCED BY OUR RULES:** their lead-in is weight **600**;
+> Kufam tops out at **500** and synthetic weights are banned (§3), so ours is 500.
+> **COUNT: THREE**, so the counter reads **01 / 03** (theirs 01 / 05). It is
+> driven off `QUOTES.length` — it cannot drift from the data.
+> **🔴 NO ORG FIELD EXISTS, SO THERE IS NO ORG.** The reference shows
+> "name + company". `testimonials.quotes.*` carries `name` and `quote` ONLY —
+> there is no organisation for any of the three and inventing an employer for a
+> named attributed quote is not available. **Name alone.** One key per quote
+> fixes it if the client supplies them.
+> **§NO PHOTO, AND NO PLACEHOLDER FOR ONE.** Their author block is a 71px
+> circular portrait beside the name. Ours drops the photo, the circle and any
+> initial-bubble entirely, and rebalances that row so both ends carry content:
+> **name bottom-left, five stars bottom-right**. Nothing occupies the space an
+> image would have, so nothing reads as missing.
+> **STARS — NOW REAL DATA, NOT A HARDCODED FIVE (2026-08-02, i).** The client
+> confirmed the five-star ratings (verified by Hamza), so `quotes.*.rating`
+> carries the value per testimonial — all three are `"5"` — and the row renders
+> from it. The first build looped a fixed `STARS = [0..4]`, which would have
+> asserted five stars for any FUTURE testimonial regardless of its real score.
+> **A missing, non-numeric or out-of-range rating renders NO stars at all**
+> rather than defaulting to five: an absent rating is silent, never invented.
+> Earned stars are gold-deep **5.16:1**; unearned ones (only visible below five)
+> are a HOLLOW glyph at ink/50 **3.27:1** — above the 3:1 bar rather than
+> decorative-exempt, and the SHAPE differs too so it is never colour alone.
+> `role="img"` + an interpolated `aria-label` ("Rated {n} out of 5") carries the
+> value, so it is not conveyed by shape alone either.
+> 🔴 **`rating` IS MIRRORED EMPTY IN es.json ON PURPOSE.** A rating is a number,
+> not copy, and must not be translated; `i18n.ts`'s empty-value fallback returns
+> the English `"5"`. **Verified live on /es: five stars render, aria-label
+> "Rated 5 out of 5".** Do not "fix" the empty Spanish value by translating it.
+> **THE LEAD-IN IS OUR OWN HEADING.** Theirs ("Don't just take our word for
+> it…") is their copy; `testimonials.headline` sits in that exact slot, so the
+> arrangement matches with ZERO new copy and the section keeps a real h2.
+> **QUOTES VERBATIM** — verified by diff: no quote, name or headline changed. The
+> curly marks are decorative `aria-hidden` spans, so the blockquote's accessible
+> name is the client's sentence alone.
+> **🔴 A REAL BUG FOUND BY DRIVING IT, NOT BY READING IT.** The pause first
+> shipped as a SINGLE `paused` boolean set by four handlers. With focus still on
+> an arrow, moving the POINTER off the section fired `onMouseLeave` and set it
+> false — restarting the 8s timer under a keyboard user mid-read, the exact
+> failure the pause exists to prevent. Measured: focused "Show the next
+> testimonial", paused **false**. **Hover and focus are now separate flags and
+> the pause is their OR**, plus `onBlurCapture` ignores focus moving BETWEEN the
+> two arrows. Re-tested: focus + pointer away → still paused; blur → resumes.
+> ⚠️ **AND A TESTING TRAP WORTH KEEPING:** synthetic `dispatchEvent` for
+> mouseover/focusin did NOT reach React's delegated handlers and reported "not
+> paused" for a pause that works. **Drive this component with real input
+> (`computer` hover/click), never synthetic events** — the synthetic result is a
+> false negative.
+> **AA — every row passes:** quote **15.88** · lead-in **15.88** · counter
+> ink/70 **6.15** (their ink@0.5 would be 3.27 and fail) · name **15.88** ·
+> stars **5.16** · arrow glyph **15.87** · arrow border navy **15.87** (a UI
+> component boundary, so 3:1 applies) · ring gold-deep **5.16**.
+> **REDUCED MOTION:** the JS timer never starts and `.t-ring` renders COMPLETE
+> (`stroke-dashoffset: 0`) rather than empty, so it reads as a finished dial, not
+> a stalled one. Arrows keep working.
+> **PLACEMENT UNCHANGED** — still last, after `<Consultation />`. Seams both
+> 0px gap: Consultation(dark) → Testimonials(cream) cushion **216**, Testimonials
+> → Footer(navy) **0**. Section height 618 at 1536, 475 at 375.
+> **375: 375/375, ZERO elements outside the viewport**, arrows and ring present,
+> quote 24px. One h1 (Hero) at both widths.
+> 🟡 **THE VACATED-SLOT COST FROM ENTRY (g) STILL STANDS:** WhoWeServe → TheEngine
+> → HowItWorks are three cream sections in a row (cushions 135.1 / 133).
+> 🟡 **THREE NEW STRINGS TOTAL, all interface labels under Rule 4:**
+> `testimonials.prevLabel`, `.nextLabel`, `.rating`. An unlabelled arrow and an
+> unlabelled star row fail the keyboard/AT requirements and no equivalent existed
+> in the catalogue. Mirrored empty in es.json.
+>
+> 🔴 **(2026-08-02, g) — TESTIMONIALS: STAGGERED FAN (SUPERSEDED BY (h) ABOVE —
+> the fan is gone; the record correction below still stands), MOVED LAST, AND A
+> RECORD CORRECTION THAT MATTERS.**
+> **🔴 THE "STAFF STATEMENTS" CLAIM IN THIS FILE WAS WRONG. CORRECTED HERE.**
+> §"Placeholder strings" said *"they are staff statements about how Synergy
+> works"*. They are not. Read them: *"We have real peace of mind now"*, *"They
+> truly put our family first"*, *"I never understood life insurance until I spoke
+> with Synergy"* — these are CUSTOMERS. fflsynergy.com publishes all three
+> verbatim, with these attributions, under the heading **"What Our Clients
+> Say"**. So the heading is the CLIENT'S OWN wording over the client's own
+> quotes: it does not overclaim and **it stays**.
+> ⚠️ **CONSEQUENCE, FLAGGED NOT ACTED ON.** That mischaracterisation was the
+> stated basis for **deleting the results disclaimer** (see the 2026-07-30
+> entry). **The reasoning is void.** The deletion may still be right on the
+> narrower ground that none of the three claims a RESULT — no earnings, no
+> returns, only service experience — but that is a compliance call for Ziad, not
+> one to re-decide in a restyle. **Nothing was re-added or re-removed.**
+> **THREE testimonials** (`q1`–`q3`), **verbatim and unaltered** — Standing Rule
+> 3. Verified by diff: no quote, name or heading changed.
+> **🔴 NO PHOTOS, AND NO AVATAR SLOT AT ALL.** The reference puts a face on every
+> card; we have none of these people and a stock or invented face on a NAMED
+> attributed quote would be a fabrication. There is no empty slot and no
+> initial-in-a-circle (which reads as a broken image) — the anchor in that
+> position is a large gold-deep quotation mark, with corner ticks and a hairline
+> rule so the card reads as a document panel. **There is also NO ROLE FIELD** —
+> `quotes.*` carries `name` and `quote` only, so the card shows the name alone;
+> a role or a "Client" label would be authored copy asserting who these people
+> are and is not ours to add.
+> **DEPTH IS SCALE + ROTATION + STACK ORDER, NEVER OPACITY — an AA decision.**
+> Fading the back cards composites their ink toward the cream and drops the quote
+> under 4.5:1. Every card stays fully opaque; rotation does not change contrast,
+> so **all six text nodes measure 17.4:1** at any angle. Arrows 15.87:1.
+> **ONE MARKUP, TWO BEHAVIOURS, DECIDED IN CSS** (`.t-stack` / `.t-card` /
+> `.t-arrows`, end of globals.css) — not a JS branch, because rendering both
+> variants would put three quotes in the DOM twice and a screen reader would read
+> six. The fan requires **`min-width:768px` AND `prefers-reduced-motion:
+> no-preference`**; anything else is a plain upright column with the arrows
+> hidden. That single rule satisfies the reduced-motion contract and the phone
+> layout at once, and `useReducedMotion()` was removed from the component.
+> **🔴 A DEFECT CAUGHT BY MEASURING THE PHONE:** the first build fanned at every
+> width and the left-hand card sat at **left −104.9px** — clipped off the
+> viewport with its text unreachable, while `documentElement.scrollWidth` still
+> matched `innerWidth` so a naive overflow check passed it. **8 elements were
+> outside the viewport; it is 0 now** at 375 and at 1536.
+> **PLACEMENT — "after the calculator section", which does not exist.** The
+> Calculator is not on the homepage (moved to `/calculator`; `<Consultation />`
+> took its exact slot and links to it), so that resolves to **after
+> `<Consultation />`** — Testimonials is now the LAST section before the footer.
+> New order: Hero → WhatWeCover → WhoWeServe → TheEngine → HowItWorks →
+> Consultation → **Testimonials** → Footer.
+> **SEAMS — all six 0px gap, no dead space.** New boundary
+> Consultation(dark) → Testimonials(cream) cushion **216px**, then
+> Testimonials(cream) → Footer(navy) at **0** — the section is CREAM precisely so
+> that run does not collapse into one dark mass.
+> 🟡 **THE COST AT THE VACATED SLOT, MEASURED:** Testimonials was the navy break
+> between TheEngine and HowItWorks. Removing it leaves **three cream sections in
+> a row** — WhoWeServe → TheEngine (cushion 135.1) → HowItWorks (cushion 133),
+> both `sameSurface: true`. The alternation now reads dark·dark·cream·cream·cream
+> ·dark·cream·navy. Nothing overlaps and no gap opened, but the middle of the
+> page lost its rhythm break. **Fix if wanted:** give one of the three a distinct
+> surface, or move HowItWorks. Not done unasked.
+> **One h1 (Hero) at both widths; no horizontal overflow (1521/1536, 375/375).**
+> 🟡 **TWO NEW STRINGS, THE ONE DEVIATION FROM "NOTHING INTO en.json":**
+> `testimonials.prevLabel` / `.nextLabel`. The arrows are real buttons and an
+> unlabelled control fails the keyboard requirement; no prev/next label existed
+> anywhere in the catalogue. Interface labels under Rule 4. Mirrored empty in es.
+>
+> 🔴 **(2026-08-02, e) — ADMIN RESTYLE. VISUAL ONLY; NO DATA PATH MOVED.**
+> The admin is re-skinned onto a reference card anatomy: big rounded outer card,
+> letterspaced mono header, thin divider, left selector list, stat row.
+> **🔴 THE BOUNDARY HELD, PROVEN BY HASH NOT INTENTION.** Nine files were hashed
+> before and after: `lib/admin/data.ts`, `lib/supabase/auth.ts`,
+> `lib/supabase/server.ts`, `(portal)/admin/layout.tsx`,
+> `(portal)/admin/actions.ts`, `(portal)/login/actions.ts`, `middleware.ts` and
+> both migrations — **all byte-identical**. Every field name `saveAgent` /
+> `setAgentActive` read (`id, locale, name, email, phone, state, heard, stage,
+> licensed, active`) is still present with the same name; the agent form's
+> `action={formAction}` / `action={setAgentActive}` wiring is untouched. No
+> query, guard, RLS policy or role check changed.
+> **MAPPING.** **Leads = card + selector + detail + stat row** — 8 fields is the
+> "pick one, read it" shape and it was forcing a horizontal scroller; read-only,
+> so the split adds no write surface. **Agents = plain table in the card + stat
+> row** — its create/edit form already owns the right-hand pane and two editors
+> would compete. **Content = plain table, no stat row** — 4 read-only columns,
+> nothing to detail.
+> **🟡 STAT CARDS ARE DATASET-SCOPED ON PURPOSE.** The reference's are
+> DETAIL-scoped (the selected station's tide events). Ours are totals, approved
+> as a deliberate divergence because it is the more useful read for an admin
+> opening the page. **Do not "fix" this back toward the reference.** Every figure
+> is a `.filter().length` over rows the page already holds — no new query.
+> Deliberately absent: conversion/close rate (no outcome timestamps) and any
+> week-over-week delta (no historical snapshot).
+> **🔴 THE PROGRESSION RAIL SHOWS POSITION, NOT HISTORY, AND THAT IS THE WHOLE
+> POINT.** We store ONE value per record (`leads.status`, `agents.stage`) and no
+> history table — no `status_changed_at`, no audit trail. A rail that filled
+> earlier steps as "done" would assert events we have no evidence for. So only
+> the CURRENT step is filled; earlier steps are hairline OUTLINES; the legend
+> says so in words. **Verified by rendering all five cases, not by reasoning:**
+> `new` → CURRENT/inert/inert/inert · `closed` (never contacted) →
+> outline/outline/outline/CURRENT · agent stalled at `meet` →
+> outline/CURRENT/inert/inert (no invented "overdue" styling — we have no
+> timestamps to justify one) · `null` → all inert + "Unrecognised value" chip ·
+> off-sequence `"lost"` → all inert + **"Unrecognised value: lost"**, printing
+> the raw value. It fails VISIBLE rather than silently rendering step 1.
+> **MONO: IBM Plex Mono 400/500**, mounted on the **`(portal)` layout with
+> `preload: false`**, NOT the root layout — the admin is staff-only and noindex,
+> so no public page pays for a fourth webfont. `font-mono` falls back to a system
+> stack anywhere else. Tailwind gains `mono`.
+> **AA — 22 text pairs, ZERO failures**, computed over the exact class pairs in
+> the source: card title 17.4 · meta/labels ink70-on-white **6.41** · selector
+> idle name 15.88, sub-label **6.15**, value gold-deep **5.16** · ACTIVE-on-navy
+> name **15.87**, sub-label **10.46**, value gold-pale **13.31** · detail heading
+> 17.4 · rail current label 15.88 · field value 17.4 · stat value 15.88 · table
+> head 6.15 · table cell 17.4. Dots and hairline accents at gold-deep/80:
+> **3.71** on white, **3.48** on cream — clearing 3:1, not exempted.
+> ✅ **THE RAIL'S INERT BAR WAS RAISED — all three states now clear 3:1.** It
+> shipped briefly at `ink/15` (**1.36**) on a decorative exemption; that was
+> rejected on instruction. Raising it to `ink/50` (**3.27**) put it a hair from
+> `passed` (gold-deep/80, **3.48**), which would have traded a 1.4.11 problem for
+> a **1.4.1 one** — two states separated by hue alone. So the inert bar is also
+> **half height**: weight carries the difference, colour reinforces it, and the
+> step label (ink/70 → ink) is a third, textual cue. Final:
+> current navy **15.87** full-height · passed gold-deep/80 **3.48** full-height ·
+> inert ink/50 **3.27** half-height. **Change these three together or not at
+> all.**
+> 🟡 **ONE ITEM REMAINS AT 1.36, DOCUMENTED:** the card/table hairline `ink/15`.
+> It is the pre-existing repo convention `DataTable` has always shipped, and it
+> is a container boundary, not state — raising it would restyle every table on
+> the site, well beyond this brief.
+> **CHROME RESTYLED TOO (2026-08-02, f):** `AdminShell` (mono uppercase nav
+> labels, letterspaced `SYNERGY` wordmark, mono user block and sign-out) and
+> `/login` (the form now sits in the same `rounded-2xl` white card with a mono
+> meta label + divider; new key `login.metaLabel`). **18 more pairs measured,
+> zero failures** — shell nav cream-on-navy 15.87 · wordmark gold-on-navy 7.61 ·
+> user role 6.15 · login left meta cream/70-on-navy 8.26 · login card meta 6.41 ·
+> denied notice 15.05 · mobile back-link 5.65.
+> **🔴 `LoginForm` WAS NOT TOUCHED** — its floating-label mechanic depends on
+> `peer-placeholder-shown` and a `placeholder=" "` on every input (both hooks
+> verified still present). Restyling those classes is how you silently break the
+> labels. **The nine guarded data-path files were re-hashed after this pass and
+> are still byte-identical.**
+> ⚠️ **AA was computed from the source pairs, not sampled from a live render** —
+> `/admin` needs a session this environment has none of, and a temporary public
+> harness route resolved only intermittently in dev. Contrast is a pure function
+> of two colours, and the pairs were enumerated by grepping the components rather
+> than by eye, but a human should still eyeball it once signed in.
+>
+> 🔴 **(2026-08-02, d) — THE ENGINE: FULL-WIDTH BY SPACING, NOTHING
+> SCALED.** The diagram now spans the whole content width by MOVING THE ELEMENTS
+> APART and lengthening the lines. **Nothing grew.** Carriers went **3 columns →
+> 2**, hard against the left edge; cards keep their width at the right edge; the
+> hub is on the container's TRUE centre; the lines stretch to bridge the gaps.
+> **🔴 EVERYTHING IS IN REAL PIXELS NOW, AND IT HAD TO BE.** Chips and rings were
+> sized as PERCENTAGES of the stage, so widening the container would have scaled
+> them — the one thing this pass forbids. They are fixed px (chip **100×34**,
+> rings **149 / 110**, bloom **224**, logo **78** — all the sizes they already
+> were). Fixed-px chips against viewBox-unit paths would then drift apart, so the
+> SVG's **viewBox is the container's measured pixel box** and paths are authored
+> in px. One coordinate system, cannot desync. This also RETIRES the old
+> `preserveAspectRatio="none"` hack and the `vector-effect` corrections — 1 user
+> unit is now 1 CSS px.
+> **🔴 A BARE ResizeObserver RENDERED THE DIAGRAM EMPTY — DO NOT REINTRODUCE
+> ONE.** The first build measured only via RO. In the preview browser a fresh RO
+> attached to a visible **1164×755** node never fired a single callback
+> (`__roFired` stayed `"pending"`), so `ready` stayed false and **no path, chip
+> or viewBox was ever emitted**. The load-bearing measurement is now a direct
+> `getBoundingClientRect()` on mount; the `resize` listener, `document.fonts.ready`
+> (card height drives this box and shifts when the display face swaps in) and the
+> RO are top-ups only.
+> **MEASURED AT 1536** (content width 1164): viewBox `0 0 1164 756.9` · chips
+> **100×34** at col0 **x=0** and col1 **x=114**, carriers' right edge **214** ·
+> hub centre **582** (exact 50%) · rings **224/110/149** · cards **x=770, w=394**
+> · 24 static tracks + 24 travelling dashes. **Line arc lengths: left
+> 293.5–524.1px** (was ~293–407 horizontal span; the arc is longer than the span
+> because of the vertical curve), **out-lines 275.5 / 97.5 / 275.5**.
+> 🟡 **THE RIGHT SIDE IS INHERENTLY SHORT and that is geometry, not an oversight:**
+> hub centred at 582 plus 394px of cards leaves ~114px of gap. If balance is
+> wanted later the only levers are a narrower card column or an off-centre hub —
+> both were excluded by the brief.
+> **COLLAPSE:** the diagram is `display:none` below **lg (1024)**, so the
+> two-column grid never applies on a phone and cannot overflow. 768 and 390 both
+> render the carriers as a wrapped text list (all 21, no "+N more") with the
+> cards stacked beneath — 768: cards 697 wide, section 1037; 390: cards 350,
+> section 1495. **No horizontal overflow at any width** (1521/1536, 753/768,
+> **390/390**, zero overflowing elements). **h1 = 1** at all three.
+> **AA — every row passes, no exemptions.** Unchanged from (c): eyebrow 5.16 · h2
+> 15.88 · sub 8.66 · chip 17.4 · kicker 5.35 · card h3 16.47 · card body 8.86 ·
+> numeral 5.35 · lines + dash **5.16** · card rules 3.71 · halo 3.48.
+> ✅ **The travelling highlight still never reaches card text** — dash reach
+> **937**, card text at **957.5** → **20.5px clear** (and 11.4px clear of the card
+> box). Tighter than the previous 50.8 only because the out-lines deliberately
+> run closer to the cards now.
+> **Unchanged:** cream surface, passport cards, centre logo, the moving-dash
+> mechanic and its timings, Synergy-outward on the right, reduced-motion (dashes
+> not rendered; static lines stand still), zero hardcoded strings.
+>
+> 🔴 **(2026-08-02, c) — THE ENGINE: TRAVELLING HIGHLIGHT (replaces the
+> line-draw). The (b) entry below described the WRONG MECHANIC and is corrected
+> here.** The lines do **NOT** animate. They are **static, thin, always present**
+> — the track. What moves is a **short bright segment sliding ALONG** each fixed
+> path. `engine-draw` is gone; `.engine-line` is now inert (dasharray none,
+> dashoffset 0) and a **second path per line** carries the highlight.
+> **MECHANIC:** highlight path has `pathLength="1"` +
+> `stroke-dasharray: 0.05 0.95`, so the pattern PERIOD EQUALS THE WHOLE PATH and
+> **exactly one 5%-long dash exists on a line at a time**; `stroke-dashoffset`
+> 0 → −1 slides it one full traverse and wraps seamlessly. Nothing measured in
+> JS. Drawn AFTER the tracks so the highlight always sits on top.
+> **🔴 WHERE EACH NUMBER CAME FROM — the client's reference could NOT be
+> measured.** `neuform.ai/community/74e23c51…` returns **"LOGIN REQUIRED"**; I
+> did not authenticate and did not attempt to. So:
+> · **dash length 5%** is measured off a **SCREENSHOT** the client supplied —
+> bright segments run ~45–50px against paths spanning ~1060px (**4.2–4.7%**). An
+> earlier draft used 12%, which reads as a comet streak, not the tight bead the
+> reference shows. **The diamonds dotted along its paths are STATIC waypoint
+> markers, not the moving part** — do not rebuild them as motion.
+> · **traverse 5.2s linear** and the **1100ms right-hand stagger** are measured
+> from checkmatefinancialgroup.com, which uses the identical mechanic
+> (`.ep-pulse` 5.2s linear infinite; `.ep-out` dasharray 7,11).
+> · **left stagger = CYCLE / 21 ≈ 248ms**, applied in COLUMN-MAJOR order, so all
+> 21 highlights sit at different phases (measured 0s → 4.952s across the 5.2s
+> cycle) and the diagram **shimmers continuously instead of pulsing in unison**.
+> Checkmate spreads 6 highlights over ~0.82 of its cycle — same principle, scaled.
+> · **fades in (8%) and out (12%)** rather than popping, matching the reference's
+> `opacity: 0` base state.
+> · **glow** `drop-shadow(0 0 3px rgba(201,168,76,.75))` — gold. Theirs is
+> rgba(216,205,173,.8) at 4px on a DARK surface; on cream a highlight gains
+> presence by getting **denser and wider** (2.5px vs the 1px track), not lighter.
+> **DIRECTION unchanged:** left highlights run chip → hub, right run hub → card,
+> each following its own path's authored direction.
+> **✅ THE HIGHLIGHT NEVER REACHES CARD TEXT — measured, this was the explicit
+> ask.** Dash max right **901.5px**, +3px glow +1.5px half-stroke =
+> **906**; the cards column starts at **948** and the leftmost card text at
+> **956.8** → **42px clear of the card box, 50.8px clear of the text**. The SVG
+> does not overlap the cards column at all. AA is unaffected: the lines are
+> decorative and every text ratio is unchanged from the (b) entry.
+> **REDUCED MOTION:** the highlight paths are **NOT RENDERED** by the component,
+> and the CSS additionally forces `display: none` on `.engine-dash` — so the
+> static lines simply stand still, fully visible, no travelling dash, no stagger.
+> **Unchanged this pass:** layout, passport cards, centre logo, the scaled-up
+> stage (729.6×755.1 at 1536), zero dead space, `preserveAspectRatio="none"`.
+> 390: 390/390, zero overflowing elements, 21 chips, 3 cards, **h1 = 1**.
+>
+> 🔴 **(2026-08-02, b) — THE ENGINE: LINE-DRAW MOTION + SCALED UP.** ⚠️ **The
+> motion described in this entry was REPLACED — see (c) above. The scale, seam
+> and AA findings below all still stand.**
+> The particles are **GONE** and replaced by a **looping LINE DRAW** — the lines
+> animate into existence rather than sitting static with something running along
+> them. Mechanic: `pathLength="1"` normalises every path to a unit length so one
+> `stroke-dasharray: 1` serves all 24 and **nothing is measured in JS**;
+> `stroke-dashoffset` runs 1 to 0. `@keyframes engine-draw` + `.engine-line` are
+> at the END of `globals.css`.
+> **LOOP, NOT SCROLL-SCRUB — a decision, not a default.** Lenis owns this page
+> and suppresses native scroll events (WhySynergy documents the rAF workaround a
+> scrub would need); a scrub **reverses on scroll-up**, which destroys "one
+> continuous flow"; and it only ever completes if the reader scrolls the whole
+> section. Cycle **5600ms**, phases draw 4–38% / hold 38–86% / fade 86–100% —
+> **the fade is what hides the reset**, the line snaps back to undrawn while
+> already transparent.
+> **SEQUENCE:** left lines stagger **COLUMN-MAJOR** (far-left column first) at
+> 62ms so the sweep enters from the left edge; right lines start at **1400ms**,
+> 300ms apart; cards land at 1500ms + 300ms. One left-to-right flow per cycle.
+> **🔴 DIRECTION REVERSED ON THE LEFT, ON INSTRUCTION — this undoes an earlier
+> decision and the reasoning is recorded so it is not silently re-flipped.**
+> Left lines are now authored **CHIP → HUB** (they arrive); right lines stay
+> **HUB → CARD**. A previous pass ran BOTH outward because carrier-to-hub motion
+> can read as the carriers funding the brokerage, which is false — Synergy is an
+> independent broker. The adopted reading is different and defensible: the market
+> is surveyed on the left, Synergy is the hub it passes through, and what reaches
+> the reader leaves on the right. **Synergy-outward is preserved where it carries
+> the claim — the right-hand side.** Reversing again = swap the two endpoints in
+> `inPaths` and flip the stagger order.
+> **SCALED UP — dead space is now ZERO.** The stage no longer holds a fixed 3:2
+> box or `self-center`; it **stretches to the row height** (`lg:items-stretch`)
+> and the left column widened to `1.85fr`. Measured at 1536: stage **678.4×452.2
+> → 729.6×755.1** (+7.5% wide, **+67% tall**), grid `729.6 / 394.4`, gap 40,
+> **dead space above 0, below 0** (was 98.5/98.5). Columns pushed to `COL_X[0]=8`
+> and output lines reach `x=892` so the diagram spans the column edge to edge.
+> **🔴 `preserveAspectRatio="none"` IS LOAD-BEARING.** Once the box stopped
+> matching the viewBox's proportions, only a non-uniform map keeps the HTML chips
+> (positioned as % of the container) aligned with the SVG line endpoints —
+> verified: chip right edge **14.66%** against an expected **14.67%**. It costs
+> two things, both handled: `vector-effect="non-scaling-stroke"` stops strokes
+> thickening on one axis, and **the halo rings are HTML circles, not SVG ones**,
+> so they cannot be squashed into ellipses.
+> **A BUG FOUND BY MEASURING:** the dashed halo ring sat **+23.9px off centre**
+> (cx 526.6 vs 502.7) because an `animation` that sets `transform` REPLACES the
+> Tailwind `-translate-x-1/2 -translate-y-1/2` centring, and the old
+> `transform-origin: 620px 300px` was SVG user units applied to a DOM node. The
+> keyframe now restates the translate and the origin is `center`; all three rings
+> and the logo are concentric at (502.7, 377.6).
+> **AA — EVERY ROW PASSES, no exemptions claimed.** All 24 lines are now FULL
+> gold-deep **5.16:1** (the left lines were ink@0.22 = 1.59 and decorative; they
+> are gold and above the bar now). Text worst-case ON a guilloché stripe:
+> eyebrow **5.16** · h2 **15.88** · sub **8.66** · chip **17.4** · kicker
+> **5.35** · card h3 **16.47** · card body **8.86** · numeral **5.35**. Rules at
+> 0.80: **3.71** white / **3.57** stripe / **3.48** cream.
+> **DIMENSIONS:** 1536 — section 1186 tall, stage 729.6×755.1, cards 394.4 wide.
+> 768 — stage `display:none`, cards 696.8×611, section 1034, pad 40/28.
+> 390 — stage hidden, 21 chips listed in full, cards 350.4 wide, section 1490,
+> h2 30px. **No horizontal overflow at any width** (1521/1536, 753/768,
+> **390/390**, zero overflowing elements). **h1 = 1** at all three.
+> **REDUCED MOTION:** the `.engine-line` class is not applied at all, so lines
+> render **fully drawn and connected** — no draw, no travel, no stagger — the
+> ring does not spin and the cards render in place. Enforced in the component AND
+> in CSS.
+> 🟡 **The reference could not be verified.** "Quantum Core Diagnostics" was
+> given without a URL and a web search surfaces no such dashboard; the mechanic
+> was built from the written description, which specified it fully. Do not record
+> this as a measured study of that site — it was not one.
+>
+> 🔴 **(2026-08-02, a) — THE ENGINE: MOTION, HALO, PASSPORT CARDS, MOVED.**
+> **🔴 A CORRECTION TO THE 2026-08-01 ENTRY BELOW.** It recorded that their
+> input lines "are NOT animated at all". **That was wrong** — it was true of
+> their `<path>` elements and wrong about the section. Re-measured: **9
+> `.ep-pulse` `<circle>` particles** ride the lines via CSS
+> `offset-path: path(<the line's own d>)`, animating `offset-distance` 0→100%,
+> **5.2s linear infinite**, base `opacity:0` so a keyframe envelope fades them in
+> and out. Only **6 of their 21** input lines carry one (sparse reads as alive;
+> one per line reads as noise), stagger **0.85s**; 3 more ride the output lines
+> at ~1.1s stagger, r=4 vs 3.5. Two hub rings: solid **r=68**, dashed **r=92**
+> (dasharray 3,9) spinning **60s**. And their **cards surface one at a time
+> because each owns its own IntersectionObserver** — sequencing by SCROLL
+> POSITION, not a timed stagger (every card measures `transition-delay: 0s`).
+> **OURS — mechanics taken, look rejected.** Same `offset-path` mechanic;
+> everything else diverges. **10 particles** (7 in, one per grid ROW, + 3 out),
+> `engine-travel` **4.4s linear infinite**, in-stagger **620ms**, out-stagger
+> **1100ms**, all in **gold-deep #7D641F** on cream with a gold bloom at the hub.
+> **Every particle travels OUTWARD from the hub** (hub→carrier, hub→card) —
+> theirs runs carrier→hub, which is the "carriers fund the broker" reading we
+> refuse. Cards use a **timed stagger keyed to particle arrival** (1.16 / 1.42 /
+> 1.68s) because at desktop all three are on screen at once and per-card
+> observers would fire together. Keyframes + `.engine-pulse` / `.engine-ring-dash`
+> / `.passport-guilloche` live at the END of `globals.css`.
+> **HALO:** solid inner ring r=68 + dashed outer ring r=92 spinning 60s, both
+> gold-deep@0.80, plus a `radialGradient` gold bloom. **r=92 is exactly where
+> every line terminates** (620−528 = 712−620 = 92) — structure, not decoration.
+> **PASSPORT CARDS:** gold-deep@0.80 border, corner ticks, a ruled header with a
+> **−6° stamped roman numeral** in a bordered box, `engine.cardKicker` micro-label
+> at 0.18em, and `.passport-guilloche` security texture (`repeating-linear-gradient`
+> 45°, ink **0.028**). Measured, the texture moves the composited background under
+> body text from #FFFFFF to **#F9F9F9** — costs the body ratio 0.31 (9.17 → 8.86)
+> and everything still clears. Theirs are plain rounded rectangles holding a
+> carrier logo and a `<dl>` of premium figures — a search result. Different genre.
+> **🔴 AA — ALL GOLD-DEEP RULES RAISED TO ALPHA 0.80.** The first build shipped
+> them at 0.45 / 0.25 / 0.55 / 0.60, which measured **1.95 / 1.42 / 2.23 / 2.53**
+> — below the 3:1 bar and **inconsistent with the output lines strengthened on
+> §6c grounds one pass earlier**. Minimum alpha for 3:1 is **0.73**; 0.80 gives
+> **3.48 cream / 3.57 stripe / 3.71 white**. A faint inset second rule was
+> **dropped** rather than shipped as the one hairline that could not clear.
+> Text, worst case ON a guilloché stripe: eyebrow **5.16** · h2 **15.88** · sub
+> **8.66** · chip **17.4** · kicker **5.35** · card h3 **16.47** · card body
+> **8.86** · numeral **5.35** — all pass. Particles and output lines **5.16**.
+> Input lines stay ink@0.22 (**1.59**) as documented decorative filigree.
+> **🔴 MOVED to directly under `WhoWeServe`** (was position 2). New order: Hero →
+> WhatWeCover → WhoWeServe → **TheEngine** → Testimonials → HowItWorks →
+> Consultation. **All six seams measure 0px gap at 1536/768/390** and there is no
+> horizontal overflow anywhere (1521/1536, 753/768, **390/390**, zero
+> overflowing elements). **TWO COSTS, BOTH MEASURED, NEITHER SILENTLY ACCEPTED:**
+> 🟡 **(1) The vacated slot is now Hero → WhatWeCover, and both are navy
+> `#0D1B2A`** — verified `darkMeetsDark: true`, separated only by the hero's own
+> **12px** bottom padding, so a 12px cream hairline now sits between two dark
+> full-bleed sections. Before the move the Engine's cream absorbed that padding.
+> **The cheapest fix is to restore `CarrierStrip` into that slot** — it is
+> commented out in `(site)/page.tsx`, one import + one line, and the original
+> objection (two carrier treatments adjacent) no longer applies now that the two
+> are separated by WhatWeCover and WhoWeServe. **Not done unasked.**
+> 🟡 **(2) `WhoWeServe → TheEngine` is now cream-on-cream** (`sameSurface: true`),
+> cushion **135.1px** at 1536 / 80px at 768 and 390. The Engine's top padding was
+> already cut from `clamp(40,6.9vw,106)` to `clamp(40,5.2vw,80)` to absorb this.
+> 135px is within the About page's documented **130.8** section rhythm (§6c), so
+> it is defensible as whitespace-as-separator — but the boundary between those
+> two sections is now invisible, which is a design choice worth confirming.
+>
+> 🔴 **(2026-08-01) — THE ENGINE, AND TWO SECTIONS FOLDED INTO IT.**
+> New homepage section `components/TheEngine.tsx` at **position 2**, modelled on
+> checkmatefinancialgroup.com's "engine" section, MEASURED LIVE and rebuilt in
+> our tokens. Full study + geometry in **§14**.
+> **🔴 THE CARRIER COUNT IS 21 AND THE "12" IN THIS FILE WAS STALE.** The
+> homepage table said *"12 carrier names"* — written before the 2026-07-30 entry
+> that added *"the 9 formerly held-back carriers, now confirmed (Ziad is
+> contracted with all)."* 12 + 9 = **21**, and all three sources agree:
+> `carriers.names` (c1–c21), `lib/carrierLogos.ts` (21 files), `Carriers.tsx`
+> `APPOINTMENTS` (21). The line is corrected. **The grid is DATA-DRIVEN off
+> APPOINTMENTS** — 3 columns × ceil(N/3) rows — so it renders one chip per real
+> relationship and can never harden into a claim. Add a carrier there and the
+> diagram follows; nothing is padded and no phantom marks exist.
+> **🔴 COPY: NOTHING FROM CHECKMATE. THIS WAS THE WHOLE RISK.** Their section is
+> built on *"our AI reads 40+ A-rated carriers"* — an AI product Synergy does not
+> have, **"A-rated" (a BANNED claim, Standing Rule 6)**, and an unverified volume
+> claim; their three cards publish **premium figures, timing and underwriting
+> claims** Synergy publishes nowhere. **All of it was refused, not reworded** —
+> rewording would have been a fabrication about the client's business, a worse
+> failure than the lifted-copy one. Every string is Synergy's own and already
+> approved: eyebrow/heading/sub = `carriers.eyebrow`/`.headline`/`.subhead`
+> (these were ORPHANED — the full `Carriers` section is stashed and only
+> `APPOINTMENTS` was still imported); chips = `carriers.names.*`; the three cards
+> = `whySynergy.rows.r1/r2/r3`, **also orphaned** (their eight-row zig-zag was
+> superseded inside `WhySynergy.tsx` long ago). Only two new strings exist, both
+> interface labels under Rule 4: `engine.diagramLabel`, `engine.cardsLabel`.
+> **🔴 DIRECTION INVERTED ON PURPOSE.** Theirs reads carriers → hub, which would
+> say the carriers feed or fund the brokerage. Synergy is an **independent
+> broker**: it reaches out and shops carriers, nobody owns it. Our lines are
+> authored **core → carrier** and the draw travels **outward from Synergy**.
+> Their throughput readout ("reading 40+ carriers") is dropped entirely — a flow
+> cue whose copy is banned here anyway.
+> **TWO SECTIONS RETIRED INTO IT, commented out NOT deleted, both restorable by
+> uncommenting one import + one line in `(site)/page.tsx`:**
+> `CarrierStrip` (rendered the SAME 21 carriers — shipping both adjacent said
+> "21 carriers" twice in one screen) and `WhySynergy` (rendered
+> `points.p1–p4`; **p1/p2/p3 are the SAME three arguments** as `rows.r1/r2/r3`,
+> so this removed a duplication rather than losing content).
+> 🟡 **ONE CASUALTY, LOGGED:** `whySynergy.points.p4` — *"ITIN-friendly, licensed
+> in all fifty states"* — has no equivalent among r1–r3 and now renders nowhere
+> on the homepage. **ITIN is a real Synergy differentiator** (their meta
+> description, their FAQ, three blog articles). `whySynergy.rows.r4`
+> (*"ITIN-Friendly, No SSN Required"*) is approved and unused, so the fix is a
+> **fourth card**: one entry in `CARD_KEYS` + one more `OUT_Y` anchor. Flagged
+> for a decision, not done unasked.
+> **🔴 `Carriers.tsx` MUST STAY** even though its section is stashed — `TheEngine`
+> imports `APPOINTMENTS` from it. Deleting it breaks the homepage.
+> **MEASURED AFTER BUILD (1536):** grid `678.35 / 437.65` (theirs 666.19/429.80),
+> stage 3:2, section pad `104.9 / 53` (theirs 106.47/53.235), head 720 wide.
+> **Seams: ALL SIX are 0px** — no gap, no stack — and the cream/dark alternation
+> is now clean: Hero(dark) → **Engine(cream)** → WhatWeCover(dark) →
+> WhoWeServe(cream) → Testimonials(dark) → HowItWorks(cream) →
+> Consultation(dark). The Engine took the strip's slot precisely because the
+> strip was the **only cream breather between two full-bleed dark/photo
+> sections**; deleting it without a cream replacement would have butted them.
+> **390: `documentElement.scrollWidth` 390 = 390, ZERO overflowing elements.**
+> One h1 site-rule intact: **h1 = 1** (Hero); the Engine is h2 + three h3.
+> **THREE DEFECTS FOUND BY MEASURING, NOT BY EYE — all fixed, all documented in
+> the component:** (1) `1.55fr 1fr` blew out to **973.85 / 143.4px** because grid
+> items default to `min-width:auto` — fixed with `minmax(0,…)`; (2) chips drawn as
+> SVG `<text>` rendered at **9.8 CSS px** (worse at narrower widths) and
+> *"National Life Group"* **overflowed its chip** (111.6 vs 108 usable) — chips
+> are now **HTML**, 11px, wrapping rather than truncating (a carrier name is a
+> factual brand; an ellipsis in one is a defect); (3) **197px of dead space**
+> below the stage — `lg:self-center` splits it 98.5/98.5 and puts the hub
+> **11.6px** off the middle card's centre.
+> **AA, worst pixel, composited:** eyebrow gold-deep **5.16** · h2 ink **15.88** ·
+> sub ink/80 **8.66** · chip label **15.88** · numeral gold-deep on white **5.65**
+> · card h3 **17.4** · card body **9.17** — all clear. Output lines were
+> strengthened from alpha 0.55 (**2.23**, sub-3:1) to **full gold-deep 5.16**,
+> because §6c is the precedent for not shipping decoration you would have to
+> defend; the 21 input lines stay ink@0.22 (1.59) as genuine filigree, since the
+> relationship they draw is stated in text by the heading, sub and chips.
+> **MOTION:** the draw IS the outward pulse — `pathLength={1}` + dashoffset 1→0,
+> 900ms `cubic-bezier(.22,1,.36,1)`, 40ms stagger, fired once by an
+> IntersectionObserver (autoplay-on-enter, **not** scrubbed). At rest every path
+> is connected (verified `strokeDashoffset: 0px` on all 24).
+> **Under `prefers-reduced-motion: reduce` the observer is never armed, `drawn`
+> starts true and every transition is `none` — lines render CONNECTED, no draw.**
+> 🔴 **A FINDING THAT CONTRADICTS THE BRIEF AND SHOULD SURVIVE:** their 21 input
+> lines are **NOT animated at all** — static 1px strokes, no draw, no stagger, not
+> scrubbed. The only motion in their section is a marching dash on the three
+> OUTPUT lines (dasharray 7,11 · `stroke-dashoffset:-18px` · 1.6s linear
+> infinite) plus a 0.55s card reveal with **no** stagger. Anyone "restoring" a
+> scrubbed line-draw is adding something the reference never had.
+>
+> 🔴 **NEWEST (2026-07-31) — ADMIN CRUD, PHASE 3: THE PANEL IS ON REAL DATA.**
+> The admin dashboard no longer renders mock rows. `lib/adminMock.ts` is
+> **DELETED** (as its own docblock promised). What replaced it:
+> **SCHEMA — `supabase/migrations/0002_crm.sql`** adds two tables. Run it AFTER
+> `0001` (it uses `public.current_app_role()`). **`leads`** — admin **SELECT
+> only** (only a select policy exists; no insert/update/delete). Rows arrive
+> server-side from the lead intake (the GHL webhook, still blocked) using the
+> SECRET key, which bypasses RLS; **the table is empty until that lands, shown
+> with an honest empty state.** **`agents`** — admin SELECT/INSERT/UPDATE and a
+> `touch_updated_at` trigger; **NO delete policy** — "removing" an agent sets
+> `active=false` so history survives. Enums: `lead_source`, `lead_status`,
+> `agent_stage`, `agent_heard`.
+> **AGENTS ARE PIPELINE RECORDS, NOT PORTAL LOGINS.** A row in `agents` is a
+> recruiting-CRM entry the admin manages. Giving an agent a *login* is still the
+> separate manual `auth.users` + `profiles` path from phase 2. Creating those
+> logins is on the client checklist, not automated (no public signup).
+> **CONTENT IS NOT A TABLE.** The Content view is a **read-only reflection of the
+> repo** — `lib/admin/data.ts` `getContent()` reads `lib/blog.ts` (articles on
+> disk) + the built static pages. A working "Edit" would mean writing MDX to disk
+> or moving content into the DB — a real data path deliberately **not faked** as
+> a dead button. Flagged, not shipped.
+> **WRITES.** `app/(portal)/admin/actions.ts` — `saveAgent` (create/update),
+> `setAgentActive` (deactivate/reactivate). **Every mutation calls
+> `requireAdmin()` FIRST** (`lib/supabase/auth.ts`) and writes through the
+> RLS-scoped client, so the DB policies are the authoritative backstop — a hidden
+> button is not the control. UI is `components/admin/AgentsManager.tsx`; reads run
+> RLS-scoped in `lib/admin/data.ts` with honest ok/error results (empty-because-
+> empty ≠ empty-because-error). `DataTable` gained an optional-`actions` mode for
+> the read-only leads/content tables.
+> **NEW API KEYS.** This project is on Supabase's NEW key system
+> (`sb_publishable_…` / `sb_secret_…`), recognised natively by supabase-js 2.111.
+> Env vars are **renamed**: `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (client-safe)
+> and `SUPABASE_SECRET_KEY` (server-only, referenced by NO app code today). The
+> build guard `scripts/check-no-service-role.mjs` (a `postbuild` step) now also
+> catches an `sb_secret_` value in any client bundle.
+> **PROVEN, not asserted (this replaced review):** RLS verified by running BOTH
+> migrations against real Postgres (PGlite) — agent denied every admin mutation,
+> anon denied all admin data, every policy active, admin CRUD works, hard delete
+> denied, deactivate works. Client bundle grepped: **0** secret matches. Guard
+> demonstrated firing on a planted leak, green when clean.
+> **STILL BLOCKED:** the GHL webhook (lead intake) — until it lands, `leads` has
+> no write path and stays empty by design.
+>
 > 🔴 **NEWEST (2026-07-30, 6) — RECORD-CORRECTIONS + TWO ITEMS CLOSED.**
 > Two "blocked on client" items were STALE and one wasn't:
 > ✅ **CARRIER LOGOS — About grid now real artwork.** The 21 files landed some
@@ -540,14 +2758,15 @@ Order as shipped:
 | # | component | what it is | state |
 |---|---|---|---|
 | 1 | `Hero` | full-bleed video/poster, VEX spec, headline | ⚠️ **now ONE CTA** — see below |
-| 2 | `CarrierStrip` | slim marquee band, 12 carrier names as **text wordmarks** | shipped |
+| 2 | `TheEngine` | carrier diagram → Synergy hub → three cards | ✅ **NEW 2026-08-01** — §14 |
+| — | *`CarrierStrip`* | slim marquee band, **21** carrier logos | 🔴 **RETIRED** — folded into `TheEngine`, §14 |
 | 3 | `WhatWeCover` | full-bleed parallax photo, translucent cards | shipped |
 | 4 | `WhoWeServe` | tabbed Families / Agents, three cards each | shipped |
-| 5 | `WhySynergy` | eight alternating image/text rows (`id="why-heading"`) | shipped |
-| 6 | `Testimonials` | full-bleed parallax photo, three quote cards | 🟡 two asides hidden — §10 |
-| 7 | `HowItWorks` | three process cards on photos, glass panels | shipped |
+| — | *`WhySynergy`* | four `points.p1–p4` cards (`id="why-heading"`) | 🔴 **RETIRED** — folded into `TheEngine`, §14 |
+| 5 | `Testimonials` | full-bleed parallax photo, three quote cards | 🟡 two asides hidden — §10 |
+| 6 | `HowItWorks` | three process cards on photos, glass panels | shipped |
 | — | *`Calculator`* | **commented out** — moved to its own route, §9 | — |
-| 8 | `Consultation` | full-bleed parallax photo, glass panel, CTA → calculator | shipped |
+| 7 | `Consultation` | full-bleed parallax photo, glass panel, CTA → calculator | shipped |
 | — | `Footer` | site-wide, mounted in the layout inside `SmoothScroll` | ⚠️ legal column removed |
 
 `SiteHeader` and `Splash` are mounted in `app/[locale]/layout.tsx`, so they are

@@ -7,6 +7,7 @@ import {
   useInView,
   useReducedMotion,
 } from "framer-motion";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { joinHref, routeHref, type RouteKey } from "@/routes";
 import FadeUp from "./FadeUp";
@@ -113,33 +114,83 @@ function ctaProps(dest: CtaDest, locale: string) {
   return { href: routeHref(locale, dest.key) };
 }
 
-/* Colours are ours — navy, gold-deep, gold. Each card's text colour is the one
-   that actually measures on that background, never plain gold on a light card. */
-const SKINS = [
-  {
-    card: "bg-navy",
-    title: "text-white",
-    body: "text-white/90",
-    marker: "bg-gold",
-    button: "bg-cream text-navy hover:bg-white",
+/* =========================================================================
+   🔴 THE CARDS ARE PHOTOGRAPHS NOW. THE THREE FLAT SKINS ARE GONE.
+
+   WAS: three flat fills — `bg-navy`, `bg-gold-deep`, `bg-gold` — each with its
+   own title/body/marker/button colour triplet, because each fill needed a
+   different ink to measure. That whole SKINS table is deleted. Every card is
+   now one treatment: a full-bleed photograph, a bottom gradient, cream copy.
+   One ink pairing instead of three is the entire point of the restyle — the
+   old table existed only to survive three different backgrounds.
+
+   REFERENCE: the Indonesia/Dubai travel cards — full image, gradient at the
+   bottom, title + sub-line, a clean text action with an arrow. THE STRUCTURE IS
+   THEIRS; THE COLOURS ARE NOT. Their cards are saturated tourism-brand
+   gradients; ours is navy #0D1B2A at graduated alpha, which is the same scrim
+   colour the hero, /about, /join and the footer already use.
+
+   🟡 ONE HONEST DIVERGENCE FROM THE REFERENCE, FLAGGED RATHER THAN HIDDEN.
+   Their card carries a title and ONE sub-stat. Ours carries a title, THREE
+   bullets and a CTA — roughly five times the text — because the copy is fixed
+   and this is a visual restyle, not a copy change. So our gradient has to be
+   much taller and heavier than theirs: it opens at 30% of the card rather than
+   ~60%, and it reaches a higher floor alpha. That is a cost of keeping the
+   copy, and it is why more of each photograph is dimmed than in the reference.
+
+   THE CTA IS NOW A TEXT ACTION, NOT A 66px FILLED PILL. That is the
+   reference's "Explore Now ->" and it is what makes the card read as clean
+   rather than as a poster with a button stapled to it. It is still a real
+   <a> with a real href, still the only interactive thing in the card (the card
+   itself is NOT a link — that would bury three destinations under one target),
+   and its hit area is still 44px tall.
+   ========================================================================= */
+
+/**
+ * The six photographs, one per card, keyed exactly as the copy is.
+ *
+ * 🔴 EVERY ONE WAS CHOSEN BY OPENING THE FILE AND LOOKING AT IT, NOT BY
+ * TRUSTING A TITLE. Two candidates were rejected at exactly that step and the
+ * rejections are recorded in CREDITS.md, because both are the trap: Pexels
+ * `7414038` is titled "Office Team Sitting at the Table" and shows a team in a
+ * DOMESTIC KITCHEN (gas hob, microwave, fridge in frame); Pexels `8117435`
+ * ("Colleagues having a Discussion") carries a whiteboard in CYRILLIC and a
+ * sticker-covered laptop, i.e. third-party branding in frame, which Standing
+ * Rule 9 disqualifies outright.
+ *
+ * `alt` is descriptive of the FILE and is authored under Rule 5's standing
+ * exception for image alt text.
+ */
+const CARD_IMAGES: Record<Tab, Record<(typeof CARDS)[number], { src: string; alt: string }>> = {
+  families: {
+    1: {
+      src: "/synergy/who-families-advice-agent-documents.jpg",
+      alt: "An advisor sitting with an older couple, talking them through an application form before anything is signed.",
+    },
+    2: {
+      src: "/synergy/who-families-carriers-comparing-papers.jpg",
+      alt: "Two sets of hands comparing printed policy documents side by side on a desk.",
+    },
+    3: {
+      src: "/synergy/who-families-itin-mother-children.jpg",
+      alt: "A mother outdoors in late afternoon light with her two young children.",
+    },
   },
-  {
-    // Marker is cream, not gold: gold-on-bronze measured 2.47:1, under the 3:1
-    // non-text minimum (two neighbouring golds).
-    card: "bg-gold-deep",
-    title: "text-white",
-    body: "text-white/90",
-    marker: "bg-cream",
-    button: "bg-cream text-navy hover:bg-white",
+  agents: {
+    1: {
+      src: "/synergy/who-agents-training-briefing.jpg",
+      alt: "An experienced agent standing at the front of a training room, talking to colleagues seated at the table.",
+    },
+    2: {
+      src: "/synergy/who-agents-office-team-session.jpg",
+      alt: "A team around a table in a working session, listening to a colleague at a flip chart.",
+    },
+    3: {
+      src: "/synergy/who-agents-contract-signing.jpg",
+      alt: "A close-up of a contract on a desk, one hand pointing to the signature line while another signs it.",
+    },
   },
-  {
-    card: "bg-gold",
-    title: "text-navy",
-    body: "text-navy/80",
-    marker: "bg-navy",
-    button: "bg-navy text-cream hover:bg-[#16304d]",
-  },
-] as const;
+};
 
 /** Their easing — easeInOutCubic — reused for the swap, the indicator and the
  *  buttons so the whole section shares one curve, as theirs does. */
@@ -185,33 +236,44 @@ export default function WhoWeServe() {
       // Asymmetric on purpose: the bottom is trimmed so the boundary into Why
       // Synergy lands on the same ~160px ink-to-ink rhythm as the rest of the
       // page instead of the 232px it was.
-      className="bg-cream py-14 pb-10 lg:py-20 lg:pb-14"
+      className="py-14 pb-10 lg:py-20 lg:pb-14"
     >
       {/* 1620 cap with slim padding puts the grid at ~97% of viewport, against
           BeeToGreen's 95.6% — the cards get the extra width. */}
       <div className="mx-auto max-w-[1620px] px-4 md:px-5">
+        {/* 🔴 THE BIG HEADING WAS REMOVED ON INSTRUCTION (2026-08-02). The block
+            is now just the eyebrow and the tabs beneath it — no headline.
+
+            WAS: an h2 "Built for the people the system kept overlooking." at
+            `clamp(28px,3.05vw,47px)`, id `who-we-serve-heading`. It is gone, not
+            hidden: the `heading` string stays in both message files unrendered
+            (nothing is deleted from the catalogue), and its measurement notes are
+            preserved in git if the headline is ever wanted back.
+
+            🔴 THE SECTION'S ACCESSIBLE NAME MOVED WITH IT. `aria-labelledby` on
+            the <section> pointed at the removed h2's id, which would now be a
+            dangling reference naming the section nothing. The eyebrow carries
+            the id instead — it is the only heading-like text left and it reads
+            "Who we're here for", a perfectly good section label. */}
         <FadeUp className="text-center">
-          <p className="flex items-center justify-center gap-2.5 text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-deep">
+          <p
+            id="who-we-serve-heading"
+            className="flex items-center justify-center gap-2.5 text-[13px] font-semibold uppercase tracking-[0.16em] text-gold-deep"
+          >
             <span
               aria-hidden="true"
               className="h-2 w-2 shrink-0 rounded-full bg-gold-deep"
             />
             {t("eyebrow")}
           </p>
-          {/* Kufam, weight 500 — the face tops out there, never a synthetic
-              bold. Runs to 92px against their 76.8, and is held to 72% of the
-              container so it breaks across the same number of lines theirs
-              does at 71.7%. */}
-          <h2
-            id="who-we-serve-heading"
-            className="mx-auto mt-3 max-w-[72%] font-display font-medium text-[clamp(38px,6.2vw,92px)] leading-[0.98] tracking-[-0.03em] text-ink"
-          >
-            {t("heading")}
-          </h2>
         </FadeUp>
 
-        {/* Toggle — beige pill, sliding navy indicator */}
-        <FadeUp className="mt-7 flex justify-center">
+        {/* Toggle — beige pill, sliding navy indicator.
+            mt-5, tightened from the mt-7 it used when a headline sat above: with
+            the heading gone the tabs follow the eyebrow directly, so the gap is
+            closed to an eyebrow-to-control rhythm rather than the eyebrow-to-
+            heading one it was. */}
+        <FadeUp className="mt-5 flex justify-center">
           <div
             role="tablist"
             aria-label={t("tablistLabel")}
@@ -271,7 +333,7 @@ export default function WhoWeServe() {
               className="grid gap-5 lg:grid-cols-3"
             >
               {CARDS.map((n, i) => {
-                const skin = SKINS[i];
+                const img = CARD_IMAGES[tab][n];
                 return (
                   <motion.div
                     key={n}
@@ -292,62 +354,99 @@ export default function WhoWeServe() {
                       delay: reduce ? 0 : i * 0.07,
                     }}
                     style={{ transitionTimingFunction: EASE_CSS }}
-                    className={`group flex flex-col rounded-[24px] p-9 transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_44px_-18px_rgba(13,27,42,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 lg:min-h-[680px] lg:p-[46px] ${skin.card}`}
+                    /* `isolate` so the scrim's stacking context is the card,
+                       not the grid. The min-heights are MEASURED, not chosen:
+                       they are what keeps the crop aspect inside what a single
+                       1600x1600 source can serve sharp at 2x — see the note on
+                       `.who-card-scrim` in globals.css. */
+                    className="group relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_44px_-18px_rgba(13,27,42,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:min-h-[560px] lg:min-h-[680px] lg:p-[38px]"
                   >
-                    {/* 64px against their 59.73 */}
-                    <h3
-                      className={`font-display font-medium text-[clamp(32px,4.4vw,64px)] leading-[1.0] tracking-[-0.025em] ${skin.title}`}
-                    >
+                    {/* THE PHOTOGRAPH.
+                        🔴 `sizes` DECLARES THE CARD'S LARGER SIDE, NOT ITS
+                        WIDTH, AND THAT IS A BUG FIX. It first shipped as the
+                        measured WIDTHS — `480px` at lg+, `100vw` below md —
+                        which is what `sizes` normally means. It is wrong here:
+                        the source is SQUARE and the card is TALLER than it is
+                        wide at two of the three breakpoints, so `object-cover`
+                        scales the image to fill the HEIGHT and the width is
+                        along for the ride. Measured on the built page at 1536:
+                        the browser picked a **480x480** candidate for a
+                        480x680 box, i.e. the square was being stretched 1.42x
+                        vertically — an upscale, silently, on the widest layout.
+
+                        Declaring the binding side instead:
+
+                          lg+      card 480 x 680  -> declare 680px
+                          md-lg    card 712 x 560  -> declare 720px
+                          < md     card 358 x 460  -> declare 460px
+
+                        `object-center` on a square source is verified by
+                        RENDERING at 1536 / 768 / 390 — the only way to know a
+                        face survives both the 0.71 portrait crop and the 1.27
+                        one below lg. Two candidates were dropped at exactly
+                        that step; see CREDITS. */}
+                    <Image
+                      src={img.src}
+                      alt={img.alt}
+                      fill
+                      sizes="(min-width: 1024px) 680px, (min-width: 768px) 720px, 460px"
+                      quality={78}
+                      className="absolute inset-0 -z-20 object-cover object-center"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="who-card-scrim absolute inset-0 -z-10"
+                    />
+
+                    {/* 46px, down from the old 64px. The type had to come down
+                        once it sat on a photograph rather than on a flat fill:
+                        at 64px a three-line title plus three bullets plus the
+                        action needed a scrim so tall the image stopped
+                        reading. */}
+                    <h3 className="font-display font-medium text-[clamp(30px,3.2vw,46px)] leading-[1.02] tracking-[-0.025em] text-cream">
                       {t(`${tab}.c${n}.title`)}
                     </h3>
 
-                    <ul
-                      className={`mb-8 mt-7 space-y-4 text-[17px] leading-[1.55] ${skin.body}`}
-                    >
+                    <ul className="mb-7 mt-5 space-y-3 text-[16px] leading-[1.5] text-cream">
                       {BULLETS.map((b) => (
-                        <li key={b} className="flex gap-3.5">
+                        <li key={b} className="flex gap-3">
+                          {/* Gold-pale, not gold: on the scrim's darkest floor
+                              gold #C9A84C is legal, but these dots also sit
+                              over the LIGHTEST composited pixel measured in the
+                              copy band, where gold drops under 3:1. gold-pale
+                              clears at both ends. */}
                           <span
                             aria-hidden="true"
-                            className={`mt-[9px] h-[9px] w-[9px] shrink-0 rounded-full ${skin.marker}`}
+                            className="mt-[8px] h-[7px] w-[7px] shrink-0 rounded-full bg-gold-pale"
                           />
                           <span>{t(`${tab}.c${n}.${b}`)}</span>
                         </li>
                       ))}
                     </ul>
 
-                    {/* Their button contract: .3s on the shared curve, and a
-                        press state of scale(.98). */}
+                    {/* THE ACTION — the reference's "Explore Now ->", in our
+                        tokens. Was a 66px full-width filled pill.
+                        - Still a real <a> with a real href (see CTA_DEST); the
+                          CARD is deliberately not a link, so there is exactly
+                          one target and one accessible name per card.
+                        - `min-h-[44px]` keeps the pointer/touch target at the
+                          2.5.8 minimum even though the text is 17px.
+                        - The rule under it is drawn with a pseudo-element that
+                          wipes on hover (`.who-card-cta`), which is the one
+                          hover the reference section actually has.
+                        - The focus ring comes from the global :focus-visible
+                          rule; `--focus-ring` is set to gold-pale on this card
+                          because the ring lands on the PHOTOGRAPH, not on a
+                          known flat fill. */}
                     <a
-                      // href="#" — REPLACED. See CTA_DEST above; five of the
-                      // six now resolve and the sixth is an open decision that
-                      // keeps its `#` rather than being repointed at a page
-                      // that cannot honour its label.
                       {...ctaProps(CTA_DEST[tab][n], locale)}
                       style={{ transitionTimingFunction: EASE_CSS }}
-                      // `focus-visible:outline focus-visible:outline-2
-                      //  focus-visible:outline-offset-2
-                      //  focus-visible:outline-current` — REMOVED.
-                      //
-                      // `outline-current` took the ring from the BUTTON's own
-                      // text colour, and the ring does not land on the button.
-                      // outline-offset puts it on the CARD, so all three skins
-                      // were measuring the wrong pair:
-                      //
-                      //   navy card, cream button, navy label
-                      //     -> navy ring on navy card      1.00:1  invisible
-                      //   gold-deep card, cream button, navy label
-                      //     -> navy ring on gold-deep      3.08:1  no margin
-                      //   gold card, navy button, cream label
-                      //     -> cream ring on gold          2.09:1  fails
-                      //
-                      // The global rule in globals.css now draws it, and the
-                      // card's own `--focus-ring` token picks the colour from
-                      // the surface the ring actually sits on: gold-pale on
-                      // the navy card (13.31:1), gold-pale on the gold-deep
-                      // card (4.33:1), navy on the gold card (7.61:1).
-                      className={`mt-auto flex h-[66px] w-full shrink-0 items-center justify-center rounded-full text-[17px] font-semibold transition-[background-color,transform] duration-300 hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100 ${skin.button}`}
+                      className="who-card-cta mt-auto inline-flex min-h-[44px] w-fit items-center gap-2.5 text-[17px] font-semibold text-cream"
                     >
                       {t(`${tab}.c${n}.cta`)}
+                      <span aria-hidden="true" className="who-card-arrow">
+                        &rarr;
+                      </span>
                     </a>
                   </motion.div>
                 );

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
+import { signOut } from "@/app/[locale]/(portal)/admin/actions";
 
 /**
  * The admin chrome: collapsible sidebar + sticky top header.
@@ -35,8 +36,23 @@ const NAV = [
   { key: "content", href: "#content", icon: "▤" },
 ] as const;
 
-export default function AdminShell({ children }: { children: React.ReactNode }) {
+export default function AdminShell({
+  children,
+  locale,
+  userLabel,
+  userRole,
+}: {
+  children: React.ReactNode;
+  locale: string;
+  /** The signed-in admin's email — real, from the server (getUserAndRole). */
+  userLabel: string;
+  /** Their role label, already translated. */
+  userRole: string;
+}) {
   const t = useTranslations("admin");
+  // Avatar initials from the email local-part, uppercased. Purely decorative
+  // (aria-hidden), so no need to be clever about names we do not have.
+  const initials = userLabel.replace(/@.*/, "").slice(0, 2).toUpperCase() || "?";
   const [open, setOpen] = useState(false); // mobile drawer
   const [collapsed, setCollapsed] = useState(false); // desktop rail
   const panelRef = useRef<HTMLDivElement>(null);
@@ -67,7 +83,7 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           <a
             href={n.href}
             onClick={() => setOpen(false)}
-            className="flex items-center gap-3 rounded px-3 py-2.5 text-[14px] text-cream hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-cream hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale"
           >
             <span aria-hidden="true" className="w-5 shrink-0 text-center text-gold">
               {n.icon}
@@ -97,7 +113,11 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           collapsed ? "w-[76px]" : "w-[240px]"
         }`}
       >
-        <p className={`px-3 pb-4 font-display text-[15px] text-gold ${collapsed ? "sr-only" : ""}`}>
+        {/* Letterspaced wordmark, matching the card headers. gold on navy is
+            7.61:1 and legal; on cream it would be 2.09 and forbidden. */}
+        <p
+          className={`px-3 pb-5 font-display text-[13px] uppercase tracking-[0.34em] text-gold ${collapsed ? "sr-only" : ""}`}
+        >
           Synergy
         </p>
         <nav className="flex-1">{navList}</nav>
@@ -129,7 +149,9 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
             className="fixed inset-y-0 left-0 z-50 flex w-[260px] max-w-[80vw] flex-col bg-navy p-4 lg:hidden"
           >
             <div className="flex items-center justify-between pb-4">
-              <p className="px-1 font-display text-[15px] text-gold">Synergy</p>
+              <p className="px-1 font-display text-[13px] uppercase tracking-[0.34em] text-gold">
+                Synergy
+              </p>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
@@ -156,18 +178,34 @@ export default function AdminShell({ children }: { children: React.ReactNode }) 
           >
             {t("sidebarOpen")}
           </button>
-          <p className="font-display text-[15px] text-ink">{t("nav.dashboard")}</p>
+          <p className="font-display text-[13px] uppercase tracking-[0.28em] text-ink">
+            {t("nav.dashboard")}
+          </p>
           <div className="ml-auto flex items-center gap-3">
-            <span className="hidden text-right text-[13px] leading-tight text-ink sm:block">
-              {t("userName")}
-              <span className="block text-ink/70">{t("userRole")}</span>
+            <span className="hidden max-w-[26ch] truncate text-right font-mono text-[11px] leading-tight text-ink sm:block">
+              {userLabel}
+              <span className="mt-0.5 block uppercase tracking-[0.16em] text-ink/70">
+                {userRole}
+              </span>
             </span>
             <span
               aria-hidden="true"
-              className="grid h-9 w-9 place-items-center rounded-full bg-navy text-[13px] font-semibold text-gold"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-navy text-[13px] font-semibold text-gold"
             >
-              SU
+              {initials}
             </span>
+            {/* Logout is a real POST to a server action so the cleared cookies
+                are written. Locale rides along as a hidden field for the
+                post-logout redirect. */}
+            <form action={signOut}>
+              <input type="hidden" name="locale" value={locale} />
+              <button
+                type="submit"
+                className="rounded-lg border border-ink/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-ink hover:bg-ink/[0.05] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+              >
+                {t("signOut")}
+              </button>
+            </form>
           </div>
         </header>
 

@@ -1,0 +1,153 @@
+-- =============================================================================
+-- 0004_company_domain.sql  —  Synergy portal, COMPANY-DOMAIN ENFORCEMENT.
+--
+-- Restricts accounts to @fflsynergy.com, AT CREATION, in the database.
+-- Depends on 0001_auth_profiles.sql. Run after 0001/0002/0003. Run once.
+--
+-- =============================================================================
+-- 🔴 WHY THIS IS IN THE DATABASE AND NOT ONLY IN THE APP.
+--
+-- The app enforces the same rule at SIGN-IN (app/[locale]/(portal)/login/
+-- actions.ts, via lib/auth-domain.ts). That is necessary but not sufficient: it
+-- only runs when someone signs in THROUGH OUR FORM. Accounts can be created by
+-- paths that never touch our code —
+--
+--     the Supabase dashboard         (how the admin creates staff today)
+--     the Admin API                  (scripts, automation)
+--     an invite link
+--     a future OAuth / magic-link provider if one is ever enabled
+--
+-- — and a rule that lives only in the sign-in action would silently not apply to
+-- any of them. A BEFORE INSERT trigger on auth.users applies to ALL of them,
+-- because there is no way to create an auth user that does not insert a row into
+-- that table. This is the fail-closed layer: a non-company account cannot be
+-- brought into existence, so there is nothing for a later check to miss.
+--
+-- 🔴 IT ALSO PROTECTS AGAINST THE ADMIN'S OWN MISTAKE. The likeliest way a
+-- personal address ends up with a login is not an attack — it is someone typing
+-- the wrong address into the dashboard at 6pm. This rejects that outright.
+--
+-- ⚠️ WHAT IT DOES NOT DO: it does not retroactively remove accounts created
+-- BEFORE it was applied. Run the audit query at the bottom after applying, and
+-- deal with anything it returns.
+-- =============================================================================
+
+
+-- -----------------------------------------------------------------------------
+-- 1. THE ALLOWED-DOMAIN TEST.
+--
+--    🔴 EXACT MATCH ON THE DOMAIN, NOT A SUFFIX TEST. `split_part(email,'@',2)`
+--    takes the part after the FIRST '@' and compares the whole thing. This
+--    matters:
+--
+--      like '%@fflsynergy.com'      would ACCEPT  a@b@fflsynergy.com
+--      like '%fflsynergy.com'       would ACCEPT  evil-fflsynergy.com
+--      endsWith '.fflsynergy.com'   would ACCEPT  fflsynergy.com.evil.com
+--
+--    All three are the classic ways a domain check is defeated. An equality test
+--    on the extracted domain has no such hole.
+--
+--    Kept as its own function so the list lives in ONE place and mirrors
+--    ALLOWED_DOMAINS in lib/auth-domain.ts. If a second domain is ever genuinely
+--    needed, add it HERE and THERE, deliberately.
+-- -----------------------------------------------------------------------------
+create or replace function public.is_company_email(addr text)
+returns boolean
+language sql
+immutable
+set search_path = ''
+as $$
+  select addr is not null
+     and length(addr) - length(replace(addr, '@', '')) = 1   -- exactly one '@'
+     and lower(split_part(addr, '@', 2)) = any (array['fflsynergy.com']);
+$$;
+
+
+-- -----------------------------------------------------------------------------
+-- 2. THE CREATION GATE — BEFORE INSERT on auth.users.
+--
+--    SECURITY DEFINER so it runs regardless of which role is doing the insert.
+--    It performs NO writes and takes NO caller-supplied arguments beyond the row
+--    being inserted, so there is no escalation surface: the most it can do is
+--    refuse.
+--
+--    `raise exception` ABORTS the insert. The dashboard/Admin API surfaces the
+--    message, so an admin typing a personal address gets told why rather than
+--    creating a dead account.
+-- -----------------------------------------------------------------------------
+create or replace function public.enforce_company_domain()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.is_company_email(new.email) then
+    raise exception
+      'Account creation denied: only @fflsynergy.com addresses may have portal accounts (got %).',
+      coalesce(split_part(new.email, '@', 2), '<no domain>')
+      using errcode = 'check_violation';
+  end if;
+  return new;
+end;
+$$;
+
+-- 🔴 BEFORE, not AFTER. An AFTER trigger would raise only once the row already
+-- existed and would roll the statement back — same net effect, but BEFORE is the
+-- honest expression of "this row must never exist".
+create trigger on_auth_user_domain_check
+  before insert on auth.users
+  for each row execute function public.enforce_company_domain();
+
+
+-- -----------------------------------------------------------------------------
+-- 3. ROLE ESCALATION — ALREADY CLOSED IN 0001, RESTATED HERE AS AN ASSERTION.
+--
+--    This migration adds NO new role capability, and it is worth writing down
+--    exactly why nobody can self-assign 'admin', because it is the question this
+--    change most invites:
+--
+--      * public.profiles has RLS ON and **no UPDATE policy for any API role**
+--        (0001 §5). A signed-in agent physically cannot write the table — not
+--        their role, not anyone's. There is nothing to bypass in the app because
+--        the app is not what is stopping them.
+--      * public.handle_new_user() (0001 §4) HARD-CODES role = 'agent' and never
+--        reads raw_user_meta_data for it. Signing up with {"role":"admin"} in
+--        metadata lands as 'agent'.
+--      * The role is read from the profiles TABLE on every request
+--        (lib/supabase/auth.ts), never from a JWT claim, so there is no stale or
+--        forgeable token claim to ride.
+--      * Elevating someone to admin is therefore a manual UPDATE run by a
+--        privileged operator (section 4 below) — a deliberate act, not something
+--        reachable from any browser.
+--
+--    Net: a new @fflsynergy.com account is an AGENT, always. The one admin is
+--    the one whose row was elevated by hand.
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+-- 4. OPERATOR NOTES — run these BY HAND, once, after applying.
+--
+--    a) AUDIT existing accounts. This trigger is forward-only; anything created
+--       before it is untouched. Expect zero rows; investigate any that appear.
+--
+--         select id, email, created_at
+--         from auth.users
+--         where not public.is_company_email(email);
+--
+--    b) CONFIRM the admin, and that everyone else is an agent:
+--
+--         select u.email, p.role
+--         from public.profiles p
+--         join auth.users u on u.id = p.id
+--         order by p.role, u.email;
+--
+--    c) ELEVATE the one admin (only if it is not already set):
+--
+--         update public.profiles set role = 'admin'
+--         where id = (select id from auth.users where email = 'aiman@fflsynergy.com');
+--
+--       🔴 There is no app path that does this, by design. It is a privileged
+--       operation performed in the SQL editor.
+-- -----------------------------------------------------------------------------

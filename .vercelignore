@@ -1,0 +1,48 @@
+# =============================================================================
+# What must NOT be uploaded to Vercel.
+#
+# Created 2026-08-03 because `vercel deploy` failed with "File size limit
+# exceeded (100 MB)": with no git remote on this project the CLI uploads the
+# working directory, and that swept in a local Chrome-for-Testing binary.
+#
+# 🔴 EVERY ENTRY HERE IS EITHER A LOCAL TOOL OR AN UNREFERENCED SOURCE ASSET.
+# Nothing the site actually serves is excluded — verified by grepping the app
+# for each path before adding it. Excluding a referenced asset would 404 an
+# image in production, which is exactly the class of "visible change" this pass
+# is forbidden from making.
+# =============================================================================
+
+# --- 🔴 LOCAL ENV FILES. THIS ENTRY IS A SAFETY INTERLOCK, NOT TIDINESS. ---
+# `.vercelignore` REPLACES `.gitignore` for upload purposes — the moment this
+# file exists, Vercel stops consulting `.gitignore`, so every `.env*.local`
+# that git has been quietly ignoring becomes an UPLOADED file. Next.js then
+# reads it during the Vercel build, where it silently outranks the project's
+# own Environment Variables. A local placeholder or a stale key would ship to
+# production and break auth with a green build and no error anywhere.
+# Environment values belong in the Vercel project settings. Never in an upload.
+.env
+.env.local
+.env*.local
+*.env.txt
+.env.local.txt
+
+# --- local tooling, never part of the site ---
+chrome/
+lighthouse-reports/
+node_modules
+.next
+.next-*
+
+# --- ORIGINAL CAMERA/WHATSAPP FILES, kept in the repo as sources ---
+# Nothing in app/, components/ or lib/ references "New folder" — the frames the
+# site uses were copied out into public/synergy/ (e.g. join-hero-team-2026.jpg).
+# This directory alone is ~26 MB including a 17.5 MB RULA SPEAKING.jpg.
+public/New folder/
+
+# --- unreferenced gallery duplicates ---
+# "blog gallery" (with a space) is referenced by NOTHING; the site reads
+# public/blog-gallery/ (hyphenated). Same story for the spaced variants.
+public/blog gallery/
+
+# --- archives ---
+*.zip

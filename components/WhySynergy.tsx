@@ -151,7 +151,7 @@ export default function WhySynergy() {
       // other section here (80px at lg). reyou's INTERNAL rhythm (64/32/64) is
       // untouched; only the outer padding gives way, for page-level
       // consistency.
-      className="bg-cream px-5 py-14 md:px-8 lg:py-20"
+      className="px-5 py-14 md:px-8 lg:py-20"
     >
       {/* No max-width cap, matching theirs — the container is simply the
           viewport minus 32px each side at md+.

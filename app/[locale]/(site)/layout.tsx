@@ -4,6 +4,7 @@ import LocaleSwitcher from "@/components/LocaleSwitcher";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import Splash from "@/components/Splash";
+import { getUserAndRole } from "@/lib/supabase/auth";
 
 /**
  * THE PUBLIC SITE'S CHROME. Moved here from `[locale]/layout.tsx` on
@@ -19,7 +20,7 @@ import Splash from "@/components/Splash";
  * ADDING A PUBLIC PAGE means adding it under `(site)/`. A page added directly
  * under `[locale]/` would render with no header and no footer.
  */
-export default function SiteLayout({
+export default async function SiteLayout({
   children,
   params: { locale },
 }: {
@@ -28,6 +29,37 @@ export default function SiteLayout({
 }) {
   unstable_setRequestLocale(locale);
 
+  /**
+   * 🔴 ADMIN ENTRY IS GATED HERE, SERVER-SIDE, AND THAT PLACEMENT IS THE POINT.
+   *
+   * The admin needs a visible way into /admin from the public site; a non-admin
+   * must not even see the link exists. Deciding that on the SERVER means the
+   * link is absent from the HTML entirely for everyone who is not an admin — not
+   * hidden with CSS, not rendered-then-removed, simply never sent. `role` comes
+   * from `getUserAndRole()`, the same verified-user + DB-role read the admin
+   * guard uses (getUser() checks the JWT signature; the role is read from the
+   * profiles table, never a client-writable claim). An agent, a logged-out
+   * visitor, an unverifiable token — all resolve to a non-admin role and get
+   * `isAdmin=false`.
+   *
+   * 🔴 THIS IS A CONVENIENCE AFFORDANCE, NOT THE BOUNDARY. Hiding the link is
+   * not access control — the boundary is the two guards that already exist
+   * (middleware + (portal)/admin/layout.tsx), both untouched. If a non-admin
+   * ever forced this link visible, /admin would still deny them. The link only
+   * spares an admin from typing the URL.
+   *
+   * ⚠️ COST, STATED PLAINLY: reading the session cookie here opts the public
+   * pages into DYNAMIC rendering (they were statically generated per locale).
+   * The middleware already authenticates every request, so the marginal cost is
+   * one role query for signed-in users and a null-session short-circuit for the
+   * anonymous majority — acceptable for the guarantee it buys. If static
+   * marketing pages are required, the alternative is a client-side check in
+   * SiteHeader (weaker: the link would exist in JS and be forceable via
+   * devtools, though still granting no access). Flagged for the client to call.
+   */
+  const { role } = await getUserAndRole();
+  const isAdmin = role === "admin";
+
   return (
     <>
       <Splash />
@@ -35,8 +67,11 @@ export default function SiteLayout({
           scroll. It floats OVER the hero photo, so it is deliberately given
           no layout offset: the hero card starts at the very top of the page
           and the bar sits on the image. Any future page without a
-          full-bleed hero at the top will need its own top padding. */}
-      <SiteHeader />
+          full-bleed hero at the top will need its own top padding.
+
+          `isAdmin` is the server's verdict; SiteHeader renders the /admin link
+          only when it is true. */}
+      <SiteHeader isAdmin={isAdmin} />
       {/* The footer is INSIDE SmoothScroll so it is part of the same
           scrolled document Lenis drives, and it is mounted here rather
           than per-page so every route ends the same way — including

@@ -246,14 +246,25 @@ export default function Hero() {
                   and inconsistent in the code. `hero.ctaCall` is retained
                   untouched in both message files, simply unrendered. The
                   phone survives as the SECONDARY, labelled with the literal
-                  number so the destination is unambiguous. */}
+                  number so the destination is unambiguous.
+
+                  🔴 AND THE HERO'S SECONDARY IS NO LONGER THE PHONE. It is
+                  "Join our team" -> /join. The hero now addresses both of
+                  Synergy's audiences in one pair: the primary is for someone
+                  who wants cover, the secondary for someone who wants to sell
+                  it — which is what /join exists for and what WhoWeServe
+                  already splits the page into further down.
+
+                  THE PHONE IS NOT LOST. It remains the secondary on the other
+                  three pairs (WhatWeCover, /about §4, /services §4), it is the
+                  first row of the footer's Contact column as a real tel:, and
+                  it is in the header. `cta.call` and `cta.callAria` are
+                  untouched and still rendered — just not here. */}
               <CtaPair
                 locale={locale}
                 variant="photo"
                 quoteLabel={tCta("quote")}
-                callLabel={tCta("call")}
-                callAria={tCta("callAria")}
-                phoneHref={tNav("phoneHref")}
+                secondary={{ kind: "route", label: tCta("join"), route: "join" }}
               />
             </motion.div>
 

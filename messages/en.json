@@ -26,7 +26,9 @@
     "closeMenu": "Close menu",
     "langLabel": "Language",
     "langEn": "EN",
-    "langEs": "ES"
+    "langEs": "ES",
+    "login": "Agent Login",
+    "admin": "Admin"
   },
   "hero": {
     "eyebrow": "Licensed in all 50 states",
@@ -267,17 +269,23 @@
     "quotes": {
       "q1": {
         "name": "Michael & Laura Adams",
-        "quote": "Synergy made the entire process easy to understand. They listened, explained everything clearly, and helped us choose the perfect plan. We have real peace of mind now."
+        "quote": "Synergy made the entire process easy to understand. They listened, explained everything clearly, and helped us choose the perfect plan. We have real peace of mind now.",
+        "rating": "5"
       },
       "q2": {
         "name": "Brian & Jessica Williams",
-        "quote": "They took time to walk us through every option. We know exactly what we have and why. They truly put our family first."
+        "quote": "They took time to walk us through every option. We know exactly what we have and why. They truly put our family first.",
+        "rating": "5"
       },
       "q3": {
         "name": "Mark",
-        "quote": "I never understood life insurance until I spoke with Synergy. They made it simple, affordable, and completely stress-free."
+        "quote": "I never understood life insurance until I spoke with Synergy. They made it simple, affordable, and completely stress-free.",
+        "rating": "5"
       }
-    }
+    },
+    "prevLabel": "Show the previous testimonial",
+    "nextLabel": "Show the next testimonial",
+    "rating": "Rated {n} out of 5"
   },
   "howItWorks": {
     "eyebrow": "Education first",
@@ -677,7 +685,14 @@
       "consentPlaceholder": "[ Consent wording pending — this checkbox is built and the exact SMS/call consent text, and the legal entity name it must reference, have not arrived from the client yet. ]",
       "submit": "Submit application",
       "disabledTitle": "This form is not connected yet.",
-      "disabledBody": "There is nowhere for it to send yet, so it is switched off rather than pretending to work. Call the office on 407-434-0400 and you will reach a person today."
+      "disabledBody": "There is nowhere for it to send yet, so it is switched off rather than pretending to work. Call the office on 407-434-0400 and you will reach a person today.",
+      "submitting": "Sending…",
+      "successTitle": "Application received.",
+      "successBody": "It has reached the Orlando office and someone will get back to you. If you would rather talk sooner, the number above reaches the same office.",
+      "errorInvalid": "Some details need checking. The fields marked below are the ones to look at.",
+      "errorThrottled": "That is several attempts in a short time. Wait a few minutes and try again.",
+      "errorUnavailable": "This form cannot send right now. Please call the office on the number above and we will take your details by phone.",
+      "errorFailed": "Something went wrong sending that and it was not saved. Please try again, or call the office on the number above."
     },
     "range": {
       "eyebrow": "THE PRODUCTS",
@@ -782,8 +797,13 @@
     "keepSignedIn": "Keep me signed in",
     "forgot": "Forgot your password?",
     "submit": "Sign in",
+    "errorInvalid": "That email and password don't match an account. Check them and try again.",
+    "errorMissing": "Enter both your email and your password.",
+    "errorThrottled": "Too many sign-in attempts. Wait a minute and try again.",
+    "deniedNotice": "That account doesn't have access to the admin area. Sign in with an admin account, or call 407-434-0400.",
     "notLiveTitle": "Sign-in is not connected yet.",
-    "notLiveBody": "This screen is a design preview. Nothing is sent, no account is checked and no session is created. Call 407-434-0400 if you need access in the meantime."
+    "notLiveBody": "This screen is a design preview. Nothing is sent, no account is checked and no session is created. Call 407-434-0400 if you need access in the meantime.",
+    "metaLabel": "Staff & agent portal"
   },
   "admin": {
     "metaTitle": "Admin — Synergy Insurance Group",
@@ -797,6 +817,8 @@
     "sidebarOpen": "Open navigation",
     "sidebarClose": "Close navigation",
     "signOut": "Sign out",
+    "roleAdmin": "Administrator",
+    "roleAgent": "Agent",
     "userName": "Sample User",
     "userRole": "Administrator",
     "nav": {
@@ -805,12 +827,28 @@
       "agents": "Agents",
       "content": "Content"
     },
+    "card": {
+      "records": "Records",
+      "serverTime": "Server time"
+    },
+    "rail": {
+      "positionLegend": "Position on the scale — history is not recorded",
+      "unknown": "Unrecognised value"
+    },
     "stats": {
+      "leadsTotal": "Total leads",
+      "leadsNew": "New",
+      "leadsWeek": "Received last 7 days",
+      "leadsContactable": "Contactable",
+      "agentsTotal": "Total agents",
+      "agentsActive": "Active",
+      "agentsLicensed": "Licensed",
+      "agentsPipeline": "In pipeline",
       "leads": "Total leads",
-      "leadsNew": "New this week",
+      "leadsNewLegacy": "New this week",
       "apps": "Applications pending",
       "articles": "Articles published",
-      "caption": "Sample figures"
+      "caption": "Live count"
     },
     "table": {
       "searchLabel": "Search",
@@ -851,16 +889,18 @@
         "email": "Email",
         "none": "None"
       },
-      "actions": {
-        "view": "View",
-        "assign": "Assign to agent",
-        "status": "Change status",
-        "export": "Export"
-      }
+      "empty": "No leads yet. They'll appear here once the intake webhook is connected.",
+      "loadError": "Couldn't load leads. Refresh to try again.",
+      "selectorLabel": "Lead"
     },
     "agents": {
       "heading": "Agents",
-      "note": "From the application form on the join page.",
+      "note": "Recruiting-pipeline records. These are pipeline entries, not portal logins — a login is created separately.",
+      "new": "New agent",
+      "empty": "No agents yet. Add the first with “New agent”.",
+      "loadError": "Couldn't load agents. Refresh the page to try again.",
+      "activeLabel": "Active",
+      "inactiveLabel": "Inactive",
       "cols": {
         "name": "Name",
         "email": "Email",
@@ -869,7 +909,7 @@
         "licensed": "Licensed",
         "heard": "Heard via",
         "stage": "Stage",
-        "applied": "Applied"
+        "status": "Status"
       },
       "licensed": {
         "yes": "Yes",
@@ -881,24 +921,48 @@
         "licensed": "Get Licensed",
         "appointed": "Get Appointed & Start Selling"
       },
+      "heard": {
+        "search": "Search",
+        "social": "Social media",
+        "referral": "Referral",
+        "event": "Event",
+        "other": "Other"
+      },
+      "form": {
+        "createTitle": "New agent",
+        "editTitle": "Edit agent",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "state": "State",
+        "licensed": "Licensed to sell",
+        "heard": "Heard via",
+        "heardNone": "—",
+        "stage": "Stage",
+        "save": "Save agent",
+        "saving": "Saving…",
+        "cancel": "Cancel",
+        "errName": "Enter a name.",
+        "errEmail": "Enter an email address.",
+        "errEmailFormat": "Enter a valid email address.",
+        "errForbidden": "Your session isn't an admin session anymore. Sign in again.",
+        "errWrite": "Couldn't save the agent. Try again."
+      },
       "actions": {
-        "view": "View",
-        "advance": "Advance stage",
-        "mentor": "Assign mentor",
-        "archive": "Archive"
+        "edit": "Edit",
+        "deactivate": "Deactivate",
+        "reactivate": "Reactivate"
       }
     },
     "content": {
       "heading": "Content",
-      "note": "Articles and pages already on the site.",
+      "note": "A read-only reflection of what's in the repo — articles on disk and the built pages. Editing content is a separate phase.",
+      "empty": "No content found.",
       "cols": {
         "title": "Title",
         "slug": "Slug",
         "type": "Type",
-        "locale": "Locale",
-        "status": "Status",
-        "compliance": "Compliance",
-        "updated": "Updated"
+        "status": "Status"
       },
       "type": {
         "article": "Article",
@@ -908,22 +972,22 @@
         "published": "Published",
         "listing": "Listing row only",
         "draft": "Draft"
-      },
-      "compliance": {
-        "screened": "Screened",
-        "pending": "Pending client",
-        "blocked": "Blocked"
-      },
-      "actions": {
-        "view": "View on site",
-        "preview": "Preview",
-        "edit": "Edit"
       }
-    }
+    },
+    "greetMorning": "Good morning, {name}",
+    "greetAfternoon": "Good afternoon, {name}",
+    "greetEvening": "Good evening, {name}",
+    "navLabel": "Dashboard sections"
+  },
+  "engine": {
+    "diagramLabel": "Diagram: Synergy connected to each of its carrier partners.",
+    "cardsLabel": "What that means for your family",
+    "cardKicker": "Our commitment"
   },
   "cta": {
     "quote": "Get a free quote",
     "call": "Call 407-434-0400",
-    "callAria": "Call Synergy Insurance Group on 407-434-0400"
+    "callAria": "Call Synergy Insurance Group on 407-434-0400",
+    "join": "Join our team"
   }
 }

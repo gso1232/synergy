@@ -154,7 +154,7 @@ export default async function JoinPage({
   }));
 
   return (
-    <main className="join-page min-h-screen bg-cream">
+    <main className="join-page min-h-screen">
       {/* ===================================================================
           §1 — HERO. The /about §1 pattern, unchanged.
       =================================================================== */}
@@ -169,7 +169,7 @@ export default async function JoinPage({
             camera files arrive. Marked in HANDOFF. No own landscape reaches the
             3072px a full-bleed hero needs at 2x. */}
         <Image
-          src="/synergy/join-hero-team-dinner.jpg"
+          src="/synergy/join-hero-team-2026.jpg"
           alt={t("hero.imageAlt")}
           fill
           priority
@@ -180,9 +180,15 @@ export default async function JoinPage({
         {/* The header veil. Load-bearing here exactly as on /about and the
             homepage: /join is in `isPhotoHeroRoute`, so the bar is transparent
             over this photograph and white nav ink sits on it. */}
+        {/* 🔴 `.join-hero-veil-top`, NOT the shared `.hero-veil-top`. The 2026
+            office photograph has a lit white ceiling exactly where the header
+            sits, and the shared veil measures 4.25 there at 1280x800 — a fail.
+            The join-only override holds 0.66 through the nav band. Full solve on
+            the rule in globals.css. Do not "simplify" this back to the shared
+            class: the class name would carry a derivation that is false here. */}
         <div
           aria-hidden="true"
-          className="hero-veil-top absolute inset-x-0 top-0 h-[42%]"
+          className="join-hero-veil-top absolute inset-x-0 top-0 h-[42%]"
         />
         <div aria-hidden="true" className="join-hero-scrim absolute inset-0" />
 
@@ -196,15 +202,18 @@ export default async function JoinPage({
               {t("hero.sub")}
             </p>
 
-            {/* TWO CTAs. One live, one visibly disabled. The whole rationale —
-                why the live one scrolls through Lenis rather than being an
-                anchor, and why the portal is a real <button disabled> rather
-                than a styled div — is in JoinHeroCtas. */}
+            {/* TWO CTAs, BOTH LIVE FROM 2026-08-02. "Join as agent" scrolls
+                through Lenis rather than being an anchor; "Agent portal" is now
+                a real <Link> to /{locale}/login (it was a disabled <button>).
+                `portalNote` is still passed and deliberately NOT rendered — the
+                string is retained so restoring the disabled state is a revert.
+                Full rationale in JoinHeroCtas. */}
             <JoinHeroCtas
               applyLabel={t("hero.ctaApply")}
               portalLabel={t("hero.ctaPortal")}
               portalNote={t("hero.portalNote")}
               targetId="join-apply-heading"
+              locale={locale}
             />
           </div>
         </div>
@@ -476,48 +485,44 @@ export default async function JoinPage({
               </a>
             </FadeUp>
 
+            {/* No `locale` prop any more — the form is a CLIENT component now
+                and reads its strings from the next-intl provider like every
+                other client component. */}
             <FadeUp index={1}>
-              <JoinApplyForm locale={locale} />
+              <JoinApplyForm />
             </FadeUp>
           </div>
         </div>
       </section>
       {/* ===================================================================
-          §6 — CLOSING CTA. Full-bleed navy, one pill.
+          🔴 §6 — CLOSING CTA "Come and talk to us." REMOVED ON INSTRUCTION
+          (2026-08-03). It was the full-bleed navy band that closed the page.
 
-          The pill is `.sem-pill-cta--on-dark`, which globals.css already
-          carried and named this band as its reason for existing. Cream fill /
-          navy label is 15.87:1, and the fill against #0D1B2A is 15.87:1 too,
-          so the boundary clears 3:1 with room. NO NEW BUTTON.
+          WHY IT WAS RIGHT TO GO, beyond the instruction: its body read "There
+          is no application form on this page. The first step is a conversation"
+          — copy written back when §13b scoped a page with NO apply surface. §5
+          (JoinApplyForm) exists now, so the block was actively CONTRADICTING the
+          section directly above it, telling the reader the form they had just
+          scrolled past was not there. Removing it resolves that, and the page
+          now ends on the apply section as its final content.
 
-          It goes to /contact, not to an application form. See the header note.
+          🔴 POSITION NOTE FOR THE RECORD: the instruction called it "above the
+          apply section"; in the built page it was the last section, BELOW §5.
+          There is only one "Come and talk to us" navy block on the site and this
+          is it — removing it is unambiguous either way.
+
+          KEPT, NOT DELETED: the strings `join.cta.heading/body/button` stay in
+          both message files, unrendered, per the standing convention. Restoring
+          the block is pasting this section back and it reads them again.
+
+          THE SEAM: §5 uses `sem-pad-y`, so the page keeps a full section's
+          bottom padding before the footer — the same rhythm every other route
+          ends on (the footer is mounted once in (site)/layout, after children).
+          No gap was left to close: removing a full-bleed section does not strand
+          a half-height void, it just ends the page one section earlier on
+          balanced padding. Verified: apply-section bottom → footer top seam is a
+          clean single `sem-pad-y` gap, no double margin, no navy remnant.
       =================================================================== */}
-      <section
-        aria-labelledby="join-cta-heading"
-        className="bg-navy py-[131.2px]"
-      >
-        <div className="sem-shell">
-          <div className="sem-inner">
-            <FadeUp>
-              <h2
-                id="join-cta-heading"
-                className="sem-h2 max-w-[18ch] font-display text-cream"
-              >
-                {t("cta.heading")}
-              </h2>
-              <p className="sem-body mt-6 max-w-[46ch] text-cream">
-                {t("cta.body")}
-              </p>
-              <Link
-                href={routeHref(locale, "contact")}
-                className="sem-pill-cta sem-pill-cta--on-dark mt-10 inline-flex items-center text-[15px] font-semibold"
-              >
-                {t("cta.button")}
-              </Link>
-            </FadeUp>
-          </div>
-        </div>
-      </section>
     </main>
   );
 }

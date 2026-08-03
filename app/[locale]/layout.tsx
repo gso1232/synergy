@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kufam, Overpass, Inter } from "next/font/google";
+import { Kufam, IBM_Plex_Sans, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import {
@@ -20,8 +20,44 @@ const display = Kufam({
   variable: "--font-display",
 });
 
-// Overpass — body, UI, labels, AND the data numerals (replaces Space Grotesk).
-const body = Overpass({
+/**
+ * IBM Plex Sans — body, UI, labels, AND the data numerals.
+ *
+ * 🔴 REPLACED OVERPASS (2026-08-03), AND THE REASON IS THE FIGURES, NOT TASTE.
+ *
+ * The deciding property is TABULAR FIGURES, and it is not a preference — this
+ * site's most persuasive element is a currency figure bound to two sliders, and
+ * `components/Calculator.tsx` spends `tabular-nums` in eight places. That class
+ * emits `font-variant-numeric: tabular-nums`, which is a REQUEST: a face
+ * without the `tnum` feature drops it silently and every digit keeps its
+ * natural width, so the figure shifts sideways on every slider drag.
+ *
+ * IBM Plex Sans's figures are TABULAR NATIVELY — not via the feature, but by
+ * construction. Measured at 1000px/700, every digit 0-9 set ten times returns
+ * the same 600px advance, spread 0.00px, with and without the request. That
+ * means a future component that forgets `tabular-nums` still renders aligned,
+ * which is the failure mode that eliminated the first candidate.
+ *
+ * (For the record, so nobody "improves" this later: DM Sans was the leading
+ * alternative and FAILS this outright — `1111111111` measures 364px against
+ * `0000000000` at 704px, a 340px spread that `tabular-nums` does not change
+ * because the feature is absent from the font. Overpass, the face being
+ * replaced here, passed — its spread collapses 260.8px -> 0.00px when the
+ * feature is requested — so this swap is a lateral move on that axis, not a
+ * rescue. Nothing was broken; Plex is simply the stronger guarantee.)
+ *
+ * THE OTHER TWO SLOTS ARE UNCHANGED ON PURPOSE. Kufam keeps the display slot
+ * and its "never above 500" ceiling; Inter keeps the VEX-spec hero. This was a
+ * body/data swap, scoped deliberately: `.cap-display` never had to be
+ * re-derived and the display/body contrast that separates headings from copy
+ * survives.
+ *
+ * 🔴 IF YOU CHANGE THIS FACE, `.cap-body` IN globals.css MUST BE RE-DERIVED IN
+ * THE SAME COMMIT. Those trim values are computed from the LOADED font's
+ * ascent/descent/cap-height and are wrong the instant the face changes. The
+ * derivation, and Plex's numbers, are written out at that rule.
+ */
+const body = IBM_Plex_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
@@ -30,7 +66,7 @@ const body = Overpass({
 });
 
 // Inter — used ONLY inside the VEX-spec hero (via `font-hero`), per that spec.
-// The rest of the site stays on Kufam / Overpass.
+// The rest of the site stays on Kufam / IBM Plex Sans.
 const hero = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
@@ -42,15 +78,68 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
+/**
+ * 🔴 THE SITE URL, AND WHY `metadataBase` IS NOT OPTIONAL. Open Graph requires
+ * ABSOLUTE image URLs — a relative `/og-image.png` is silently dropped by every
+ * scraper. `metadataBase` is what lets Next resolve the relative path below into
+ * an absolute one. Without it Next logs a warning and emits a URL against
+ * `localhost`, so the card would work in dev and break in production.
+ *
+ * It reads the Vercel-provided origin when deployed and falls back to the known
+ * production domain, so it is correct on preview deployments too.
+ */
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+  : process.env.VERCEL_URL
+    ? new URL(`https://${process.env.VERCEL_URL}`)
+    : new URL("https://fflsynergy.com");
+
 export async function generateMetadata({
   params: { locale },
 }: {
   params: { locale: string };
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta" });
+  const title = t("title");
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    metadataBase: SITE_URL,
+    title,
+    description,
+    /**
+     * 🔴 ICONS ARE NOT DECLARED HERE ON PURPOSE. `app/favicon.ico`,
+     * `app/icon.svg` and `app/apple-icon.png` are Next FILE CONVENTIONS — Next
+     * discovers them, fingerprints them for cache-busting and injects the
+     * <link> tags into every route automatically. Declaring `icons` in metadata
+     * as well would emit a SECOND, unfingerprinted set of links pointing at the
+     * same files, which is how you end up with a stale favicon pinned in the
+     * browser cache. One mechanism, not two.
+     */
+    openGraph: {
+      type: "website",
+      siteName: t("title"),
+      title,
+      description,
+      locale: locale === "es" ? "es_US" : "en_US",
+      url: `/${locale}`,
+      images: [
+        {
+          url: "/og-image.png",
+          width: 1200,
+          height: 630,
+          // Describes the card image itself — Rule 5's standing exception for
+          // image alt text, which must change when the file changes.
+          alt: t("title"),
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/og-image.png"],
+    },
   };
 }
 
@@ -94,7 +183,10 @@ export default async function LocaleLayout({
           preload link for the correct derivative, so the hand-written
           <link rel="preload" as="video"> that used to warm the clip is gone —
           keeping it would have downloaded 8 MB nobody renders. */}
-      <body className="bg-cream font-body text-ink antialiased">
+      {/* No `bg-cream` here — the page surface is the gradient defined on `body`
+          in globals.css. A Tailwind background-color class would win on
+          specificity and flatten it. */}
+      <body className="font-body text-ink antialiased">
         <NextIntlClientProvider messages={messages}>
           {/* 🔴 THE MARKETING CHROME NO LONGER LIVES HERE. 2026-07-30.
               Splash, SiteHeader, SmoothScroll (Lenis), Footer and LocaleSwitcher

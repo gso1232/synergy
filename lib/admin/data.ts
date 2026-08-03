@@ -1,0 +1,116 @@
+import "server-only";
+
+import { createClient } from "@/lib/supabase/server";
+import { getAllArticles } from "@/lib/blog";
+import type { Agent, Application, Lead } from "@/lib/types";
+
+/**
+ * Server-only reads for the admin dashboard. Every query runs through the
+ * RLS-scoped client (the logged-in admin's session), so the database policies —
+ * not this code — decide what comes back. A non-admin session gets zero rows
+ * from leads/agents by policy; the admin layout has already blocked non-admins
+ * before any of this runs, but the RLS floor holds even if it didn't.
+ *
+ * Each reader returns a discriminated result so the UI can render an HONEST
+ * error state instead of pretending an empty list when the query actually
+ * failed. Empty-because-empty and empty-because-error are different things.
+ */
+export type ReadResult<T> =
+  | { ok: true; rows: T[] }
+  | { ok: false; error: string };
+
+export async function getLeads(): Promise<ReadResult<Lead>> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("leads")
+      .select("*")
+      .order("received_at", { ascending: false });
+    if (error) return { ok: false, error: error.message };
+    return { ok: true, rows: (data ?? []) as Lead[] };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "read failed" };
+  }
+}
+
+/**
+ * /join applications. RLS-scoped like every other read here: this runs as the
+ * logged-in user with the PUBLISHABLE key, so `applications_select_admin` in
+ * 0003_applications.sql is what actually decides. A non-admin reaching this
+ * function gets ZERO ROWS from the database rather than an error — the policy
+ * filters, it does not throw — which is why the admin layout's role guard is the
+ * thing that stops them seeing the page at all.
+ *
+ * 🔴 IT DOES NOT USE THE SERVICE-ROLE CLIENT. Only the INSERT path needs that
+ * (there is no insert policy); reads deliberately stay under RLS so a bug here
+ * cannot leak applications to a non-admin.
+ */
+export async function getApplications(): Promise<ReadResult<Application>> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("applications")
+      .select("*")
+      .order("received_at", { ascending: false });
+    if (error) return { ok: false, error: error.message };
+    return { ok: true, rows: (data ?? []) as Application[] };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "read failed" };
+  }
+}
+
+export async function getAgents(): Promise<ReadResult<Agent>> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("agents")
+      .select("*")
+      .order("active", { ascending: false })
+      .order("applied_at", { ascending: false });
+    if (error) return { ok: false, error: error.message };
+    return { ok: true, rows: (data ?? []) as Agent[] };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "read failed" };
+  }
+}
+
+/**
+ * CONTENT is not a table. This is a read-only reflection of real repo state —
+ * the blog articles on disk (lib/blog.ts) plus the built static pages. `status`
+ * comes from whether an article has an approved body; there is nothing to write
+ * here from the admin, so the view carries no actions. Editing content means
+ * writing MDX to disk / moving content into the DB — a separate phase, not
+ * faked with a dead "Edit" button.
+ */
+export type ContentRow = {
+  id: string;
+  title: string;
+  slug: string;
+  type: "article" | "page";
+  status: "published" | "listing";
+};
+
+const STATIC_PAGES: { slug: string; title: string }[] = [
+  { slug: "about", title: "About" },
+  { slug: "services", title: "Services" },
+  { slug: "join", title: "Join" },
+  { slug: "contact", title: "Contact" },
+];
+
+export function getContent(locale: string): ContentRow[] {
+  const articles = getAllArticles(locale).map((a) => ({
+    id: `article-${a.slug}`,
+    title: a.title || a.slug,
+    slug: a.slug,
+    type: "article" as const,
+    status: a.hasBody ? ("published" as const) : ("listing" as const),
+  }));
+  const pages = STATIC_PAGES.map((p) => ({
+    id: `page-${p.slug}`,
+    title: p.title,
+    slug: p.slug,
+    type: "page" as const,
+    status: "published" as const,
+  }));
+  return [...pages, ...articles];
+}

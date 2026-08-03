@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "",
-    "description": ""
+    "title": "Synergy Insurance Group — Seguros de Vida y Planificación de Retiro",
+    "description": "Seguros de vida y planificación de retiro con varias aseguradoras mejor calificadas. Orientación en palabras claras, en inglés y español. Una llamada gratis."
   },
   "nav": {
     "company": "Synergy Insurance Group",
@@ -10,7 +10,7 @@
     "about": "Nosotros",
     "calculator": "Calculadora",
     "services": "Servicios",
-    "blog": "",
+    "blog": "Blog",
     "contact": "Contacto",
     "phone": "407-434-0400",
     "phoneHref": "tel:+14074340400",
@@ -26,53 +26,55 @@
     "closeMenu": "Cerrar menú",
     "langLabel": "Idioma",
     "langEn": "EN",
-    "langEs": "ES"
+    "langEs": "ES",
+    "login": "Acceso de Agentes",
+    "admin": "Admin"
   },
   "hero": {
-    "eyebrow": "",
-    "headline": "",
-    "headlineA": "",
-    "headlineB": "",
-    "sub": "",
-    "ssn": "",
-    "ctaQuote": "",
-    "ctaCall": "",
-    "imageAlt": "",
+    "eyebrow": "Con licencia en los 50 estados",
+    "headline": "Protegiendo familias. Construyendo futuros.",
+    "headlineA": "Protegiendo familias.",
+    "headlineB": "Construyendo futuros.",
+    "sub": "Seguros de vida y planificación de retiro con aseguradoras mejor calificadas. Orientación en palabras claras, en inglés o español. Una llamada gratis.",
+    "ssn": "No se requiere número de Seguro Social.",
+    "ctaQuote": "Obtener una cotización gratis",
+    "ctaCall": "Hablar con un asesor",
+    "imageAlt": "Una familia al aire libre durante la hora dorada",
     "stats": {
-      "s1v": "",
-      "s1l": "",
-      "s2v": "",
-      "s2l": "",
-      "s3v": "",
-      "s3l": "",
-      "s4v": "",
-      "s4l": "",
-      "s5v": "",
-      "s5l": ""
+      "s1v": "50",
+      "s1l": "Estados con licencia",
+      "s2v": "ITIN",
+      "s2l": "Aceptamos",
+      "s3v": "EN / ES",
+      "s3l": "Bilingüe",
+      "s4v": "407-434-0400",
+      "s4l": "Llámenos",
+      "s5v": "8am–7pm",
+      "s5l": "Lun–Sáb"
     },
-    "tagline": ""
+    "tagline": "Con licencia. Bilingüe. Aceptamos ITIN."
   },
   "two": {
-    "heading": "",
+    "heading": "Dos puertas, un solo equipo.",
     "families": {
-      "label": "",
-      "title": "",
-      "body": "",
-      "cta": ""
+      "label": "Para familias",
+      "title": "Proteja a quienes ama.",
+      "body": "Desde el seguro de vida a término hasta el ingreso de retiro, explicamos cada opción en palabras que tienen sentido. Después le ayudamos a elegir lo que de verdad le sirve a su familia.",
+      "cta": "Encontrar mi cobertura"
     },
     "agents": {
-      "label": "",
-      "title": "",
-      "body": "",
-      "cta": ""
+      "label": "Para agentes",
+      "title": "Construya su carrera con nosotros.",
+      "body": "Synergy Insurance Group protege familias y construye carreras.",
+      "cta": "Únase al equipo"
     }
   },
   "carriers": {
-    "eyebrow": "",
-    "stripKicker": "",
-    "headline": "",
-    "subhead": "",
-    "ariaLabel": "",
+    "eyebrow": "Nuestras aseguradoras",
+    "stripKicker": "Trabajamos con aseguradoras mejor calificadas del país",
+    "headline": "La solidez detrás de cada póliza.",
+    "subhead": "Nuestro acceso a varias aseguradoras mejor calificadas significa que nunca estamos limitados a una sola solución. Buscamos lo que le conviene a su familia, no lo que es más fácil de vender.",
+    "ariaLabel": "Nuestras aseguradoras aliadas",
     "names": {
       "c1": "",
       "c2": "",
@@ -121,46 +123,46 @@
     }
   },
   "whatWeCover": {
-    "eyebrow": "",
-    "heading": "",
-    "subhead": "",
-    "cta": "",
-    "ctaPrimary": "",
-    "ctaSecondary": "",
-    "closingLine": "",
+    "eyebrow": "Qué hacemos",
+    "heading": "Creado en torno a su familia, sus metas y su futuro.",
+    "subhead": "Cada plan se hace a la medida. Cada póliza se explica. Nada se apresura. Desde el seguro de vida a término hasta la planificación de retiro: protección ajustada al momento en que está su familia hoy.",
+    "cta": "Conocer más",
+    "ctaPrimary": "Obtener una cotización gratis",
+    "ctaSecondary": "Hablar con un asesor",
+    "closingLine": "Vale la pena proteger el mañana.",
     "cards": {
       "term": {
-        "eyebrow": "",
-        "name": "",
-        "desc": "",
-        "alt": ""
+        "eyebrow": "Protección de ingresos",
+        "name": "Seguro de Vida a Término",
+        "desc": "Una red de protección amplia por una prima mensual pequeña, que cubre los años en que su familia todavía depende de su sueldo. Ideal para reemplazar ingresos, cubrir la hipoteca y dar seguridad a la familia.",
+        "alt": "Una familia joven al aire libre durante la hora dorada"
       },
       "iul": {
-        "eyebrow": "",
-        "name": "",
-        "desc": "",
-        "alt": ""
+        "eyebrow": "Crecimiento protegido",
+        "name": "IUL",
+        "desc": "Cobertura permanente que acumula valor en efectivo real, vinculado a un índice del mercado, con un piso que resguarda lo acumulado cuando los mercados bajan.",
+        "alt": "Una pareja de mediana edad al aire libre con luz cálida de otoño"
       },
       "taxfree": {
-        "eyebrow": "",
-        "name": "",
-        "desc": "",
-        "alt": ""
+        "eyebrow": "Patrimonio para el retiro",
+        "name": "Planificación de Retiro",
+        "desc": "Construya patrimonio para su retiro fuera del sistema tradicional: no se requiere número de Seguro Social, aceptamos ITIN.",
+        "alt": "Un agricultor por cuenta propia trabajando en un campo al amanecer"
       },
       "final": {
-        "eyebrow": "",
-        "name": "",
-        "desc": "",
-        "alt": ""
+        "eyebrow": "Tranquilidad",
+        "name": "Gastos Finales",
+        "desc": "Una póliza más pequeña que cubre el funeral y los gastos finales, para que su familia quede con el duelo por procesar y no con cuentas por pagar. Aprobación sencilla, primas accesibles, tranquilidad duradera.",
+        "alt": "Una pareja mayor sonriendo al aire libre durante la hora dorada"
       }
     }
   },
   "calculator": {
-    "metaTitle": "",
-    "metaDescription": "",
+    "metaTitle": "Calculadora de retiro — Synergy Insurance Group",
+    "metaDescription": "El Seguro de Vida Universal Indexado acumula valor en efectivo vinculado a un índice del mercado. Mueva los controles para comparar una proyección ilustrativa con una cuenta de ahorros común.",
     "eyebrow": "Calculadora de retiro",
-    "framingQuestion": "The same deposit, two very different futures.",
-    "subhead": "Move the sliders to see what a monthly contribution could grow into — in a plain savings account versus an indexed policy. No sign-up, no email, just the math.",
+    "framingQuestion": "La misma aportación, dos futuros muy distintos.",
+    "subhead": "Mueva los controles para ver en cuánto podría convertirse una aportación mensual, en una cuenta de ahorros común frente a una póliza indexada. Sin registro, sin correo electrónico, solo las cuentas.",
     "sectionHeadline": "Vea cómo se compara una póliza indexada con una cuenta de ahorros.",
     "sectionSupport": "El Seguro de Vida Universal Indexado acumula valor en efectivo vinculado a un índice del mercado. Mueva los controles para comparar una proyección ilustrativa con una cuenta de ahorros común.",
     "resultUnit": "a los {age} años",
@@ -202,36 +204,36 @@
     "headline": "Por qué las familias eligen Synergy.",
     "rows": {
       "r1": {
-        "title": "",
-        "body": ""
+        "title": "Trabajamos para usted, no para una aseguradora",
+        "body": "No estamos atados a una sola compañía, así que ninguna aseguradora decide lo que se le ofrece a su familia. Comparamos varias aseguradoras mejor calificadas lado a lado y le traemos el plan que se ajusta a su presupuesto y a su vida, no el que es más fácil de vender."
       },
       "r2": {
-        "title": "",
-        "body": ""
+        "title": "Claro, honesto, sin presión",
+        "body": "Damos un enfoque educativo a cada conversación. Su asesor le explica cómo funciona cada opción, en palabras claras, antes de recomendar nada, para que cada decisión que tome sea informada, segura y enteramente suya."
       },
       "r3": {
-        "title": "",
-        "body": ""
+        "title": "Un socio de por vida",
+        "body": "No desaparecemos después de la venta. Su asesor acompaña a su familia en cada revisión de póliza, cada cambio de vida y cada nueva etapa, para que su cobertura siga el ritmo de la vida que protege."
       },
       "r4": {
-        "title": "",
-        "body": ""
+        "title": "Aceptamos ITIN, no se requiere Seguro Social",
+        "body": "No necesita un número de Seguro Social para proteger a su familia ni para construir un plan de retiro libre de impuestos. Nos especializamos en cobertura con ITIN para los trabajadores por cuenta propia, los trabajadores de la construcción, el personal de enfermería y los camioneros a quienes el sistema tradicional pasa por alto."
       },
       "r5": {
-        "title": "",
-        "body": ""
+        "title": "Inglés y español",
+        "body": "El seguro ya es bastante complicado en su primer idioma. Repase cada opción con un asesor licenciado en el idioma que su familia habla mejor, inglés o español, para que nada importante se pierda en la traducción."
       },
       "r6": {
-        "title": "",
-        "body": ""
+        "title": "Con licencia en los 50 estados",
+        "body": "Desde nuestra oficina en Orlando atendemos a familias de costa a costa, con la misma claridad y el mismo cuidado en cada estado. A donde sea que lo lleve la vida, su cobertura y su asesor van con usted."
       },
       "r7": {
-        "title": "",
-        "body": ""
+        "title": "Creado para los que el sistema pasó por alto",
+        "body": "El sistema tradicional nunca se construyó para quienes trabajan por su cuenta o trabajan con las manos. Nosotros construimos cobertura y planes de retiro libres de impuestos para los trabajadores que mantienen todo funcionando, y a quienes de todos modos se les pasó por alto."
       },
       "r8": {
-        "title": "",
-        "body": ""
+        "title": "Su asesor, de principio a fin",
+        "body": "El asesor licenciado con quien habla el primer día es quien arma su plan, se lo explica y atiende su caso mientras lo mantenga. Sin transferencias, sin centros de llamadas, sin empezar de nuevo."
       }
     },
     "intro": "Una correduría con enfoque educativo, con sede en Orlando y licencia en los cincuenta estados. Cada opción se explica antes de recomendar nada.",
@@ -242,7 +244,7 @@
       "p1": {
         "title": "Trabajamos para usted, no para una aseguradora",
         "b1": "No estamos atados a una sola compañía, así que ninguna aseguradora decide lo que usted ve",
-        "b2": "Comparamos varias aseguradoras de primer nivel y elegimos el plan que se ajusta a su presupuesto y a su vida"
+        "b2": "Comparamos varias aseguradoras mejor calificadas y elegimos el plan que se ajusta a su presupuesto y a su vida"
       },
       "p2": {
         "title": "Claro, honesto, sin presión",
@@ -267,17 +269,23 @@
     "quotes": {
       "q1": {
         "name": "Michael y Laura Adams",
-        "quote": "Synergy hizo que todo el proceso fuera fácil de entender. Escucharon, explicaron todo con claridad y nos ayudaron a elegir el plan perfecto. Ahora tenemos verdadera tranquilidad."
+        "quote": "Synergy hizo que todo el proceso fuera fácil de entender. Escucharon, explicaron todo con claridad y nos ayudaron a elegir el plan perfecto. Ahora tenemos verdadera tranquilidad.",
+        "rating": ""
       },
       "q2": {
         "name": "Brian y Jessica Williams",
-        "quote": "Se tomaron el tiempo de explicarnos cada opción. Sabemos exactamente lo que tenemos y por qué. Verdaderamente pusieron a nuestra familia primero."
+        "quote": "Se tomaron el tiempo de explicarnos cada opción. Sabemos exactamente lo que tenemos y por qué. Verdaderamente pusieron a nuestra familia primero.",
+        "rating": ""
       },
       "q3": {
         "name": "Mark",
-        "quote": "Nunca entendí los seguros de vida hasta que hablé con Synergy. Lo hicieron simple, accesible y completamente sin estrés."
+        "quote": "Nunca entendí los seguros de vida hasta que hablé con Synergy. Lo hicieron simple, accesible y completamente sin estrés.",
+        "rating": ""
       }
-    }
+    },
+    "prevLabel": "Mostrar el testimonio anterior",
+    "nextLabel": "Mostrar el siguiente testimonio",
+    "rating": "Calificado {n} de 5"
   },
   "howItWorks": {
     "eyebrow": "Enfoque educativo",
@@ -293,7 +301,7 @@
       "s2": {
         "num": "02",
         "title": "Buscamos en el mercado",
-        "body": "Synergy es una correduría independiente, no está atada a una sola compañía. Las opciones se comparan entre varias aseguradoras de primer nivel, frente a su presupuesto y sus objetivos.",
+        "body": "Synergy es una correduría independiente, no está atada a una sola compañía. Las opciones se comparan entre varias aseguradoras mejor calificadas, frente a su presupuesto y sus objetivos.",
         "imageAlt": "Una familia recorriendo un sendero por campo abierto al atardecer"
       },
       "s3": {
@@ -305,25 +313,25 @@
     }
   },
   "consultation": {
-    "paragraph": "",
-    "ctaLabel": "",
-    "headline": ""
+    "paragraph": "Synergy Insurance Group ofrece una consulta gratuita y sin compromiso en la que un asesor licenciado revisa su situación específica y arma un plan según su presupuesto.",
+    "ctaLabel": "Abrir la calculadora de retiro",
+    "headline": "¿No sabe por dónde empezar?"
   },
   "leadModal": {
-    "title": "",
-    "summary": "",
-    "intro": "",
-    "name": "",
-    "phone": "",
-    "email": "",
-    "message": "",
-    "submit": "",
-    "close": "",
-    "privacy": "",
-    "successTitle": "",
-    "successBody": "",
-    "notLiveTitle": "",
-    "notLiveBody": ""
+    "title": "Hablemos de sus números",
+    "summary": "Su escenario: <mono>{monthly}</mono> al mes, de los <mono>{age}</mono> a los <mono>{retire}</mono> años.",
+    "intro": "Comparta algunos datos y un asesor licenciado le llamará para explicarle qué significan estos números para usted, sin compromiso.",
+    "name": "Nombre completo",
+    "phone": "Teléfono",
+    "email": "Correo electrónico",
+    "message": "¿Algo en particular? (opcional)",
+    "submit": "Solicitar mi llamada",
+    "close": "Cerrar",
+    "privacy": "Usamos estos datos únicamente para comunicarnos con usted sobre sus números. Nunca enviamos spam.",
+    "successTitle": "Gracias, nos comunicaremos con usted.",
+    "successBody": "Un asesor licenciado le llamará en breve para repasar sus números.",
+    "notLiveTitle": "Este formulario todavía no está conectado.",
+    "notLiveBody": "Sus datos no se enviarán a ningún lado y nadie será contactado. Mientras tanto, llame al 407-434-0400 para hablar con un asesor licenciado."
   },
   "whoWeServe": {
     "eyebrow": "Para quiénes trabajamos",
@@ -341,7 +349,7 @@
       },
       "c2": {
         "title": "Nunca atados a una sola aseguradora",
-        "b1": "",
+        "b1": "Contratos con varias aseguradoras mejor calificadas",
         "b2": "Opciones comparadas lado a lado, en lenguaje claro",
         "b3": "Lo que encaja con su hogar, no la póliza más fácil de colocar",
         "cta": "Comparar mis opciones"
@@ -379,410 +387,423 @@
     }
   },
   "about": {
-    "metaTitle": "",
-    "metaDescription": "",
+    "metaTitle": "Sobre Synergy Insurance Group — Asesores de seguros licenciados — Orlando, Florida",
+    "metaDescription": "Conozca Synergy Insurance Group, fundada por la asesora de seguros licenciada Rula AlAryan en Orlando, Florida. Protegemos familias y construimos carreras en los 50 estados. Aceptamos ITIN.",
     "hero": {
-      "headline": "",
-      "sub": ""
+      "headline": "Somos Synergy",
+      "sub": "Una correduría construida sobre la integridad, la educación y un compromiso genuino con proteger a las personas que atendemos."
     },
     "story": {
-      "eyebrow": "",
-      "p1": "",
-      "p2": "",
-      "p3": "",
-      "imageAlt": ""
+      "eyebrow": "Nuestra historia",
+      "p1": "Synergy Insurance Group nació en Orlando, Florida, con un solo propósito: llevar transparencia y honestidad a una industria que con demasiada frecuencia deja confundidas a las familias. Nos formamos en torno a los valores familiares, con la convicción de que toda persona merece entender exactamente qué está recibiendo y por qué.",
+      "p2": "Nuestra filosofía educativa significa que nunca apuramos una conversación. Nos tomamos el tiempo de entender su situación antes de recomendar nada. Somos corredores independientes, así que nunca estamos atados a una sola aseguradora: comparamos lo que hay disponible y le traemos lo que le conviene a su hogar.",
+      "p3": "Con licencia en los 50 estados y trabajando con las aseguradoras mejor calificadas del país, Synergy atiende a familias en todo el territorio.",
+      "imageAlt": "Dos integrantes del equipo de Synergy de pie al frente de una sala de capacitación, una de ellas hablando por micrófono."
     },
-    "quote1": "",
+    "quote1": "El seguro no es un producto. Es una promesa.",
     "trust": {
-      "headline": "",
-      "p1": "",
-      "p2": "",
-      "ctaLabel": "",
-      "imageAlt1": "",
-      "imageAlt2": "",
-      "body": "",
-      "eyebrow": ""
+      "headline": "Construido sobre la confianza. Impulsado por resultados.",
+      "p1": "Synergy Insurance Group es una correduría de seguros de vida con sede en Orlando, Florida. Damos un enfoque educativo a cada conversación, ayudando a las familias a entender sus opciones antes de tomar cualquier decisión.",
+      "p2": "Nuestro acceso a varias aseguradoras mejor calificadas significa que nunca estamos limitados a una sola solución. Buscamos lo que le conviene a su familia, no lo que es más fácil de vender. Con licencia en los 50 estados, atendemos a clientes de costa a costa con el mismo compromiso de claridad y cuidado.",
+      "ctaLabel": "Abrir la calculadora de retiro",
+      "imageAlt1": "Una asesora de Synergy habla por micrófono señalando una diapositiva titulada “Hone Your Skills & Knowledge”.",
+      "imageAlt2": "Integrantes del equipo de Synergy aplauden a una compañera que habla por micrófono.",
+      "body": "Damos un enfoque educativo a cada conversación, ayudando a las familias a entender sus opciones antes de tomar cualquier decisión.",
+      "eyebrow": "Nuestro enfoque"
     },
     "values": {
-      "headline": "",
+      "headline": "Lo que defendemos",
       "v1": {
         "numeral": "I",
-        "title": "",
-        "body": "",
-        "imageAlt": ""
+        "title": "Integridad",
+        "body": "Le decimos la verdad aunque no sea lo que quiere escuchar. Su confianza vale más que cualquier comisión.",
+        "imageAlt": "Una integrante del equipo de Synergy hablando por micrófono en el escenario de un evento de la empresa."
       },
       "v2": {
         "numeral": "II",
-        "title": "",
-        "body": "",
-        "imageAlt": ""
+        "title": "Educación",
+        "body": "Creemos que un cliente informado toma las mejores decisiones. Nunca apuramos. Nunca presionamos. Lo explicamos todo.",
+        "imageAlt": "Una asesora de Synergy presentando en una sesión de capacitación del equipo en la oficina."
       },
       "v3": {
         "numeral": "III",
-        "title": "",
-        "body": "",
-        "imageAlt": ""
+        "title": "Legado",
+        "body": "Pensamos más allá de la póliza. Ayudamos a las familias a construir estrategias de protección que perduran más allá de cualquier suceso aislado.",
+        "imageAlt": "Dos integrantes del equipo de Synergy de pie juntas en la oficina."
       }
     },
-    "quote2": "",
-    "zoomAlt": ""
+    "quote2": "No solo vendemos pólizas. Construimos estrategias de protección que duran toda la vida.",
+    "zoomAlt": "Una casa familiar de piedra y tejas al anochecer, con todas las ventanas iluminadas, vista entre pinos altos."
   },
   "services": {
-    "metaTitle": "",
-    "metaDescription": "",
+    "metaTitle": "Lo que protegemos — Vida, Gastos Finales, IUL, Anualidades, Medicare — Synergy Insurance Group",
+    "metaDescription": "Seguro de vida a término, gastos finales, protección hipotecaria, vida universal indexada, anualidades indexadas fijas, Medicare y seguro de salud de Synergy Insurance Group. Con licencia en los 50 estados.",
     "hero": {
-      "headline": "",
-      "sub": "",
-      "imageAlt": ""
+      "headline": "Lo que protegemos",
+      "sub": "Desde proteger a su familia hoy hasta asegurar su legado por generaciones: tenemos una solución para cada etapa de la vida. Con licencia en los 50 estados. Trabajamos con las principales aseguradoras del país.",
+      "imageAlt": "Un padre y sus dos hijos conversan en la terraza de la casa familiar."
     },
     "products": {
-      "heading": "",
-      "intro": "",
+      "heading": "Nuestros productos de seguros",
+      "intro": "Cada póliza se explica con claridad. Cada recomendación es honesta. Nada se apresura.",
       "p1": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Seguro de Vida a Término",
+        "body": "El seguro de vida a término ofrece cobertura accesible y sencilla por un período definido, normalmente de 10, 20 o 30 años. Si usted fallece durante el plazo, su familia recibe un beneficio por fallecimiento en una suma global libre de impuestos para reemplazar su ingreso, saldar deudas y mantener su calidad de vida. Es la manera más económica de obtener una cobertura amplia durante los años en que su familia más depende de usted. Ideal para familias jóvenes, personas que acaban de comprar casa y cualquiera que tenga dependientes económicos.",
+        "imageAlt": "Una pareja joven de pie muy junta en un campo de hierba iluminado por el sol a la hora dorada, sosteniendo y besando con ternura a su bebé."
       },
       "p2": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Seguro de Gastos Finales",
+        "body": "El seguro de gastos finales es una póliza pequeña de vida entera, normalmente de entre $5,000 y $25,000, hecha para cubrir los costos que una familia enfrenta de inmediato tras un fallecimiento: el servicio funerario, las cuentas médicas pendientes y los trámites que vienen después. La prima se mantiene nivelada durante toda la vigencia de la póliza y el monto del beneficio no disminuye con el tiempo. No se requiere examen médico para la mayoría de los solicitantes de entre 50 y 85 años. Es el regalo más compasivo que puede dejarle a su familia: la certeza de que nunca cargarán solos con ese peso económico.",
+        "imageAlt": "Una mujer de cabello plateado con un vestido verde menta de lunares ríe mirando por encima del hombro, frente a una pared color crema con vegetación detrás."
       },
       "p3": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Seguro de Protección Hipotecaria",
+        "body": "La protección hipotecaria está diseñada para que su familia conserve su casa si usted ya no está para hacer los pagos. Si usted fallece, queda discapacitado o enfrenta una enfermedad crítica, la póliza paga directamente el saldo restante de su hipoteca, para que su familia no se vea obligada a dejar la casa que construyeron juntos. A diferencia del PMI, que protege al prestamista, la protección hipotecaria protege a su familia. Es una de las formas de protección más precisas y potentes que puede tener quien es dueño de su casa.",
+        "imageAlt": "Una pareja con abrigos está en el pórtico de madera de su casa, junto a cajas de mudanza apiladas, mientras uno de ellos abre la puerta con una llave."
       },
       "p4": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Vida Universal Indexada (IUL)",
+        "body": "El seguro de Vida Universal Indexada es una cobertura permanente que acumula valor en efectivo real vinculado a un índice del mercado bursátil, como el S&P 500, mientras que un piso de la póliza hace que las pérdidas del índice no se acrediten en contra del valor que usted ya construyó. Su dinero crece cuando los mercados suben y se mantiene sin cambio cuando bajan. El valor en efectivo crece con impuestos diferidos, se puede acceder a él libre de impuestos mediante préstamos sobre la póliza, y el beneficio por fallecimiento dura toda su vida. La IUL es el vehículo preferido de emprendedores, dueños de negocios y profesionales que quieren un seguro de vida que funcione como una estrategia financiera de largo plazo.",
+        "imageAlt": "Una pareja de cabello plateado sostiene tazas de café en la puerta abierta de su casa, con una terraza cubierta de nieve detrás."
       },
       "p5": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Anualidades Indexadas Fijas (FIA)",
+        "body": "Una Anualidad Indexada Fija es un vehículo de retiro que hace crecer su dinero según el desempeño de un índice del mercado, con un piso que hace que las pérdidas del índice no se acrediten en contra de su capital. Su cuenta recibe acreditaciones según el desempeño de un índice del mercado, sin estar invertida directamente en el mercado. Las FIA ofrecen opciones de ingreso vitalicio, crecimiento con impuestos diferidos y un beneficio por fallecimiento que pasa a sus beneficiarios. Están diseñadas para personas próximas a jubilarse y jubilados que quieren acreditaciones vinculadas a un índice junto con un piso de ingreso previsible.",
+        "imageAlt": "Una pareja mayor sonriente al aire libre entre árboles iluminados por el sol; el hombre, con sombrero de paja, sostiene un teléfono mientras ella apoya una mano en su hombro."
       },
       "p6": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Seguro de Medicare",
+        "body": "Moverse dentro de Medicare puede resultar abrumador, pero no tiene por qué serlo. Synergy Insurance Group ayuda a las personas que cumplen 65 años y a quienes ya son beneficiarios de Medicare a entender sus opciones y elegir el plan adecuado. Trabajamos con varias aseguradoras de Medicare para comparar planes de Medicare Supplement (Medigap), planes Medicare Advantage y la cobertura de medicamentos recetados de la Parte D. Nuestros agentes simplifican el proceso, explican cada opción en lenguaje claro y le ayudan a elegir la cobertura que se ajusta a sus necesidades de salud y a su presupuesto, sin costo adicional para usted.",
+        "imageAlt": "Una mujer de cabello plateado con lentes sonríe mientras sostiene una canasta con apio y tomates recién cortados en un huerto soleado."
       },
       "p7": {
-        "name": "",
-        "body": "",
-        "imageAlt": ""
+        "name": "Seguro de Salud",
+        "body": "Tener acceso a un buen seguro de salud es una de las decisiones más importantes que puede tomar para usted y su familia. Synergy Insurance Group trabaja con varias aseguradoras de salud para ayudar a personas, familias y profesionales por cuenta propia a encontrar planes que den cobertura real a un precio que tenga sentido. Ya sea que necesite un plan del mercado de ACA, un plan de salud de corto plazo o una póliza de salud complementaria para cubrir vacíos de su cobertura actual, nuestros agentes licenciados le explican cada opción en lenguaje claro y dejan la decisión en sus manos.",
+        "imageAlt": "Una madre, un padre y un niño pequeño preparan empanadillas juntos en la barra de una cocina luminosa, con huevos y harina sobre la superficie."
       }
     },
-    "breakImageAlt": "",
+    "breakImageAlt": "Casas frente al agua al anochecer con las luces encendidas, vistas del otro lado de un agua en calma.",
     "essay": {
-      "heading": "",
+      "heading": "Qué significan las palabras",
       "b1": {
-        "name": "",
-        "body": ""
+        "name": "«Libre de impuestos» son tres cosas distintas",
+        "body": "La expresión libre de impuestos aparece tres veces en la lista de productos de arriba, y en ninguna de las tres ocasiones se trata del mismo mecanismo.\n\nLa primera es el beneficio por fallecimiento. Cuando una póliza de vida a término paga, la suma global que recibe su familia no se cuenta como ingreso para ellos. Eso es lo que quiere decir la descripción de arriba con un beneficio por fallecimiento en una suma global libre de impuestos: el beneficio no se reduce al pasar por una declaración de impuestos, y por eso se puede dimensionar frente a las deudas y al ingreso que busca reemplazar, y no frente a una fracción de sí mismo.\n\nLa segunda es la acumulación. Una póliza de Vida Universal Indexada tiene un valor en efectivo además del beneficio por fallecimiento, y la lista de arriba describe ese valor como un crecimiento con impuestos diferidos. Diferido es una palabra más estrecha que libre. Significa que no se causa impuesto en los años en que el valor sube, porque todavía no ha salido nada del contrato.\n\nLa tercera es el acceso, y es donde se encuentran las dos ideas anteriores. La lista de arriba dice que se puede acceder al valor en efectivo libre de impuestos mediante préstamos sobre la póliza. Un préstamo no es un retiro. El dinero que se toma prestado contra el valor en efectivo no se trata como ingreso recibido, y esa es toda la razón por la que se usa la estructura de préstamo en lugar de simplemente sacar el dinero.\n\nDos consecuencias van junto a ese préstamo, no en una nota al pie. Un préstamo que sigue pendiente cuando la póliza paga se liquida con cargo al beneficio por fallecimiento, así que lo que llega a su familia se reduce por lo que se pidió prestado y por los intereses acumulados. Y una póliza que termina con un préstamo pendiente en su contra puede dejar una cuenta por pagar en lugar de un beneficio.\n\nTres mecanismos, una sola expresión. Cuál se aplica depende del producto y de qué parte de él está tocando."
       },
       "b2": {
-        "name": "",
-        "body": ""
+        "name": "Qué hace un piso, y qué no hace",
+        "body": "El piso es el único mecanismo que hace que un producto indexado se comporte de manera distinta a una inversión, y leerlo con precisión es la única forma de entender lo que está comprando.\n\nEmpecemos por lo que el dinero no está haciendo. En una póliza de Vida Universal Indexada o en una Anualidad Indexada Fija, su dinero no está en el mercado. Está con la aseguradora, y la aseguradora le acredita intereses según el movimiento de un índice del mercado; el S&P 500 es el que se menciona arriba. Usted no posee el índice. Usted tiene un contrato cuya tasa de acreditación se calcula a partir de cómo se movió ese índice.\n\nEl piso rige el lado a la baja de ese cálculo. Si el índice cae, la tasa de acreditación no se vuelve negativa, y la pérdida del índice no se acredita en contra del valor que usted ya construyó. Ese es todo el mecanismo. En las palabras usadas arriba: su dinero crece cuando los mercados suben y se mantiene sin cambio cuando bajan.\n\nDos cosas se desprenden de ahí y vale la pena decirlas en voz alta. Un año sin cambio no es un año congelado, porque un contrato de seguro de vida tiene sus propios cargos internos y esos no se detienen cuando se detiene la acreditación. Y un piso nunca viene solo: el mismo contrato que limita hasta dónde puede alcanzarlo un índice a la baja también limita cuánto de un índice al alza se le acredita a usted."
       },
       "b3": {
-        "name": "",
-        "body": ""
+        "name": "Un período, o toda una vida",
+        "body": "Dos de los siete productos son la misma idea vendida en términos opuestos, y la tabla comparativa pone toda la diferencia en una sola columna. El seguro de vida a término dice de 10 a 30 años bajo Duración. La Vida Universal Indexada dice Toda la vida.\n\nUna póliza a término es un contrato por un período definido. Usted elige la duración —diez, veinte y treinta años son las habituales, según se menciona arriba— y durante ese tramo la aseguradora carga con el riesgo. Si el plazo termina y usted sigue aquí, el contrato termina con él y no se paga nada. Eso no es un defecto del producto. Es la razón por la que el producto tiene el precio que tiene, y es por lo que arriba se describe el término como la manera más económica de obtener una cobertura amplia.\n\nUna póliza permanente no se escribe contra un período. El beneficio por fallecimiento, como se describe arriba, dura toda su vida, y un contrato vendido en esos términos se cotiza con la expectativa de que eventualmente pagará. Lo que compra el precio más alto, además de la duración, es la siguiente columna: Valor en efectivo, que dice Sí para la Vida Universal Indexada y No para el término.\n\nLa elección, entonces, tiene menos que ver con qué producto es mejor que con qué pregunta está respondiendo. El término responde qué le pasa a un hogar si quien genera el ingreso no está durante los años en que todavía se está construyendo. El permanente responde qué debería estar en su lugar cuando eso ocurra, sea cuando sea, y mantiene un valor dentro del contrato mientras espera."
       },
       "b4": {
-        "name": "",
-        "body": ""
+        "name": "La columna del examen médico",
+        "body": "La tabla comparativa tiene una columna que casi nadie se atreve a preguntar directamente. Bajo Examen médico, tres de los siete productos dicen No y dos dicen A veces. Ninguno dice Siempre, y esa ausencia está haciendo un trabajo real.\n\nA veces es la respuesta honesta para el seguro de vida a término y para la Vida Universal Indexada, y es honesta precisamente porque se niega a comprometerse en un sentido o en otro. Si se pide o no un examen es una decisión que la aseguradora toma sobre una solicitud en particular, no una característica fija del producto.\n\nNo es la respuesta para gastos finales, y ahí se trata de una decisión de diseño y no de una concesión. La redacción de arriba es específica: no se requiere examen médico para la mayoría de los solicitantes de entre 50 y 85 años. Léalo junto al rango de edad que la misma tabla le da al producto —de 50 a 85— y la razón queda clara. Exigir un examen se atravesaría justo en la entrada del producto para exactamente las personas para quienes fue creado.\n\nLo que nada de esto significa es que la salud deje de importar. Significa que la pregunta se hace de otra forma. Un examen es una manera de hacerla; un conjunto de preguntas en una solicitud es otra, y las respuestas que se den ahí pesan igual a la hora de decidir si la póliza se ofrece y en qué términos. La columna le dice qué método usa el producto, no si se está considerando su salud."
       },
       "b5": {
-        "name": "",
-        "body": ""
+        "name": "Cuándo un saldo se convierte en un pago",
+        "body": "La fila de la anualidad es la única de la tabla cuya Duración no describe por cuánto tiempo está cubierto. Dice Ingreso vitalicio, y esa redacción es precisa. Los otros seis productos nombran un período durante el cual se pagaría algo ante un suceso. Este nombra un período durante el cual se paga algo de forma programada.\n\nEl producto tiene dos mitades. En la primera entra dinero y se acreditan intereses; en una Anualidad Indexada Fija, acreditados a partir del movimiento de un índice del mercado, con el mismo mecanismo de piso descrito arriba, y con impuestos diferidos mientras el dinero permanezca dentro del contrato. En la segunda, ese saldo acumulado se convierte en un flujo de pagos.\n\nEsa conversión es el punto entero del producto, y es lo que se quiere decir arriba con opciones de ingreso vitalicio. Opciones, en plural, es la palabra clave: la conversión se puede hacer de más de una manera, y las maneras difieren en cuán grande es cada pago y cuánto tiempo continúan los pagos. Esas dos cantidades se mueven una contra la otra.\n\nHay algo para lo que la tabla no tiene columna y vale la pena agregarlo aquí. La descripción de arriba señala que una Anualidad Indexada Fija también incluye un beneficio por fallecimiento que pasa a sus beneficiarios, lo que significa que un saldo que nunca se convirtió en pagos no queda varado por el hecho de que la conversión nunca ocurrió.\n\nLa tabla le da al producto un rango de edad de 45 a 70, que describe bien su forma. Se compra durante los años en que el ingreso todavía llega, para que importe en los años en que ya no llega."
       }
     },
-    "quote": "",
+    "quote": "Cada póliza se explica con claridad. Cada recomendación es honesta. Nada se apresura.",
     "compare": {
-      "heading": "",
-      "intro": "",
-      "caption": "",
+      "heading": "¿Qué producto es el adecuado para usted?",
+      "intro": "Use esta guía para entender qué solución se ajusta a su situación, y después hable con uno de nuestros agentes para recibir una recomendación personalizada.",
+      "caption": "Comparación de los siete productos de seguros de Synergy según a quién le convienen, tipo de cobertura, requisito de examen médico, valor en efectivo, duración y rango de edad.",
       "cols": {
-        "c0": "",
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c0": "Producto",
+        "c1": "Ideal para",
+        "c2": "Tipo de cobertura",
+        "c3": "Examen médico",
+        "c4": "Valor en efectivo",
+        "c5": "Duración",
+        "c6": "Rango de edad"
       },
       "r1": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Familias y dueños de casa que necesitan protección accesible",
+        "c2": "Beneficio por fallecimiento",
+        "c3": "A veces",
+        "c4": "No",
+        "c5": "10–30 años",
+        "c6": "20–55"
       },
       "r2": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Personas mayores que cubren gastos de fin de vida",
+        "c2": "Beneficio por fallecimiento",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Toda la vida",
+        "c6": "50–85"
       },
       "r3": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Dueños de casa que protegen su hipoteca",
+        "c2": "Beneficio por fallecimiento",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Ligada a la hipoteca",
+        "c6": "30–60"
       },
       "r4": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Profesionales que construyen patrimonio a largo plazo",
+        "c2": "Beneficio por fallecimiento + valor en efectivo",
+        "c3": "A veces",
+        "c4": "Sí",
+        "c5": "Toda la vida",
+        "c6": "25–55"
       },
       "r5": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Personas próximas a jubilarse que aseguran su ingreso de retiro",
+        "c2": "Ingreso de retiro",
+        "c3": "No",
+        "c4": "Sí",
+        "c5": "Ingreso vitalicio",
+        "c6": "45–70"
       },
       "r6": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Adultos de 65 años o más que evalúan opciones de Medicare",
+        "c2": "Cobertura de salud",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Renovable cada año",
+        "c6": "65+"
       },
       "r7": {
-        "c1": "",
-        "c2": "",
-        "c3": "",
-        "c4": "",
-        "c5": "",
-        "c6": ""
+        "c1": "Personas y familias que necesitan cobertura médica",
+        "c2": "Cobertura de salud",
+        "c3": "No",
+        "c4": "No",
+        "c5": "Renovable cada año",
+        "c6": "Todas las edades"
       }
     },
     "cta": {
-      "heading": "",
-      "body": ""
+      "heading": "¿No está seguro de qué cobertura le conviene?",
+      "body": "Nuestros agentes licenciados están listos para repasar cada opción con usted: sin presión, sin tecnicismos y sin compromiso. Solo orientación honesta hecha en torno a su familia."
     }
   },
   "join": {
     "meta": {
-      "title": "",
-      "description": ""
+      "title": "Carreras en Synergy Insurance Group — Orlando, Florida",
+      "description": "Synergy Insurance Group está contratando en Orlando. Apoyo para obtener la licencia, capacitación y un equipo presencial. No se necesita experiencia en seguros."
     },
     "hero": {
-      "eyebrow": "",
-      "headline": "",
-      "sub": "",
+      "eyebrow": "CARRERAS EN SYNERGY INSURANCE GROUP",
+      "headline": "Construya una carrera protegiendo familias.",
+      "sub": "Synergy Insurance Group está contratando en Orlando. No se necesita experiencia: lo acompañamos en la licencia, la capacitación y sus primeros meses en el campo.",
       "imageAlt": "",
-      "ctaApply": "",
-      "ctaPortal": "",
-      "portalNote": ""
+      "ctaApply": "Únase como agente",
+      "ctaPortal": "Portal de agentes",
+      "portalNote": "El portal de agentes todavía no está abierto."
     },
     "offer": {
-      "heading": "",
-      "body": "",
+      "heading": "Qué implica realmente unirse.",
+      "body": "Cuatro cosas que Synergy aporta. Todo lo demás es el trabajo en sí.",
       "i": {
-        "numeral": "",
-        "label": "",
-        "body": ""
+        "numeral": "I",
+        "label": "Prospectos que no tiene que comprar",
+        "body": "Synergy genera sus propios prospectos, así que usted no compra listas ni trabaja un directorio telefónico en frío. Las personas con las que habla ya levantaron la mano y pidieron que alguien las llamara, y eso cambia los primeros diez segundos de cada conversación que tenga."
       },
       "ii": {
-        "numeral": "",
-        "label": "",
-        "body": ""
+        "numeral": "II",
+        "label": "Licencia, con acompañamiento",
+        "body": "No necesita experiencia previa en seguros para empezar. La licencia de Florida es un examen estatal con un temario publicado, y alguien en Synergy le explica qué cubre, qué pide el estado y el papeleo con las aseguradoras que viene después. No lo dejan descifrarlo solo."
       },
       "iii": {
-        "numeral": "",
-        "label": "",
-        "body": ""
+        "numeral": "III",
+        "label": "Capacitación que no se detiene",
+        "body": "Aquí la capacitación no es una orientación de la primera semana que nunca vuelve a aparecer. Las sesiones tienen un calendario fijo, se trabajan casos reales en lugar de teoría, y quienes las dirigen son las mismas personas con las que trabaja el resto de la semana."
       },
       "iv": {
-        "numeral": "",
-        "label": "",
-        "body": ""
+        "numeral": "IV",
+        "label": "Un equipo en Orlando, en persona",
+        "body": "La oficina está en Major Boulevard y el equipo de verdad trabaja desde ahí. Si quiere gente de quien aprender en la misma sala —alguien que lo acompañe en una llamada, o a quien preguntarle por qué se rechazó un caso—, eso es esto, y no un contrato con un usuario y contraseña."
       }
     },
     "steps": {
-      "heading": "",
+      "heading": "Cómo funciona.",
       "one": {
-        "heading": "",
-        "body": ""
+        "heading": "Comuníquese",
+        "body": "Llame a la oficina o envíe el formulario de contacto. Es una conversación corta, no una solicitud: dónde está usted hoy, si ya tiene licencia y cómo espera que sea el trabajo. Nadie lo va a empujar a una decisión en una primera llamada, y hablará con alguien que de verdad trabaja aquí, no con un reclutador leyendo un guion. Si claramente no encaja, se lo diremos en ese momento, porque hacerle perder seis semanas no nos sirve a ninguno de los dos."
       },
       "two": {
-        "heading": "",
-        "body": ""
+        "heading": "Conozca al equipo",
+        "body": "Antes de firmar nada, usted viene y conoce a las personas con las que trabajaría. Ve la oficina, observa cómo se trabaja un caso de verdad y hace las preguntas que son difíciles de hacer por teléfono. Esto es deliberadamente una conversación de ida y vuelta: Synergy está decidiendo si invierte tiempo de capacitación en usted, y usted está decidiendo si estas son las personas de quienes quiere aprender el oficio. Las dos respuestas importan y las dos pueden ser que no."
       },
       "three": {
-        "heading": "",
-        "body": ""
+        "heading": "Obtenga su licencia",
+        "body": "Florida exige una licencia de seguros de vida antes de poder vender, así que ese es el primer hito real. Se le indica el curso previo a la licencia, el examen estatal y las huellas digitales que pide el estado, y una vez que aprueba, los nombramientos con las aseguradoras y el papeleo que hay detrás se gestionan con usted, no se le entregan y ya. Es la parte que casi todos esperan que sea el obstáculo, y en realidad es sobre todo cuestión de hacer los pasos en el orden correcto."
       },
       "four": {
-        "heading": "",
-        "body": ""
-      }
+        "heading": "Reciba sus nombramientos y empiece a vender",
+        "body": "Empieza a sentarse con clientes reales, con alguien con experiencia a su lado en las primeras citas. No le van a entregar una lista de teléfonos y desearle suerte. Las primeras citas se repasan después —qué se preguntó, qué se pasó por alto, qué respondió la aseguradora— y ese repaso es lo que convierte una licencia en competencia. El acompañamiento no se acaba cuando usted ya está produciendo; cambia de forma."
+      },
+      "tagline": "Su ritmo, sus metas."
     },
     "cta": {
-      "heading": "",
-      "body": "",
-      "button": ""
+      "heading": "Venga a platicar con nosotros.",
+      "body": "En esta página no hay formulario de solicitud. El primer paso es una conversación, y tanto el teléfono como el formulario de contacto llegan a la misma oficina de Orlando.",
+      "button": "Hablemos sobre unirme"
     },
     "opening": {
-      "phrase": "",
-      "imageAlt": "",
-      "lead": "",
-      "q1": "",
-      "a1": "",
-      "q2": "",
-      "a2": "",
-      "q3": "",
-      "a3": ""
+      "phrase": "Usted no está comprando un empleo.",
+      "imageAlt": "Cinco agentes de Synergy posando juntos frente a una pared clara de estudio.",
+      "lead": "A la mayoría de quienes preguntan por este trabajo ya les vendieron algo alguna vez. Así que aquí va la versión sin adornos, antes de que nadie le pida un número de teléfono.",
+      "q1": "En qué consiste el trabajo",
+      "a1": "Usted se sienta con familias y explica productos que de verdad son difíciles de leer: término, gastos finales, vida universal indexada, anualidades. Casi todo el trabajo es escuchar con atención, hacer mejores preguntas que la persona anterior y estar dispuesto a decir que un producto no le conviene a alguien. El papeleo se aprende en semanas. El criterio toma más tiempo, y es la parte que hace la diferencia para quien está sentado del otro lado de la mesa.",
+      "q2": "Qué aporta Synergy",
+      "a2": "Prospectos generados en casa y no comprados a un intermediario de listas, así que las personas a las que llama pidieron que alguien las contactara. Apoyo con la licencia, porque la mayoría de quienes llegan aquí nunca ha presentado un examen estatal. Capacitación con calendario fijo, dirigida por las personas con las que trabaja y no por un curso que alguien le vende. Y una oficina en Orlando donde esas personas realmente están.",
+      "q3": "Qué le pide a usted",
+      "a3": "Presentarse, sobre todo. La licencia es un examen estatal con temario publicado y no se aprueba solo. Las primeras citas son incómodas, y la única manera de superarlo es hacer suficientes de ellas con alguien con experiencia presente. Si busca algo que pague sin tener que aprenderse, esta es la sala equivocada, y preferimos decirlo ahora y no seis semanas después."
     },
     "apply": {
-      "eyebrow": "",
-      "heading": "",
-      "body": "",
-      "phoneLead": "",
-      "legend": "",
-      "firstName": "",
-      "lastName": "",
-      "phone": "",
-      "phonePlaceholder": "",
-      "email": "",
-      "emailPlaceholder": "",
-      "state": "",
-      "statePlaceholder": "",
-      "licensed": "",
-      "licensedYes": "",
-      "licensedNo": "",
-      "hear": "",
-      "hearPlaceholder": "",
+      "eyebrow": "SOLICITAR",
+      "heading": "Empecemos la conversación.",
+      "body": "Llene esto y alguien de la oficina de Orlando se comunicará con usted para platicar sobre lo que implica el trabajo. Ya con licencia o sin licencia alguna: las dos cosas son normales, y la segunda es más común de lo que la gente cree.",
+      "phoneLead": "¿Prefiere hablar primero?",
+      "legend": "Solicitud de agente",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "phone": "Teléfono",
+      "phonePlaceholder": "(407) 000-0000",
+      "email": "Correo electrónico",
+      "emailPlaceholder": "usted@correo.com",
+      "state": "Estado donde vive",
+      "statePlaceholder": "Seleccione un estado...",
+      "licensed": "¿Tiene licencia actualmente?",
+      "licensedYes": "Sí",
+      "licensedNo": "Todavía no",
+      "hear": "¿Cómo se enteró de Synergy?",
+      "hearPlaceholder": "Seleccione...",
       "hearOptions": {
-        "search": "",
-        "social": "",
-        "referral": "",
-        "event": "",
-        "other": ""
+        "search": "Buscador de internet",
+        "social": "Redes sociales",
+        "referral": "Alguien que trabaja aquí",
+        "event": "Un evento",
+        "other": "Otra cosa"
       },
-      "consentPlaceholder": "",
-      "submit": "",
-      "disabledTitle": "",
-      "disabledBody": ""
+      "consentPlaceholder": "[ Texto de consentimiento pendiente — esta casilla ya está construida y el texto exacto de consentimiento para SMS/llamadas, junto con el nombre de la entidad legal al que debe hacer referencia, todavía no ha llegado del cliente. ]",
+      "submit": "Enviar solicitud",
+      "disabledTitle": "Este formulario todavía no está conectado.",
+      "disabledBody": "Todavía no hay a dónde enviarlo, así que está desactivado en lugar de fingir que funciona. Llame a la oficina al 407-434-0400 y hoy mismo hablará con una persona.",
+      "submitting": "Enviando…",
+      "successTitle": "Solicitud recibida.",
+      "successBody": "Ha llegado a la oficina de Orlando y alguien se pondrá en contacto con usted. Si prefiere hablar antes, el número de arriba llega a la misma oficina.",
+      "errorInvalid": "Hay datos que revisar. Los campos marcados abajo son los que debe corregir.",
+      "errorThrottled": "Son varios intentos en poco tiempo. Espere unos minutos e inténtelo de nuevo.",
+      "errorUnavailable": "Este formulario no puede enviarse en este momento. Llame a la oficina al número de arriba y tomaremos sus datos por teléfono.",
+      "errorFailed": "Algo falló al enviar y no se guardó. Inténtelo de nuevo o llame a la oficina al número de arriba."
     },
     "range": {
-      "eyebrow": "",
-      "heading": "",
-      "body": "",
-      "link": ""
+      "eyebrow": "LOS PRODUCTOS",
+      "heading": "Lo que estaría vendiendo.",
+      "body": "Synergy no es una casa de un solo producto, y eso importa más de lo que suena. Cuando la única póliza que uno tiene es la equivocada para la persona que está enfrente, la conversación se queda sin salida honesta. Estas son las líneas que Synergy escribe. Descifrar cuál necesita de verdad una familia —y decirlo cuando la respuesta es ninguna— es la mayor parte del oficio.",
+      "link": "Lea qué hace cada producto"
     }
   },
   "blog": {
-    "metaTitle": "",
-    "metaDescription": "",
-    "heading": "",
-    "intro": "",
-    "listLabel": "",
-    "readTime": "",
-    "allArticles": ""
+    "metaTitle": "Blog de seguros y planificación de retiro — Synergy Insurance Group",
+    "metaDescription": "Guías sobre seguro de vida a término, gastos finales, protección hipotecaria, seguro de vida universal indexado, anualidades, Medicare y planificación de retiro, de Synergy Insurance Group.",
+    "heading": "Seguros y planificación de retiro",
+    "intro": "Guías escritas por agentes licenciados, en lenguaje claro, sobre los productos que las familias más nos preguntan.",
+    "listLabel": "Artículos",
+    "readTime": "{minutes} min de lectura",
+    "allArticles": "Todos los artículos"
   },
   "contact": {
-    "metaTitle": "",
-    "metaDescription": "",
-    "heading": "",
-    "heroImageAlt": "",
-    "intro": "",
-    "agentHeading": "",
-    "agentBody": "",
-    "detailsHeading": "",
-    "phoneLabel": "",
-    "emailLabel": "",
-    "addressLabel": "",
-    "hoursLabel": "",
+    "metaTitle": "Contacte a Synergy Insurance Group — Orlando, FL — 407-434-0400",
+    "metaDescription": "Hable con un agente licenciado de Synergy Insurance Group. Orlando, Florida, con licencia en los 50 estados. Llame al 407-434-0400.",
+    "heading": "Permítanos proteger a su familia",
+    "heroImageAlt": "Un hombre con una carpeta abierta y una computadora portátil conversa con una pareja mayor en un sofá, en una sala iluminada por el sol.",
+    "intro": "Cuéntenos su situación y uno de nuestros agentes licenciados se comunicará con usted con orientación honesta y hecha a la medida de su familia.",
+    "agentHeading": "Hable con un agente licenciado",
+    "agentBody": "Nuestros agentes tienen licencia en los 50 estados y trabajan con las principales aseguradoras del país. Nos tomamos el tiempo de entender su situación antes de recomendar nada.",
+    "detailsHeading": "Datos de contacto",
+    "phoneLabel": "Teléfono",
+    "emailLabel": "Correo electrónico",
+    "addressLabel": "Oficina",
+    "hoursLabel": "Horario",
     "form": {
-      "heading": "",
-      "optionalNote": "",
-      "nameLabel": "",
-      "emailLabel": "",
-      "phoneLabel": "",
-      "productLabel": "",
-      "messageLabel": "",
-      "optionalSuffix": "",
-      "namePlaceholder": "",
-      "emailPlaceholder": "",
-      "phonePlaceholder": "",
-      "messagePlaceholder": "",
-      "productPlaceholder": "",
-      "p1": "",
-      "p2": "",
-      "p3": "",
-      "p4": "",
-      "p5": "",
-      "p6": "",
-      "p7": "",
-      "p8": "",
-      "smsConsent": "",
-      "emailConsent": "",
-      "legalNote": "",
-      "submit": "",
-      "disabledTitle": "",
-      "disabledBody": ""
+      "heading": "Solicitar una cotización",
+      "optionalNote": "Solo se requiere su correo electrónico. Todos los demás campos son opcionales.",
+      "nameLabel": "Su nombre",
+      "emailLabel": "Correo electrónico",
+      "phoneLabel": "Número de teléfono",
+      "productLabel": "¿En qué podemos ayudarle?",
+      "messageLabel": "Su mensaje",
+      "optionalSuffix": "(opcional)",
+      "namePlaceholder": "Escriba su nombre",
+      "emailPlaceholder": "Escriba su correo electrónico",
+      "phonePlaceholder": "Escriba su número de teléfono",
+      "messagePlaceholder": "Qué le gustaría que supiéramos",
+      "productPlaceholder": "Seleccione un producto…",
+      "p1": "Seguro de Vida a Término",
+      "p2": "Seguro de Gastos Finales",
+      "p3": "Seguro de Protección Hipotecaria",
+      "p4": "Vida Universal Indexada (IUL)",
+      "p5": "Anualidades Indexadas Fijas (FIA)",
+      "p6": "Seguro de Medicare",
+      "p7": "Seguro de Salud",
+      "p8": "No estoy seguro — ayúdenme a decidir",
+      "smsConsent": "Acepto recibir mensajes de texto SMS de Synergy Insurance Group al número proporcionado. La frecuencia de los mensajes varía. Pueden aplicar tarifas de mensajes y datos. Responda STOP para darse de baja o HELP para obtener ayuda.",
+      "emailConsent": "Acepto recibir correos electrónicos informativos y de marketing de Synergy Insurance Group.",
+      "legalNote": "Al enviar este formulario, usted reconoce nuestra Política de Privacidad y nuestros Términos de Servicio.",
+      "submit": "Solicitar mi cotización gratis",
+      "disabledTitle": "Este formulario todavía no está conectado.",
+      "disabledBody": "Sus datos no se enviarán a ningún lado y nadie será contactado. Mientras tanto, llame al 407-434-0400 para hablar con un asesor licenciado."
     }
   },
   "footer": {
-    "srTitle": "",
-    "missionTitle": "",
-    "mission": "",
-    "pullQuote": "",
-    "contactTitle": "",
-    "phone": "",
-    "phoneHref": "",
-    "email": "",
-    "emailHref": "",
-    "address": "",
-    "hours": "",
-    "navTitle": "",
+    "srTitle": "Pie de página",
+    "missionTitle": "Nuestra Misión",
+    "mission": "Synergy Insurance Group protege familias y construye carreras. Con licencia en los 50 estados. Trabajamos con las principales aseguradoras del país.",
+    "pullQuote": "Proteja lo que más importa",
+    "contactTitle": "Contacto",
+    "phone": "407-434-0400",
+    "phoneHref": "tel:+14074340400",
+    "email": "info@fflsynergy.com",
+    "emailHref": "mailto:info@fflsynergy.com",
+    "address": "5728 Major Blvd Suite 702, Orlando FL 32819",
+    "hours": "Lun–Sáb 8am a 7pm",
+    "navTitle": "Navegación",
     "nav": {
-      "home": "",
-      "about": "",
-      "calculator": "",
-      "services": "",
-      "blog": "",
-      "gallery": "",
-      "join": "",
-      "contact": ""
+      "home": "Inicio",
+      "about": "Nosotros",
+      "calculator": "Calculadora",
+      "services": "Servicios",
+      "blog": "Blog",
+      "gallery": "Galería",
+      "join": "Únete",
+      "contact": "Contacto"
     },
-    "legalTitle": "",
+    "legalTitle": "Legal",
     "legal": {
-      "privacy": "",
-      "terms": ""
+      "privacy": "Política de Privacidad",
+      "terms": "Términos de Servicio"
     },
-    "copyright": ""
+    "copyright": "© {year} Synergy Insurance Group. Todos los derechos reservados."
   },
   "login": {
-    "metaTitle": "",
-    "metaDescription": "",
-    "brandLine": "",
-    "backToSite": "",
-    "heading": "",
-    "subhead": "",
-    "emailLabel": "",
-    "passwordLabel": "",
-    "showPassword": "",
-    "hidePassword": "",
-    "keepSignedIn": "",
-    "forgot": "",
-    "submit": "",
-    "notLiveTitle": "",
-    "notLiveBody": ""
+    "metaTitle": "Iniciar sesión — Synergy Insurance Group",
+    "metaDescription": "Acceso para personal y agentes de Synergy Insurance Group.",
+    "brandLine": "El portal de personal y agentes de Synergy Insurance Group.",
+    "backToSite": "Volver al sitio de Synergy",
+    "heading": "Iniciar sesión",
+    "subhead": "Use el correo electrónico que Synergy creó para usted.",
+    "emailLabel": "Correo electrónico",
+    "passwordLabel": "Contraseña",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña",
+    "keepSignedIn": "Mantener la sesión iniciada",
+    "forgot": "¿Olvidó su contraseña?",
+    "submit": "Iniciar sesión",
+    "errorInvalid": "Ese correo y esa contraseña no coinciden con ninguna cuenta. Revíselos e inténtelo de nuevo.",
+    "errorMissing": "Escriba su correo electrónico y su contraseña.",
+    "errorThrottled": "Demasiados intentos de inicio de sesión. Espere un minuto e inténtelo de nuevo.",
+    "deniedNotice": "Esa cuenta no tiene acceso al área de administración. Inicie sesión con una cuenta de administrador o llame al 407-434-0400.",
+    "notLiveTitle": "El inicio de sesión todavía no está conectado.",
+    "notLiveBody": "Esta pantalla es una vista previa de diseño. No se envía nada, no se verifica ninguna cuenta y no se crea ninguna sesión. Llame al 407-434-0400 si necesita acceso mientras tanto.",
+    "metaLabel": "Portal de personal y agentes"
   },
   "admin": {
     "metaTitle": "",
@@ -796,6 +817,8 @@
     "sidebarOpen": "",
     "sidebarClose": "",
     "signOut": "",
+    "roleAdmin": "",
+    "roleAgent": "",
     "userName": "",
     "userRole": "",
     "nav": {
@@ -809,7 +832,15 @@
       "leadsNew": "",
       "apps": "",
       "articles": "",
-      "caption": ""
+      "caption": "",
+      "leadsTotal": "",
+      "leadsWeek": "",
+      "leadsContactable": "",
+      "agentsTotal": "",
+      "agentsActive": "",
+      "agentsLicensed": "",
+      "agentsPipeline": "",
+      "leadsNewLegacy": ""
     },
     "table": {
       "searchLabel": "",
@@ -855,7 +886,8 @@
         "assign": "",
         "status": "",
         "export": ""
-      }
+      },
+      "selectorLabel": ""
     },
     "agents": {
       "heading": "",
@@ -918,11 +950,29 @@
         "preview": "",
         "edit": ""
       }
-    }
+    },
+    "card": {
+      "records": "",
+      "serverTime": ""
+    },
+    "rail": {
+      "positionLegend": "",
+      "unknown": ""
+    },
+    "greetMorning": "Buenos días, {name}",
+    "greetAfternoon": "Buenas tardes, {name}",
+    "greetEvening": "Buenas noches, {name}",
+    "navLabel": "Secciones del panel"
+  },
+  "engine": {
+    "diagramLabel": "Diagrama: Synergy conectada con cada una de sus aseguradoras aliadas.",
+    "cardsLabel": "Lo que eso significa para su familia",
+    "cardKicker": "Nuestro compromiso"
   },
   "cta": {
-    "quote": "",
-    "call": "",
-    "callAria": ""
+    "quote": "Obtener una cotización gratis",
+    "call": "Llame al 407-434-0400",
+    "callAria": "Llamar a Synergy Insurance Group al 407-434-0400",
+    "join": "Únete a nuestro equipo"
   }
 }

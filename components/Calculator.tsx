@@ -142,30 +142,35 @@ function Slider({
 }: SliderProps) {
   const pct = ((value - min) / (max - min)) * 100;
   return (
-    <div className="flex flex-col gap-2.5">
-      <label htmlFor={id} className="text-[15px] leading-[1.5] text-ink">
-        {label}
-      </label>
-      <div className="flex items-center gap-4">
-        <input
-          id={id}
-          type="range"
-          className="calc-slider min-w-0 flex-1"
-          min={min}
-          max={max}
-          step={step}
-          value={value}
-          aria-valuetext={valueText}
-          onChange={(e) => onChange(Number(e.target.value))}
-          style={{ "--fill": `${pct}%` } as React.CSSProperties}
-        />
+    <div className="flex flex-col gap-3">
+      {/* Label and the live value sit on ONE baseline row now — the value is
+          promoted from a small pill beside the track to a legible readout
+          aligned with its label, which is how the strongest calculators present
+          a bound value. Same `displayValue`, same `output` element wired to the
+          input; only the placement and type changed. */}
+      <div className="flex items-baseline justify-between gap-4">
+        <label htmlFor={id} className="text-[14px] font-medium leading-[1.4] text-ink/80">
+          {label}
+        </label>
         <output
           htmlFor={id}
-          className="min-w-[76px] shrink-0 rounded bg-navy px-2.5 py-1 text-center font-data text-[15px] font-semibold tabular-nums text-cream"
+          className="shrink-0 font-data text-[17px] font-bold tabular-nums text-navy"
         >
           {displayValue}
         </output>
       </div>
+      <input
+        id={id}
+        type="range"
+        className="calc-slider w-full"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        aria-valuetext={valueText}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{ "--fill": `${pct}%` } as React.CSSProperties}
+      />
     </div>
   );
 }
@@ -214,7 +219,7 @@ export default function Calculator({
   ] as const;
 
   return (
-    <section aria-labelledby="calc-heading" className="bg-cream py-14 lg:py-20">
+    <section aria-labelledby="calc-heading" className="py-14 lg:py-20">
       <div className="mx-auto max-w-[1620px] px-5 md:px-8">
         {/* HEADER — centred, like theirs */}
         <FadeUp className="mx-auto max-w-[62ch] pb-8 text-center">
@@ -232,14 +237,16 @@ export default function Calculator({
           </p>
         </FadeUp>
 
-        {/* THE CARD — cream-on-cream would vanish, so ours is greige */}
+        {/* THE CARD — cream-on-cream would vanish, so ours is greige. A hairline
+            and a whisper of shadow give it depth against the page without
+            reading as a heavy panel — polish, not a new surface. */}
         <FadeUp index={1}>
-          <div className="rounded-[16px] bg-greige p-5 sm:p-8 lg:p-12">
+          <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-5 shadow-[0_1px_2px_rgba(13,27,42,0.04),0_12px_32px_-20px_rgba(13,27,42,0.18)] sm:p-8 lg:p-12">
             {/* Two equal columns, exactly as theirs */}
             <div className="grid gap-5 lg:grid-cols-2">
               {/* INPUTS — order-2 on mobile so the result reads first */}
-              <div className="order-2 rounded-[20px] bg-white p-6 sm:p-8 lg:order-1">
-                <div className="flex h-full flex-col justify-center gap-6">
+              <div className="order-2 rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8 lg:order-1">
+                <div className="flex h-full flex-col justify-center gap-8">
                   <Slider
                     id={`${uid}-monthly`}
                     label={t("monthlyLabel")}
@@ -278,24 +285,46 @@ export default function Calculator({
                 </div>
               </div>
 
-              {/* RESULT — white wrapper around a navy inner, as theirs */}
-              <div className="order-1 rounded-[20px] bg-white p-6 sm:p-8 lg:order-2">
-                <div className="flex h-full flex-col justify-center rounded-[12px] bg-navy px-6 py-8 text-center">
-                  <p className="font-data leading-[1.0] tabular-nums text-gold">
-                    <Figure
-                      value={usd.format(d.iul)}
-                      className="text-[clamp(44px,7vw,112px)] font-bold"
-                    />
-                    {/* Unit inline at roughly half the number (theirs is
-                        59.73/117.33 = 0.51; ours 0.49). whitespace-nowrap so
-                        "by age 65" wraps as one block instead of orphaning
-                        "by" on the end of the figure's line. */}
-                    <span className="ml-2 whitespace-nowrap align-baseline text-[clamp(22px,3.4vw,56px)] font-medium">
-                      {t("resultUnit", { age: retire })}
-                    </span>
-                  </p>
-                  <p className="mt-3 text-[clamp(14px,1.3vw,19px)] text-cream/85">
+              {/* RESULT — white wrapper around a navy inner.
+                  ---------------------------------------------------------------
+                  🔴 THE OVERFLOW IS FIXED BY UN-INLINING THE UNIT, AND IT HAD TO
+                  BE. The figure and "by age 65" were ONE `<p>`: a huge number at
+                  `clamp(...,7vw,112px)` with the unit inline at up to 56px and
+                  `whitespace-nowrap`. Two things made that spill on the right:
+                    1. the inline unit added ~280px to the widest line, so
+                       "$495,212 by age 65" ran past the navy box's padding;
+                    2. the FIGURE ITSELF can be far wider than $495,212 — the
+                       sliders reach $2,000/mo over 57 years, whose IUL value is
+                       "$35,000,000", ELEVEN glyphs. At 112px that alone overran
+                       the column before any unit.
+                  Neither is a width bug that a media query fixes; the content is
+                  simply too big for the box at the top of the clamp.
+
+                  THE FIX, both halves:
+                    • the unit moves to ITS OWN LINE under the number — no inline
+                      run to overflow, and it reads as a clean caption rather
+                      than a giant tail. This is a deliberate divergence from
+                      BeeToGreen's inline unit, made because their figure is a
+                      two-digit CO2 number that never gets wide and ours is a
+                      currency total that does.
+                    • the number's ceiling drops 112 → 76px. At 76px the 11-glyph
+                      worst case is ~520px against the navy inner's ~600px usable
+                      width at the 1620 cap — inside, with margin, at every width
+                      down to 390. `break-words` + `min-w-0` are the belt to that
+                      braces so a pathological value wraps rather than spills.
+                  No mechanic changes: same `d.iul`, same `resultUnit`/`age`,
+                  same `resultCaption`, same Figure settle. */}
+              <div className="order-1 rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8 lg:order-2">
+                <div className="flex h-full min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] bg-navy px-6 py-9 text-center">
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-pale">
                     {t("resultCaption")}
+                  </p>
+                  <Figure
+                    value={usd.format(d.iul)}
+                    className="block max-w-full break-words font-data text-[clamp(38px,6vw,76px)] font-bold leading-[1.02] tracking-[-0.01em] tabular-nums text-gold"
+                  />
+                  <p className="text-[clamp(14px,1.4vw,18px)] font-medium text-cream/85">
+                    {t("resultUnit", { age: retire })}
                   </p>
                 </div>
               </div>
