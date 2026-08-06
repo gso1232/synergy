@@ -53,6 +53,17 @@ export const LOGO_FILE: Record<string, string> = {
   c21: "united-home-life.svg",
 };
 
+/** All 21 keys, in render order — written out, not derived from the map, so the
+ *  reading order is an explicit decision and cannot drift if LOGO_FILE is ever
+ *  re-sorted. Order matches the map: the widest-recognition marks lead.
+ *  Used by /about §2b (the full logo wall); CarrierStrip walks APPOINTMENTS,
+ *  which carries the same 21 keys plus the per-carrier render flags. */
+export const CARRIER_KEYS = [
+  "c1", "c2", "c3", "c4", "c5", "c6", "c7",
+  "c8", "c9", "c10", "c11", "c12", "c13", "c14",
+  "c15", "c16", "c17", "c18", "c19", "c20", "c21",
+] as const;
+
 /** Full public path for a carrier key. */
 export function carrierLogoSrc(key: string): string {
   return `${LOGO_DIR}/${LOGO_FILE[key]}`;

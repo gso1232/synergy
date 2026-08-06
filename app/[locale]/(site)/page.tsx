@@ -4,25 +4,26 @@ import { unstable_setRequestLocale } from "next-intl/server";
 // in this file or in the hero. components/Nav.tsx is the superseded three-zone
 // version and is no longer rendered anywhere.
 import Hero from "@/components/Hero";
-import TheEngine from "@/components/TheEngine";
+import CarrierStrip from "@/components/CarrierStrip";
+// import TheEngine from "@/components/TheEngine";
+//   🔴 REMOVED FROM THE PAGE 2026-08-07, ON INSTRUCTION — see the call site
+//   below for the full derivation and the copy inventory. The component file is
+//   UNTOUCHED on disk, all 612 lines; restoring it is uncommenting this line
+//   and the one in the tree below.
 import WhatWeCover from "@/components/WhatWeCover";
 import WhoWeServe from "@/components/WhoWeServe";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
 import Consultation from "@/components/Consultation";
-// 🔴 FOLDED INTO <TheEngine /> — 2026-08-01. Both are COMMENTED OUT, NOT
-// DELETED; the component files are untouched and restoring either is
-// uncommenting one import and one line here.
+// 🟢 CARRIERSTRIP IS BACK — 2026-08-07, and it is now rendered TWICE.
+//   It was commented out on 2026-08-01 because TheEngine rendered the same 21
+//   carriers and shipping both said "21 carriers" twice in one screen. That
+//   reason died with TheEngine: the strip is now the ONLY carrier surface on
+//   the homepage, so the duplication it was retired for cannot happen.
+//   It also resumes the job it always had — being the ONLY cream breather
+//   between the navy/photo Hero and WhatWeCover's full-bleed parallax photo.
 //
-// import CarrierStrip from "@/components/CarrierStrip";
-//   The slim 21-logo marquee. TheEngine now renders the SAME 21 carriers (both
-//   read APPOINTMENTS from components/Carriers.tsx, which STAYS — TheEngine
-//   imports it) plus the argument the strip could not make, so shipping both
-//   adjacent said "21 carriers" twice in one screen. TheEngine takes the
-//   strip's exact slot, which also preserves the rhythm the strip was holding:
-//   it was the ONLY cream breather between the navy/photo Hero and
-//   WhatWeCover's full-bleed parallax photo. Deleting it without a cream
-//   replacement would have butted two photographic sections together.
+// 🔴 FOLDED INTO <TheEngine /> — 2026-08-01. STILL COMMENTED OUT, NOT DELETED.
 //
 // import WhySynergy from "@/components/WhySynergy";
 //   It rendered `whySynergy.points.p1-p4`. p1/p2/p3 are the SAME three
@@ -60,13 +61,53 @@ export default function HomePage({
     <>
       <main>
         <Hero />
+        {/* MARQUEE 1 — directly under the hero, on instruction. Carries the
+            kicker; marquee 2 does not, so the line is not said twice. */}
+        <CarrierStrip />
         <WhatWeCover />
         <WhoWeServe />
-        {/* 🔴 MOVED 2026-08-02 — was in the retired CarrierStrip's slot at
-            position 2, now sits directly under WhoWeServe on instruction.
-            Read the seam note above the imports: this move has a measured cost
-            at the OLD slot, which is now Hero → WhatWeCover. */}
-        <TheEngine />
+        {/* =================================================================
+            🔴 THE ENGINE IS REMOVED, 2026-08-07, ON HAMZA'S INSTRUCTION.
+            COMMENTED, NOT DELETED — `components/TheEngine.tsx` is untouched on
+            disk (612 lines, every Checkmate derivation intact). Reverting is
+            uncommenting the import above and the line below.
+
+                <TheEngine />
+
+            WHAT WENT WITH IT. All of this is the client's own copy from
+            fflsynergy.com, and NONE of it renders anywhere else on the site:
+
+              carriers.eyebrow    "Our carriers"
+              carriers.headline   "The strength behind every policy."
+              carriers.subhead    the multi-carrier independence claim
+              whySynergy.rows.r1  "We Work For You, Not One Carrier"
+              whySynergy.rows.r2  "Clear, Honest, No Pressure"
+              whySynergy.rows.r3  "A Partner for Life"
+              engine.*            diagramLabel / cardsLabel / cardKicker
+
+            NO MESSAGE KEY IS DELETED. They sit unused exactly as
+            `whySynergy.rows.r4`-`r8` already do, so the revert needs no
+            translation work in either locale.
+
+            🟡 ONE CONSEQUENCE, LOGGED RATHER THAN QUIETLY ACCEPTED.
+            /services deleted its own three-across trust row on the recorded
+            reasoning that "the same three claims already ship on the homepage
+            (whySynergy.rows.r1/r2/r6)" — see services/page.tsx §4. That is no
+            longer true. The INDEPENDENCE claim in particular ("we are not tied
+            to one carrier") now appears on no page: /about's values cover
+            Education but not independence, and a logo marquee can show WHO the
+            carriers are without making the argument for WHY being independent
+            matters. Flagged for a copy decision; a one-line kicker on marquee 2
+            is the cheapest home for it if it is wanted back.
+
+            EngineNoise is now a zero-consumer component. File kept; ~8 KB of
+            JS and one <canvas> grain loop leave the homepage. The 20 `.engine-*`
+            rules and `.passport-guilloche` in globals.css are inert but LEFT IN
+            PLACE, so the revert stays a one-file change.
+        ================================================================= */}
+        {/* MARQUEE 2 — the Engine's exact slot. Same component, so same 21
+            marks, same 80 px/s, same direction. Kicker suppressed. */}
+        <CarrierStrip showKicker={false} />
         <HowItWorks />
         {/* <Calculator /> — no longer in the homepage scroll flow. It lives at
             /[locale]/calculator, which <Consultation />'s CTA links to. The

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
 import CtaPair from "@/components/CtaPair";
-import { carrierLogoSrc } from "@/lib/carrierLogos";
+import { carrierLogoSrc, CARRIER_KEYS } from "@/lib/carrierLogos";
 // NOTE: no RouteTheme. This page is CREAM now, and <body> is already
 // `bg-cream`, so the canvas propagates the right colour to the overscroll
 // region with no help. RouteTheme and its CSS rule are both retained for the
@@ -128,16 +128,20 @@ export async function generateMetadata({
 const VALUES = ["v1", "v2", "v3"] as const;
 
 /**
- * §2b — the five carriers that appear in the logo row.
+ * §2b — the carriers that appear in the logo row.
  *
- * The client confirmed appointments, so this section is back. FIVE, not the
- * twelve in `carriers.names`: the reference grid is exactly five columns of
- * 191.74px, and twelve names crammed into it would be a different component
- * wearing its layout. These are the five with the widest consumer recognition
- * in the list — the row's job is reassurance, and a name nobody recognises
- * does not reassure.
+ * 🔴 2026-08-07 — NOW ALL 21, NOT FIVE. The previous note argued for five
+ * ("the reference grid is exactly five columns of 191.74px") and that was a
+ * layout argument, not a content one: the row's job is to show who Synergy is
+ * appointed with, and showing 5 of 21 understates it. Ziad is contracted with
+ * every carrier in `carrierLogos.CARRIER_KEYS`, the same set the homepage
+ * marquee already renders, so the About wall now renders the same 21.
+ *
+ * The five-column reference grid does NOT survive that change, and the fix is
+ * the one the grid note below already spells out — see the layout comment on
+ * the <ul>. Order is CARRIER_KEYS', so About and the homepage read alike.
  */
-const LOGO_CARRIERS = ["c1", "c2", "c8", "c7", "c6"] as const;
+const LOGO_CARRIERS = CARRIER_KEYS;
 
 /**
  * §5 imagery.
@@ -435,6 +439,15 @@ export default async function AboutPage({
             {/* ===============================================================
                 §2b CARRIER ROW — their `.grid_logos-info`.
 
+                🔴 SUPERSEDED 2026-08-07 — EVERYTHING BELOW UNTIL THE NEXT RED
+                MARKER DESCRIBES THE FIVE-LOGO, FIVE-COLUMN ROW. The row is now
+                all 21 marks in a wrapping wall; the reference's five columns
+                and its 191.74px cell no longer apply, and neither does the
+                48px ship height the table at the end of this note lands on.
+                Kept because the reasoning it records — why the cell has no
+                fixed height, why 131px never comes back, why nothing is
+                upscaled — still governs. Live numbers are on the <ul> below.
+
                 MEASURED: five equal columns of 191.74px with a 49.2px gap,
                 the whole grid inset to 1156 of the container's 1444 (80.0%)
                 and centred, each cell centring a logo at up to 131px tall
@@ -495,24 +508,89 @@ export default async function AboutPage({
                 full section rhythm (130.8) sitting INSIDE a section, which is
                 what made "Our Story" and the carrier row read as two separate
                 blocks rather than one. */}
+            {/* 🔴 2026-08-07 — THE FIXED GRID IS GONE, AND IT HAD TO GO WHEN
+                the row went from 5 marks to 21. A grid gives every mark the
+                same CELL WIDTH; these marks do not have the same width. At the
+                48px common height the row ships, natural widths measured off
+                the real assets run from 48px (columbus-life, square) to 279px
+                (american-national, 234x40.3) — a 5.8x spread:
+
+                  american-national 279   liberty-bankers 278   m-of-omaha 270
+                  ethos 249   aetna 247   americo 241   transamerica 209
+                  ... 14 more ...   united-home-life 83   columbus-life 48
+
+                No column count works. Even the widest option — the full
+                1220px container at 5 columns, 49.2px gap — is 205px per cell,
+                so `max-w-full` would shrink the four widest marks to 35-42px
+                tall while columbus-life sat at a true 48. That is the exact
+                failure the note above records at 7 columns, and the one the
+                homepage solved by never wrapping into cells at all.
+
+                A WRAPPING FLEX ROW IS THE FIX: width is unconstrained, so
+                every mark renders at a TRUE common band and the row breaks
+                wherever it runs out of container. Rows come out ragged-right
+                and centred — which is what a logo wall looks like — rather
+                than even-columned and unevenly sized, which is what a grid of
+                these assets looks like. `max-w-full` is dropped with the cells
+                (nothing is 1220px wide; the widest is 279px), so no mark is
+                ever scaled down. The band itself is set on the <li>/<img> —
+                see the sizing note there.
+
+                The 4/5 inset goes with it. Five marks in 80% of the container
+                was the reference's proportion; 21 marks need the full
+                max-w-content or the wall grows a row for no reason. */}
             <FadeUp index={2}>
-              <ul className="mx-auto mt-[clamp(32px,4.3vw,65.6px)] grid w-4/5 grid-cols-2 items-center gap-x-[var(--sem-gap-logos)] gap-y-8 md:grid-cols-3 xl:grid-cols-5">
+              {/* THE BAND STEPS DOWN WITH THE VIEWPORT — 28 / 40 / 44px — and
+                  the desktop value is 44, not the 48 the five-logo row shipped
+                  at. Both changes are the same measurement, taken by packing
+                  the real rendered aspect ratios at each candidate size:
+
+                    ul width   1024  1060  1100  1140  1157  1180  1220
+                    44px/40    4/5/4/5/3  4/6/4/5/2  4/6/4/6/1  5/6/5/5 ...
+                    48px/49.2  4/5/5/5/2  4/6/4/6/1  ...        4/6/4/6/1
+
+                  44px with a 40px gap gives four even rows (5/6/5/5) at every
+                  width from 1140 to the 1220 cap — i.e. at 1280 and 1366, the
+                  two desktop widths this page is checked at. 48px does not; it
+                  leaves a single centred mark on a fifth row. 21 marks is also
+                  simply more block than 5, and 44 sits between the homepage
+                  band (40) and the old row (48) rather than inventing a size.
+
+                  ⚠️ NOT SOLVED AT EVERY WIDTH, AND IT CANNOT BE. Greedy wrap
+                  over a fluid container always has some width where the tail is
+                  one mark — here a ~40px window around ul=1100 (viewport ≈1223).
+                  It was measured, it is narrow, and a tapering centred last row
+                  is what a logo wall does. Do not add per-width gap hacks.
+
+                  🔴 THE PHONE BAND IS 28px, AND 32 IS WHY. At 32px the two
+                  widest marks (mutual-of-omaha 175, liberty-bankers 180) do not
+                  fit a second mark beside them in the 327px column, so the wall
+                  came out 11 rows / 613px tall with TWO solo rows stranded in
+                  the middle. 28px drops the widest to 158, every row pairs, and
+                  the wall is 9 rows / ~476px. Measured at 327/343/375/400 — no
+                  solo row at any of them, and the gap barely matters (16/20/24
+                  all pack identically), so the 24px gap stays. 28 is below the
+                  homepage strip's 40px band on purpose: the strip is a marquee
+                  and never wraps, so it can afford the height.
+
+                  Nothing is upscaled at 44: every raster's native height clears
+                  2x44 (the tightest is nassau at 195 = 2.2x) and the 10 SVGs
+                  are vector. Source order is kept — see CARRIER_KEYS. */}
+              <ul className="mx-auto mt-[clamp(32px,4.3vw,65.6px)] flex max-w-content flex-wrap items-center justify-center gap-x-6 gap-y-7 md:gap-x-10 md:gap-y-9 lg:gap-y-10">
                 {LOGO_CARRIERS.map((key) => (
                   <li
                     key={key}
-                    className="flex items-center justify-center"
+                    className="flex h-7 shrink-0 items-center justify-center md:h-10 lg:h-11"
                   >
-                    {/* THE DROP-IN SWAP THE NOTE ABOVE ANTICIPATED — the <span>
-                        of type is now the real mark. Same <li>, same grid, same
-                        gap, same centring; only the child changed, exactly as
-                        predicted. `alt` is `carriers.names.*`, the SAME
-                        translated string the homepage strip uses, so the two
-                        surfaces cannot name a carrier differently.
+                    {/* `alt` is `carriers.names.*`, the SAME translated string
+                        the homepage strip uses, so the two surfaces cannot name
+                        a carrier differently — and all 21 keys exist in both
+                        en and es, checked before this went to 21.
 
                         Plain <img>, not next/image, deliberately: this mirrors
                         CarrierStrip, the sources are already correctly sized
-                        (three are SVG), and the optimiser cannot improve a
-                        vector. `grayscale`/`opacity-80` are the homepage's
+                        (10 of the 21 are SVG), and the optimiser cannot improve
+                        a vector. `grayscale`/`opacity-80` are the homepage's
                         treatment, kept so the two logo surfaces read as one
                         system. Logos are exempt from contrast requirements
                         (WCAG 1.4.11 excludes logotypes); no text moved. */}
@@ -521,7 +599,7 @@ export default async function AboutPage({
                       alt={tc(`names.${key}`)}
                       loading="lazy"
                       decoding="async"
-                      className="h-12 w-auto max-w-full object-contain opacity-80 grayscale"
+                      className="h-7 w-auto object-contain opacity-80 grayscale md:h-10 lg:h-11"
                     />
                   </li>
                 ))}

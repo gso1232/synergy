@@ -1,49 +1,125 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { LOGO_FILE, LOGO_DIR } from "@/lib/carrierLogos";
-import FadeUp from "./FadeUp";
 import { APPOINTMENTS } from "./Carriers";
 
 /**
- * Slim carrier proof band, directly under the hero.
+ * THE CARRIER MARQUEE — all 21 appointments, scrolling right to left.
  *
- * 🟢 2026-07-30 — NOW RENDERS THE ACTUAL CARRIER LOGOS, not wordmark text.
- * Assets are copied space-free into `public/carriers/` from the client-supplied
- * `public/Insurance Carriers Logos/`. ALL 21 confirmed appointments now render:
- * the original 12 plus the 9 formerly held-back carriers (aetna, aflac,
- * american-national, columbus-life, ethos, f&g, national-life-group,
- * royal-neighbors, united-home-life) — Ziad confirmed he is contracted with
- * every one, so the endorsement claim is now backed and they are shown. The 3
- * "-2" duplicate source files are skipped (one file per carrier).
+ * Rendered TWICE on the homepage (directly under the hero, and again in the
+ * slot TheEngine vacated). One component, so the two cannot drift in speed,
+ * direction, sizing or content.
  *
- * LAYOUT: a static, centered, WRAPPING grid — not the old infinite marquee.
- * Every logo is normalised to a common HEIGHT (40px), width auto, so varied
- * aspect ratios stay even in height rather than ragged. Greyscale on the cream
- * ground reads as one cohesive set; the marks are dark wordmarks so contrast
- * holds. No logo is stretched or upscaled: each raster's native height (min
- * 103px) exceeds 2×40px, and the SVGs are vector.
+ * ---------------------------------------------------------------------------
+ * §MOTION — TAKEN FROM reyou.life's OWN SOURCE, NOT FROM WATCHING IT.
  *
- * // ─── REPLACED: the wordmark-text marquee. Kept commented for one round. ───
- * // const names = APPOINTMENTS.map((a) => ({ key: a.key, name: t(`names.${a.key}`) }));
- * // const set = (hidden) => (
- * //   <div aria-hidden={hidden || undefined} className="flex items-center gap-16 pr-16 lg:gap-20 lg:pr-20">
- * //     {names.map((c) => (
- * //       <span key={c.key} className="flex h-20 items-center whitespace-nowrap text-[22px] font-medium tracking-[0.01em] text-ink/70 lg:text-[26px]">
- * //         {c.name}
- * //       </span>
- * //     ))}
- * //   </div>
- * // );
- * // ...marquee-row / marquee-track / marquee-left with set(false)+set(true)...
+ * Their marquee is a Webflow + GSAP build; the code is in the Slater bundle
+ * `assets.slater.app/slater/19027/59810.js`, function `initMarquee()`. Read
+ * verbatim, with the parts that matter unminified:
+ *
+ *     function initMarquee(){
+ *       const t = 80;                                   // px per second
+ *       ...
+ *       const c = gsap.timeline({ repeat: -1, ... });
+ *       c.fromTo(a, { xPercent: 0 }, {
+ *           xPercent: -100,
+ *           duration: Math.max(800, a[0].offsetWidth) / t,
+ *           ease: "none"
+ *       });
+ *       ...
+ *       n(reducedMotion);
+ *     }
+ *
+ * So the whole spec is four numbers:
+ *
+ *   SPEED       80 px/s exactly (`const t = 80`)
+ *   DURATION    max(800, panelWidth) / 80   — width-derived, not a fixed time
+ *   EASING      "none" = linear. No accel, no decel, ever.
+ *   REPEAT      -1 = infinite
+ *   DIRECTION   xPercent 0 -> -100 = right to left
+ *
+ * Measured on their live DOM at 1536 to confirm the reading: panel 3182px, so
+ * 3182 / 80 = 39.775s — which is the duration their timeline actually runs.
+ *
+ * OURS IS THE SAME VELOCITY, NOT THE SAME DURATION, AND THAT IS THE POINT.
+ * Duration is derived from panel width, so a wider panel takes proportionally
+ * longer and the marks pass the eye at an identical 80 px/s. Their panel holds
+ * 13 marks; ours holds 21. Copying their 39.775s would have run ours ~54%
+ * faster than theirs, which is the opposite of matching.
+ *
+ * §SEAM. Two identical panels sit side by side in one flex track. reyou moves
+ * each panel by -100% of its own width; this moves the single track by -50% of
+ * its two-panel width. Identical geometry, and the CSS keyframe already exists
+ * (`.marquee-left` in globals.css) and is transform-only, so it composites on
+ * the GPU. The gap is carried INSIDE each panel (gap + a trailing pad of the
+ * same size) so it stays even across the seam rather than landing half a gap
+ * short.
+ *
+ * §WHAT ELSE IS COPIED FROM THEM, DELIBERATELY:
+ *   · 96px gap between marks, and 96px of trailing pad  (their `.marquee-4_list`
+ *     is `gap: 96px; padding-right: 96px` — measured on their computed style)
+ *   · FULL COLOUR. No greyscale. Theirs are full-colour and the previous build
+ *     of this component desaturated ours; that is now gone.
+ *   · align-items: center
+ *   · No edge fade. Their `.marquee-4_component` is `overflow: visible` with the
+ *     clip happening upstream at `.page_wrap { overflow: clip }` — there is no
+ *     mask-image anywhere in their marquee. The 80px alpha mask this component
+ *     used to carry is therefore NOT applied; the row is a hard clip like
+ *     theirs. Add `.marquee-row`'s mask back if the hard edge is disliked.
+ *
+ * §WHERE WE DELIBERATELY DIVERGE — THREE THINGS, ALL DEFENSIBLE:
+ *
+ *   1. 🔴 REDUCED MOTION STOPS COMPLETELY. reyou does NOT stop: their last line
+ *      is `n(reducedMotion)`, and `n(true)` sets `timeScale(0.01)` — a 100x
+ *      slowdown, so at our panel width it still crawls a full lap in ~1.7
+ *      hours. That is motion, and someone who set the OS flag asked for none.
+ *      Ours hits `animation: none` and becomes a static, horizontally
+ *      scrollable strip with the duplicate panel dropped (globals.css). This is
+ *      the one place "exactly like reyou" is knowingly not followed.
+ *
+ *   2. COMMON 40px BAND. reyou sizes every mark individually — 32/40/48/64/80px
+ *      (`is-2rem` ... `is-5rem`), hand-set per logo. That is art direction over
+ *      13 known marks; we have 21 and no per-mark direction from the client, so
+ *      every mark is normalised to one 40px height with width free. Because a
+ *      marquee never wraps, width being free is exactly what lets a 1.00:1
+ *      crest and a 5.85:1 wordmark share a row without either being squashed.
+ *      Per-mark optical sizing is the obvious follow-up if it is wanted.
+ *
+ *   3. NO DRAG, NO PLAY/PAUSE BUTTON. Theirs has both — a GSAP Observer that
+ *      scrubs timeScale from pointer velocity (clamped +/-30) and an
+ *      aria-pressed toggle. Neither was asked for and both are input surfaces
+ *      that need their own a11y pass. Not built rather than half-built.
+ *
+ * ---------------------------------------------------------------------------
+ * 🔴 TWO LOGOS ARE KNOWN-BROKEN AND SHIP ANYWAY, ON INSTRUCTION.
+ * `athene.png` and `national-life-group.png` are 100% opaque with 100% opaque
+ * EDGES — they are not transparent marks, they are a navy box and a green box.
+ * Measured, both flagged in the Part A audit, and NEITHER has a transparent
+ * version anywhere on disk (all three drop folders hold the same bytes). They
+ * need a transparent file from the carrier. Nothing here can fix that without
+ * editing a trademark, which is not ours to do.
  */
 
-/* The key→file map and LOGO_DIR moved to lib/carrierLogos.ts on 2026-07-30
-   so /about §2b can render the same artwork from the same source of truth.
-   Nothing about this component's rendering changed. */
+/** reyou's `const t = 80`. Pixels per second. The one number that sets feel. */
+const PX_PER_SECOND = 80;
+/** reyou's `Math.max(800, ...)` floor, kept so a short panel cannot sprint. */
+const MIN_PANEL_PX = 800;
+/** Their `.marquee-4_list` gap AND trailing pad, both 96px. */
+const GAP_PX = 96;
 
-export default function CarrierStrip() {
+export default function CarrierStrip({
+  /** Marquee 2 passes false: the same kicker twice on one page reads as a bug. */
+  showKicker = true,
+}: {
+  showKicker?: boolean;
+}) {
   const t = useTranslations("carriers");
+  const panelRef = useRef<HTMLUListElement>(null);
+  /** null until measured — the track stays still rather than running at a
+   *  guessed speed for a frame. reyou measures at init for the same reason. */
+  const [duration, setDuration] = useState<number | null>(null);
 
   const logos = APPOINTMENTS.map((a) => ({
     key: a.key,
@@ -51,103 +127,104 @@ export default function CarrierStrip() {
     src: `${LOGO_DIR}/${LOGO_FILE[a.key]}`,
   }));
 
+  /* DURATION IS MEASURED, NOT HARDCODED — this is `a[0].offsetWidth / t`.
+     It has to run after the logos decode: every mark is `w-auto`, so an
+     undecoded panel measures narrow and would yield a fast, wrong duration.
+     Re-measured on resize because the band is the same 40px at every width but
+     the browser's subpixel rounding of 21 auto widths is not. */
+  useLayoutEffect(() => {
+    const panel = panelRef.current;
+    if (!panel) return;
+
+    let alive = true;
+    const measure = () => {
+      if (!alive || !panel) return;
+      const w = panel.getBoundingClientRect().width;
+      if (w > 0) setDuration(Math.max(MIN_PANEL_PX, w) / PX_PER_SECOND);
+    };
+
+    measure();
+    const imgs = Array.from(panel.querySelectorAll("img"));
+    const pending = imgs.filter((i) => !i.complete);
+    pending.forEach((i) => {
+      i.addEventListener("load", measure, { once: true });
+      i.addEventListener("error", measure, { once: true });
+    });
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(panel);
+    return () => {
+      alive = false;
+      ro.disconnect();
+    };
+  }, []);
+
+  const panel = (dup: boolean) => (
+    <ul
+      ref={dup ? undefined : panelRef}
+      key={dup ? "dup" : "base"}
+      aria-hidden={dup || undefined}
+      aria-label={dup ? undefined : t("ariaLabel")}
+      className={`flex w-max shrink-0 list-none items-center${dup ? " marquee-dup" : ""}`}
+      style={{ gap: GAP_PX, paddingRight: GAP_PX }}
+    >
+      {logos.map((c) => (
+        <li key={c.key} className="flex h-10 shrink-0 items-center justify-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={c.src}
+            alt={c.name}
+            decoding="async"
+            /* h-10 = the 40px common band; width auto keeps native aspect, and
+               NOTHING desaturates it — reyou's marks are full colour and so are
+               these now. No max-width: the widest mark is 232px at this band
+               and a cap would squash it below the band. */
+            className="h-10 w-auto object-contain"
+          />
+        </li>
+      ))}
+    </ul>
+  );
+
   return (
     <section aria-label={t("ariaLabel")} className="py-16 lg:py-20">
-      <FadeUp>
+      {showKicker && (
         <p className="px-6 text-center text-[13px] font-medium uppercase tracking-[0.16em] text-gold-deep lg:text-[14px]">
           {t("stripKicker")}
         </p>
+      )}
 
-        {/* ─── PREVIOUS APPROACH: static wrapping grid. COMMENTED, NOT DELETED,
-            so we can revert (2026-07-30). Superseded by the logo marquee below.
-            It rendered 21 = 3×7 as 7 desktop / 3 tablet+mobile columns — no
-            orphan row, but the 137px desktop cells shrank the widest wordmarks
-            to 24–32px visible height, which the marquee fixes by never wrapping.
-            Inner eslint/line comments were stripped ONLY so this stays a valid
-            JSX comment (no nested close); restore them on revert.
+      {/* `.marquee-row` is kept for ONE reason and it is not the mask: its
+          `prefers-reduced-motion` block in globals.css is what flips this to
+          `overflow-x: auto`, so a reader who stopped the animation can still
+          reach the marks past the fold. Dropping the class for a bare
+          `overflow-hidden` would have silently made 4000px of logos
+          unreachable under reduced motion.
 
-        <ul className="carrier-logos mx-auto mt-10 grid max-w-content grid-cols-3 items-center justify-items-center gap-x-8 gap-y-9 px-6 md:px-8 lg:mt-12 lg:grid-cols-7">
-          {logos.map((c) => (
-            <li key={c.key} className="flex h-10 items-center justify-center">
-              <img
-                src={c.src}
-                alt={c.name}
-                decoding="async"
-                className="h-10 w-auto max-w-full object-contain opacity-80 grayscale"
-              />
-            </li>
-          ))}
-        </ul>
-            ──────────────────────────────────────────────────────────────── */}
-
-        {/* ─── LOGO MARQUEE (2026-07-30) ────────────────────────────────────
-            A single horizontal row of all 21 logos scrolling right-to-left at a
-            constant speed — modelled on reyou.life's insurance marquee
-            (`.marquee-4`), measured live: their track runs xPercent -100 over
-            39.775s = 80 px/s, linear (ease `none`), infinite, seam hidden by a
-            duplicate set. Ours matches the motion: 80 px/s, linear,
-            right-to-left, seamless via two identical sets + translateX(-50%).
-
-            WHY THIS SOLVES THE 21-LOGO PROBLEM: a single scrolling row never
-            wraps, so there is no orphan row and no cell to narrow — every logo
-            sits at a TRUE common height (40px) because width is unconstrained.
-
-            DIVERGENCES FROM REYOU, on purpose:
-              • common 40px height — reyou sizes each mark individually (32–80px)
-              • greyscale on cream — reyou shows full-colour logos
-              • reduced-motion → static, scrollable strip (globals.css); reyou
-                does not honour prefers-reduced-motion, we do
-              • pauses on hover — reyou does not; we keep it so a reader can rest
-                on a mark (the marks are not links, so nothing else is lost)
-
-            SEAM: the set renders twice inside `.marquee-track`; the keyframe
-            translateX(0 → -50%) moves the track by exactly one set-width, so the
-            duplicate lands where the original began — an invisible reset. The
-            per-set trailing `pr-12` carries the gap across the seam so it stays
-            even. The second set is `.marquee-dup` + aria-hidden: hidden from AT,
-            and dropped entirely under reduced-motion (one clean set to scroll).
-
-            SPEED: animation-duration is set inline = one set-width ÷ 80 px/s.
-            Measured set width ≈ 4028px → 50s. Height-invariant (logos are always
-            40px tall, track is w-max), so one duration holds at every width. */}
+          THE MASK IT ALSO CARRIES IS TURNED OFF INLINE. reyou has no edge fade
+          anywhere in their marquee — `.marquee-4_component` is
+          `overflow: visible` and the clip happens upstream at
+          `.page_wrap { overflow: clip }`. Hard edges, like theirs. Delete these
+          two lines to get the 80px alpha fade back. */}
+      <div
+        className={`marquee-row relative ${showKicker ? "mt-10 lg:mt-12" : ""}`}
+        style={{ WebkitMaskImage: "none", maskImage: "none" }}
+      >
         <div
-          role="marquee"
-          aria-label={t("ariaLabel")}
-          className="marquee-row mt-10 lg:mt-12"
+          className="marquee-track marquee-left flex w-max"
+          /* Paused until measured, then linear/infinite at exactly 80 px/s.
+             `animation-play-state` rather than not setting the class, so the
+             element is composited from first paint and does not get promoted
+             mid-animation. */
+          style={{
+            animationDuration: duration ? `${duration}s` : undefined,
+            animationPlayState: duration ? "running" : "paused",
+          }}
         >
-          <div
-            className="marquee-track marquee-left flex w-max"
-            style={{ animationDuration: "50s" }}
-          >
-            {[false, true].map((hidden) => (
-              <ul
-                key={hidden ? "dup" : "base"}
-                aria-hidden={hidden || undefined}
-                className={`flex shrink-0 items-center gap-12 pr-12${
-                  hidden ? " marquee-dup" : ""
-                }`}
-              >
-                {logos.map((c) => (
-                  <li
-                    key={c.key}
-                    className="flex h-10 shrink-0 items-center justify-center"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={c.src}
-                      alt={c.name}
-                      decoding="async"
-                      // h-10 = 40px common height; width auto keeps native aspect.
-                      // grayscale unifies the set on cream; no stretch/upscale.
-                      className="h-10 w-auto object-contain opacity-80 grayscale"
-                    />
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
+          {panel(false)}
+          {panel(true)}
         </div>
-      </FadeUp>
+      </div>
     </section>
   );
 }
