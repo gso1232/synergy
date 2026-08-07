@@ -2,7 +2,7 @@ import "server-only";
 
 import { createClient } from "@/lib/supabase/server";
 import { getAllArticles } from "@/lib/blog";
-import type { Agent, Application, Lead } from "@/lib/types";
+import type { Agent, Application, Lead, Profile } from "@/lib/types";
 
 /**
  * Server-only reads for the admin dashboard. Every query runs through the
@@ -18,6 +18,45 @@ import type { Agent, Application, Lead } from "@/lib/types";
 export type ReadResult<T> =
   | { ok: true; rows: T[] }
   | { ok: false; error: string };
+
+/**
+ * ACCOUNTS — the approvals queue.
+ *
+ * 🔴 RLS-SCOPED LIKE EVERY OTHER READ HERE, which matters more for this one than
+ * for any of them: `profiles_select_admin` (0005) requires `is_active_admin()`,
+ * so a non-admin — or a REJECTED admin — reaching this function gets ZERO ROWS
+ * from the database rather than the account list. The layout guard stops them
+ * seeing the page; this is the floor underneath it.
+ *
+ * ORDERED PENDING FIRST, deliberately: that is the only status that needs a
+ * human decision, and burying it under a list of already-approved agents is how
+ * a signup sits unnoticed for a week. Within each bucket, oldest first — the
+ * person who has been waiting longest is the one to deal with next.
+ *
+ * `unverified` rows ARE returned, because the delete-unverified button needs
+ * something to act on, but the UI files them under a separate heading and never
+ * offers approve/reject for them — an address nobody has proven they own is not
+ * a decision, it is a squat waiting to be purged.
+ */
+export async function getProfiles(): Promise<ReadResult<Profile>> {
+  try {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("id, role, status, full_name, email, created_at, approved_at, approved_by")
+      .order("created_at", { ascending: true });
+    if (error) return { ok: false, error: error.message };
+
+    const RANK: Record<string, number> = { pending: 0, unverified: 1, active: 2, rejected: 3 };
+    const rows = ((data ?? []) as Profile[]).slice().sort((a, b) => {
+      const r = (RANK[a.status] ?? 9) - (RANK[b.status] ?? 9);
+      return r !== 0 ? r : a.created_at.localeCompare(b.created_at);
+    });
+    return { ok: true, rows };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "read failed" };
+  }
+}
 
 export async function getLeads(): Promise<ReadResult<Lead>> {
   try {

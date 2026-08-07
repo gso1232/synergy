@@ -53,7 +53,7 @@ export default async function LoginPage({
   searchParams,
 }: {
   params: { locale: string };
-  searchParams: { denied?: string };
+  searchParams: { denied?: string; reset?: string; confirm?: string };
 }) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "login" });
@@ -62,6 +62,20 @@ export default async function LoginPage({
   // wayfinding notice, not an error — the credentials were fine, the role was
   // wrong — so it renders in a neutral status region, not the form's alert.
   const denied = searchParams?.denied === "1";
+
+  /* 🔴 NEUTRAL STATUS NOTICES, NOT ERRORS, and none of them reveals whether an
+     account exists. They are wayfinding for someone who just came back from an
+     email link or a password change. `reset=1` is the only one that implies a
+     real account — and it is only reachable by someone who just completed a
+     reset, i.e. who already proved control of the mailbox. */
+  const notice =
+    searchParams?.reset === "1"
+      ? t("resetDone")
+      : searchParams?.reset === "expired"
+        ? t("resetExpired")
+        : searchParams?.confirm === "failed"
+          ? t("confirmFailed")
+          : null;
 
   return (
     <main className="auth-screen relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-14">
@@ -108,12 +122,12 @@ export default async function LoginPage({
           {t("subhead")}
         </p>
 
-        {denied ? (
+        {denied || notice ? (
           <div
             role="status"
             className="mt-5 rounded-lg border border-gold/40 bg-gold/[0.12] px-4 py-3 text-left text-[14px] leading-[1.5] text-cream"
           >
-            {t("deniedNotice")}
+            {denied ? t("deniedNotice") : notice}
           </div>
         ) : null}
 

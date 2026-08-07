@@ -1,0 +1,564 @@
+-- =============================================================================
+-- 0005_agent_signup.sql  —  SELF-SIGNUP WITH ADMIN APPROVAL.
+--
+-- HOW TO RUN IT (once): Supabase dashboard -> SQL Editor -> paste this whole
+-- file -> Run. It runs as `postgres`, which OWNS every object it creates. That
+-- ownership is load-bearing for every SECURITY DEFINER function below.
+--
+-- 🔴 IDEMPOTENT. Safe to run twice. Types are wrapped in duplicate_object
+-- blocks, columns use `if not exists`, policies are dropped immediately before
+-- being created (Postgres has no `create policy if not exists`), triggers are
+-- dropped first, functions are `create or replace`.
+--
+-- =============================================================================
+-- WHY THIS MIGRATION EXISTS, AND WHAT IT BREAKS.
+--
+-- `lib/auth-domain.ts` states the pre-0005 security model in its own words:
+--
+--     "IT IS NOT, ON ITS OWN, WHAT KEEPS STRANGERS OUT ... the control that
+--      actually holds is that THERE IS NO PUBLIC SIGNUP."
+--
+-- This migration OPENS PUBLIC SIGNUP, which removes that control. Three things
+-- must carry the weight afterwards and all three have to hold independently:
+--
+--   1. DOMAIN — enforced in the app (isCompanySignupEmail) AND at the database
+--      (0004's `on_auth_user_domain_check`, still in force, untouched here).
+--   2. EMAIL VERIFICATION — proves the signer controls the inbox. Without it
+--      "the address ends in @fflsynergy.com" proves nothing; anyone can type it.
+--   3. THE PENDING STATE, DENIED IN RLS — this file. A signed-up, verified,
+--      *unapproved* user holds a VALID JWT. The only thing standing between that
+--      JWT and every row in this database is the policy set below. It must deny
+--      at Postgres, not in the UI: `GET /rest/v1/leads` with that token has to
+--      return zero rows.
+--
+-- Layer 3 is new and is the one that matters. Everything below exists to make
+-- it true.
+-- =============================================================================
+
+
+-- -----------------------------------------------------------------------------
+-- 1. ACCOUNT STATUS ENUM.
+--
+--    FOUR states, not three. `unverified` is what makes "an unconfirmed email
+--    cannot reach a counted pending state" PROVABLE rather than asserted: the
+--    profile row exists (the signup trigger always makes one) but it is not
+--    `pending`, so it never appears in the approvals queue and Aiman is never
+--    asked to approve an address nobody has proven they own.
+--
+--      unverified  signed up, inbox NOT proven. Counts as nothing. Reaches
+--                  nothing. Purged after 24h (section 9).
+--      pending     inbox proven, awaiting Aiman. Reaches NOTHING.
+--      active      approved. Normal agent access.
+--      rejected    denied. Reaches nothing. Reversible, so a misclick is not
+--                  permanent.
+-- -----------------------------------------------------------------------------
+do $$ begin
+  create type public.account_status as enum ('unverified', 'pending', 'active', 'rejected');
+exception when duplicate_object then null; end $$;
+
+
+-- -----------------------------------------------------------------------------
+-- 2. COLUMNS ON public.profiles.
+--
+-- 🔴 THE BACKFILL IS INSIDE THE SAME `if not exists` GUARD AS THE COLUMN, AND
+--    THAT IS NOT A STYLE CHOICE — IT IS THE WHOLE CORRECTNESS ARGUMENT.
+--
+--    The column defaults to 'pending'. Adding it therefore sets EVERY existing
+--    row to pending, and the policies in section 6 deny pending everything —
+--    including the sole admin, including the approvals screen that would be
+--    used to fix it. So existing rows must be flipped to 'active' immediately.
+--
+--    But a naive `update public.profiles set status='active'` at the top level
+--    would, ON A SECOND RUN, promote every genuinely-pending applicant to
+--    active. That is a privilege-escalation bug wearing an idempotency costume.
+--    Nesting the backfill inside the "column did not exist" branch means it runs
+--    exactly once, on the run that creates the column, and never again.
+--
+--    Justification for backfilling to 'active': every row that exists before
+--    this migration predates public signup, so it was created by an admin
+--    through the dashboard or Admin API — already vetted by a human.
+-- -----------------------------------------------------------------------------
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.columns
+    where table_schema = 'public' and table_name = 'profiles' and column_name = 'status'
+  ) then
+    alter table public.profiles
+      add column status public.account_status not null default 'pending';
+
+    -- FIRST RUN ONLY. See the box above.
+    update public.profiles set status = 'active';
+    raise notice '0005: status column added; % pre-existing profile(s) backfilled to active',
+      (select count(*) from public.profiles);
+  end if;
+end $$;
+
+-- `email` is DENORMALISED from auth.users on purpose. The approvals queue has to
+-- show Aiman WHO is asking, and auth.users is not reachable through PostgREST
+-- with the publishable key. The alternative — a SECURITY DEFINER view over
+-- auth.users — exposes a far wider surface (phone, tokens, metadata) to get one
+-- column. It is written once by the signup trigger and never updated from the
+-- client; there is no UPDATE grant on it (section 5).
+alter table public.profiles
+  add column if not exists email       text,
+  add column if not exists approved_at timestamptz,
+  -- `on delete set null`, NOT cascade: if the approving admin's account is ever
+  -- removed, the audit trail of WHO approved an agent must survive them.
+  add column if not exists approved_by uuid references auth.users (id) on delete set null;
+
+-- Backfill email for any pre-existing profile so the admin list is not blank.
+update public.profiles p
+   set email = u.email
+  from auth.users u
+ where u.id = p.id and p.email is null;
+
+-- The approvals queue reads `where status = 'pending' order by created_at`.
+create index if not exists profiles_status_idx on public.profiles (status, created_at);
+
+
+-- -----------------------------------------------------------------------------
+-- 3. STATUS + ADMIN HELPERS.
+--
+--    Same SECURITY DEFINER pattern as 0001's `current_app_role()`, and safe for
+--    the same four reasons: NO ARGUMENTS (a caller cannot ask about anyone but
+--    themselves — `auth.uid()` comes from the verified JWT, not from input), no
+--    writes, `set search_path = ''` so a caller cannot shadow `profiles` with a
+--    table on their own path, and EXECUTE revoked from public/anon.
+--
+--    They must be DEFINER because the policies in section 6 gate on them: a
+--    pending user cannot read `profiles` at all, so an INVOKER function asking
+--    "what is my status?" would return null for exactly the users whose status
+--    matters most, and every policy would then fail open or closed by accident.
+-- -----------------------------------------------------------------------------
+create or replace function public.current_account_status()
+returns public.account_status
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select status from public.profiles where id = auth.uid();
+$$;
+
+revoke all     on function public.current_account_status() from public, anon;
+grant  execute on function public.current_account_status() to authenticated;
+
+-- 🔴 `is_active_admin()` REPLACES `current_app_role() = 'admin'` EVERYWHERE.
+--    Being an admin is no longer sufficient — the admin's own account must also
+--    be active. This closes the case of an admin who is later `rejected`: with
+--    the old predicate they would keep full read/write on every table.
+create or replace function public.is_active_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select exists (
+    select 1 from public.profiles
+    where id = auth.uid()
+      and role = 'admin'
+      and status = 'active'
+  );
+$$;
+
+revoke all     on function public.is_active_admin() from public, anon;
+grant  execute on function public.is_active_admin() to authenticated;
+
+
+-- -----------------------------------------------------------------------------
+-- 4. TRIGGERS.
+-- -----------------------------------------------------------------------------
+
+-- 4a. PROFILE ON SIGNUP — amended from 0001.
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  -- 🔴 ROLE IS HARD-CODED AND raw_user_meta_data IS NEVER CONSULTED FOR IT.
+  -- Unchanged from 0001 and now load-bearing in a way it was not before: with
+  -- public signup open, `options.data` on signUp() is ATTACKER-CONTROLLED. A
+  -- role read from there would be self-elevation by anyone with a company
+  -- address. Signing up with {"role":"admin"} lands as 'agent'. Only
+  -- `full_name` is honoured, because a display name grants nothing.
+  insert into public.profiles (id, role, status, full_name, email)
+  values (
+    new.id,
+    'agent',
+    -- 🔴 THE CASE MATTERS. If "Confirm email" is off, or an admin creates the
+    -- account from the dashboard with auto-confirm, `email_confirmed_at` is
+    -- ALREADY set at INSERT time — so the 4b trigger (which fires on the
+    -- null -> not-null transition) never runs, and a straight 'unverified'
+    -- default would strand the account there forever, invisible to the
+    -- approvals queue and purged 24h later.
+    case
+      when new.email_confirmed_at is not null then 'pending'::public.account_status
+      else 'unverified'::public.account_status
+    end,
+    new.raw_user_meta_data ->> 'full_name',
+    new.email
+  );
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute function public.handle_new_user();
+
+
+-- 4b. EMAIL CONFIRMED -> 'pending'. The moment the inbox is proven, and not
+--     before, the account becomes something Aiman is asked to judge.
+--     `and status = 'unverified'` guards the transition: a confirmed user who
+--     later changes their email must not be knocked back to pending from
+--     active.
+create or replace function public.handle_email_confirmed()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if old.email_confirmed_at is null and new.email_confirmed_at is not null then
+    update public.profiles
+       set status = 'pending'
+     where id = new.id
+       and status = 'unverified';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_confirmed on auth.users;
+create trigger on_auth_user_confirmed
+  after update of email_confirmed_at on auth.users
+  for each row execute function public.handle_email_confirmed();
+
+
+-- 4c. 🔴 THE TRANSITION GUARD. This is what makes "approval flips EXACTLY
+--     pending->active and nothing else" a fact rather than a hope.
+--
+--     RLS decides WHETHER a row may be updated. It cannot decide WHICH COLUMNS
+--     or WHICH VALUES. Without this trigger the admin UPDATE policy in section 6
+--     would let an admin PATCH `role: 'admin'` onto any row straight from
+--     PostgREST, and would let any status go to any other status.
+--
+--     ⚠️ THIS FIRES FOR service_role TOO, AND THAT IS DELIBERATE. service_role
+--     bypasses RLS; it does NOT bypass triggers. So even a leaked secret key
+--     cannot mint an admin through public.profiles. The cost is real and is
+--     stated rather than discovered later: legitimate hand-elevation of a new
+--     admin must be done as `postgres` in the SQL editor with the trigger
+--     temporarily disabled (section 10 gives the exact command). That is the
+--     correct privileged path for making an admin anyway.
+create or replace function public.enforce_profile_transition()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if new.role is distinct from old.role then
+    raise exception 'profiles.role is immutable through the API (attempted % -> %)',
+      old.role, new.role;
+  end if;
+
+  if new.id is distinct from old.id then
+    raise exception 'profiles.id is immutable';
+  end if;
+
+  if old.status is distinct from new.status then
+    if not (
+         (old.status = 'unverified' and new.status = 'pending')
+      or (old.status = 'pending'    and new.status in ('active', 'rejected'))
+      or (old.status = 'active'     and new.status = 'rejected')
+      or (old.status = 'rejected'   and new.status = 'active')
+    ) then
+      raise exception 'illegal account_status transition % -> %', old.status, new.status;
+    end if;
+
+    -- 🔴 NO SELF-APPROVAL.
+    -- Scoped to the GRANTING transitions only. The unverified -> pending flip in
+    -- 4b can legitimately run while the user is signed in (they confirm their
+    -- email in a logged-in tab), so auth.uid() may equal new.id there — and that
+    -- transition grants nothing, so it must not be blocked. Reaching 'active' or
+    -- 'rejected' for yourself always is.
+    if auth.uid() is not null
+       and auth.uid() = new.id
+       and new.status in ('active', 'rejected') then
+      raise exception 'a user cannot change their own account status';
+    end if;
+  end if;
+
+  return new;
+end;
+$$;
+
+drop trigger if exists profiles_enforce_transition on public.profiles;
+create trigger profiles_enforce_transition
+  before update on public.profiles
+  for each row execute function public.enforce_profile_transition();
+
+
+-- -----------------------------------------------------------------------------
+-- 5. COLUMN-LEVEL PRIVILEGE — the half of the problem RLS cannot solve.
+--
+--    A policy is row-scoped: `for update using (is_active_admin())` says WHICH
+--    ROWS an admin may touch, and nothing at all about which columns. Column
+--    GRANTs are the tool for that, and together they mean `status` is the ONLY
+--    column any API caller can write on this table, admin included.
+--
+--    Belt and braces with trigger 4c: the grant stops the write at the
+--    permission layer, the trigger stops it at the data layer.
+-- -----------------------------------------------------------------------------
+revoke update on public.profiles from authenticated, anon;
+grant  update (status) on public.profiles to authenticated;
+
+
+-- -----------------------------------------------------------------------------
+-- 6. ROW LEVEL SECURITY — THE PENDING STATE.
+--
+--    Net posture after this section:
+--
+--      caller           profiles              leads  agents  applications
+--      ---------------- --------------------- ------ ------- ------------
+--      anon             nothing               no     no      no
+--      unverified       NOTHING               no     no      no
+--      pending          NOTHING               no     no      no
+--      rejected         NOTHING               no     no      no
+--      active agent     own row (select)      no     no      no
+--      active admin     all (select)          select S/I/U   select
+--                       + status (update)
+--      service_role     bypasses RLS (server-only key, never in a browser)
+--
+--    "NOTHING" includes THEIR OWN PROFILE ROW. The "awaiting approval" screen is
+--    served by `current_account_status()` — an RPC, not a table read — so the
+--    app can tell a pending user what is happening without RLS granting a
+--    single row anywhere. That is why the helper in section 3 exists.
+-- -----------------------------------------------------------------------------
+
+-- 6a. profiles ---------------------------------------------------------------
+
+-- REPLACES 0001's profiles_select_own, which had no status condition.
+drop policy if exists "profiles_select_own" on public.profiles;
+create policy "profiles_select_own"
+  on public.profiles
+  for select
+  to authenticated
+  using (
+    (select auth.uid()) = id
+    and public.current_account_status() = 'active'
+  );
+
+-- REPLACES 0001's profiles_select_admin (was `current_app_role() = 'admin'`).
+-- An admin sees every row INCLUDING pending and unverified — that is the
+-- approvals queue.
+drop policy if exists "profiles_select_admin" on public.profiles;
+create policy "profiles_select_admin"
+  on public.profiles
+  for select
+  to authenticated
+  using ( public.is_active_admin() );
+
+-- 🔴 THE ONLY UPDATE POLICY ON THIS TABLE, AND THE FIRST ONE EVER ADDED.
+--    0001 shipped with none at all, which is what made the role un-spoofable.
+--    Approval needs a write, so this is the narrowest possible opening:
+--      · the policy admits only an ACTIVE ADMIN (section 3 helper),
+--      · the section-5 grant limits it to the `status` column,
+--      · trigger 4c limits it to the four legal transitions and forbids
+--        self-approval.
+--    A pending or active AGENT matches no UPDATE policy at all, so Postgres
+--    denies them before any trigger runs. That is the self-promotion proof.
+drop policy if exists "profiles_update_admin" on public.profiles;
+create policy "profiles_update_admin"
+  on public.profiles
+  for update
+  to authenticated
+  using      ( public.is_active_admin() )
+  with check ( public.is_active_admin() );
+
+-- (Still NO insert policy — profiles are born only via trigger 4a.
+--  Still NO delete policy — removal is a privileged operation, section 9.)
+
+
+-- 6b. leads / agents / applications — cut over to is_active_admin() -----------
+--
+--     These already denied a pending user, because a pending user is not an
+--     admin. The rewrite is not about them: it closes the REJECTED ADMIN case,
+--     and it makes "active" the single word every policy on this database turns
+--     on, so there is one predicate to audit instead of two.
+
+drop policy if exists "leads_select_admin" on public.leads;
+create policy "leads_select_admin"
+  on public.leads for select to authenticated
+  using ( public.is_active_admin() );
+
+drop policy if exists "agents_select_admin" on public.agents;
+create policy "agents_select_admin"
+  on public.agents for select to authenticated
+  using ( public.is_active_admin() );
+
+drop policy if exists "agents_insert_admin" on public.agents;
+create policy "agents_insert_admin"
+  on public.agents for insert to authenticated
+  with check ( public.is_active_admin() );
+
+drop policy if exists "agents_update_admin" on public.agents;
+create policy "agents_update_admin"
+  on public.agents for update to authenticated
+  using      ( public.is_active_admin() )
+  with check ( public.is_active_admin() );
+
+drop policy if exists "applications_select_admin" on public.applications;
+create policy "applications_select_admin"
+  on public.applications for select to authenticated
+  using ( public.is_active_admin() );
+
+-- 🔴 public.leads IS UNCHANGED APART FROM THE PREDICATE ABOVE, AND THAT IS
+--    INTENTIONAL. It is already correct for the server-side insert path the
+--    site forms will use: RLS on, admin SELECT only, and NO INSERT POLICY — so
+--    a browser physically cannot write it and the only writer is a server
+--    action holding the secret key, exactly as /join -> applications already
+--    works. Nothing here needs changing when the forms are wired.
+--    ⚠️ STILL OWED BY THE CLIENT BEFORE ANY LEAD IS COLLECTED: the SMS/call
+--    consent WORDING and the privacy policy. `sms_consent` stores a boolean
+--    against a real person's phone number while its label is still placeholder
+--    text. Not inventable here.
+
+
+-- -----------------------------------------------------------------------------
+-- 7. NO `USING (true)` / `WITH CHECK (true)` ANYWHERE.
+--    Verified across 0001-0005: every policy on this database gates on either
+--    `auth.uid() = id` or `is_active_admin()`. The only unconditional access is
+--    service_role, which bypasses RLS by design and never leaves the server.
+--    Section 11 re-checks this from catalogue data rather than by assertion.
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+-- 8. (reserved)
+-- -----------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------------------------------
+-- 9. THE 24-HOUR UNVERIFIED PURGE — squatting mitigation (b).
+--
+--    THE ATTACK: signup is open to anyone who can type an @fflsynergy.com
+--    address. An attacker signs up as `ziad@fflsynergy.com`. They cannot confirm
+--    it — they do not have the inbox — so the account sits at 'unverified' and
+--    reaches nothing. But the ADDRESS IS NOW TAKEN, and the real Ziad cannot
+--    sign up. That is a denial-of-service on onboarding, not a data breach, and
+--    it is the one genuinely new risk opening signup creates.
+--
+--    Mitigation (a) is the admin's delete button (server action, Admin API).
+--    Mitigation (b) is this: anything unverified for more than 24 hours is
+--    deleted, so a squat expires on its own.
+--
+--    It deletes from auth.users, and public.profiles follows via 0001's
+--    `references auth.users (id) on delete cascade`. Deleting the profile row
+--    directly would leave an orphan auth user whose address is still taken —
+--    i.e. it would not fix the squat at all.
+--
+--    DEFINER + revoked from every client role: this function must never be
+--    callable from a browser with any key.
+-- -----------------------------------------------------------------------------
+create or replace function public.purge_unverified_accounts()
+returns integer
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  purged integer;
+begin
+  with doomed as (
+    delete from auth.users u
+     using public.profiles p
+     where p.id = u.id
+       and p.status = 'unverified'
+       -- Belt and braces: never touch a row whose inbox was in fact proven,
+       -- even if its profile status somehow drifted.
+       and u.email_confirmed_at is null
+       and u.created_at < now() - interval '24 hours'
+    returning u.id
+  )
+  select count(*) into purged from doomed;
+  return purged;
+end;
+$$;
+
+revoke all on function public.purge_unverified_accounts() from public, anon, authenticated;
+
+-- SCHEDULE IT. pg_cron is available on Supabase but is NOT enabled by default.
+-- The whole block is exception-guarded so a project without the extension gets
+-- a NOTICE and a working migration rather than a hard failure — the purge is a
+-- mitigation, not the control, and the admin delete button (mitigation a) works
+-- regardless. If this raises a notice, enable pg_cron in the dashboard
+-- (Database -> Extensions -> pg_cron) and re-run this file.
+do $$
+begin
+  create extension if not exists pg_cron;
+
+  -- Idempotent: unschedule any previous definition before re-creating it.
+  begin
+    perform cron.unschedule('purge-unverified-accounts');
+  exception when others then null;
+  end;
+
+  perform cron.schedule(
+    'purge-unverified-accounts',
+    '17 * * * *',                       -- hourly at :17, off the busy o'clock
+    $cron$ select public.purge_unverified_accounts(); $cron$
+  );
+  raise notice '0005: purge-unverified-accounts scheduled hourly via pg_cron';
+exception when others then
+  raise notice '0005: pg_cron NOT scheduled (%). Enable pg_cron and re-run, or rely on the admin delete button.', sqlerrm;
+end $$;
+
+
+-- -----------------------------------------------------------------------------
+-- 10. OPERATOR NOTE — HOW TO MINT A NEW ADMIN AFTER THIS MIGRATION.
+--
+--     Trigger 4c makes `role` immutable through every path except direct SQL
+--     with the trigger off. That is the point. To elevate someone, as postgres
+--     in the SQL editor:
+--
+--       alter table public.profiles disable trigger profiles_enforce_transition;
+--       update public.profiles
+--          set role = 'admin', status = 'active'
+--        where email = 'someone@fflsynergy.com';
+--       alter table public.profiles enable  trigger profiles_enforce_transition;
+--
+--     Re-enabling is not optional. Leaving it disabled removes the only thing
+--     stopping a leaked secret key from writing `role = 'admin'`.
+-- -----------------------------------------------------------------------------
+
+
+-- =============================================================================
+-- 11. VERIFY — run after. Every column must read true / the expected value.
+-- =============================================================================
+select
+  to_regtype('public.account_status')                    is not null as enum_created,
+  to_regprocedure('public.current_account_status()')     is not null as fn_status,
+  to_regprocedure('public.is_active_admin()')            is not null as fn_active_admin,
+  to_regprocedure('public.purge_unverified_accounts()')  is not null as fn_purge,
+  (select count(*) from public.profiles where status = 'active')     as active_profiles,
+  (select count(*) from public.profiles where status <> 'active')    as non_active_profiles,
+  -- 🔴 THE BACKFILL REGRESSION. Must be 0. Any admin left non-active is locked
+  -- out of the dashboard that would fix it.
+  (select count(*) from public.profiles
+    where role = 'admin' and status <> 'active')                     as admins_locked_out_MUST_BE_0,
+  -- 🔴 No blanket policies. Must be 0.
+  (select count(*) from pg_policies
+    where schemaname = 'public'
+      and (coalesce(qual, '') = 'true' or coalesce(with_check, '') = 'true'))
+                                                                     as blanket_policies_MUST_BE_0,
+  -- 🔴 Column privilege. Must be exactly {status}.
+  (select coalesce(array_agg(column_name order by column_name), '{}')
+     from information_schema.column_privileges
+    where grantee = 'authenticated' and table_schema = 'public'
+      and table_name = 'profiles' and privilege_type = 'UPDATE')     as authenticated_updatable_cols;

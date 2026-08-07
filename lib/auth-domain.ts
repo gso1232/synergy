@@ -109,3 +109,45 @@ export function isCompanyEmail(email: string | null | undefined): boolean {
     isAllowlistedEmail(email)
   );
 }
+
+/**
+ * =============================================================================
+ * 🔴 MAY THIS ADDRESS **CREATE** AN ACCOUNT? DOMAIN ONLY — THE ALLOWLIST IS
+ * DELIBERATELY NOT CONSULTED, AND THAT IS THE ENTIRE REASON THIS EXISTS.
+ *
+ * `isCompanyEmail` answers "may this address SIGN IN", and it says yes to
+ * ALLOWED_EMAILS so a pre-existing, individually-vetted account is not locked
+ * out of its own portal. That is a grandfather clause for accounts that already
+ * exist.
+ *
+ * SIGNUP IS A DIFFERENT QUESTION. Public signup opened in 0005; if it reused
+ * `isCompanyEmail`, then every address on the allowlist would become an address
+ * a STRANGER could register — the allowlist would silently widen from "these
+ * specific existing accounts may sign in" to "these specific addresses may be
+ * claimed by whoever gets there first". For a personal gmail address that is a
+ * live account-takeover route, not a theoretical one.
+ *
+ * So: creation is company-domain only. Grandfathering never grants creation.
+ *
+ * The two functions must stay separate even though one currently looks like a
+ * subset of the other. Collapsing them is the bug this comment exists to
+ * prevent.
+ *
+ * SAME EXACT-MATCH RULES as everything else here: lowercased, exactly one `@`,
+ * domain compared by equality against ALLOWED_DOMAINS. Fails closed on null,
+ * empty, malformed and multi-`@` input.
+ *
+ * 🔴 THIS IS NOT THE ONLY GATE, AND MUST NOT BE THE ONLY GATE. The database
+ * trigger `on_auth_user_domain_check` (0004) re-checks the domain at INSERT on
+ * auth.users, which covers every path that never touches this code: the
+ * dashboard, the Admin API, invites, a future OAuth provider, and an admin's
+ * typo. Email verification (0005) is what makes either check mean anything —
+ * without it, "the address ends in @fflsynergy.com" is just a string someone
+ * typed.
+ * =============================================================================
+ */
+export function isCompanySignupEmail(email: string | null | undefined): boolean {
+  const p = parts(email);
+  if (!p) return false;
+  return (ALLOWED_DOMAINS as readonly string[]).includes(p.domain);
+}

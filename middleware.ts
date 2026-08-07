@@ -33,7 +33,22 @@ const intlMiddleware = createIntlMiddleware({
   defaultLocale: "en",
 });
 
-const ADMIN_PATH = /^\/(en|es)\/admin(\/|$)/;
+/**
+ * Paths that require A SESSION — any session. This is LAYER A: the cheap
+ * logged-in/logged-out gate.
+ *
+ * 🔴 IT DELIBERATELY DOES NOT CHECK ROLE OR ACCOUNT STATUS. Doing so would cost
+ * a database round trip on every request to every matched path, and it would
+ * duplicate a decision the page-level guards already make authoritatively:
+ *   · /admin        -> (portal)/admin/layout.tsx re-verifies role AND status
+ *   · /welcome      -> its own guard, redirects a non-active user to /pending
+ *   · /pending      -> its own guard, redirects an active user onward
+ * and RLS is underneath all three regardless.
+ *
+ * /signup, /login, /forgot-password and /reset-password are NOT here — they must
+ * stay reachable while logged out, which is the whole point of them.
+ */
+const AUTHED_PATH = /^\/(en|es)\/(admin|welcome|pending)(\/|$)/;
 
 export async function middleware(request: NextRequest) {
   // 1. Locale routing first; its response carries any cookies we refresh.
@@ -67,9 +82,9 @@ export async function middleware(request: NextRequest) {
     user = null;
   }
 
-  // 3. Gate the admin area. Logged-out (or errored) -> bounce to /login.
+  // 3. Gate the signed-in area. Logged-out (or errored) -> bounce to /login.
   const { pathname } = request.nextUrl;
-  if (ADMIN_PATH.test(pathname) && !user) {
+  if (AUTHED_PATH.test(pathname) && !user) {
     const locale = pathname.split("/")[1] === "es" ? "es" : "en";
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/login`;

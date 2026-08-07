@@ -4,6 +4,33 @@
  */
 export type AppRole = "admin" | "agent";
 
+/**
+ * public.account_status (0005_agent_signup.sql). FOUR states, and the order
+ * below is the lifecycle:
+ *
+ *   unverified  signed up, inbox NOT proven. Counts as nothing, reaches
+ *               nothing, never appears in the approvals queue, purged at 24h.
+ *   pending     inbox proven, awaiting an admin. Reaches NOTHING.
+ *   active      approved. The only status any RLS policy grants anything to.
+ *   rejected    denied. Reaches nothing. Reversible to active.
+ *
+ * 🔴 ONLY 'active' GRANTS ANYTHING. Every policy on the database turns on that
+ * one word — treat any other value as "deny" without special-casing it.
+ */
+export type AccountStatus = "unverified" | "pending" | "active" | "rejected";
+
+/** A row of public.profiles as an admin sees it in the approvals queue. */
+export type Profile = {
+  id: string;
+  role: AppRole;
+  status: AccountStatus;
+  full_name: string | null;
+  email: string | null;
+  created_at: string;
+  approved_at: string | null;
+  approved_by: string | null;
+};
+
 // ---- CRM (0002_crm.sql) -----------------------------------------------------
 export type LeadSource = "contact" | "calculator";
 export type LeadStatus = "new" | "contacted" | "qualified" | "closed";

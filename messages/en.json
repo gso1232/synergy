@@ -803,7 +803,12 @@
     "deniedNotice": "That account doesn't have access to the admin area. Sign in with an admin account, or call 407-434-0400.",
     "notLiveTitle": "Sign-in is not connected yet.",
     "notLiveBody": "This screen is a design preview. Nothing is sent, no account is checked and no session is created. Call 407-434-0400 if you need access in the meantime.",
-    "metaLabel": "Staff & agent portal"
+    "metaLabel": "Staff & agent portal",
+    "noAccount": "Don't have an account?",
+    "createAccount": "Create one",
+    "resetDone": "Your password has been changed. Sign in with your new password.",
+    "resetExpired": "That reset link has expired or has already been used. Request a new one.",
+    "confirmFailed": "That confirmation link is invalid or has already been used. Try signing in, or request a new link."
   },
   "admin": {
     "metaTitle": "Admin — Synergy Insurance Group",
@@ -977,7 +982,63 @@
     "greetMorning": "Good morning, {name}",
     "greetAfternoon": "Good afternoon, {name}",
     "greetEvening": "Good evening, {name}",
-    "navLabel": "Dashboard sections"
+    "navLabel": "Dashboard sections",
+    "accounts": {
+      "heading": "Accounts",
+      "awaiting": "Awaiting approval",
+      "loadError": "Accounts could not be loaded.",
+      "empty": "No accounts yet.",
+      "noName": "No name given",
+      "adminTag": "Admin",
+      "you": "You",
+      "approve": "Approve",
+      "reject": "Reject",
+      "revoke": "Revoke access",
+      "restore": "Restore",
+      "delete": "Delete",
+      "deleteConfirm": "Delete this unconfirmed account? The address becomes available again.",
+      "col": {
+        "name": "Name",
+        "email": "Email",
+        "status": "Status",
+        "signedUp": "Signed up",
+        "actions": "Actions"
+      },
+      "status": {
+        "unverified": "Unconfirmed",
+        "pending": "Pending",
+        "active": "Active",
+        "rejected": "Rejected"
+      },
+      "error": {
+        "forbidden": "You no longer have permission to do that. Sign in again.",
+        "invalid": "That action is not valid for this account.",
+        "write_failed": "The database refused that change. Nothing was modified."
+      }
+    },
+    "applications": {
+      "heading": "Applications",
+      "loadError": "Applications could not be loaded.",
+      "yes": "Yes",
+      "no": "No",
+      "cols": {
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "state": "State",
+        "licensed": "Licensed",
+        "heard": "Heard via",
+        "consent": "Consent",
+        "received": "Received"
+      },
+      "heard": {
+        "search": "Search",
+        "social": "Social",
+        "referral": "Referral",
+        "event": "Event",
+        "other": "Other"
+      }
+    }
   },
   "engine": {
     "diagramLabel": "Diagram: Synergy connected to each of its carrier partners.",
@@ -989,5 +1050,80 @@
     "call": "Call 407-434-0400",
     "callAria": "Call Synergy Insurance Group on 407-434-0400",
     "join": "Join our team"
+  },
+  "signup": {
+    "metaTitle": "Create your account — Synergy Insurance Group",
+    "metaDescription": "Request access to the Synergy agent portal.",
+    "heading": "Create your account",
+    "subhead": "For Synergy agents. Your account is reviewed before it is activated.",
+    "back": "Back to site",
+    "nameLabel": "Full name",
+    "emailLabel": "Work email",
+    "domainHint": "Use your @fflsynergy.com address.",
+    "passwordLabel": "Password",
+    "passwordHint": "At least 10 characters.",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "submit": "Create account",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "sent": "Check your inbox. If that address is eligible, we've sent a link to confirm it. Once confirmed, an administrator reviews your account before it is activated.",
+    "errorMissing": "Please fill in every field.",
+    "errorDomain": "Use your @fflsynergy.com work address.",
+    "errorWeak": "Your password needs at least 10 characters.",
+    "errorThrottled": "Too many attempts. Please wait a few minutes and try again."
+  },
+  "forgot": {
+    "metaTitle": "Reset your password — Synergy Insurance Group",
+    "metaDescription": "Request a password reset link for the Synergy portal.",
+    "heading": "Reset your password",
+    "subhead": "Enter your work email and we'll send you a link to set a new one.",
+    "back": "Back to site",
+    "emailLabel": "Work email",
+    "submit": "Send reset link",
+    "backToSignIn": "Back to sign in",
+    "sent": "If an account exists for that address, we've sent a link to reset the password. The link expires in one hour.",
+    "errorMissing": "Enter a valid email address.",
+    "errorThrottled": "Too many requests. Please wait a few minutes and try again."
+  },
+  "reset": {
+    "metaTitle": "Set a new password — Synergy Insurance Group",
+    "metaDescription": "Choose a new password for your Synergy portal account.",
+    "heading": "Set a new password",
+    "subhead": "Choose a password you don't use anywhere else.",
+    "back": "Back to site",
+    "passwordLabel": "New password",
+    "passwordHint": "At least 10 characters.",
+    "confirmLabel": "Confirm new password",
+    "showPassword": "Show",
+    "hidePassword": "Hide",
+    "submit": "Save password",
+    "errorMissing": "Fill in both fields.",
+    "errorMismatch": "Those passwords don't match.",
+    "errorWeak": "Your password needs at least 10 characters.",
+    "errorExpired": "That link has expired or has already been used. Request a new one.",
+    "errorFailed": "We couldn't save that password. Try a different one, or request a new link."
+  },
+  "pending": {
+    "metaTitle": "Account pending — Synergy Insurance Group",
+    "metaDescription": "Your Synergy portal account is awaiting approval.",
+    "heading": "Almost there",
+    "subhead": "Your account is waiting for approval.",
+    "subheadUnverified": "Confirm your email address to continue.",
+    "back": "Back to site",
+    "notice": "An administrator reviews every new account. You'll be able to sign in as soon as yours is approved.",
+    "noticeUnverified": "We've sent a confirmation link to your work email. Open it to finish setting up your account.",
+    "body": "Nothing further is needed from you right now. If it's been more than a working day, contact your Synergy administrator.",
+    "signOut": "Sign out"
+  },
+  "welcome": {
+    "metaTitle": "Welcome — Synergy Insurance Group",
+    "metaDescription": "Your Synergy agent account.",
+    "heading": "Welcome to Synergy",
+    "subhead": "Your account is active.",
+    "back": "Back to site",
+    "active": "Your account has been approved and is active.",
+    "body": "Agent training and resources are being prepared and will appear here. You'll be able to sign in with the same details.",
+    "signOut": "Sign out"
   }
 }

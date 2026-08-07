@@ -803,7 +803,12 @@
     "deniedNotice": "Esa cuenta no tiene acceso al área de administración. Inicie sesión con una cuenta de administrador o llame al 407-434-0400.",
     "notLiveTitle": "El inicio de sesión todavía no está conectado.",
     "notLiveBody": "Esta pantalla es una vista previa de diseño. No se envía nada, no se verifica ninguna cuenta y no se crea ninguna sesión. Llame al 407-434-0400 si necesita acceso mientras tanto.",
-    "metaLabel": "Portal de personal y agentes"
+    "metaLabel": "Portal de personal y agentes",
+    "noAccount": "¿No tiene una cuenta?",
+    "createAccount": "Cree una",
+    "resetDone": "Su contraseña fue cambiada. Inicie sesión con la nueva contraseña.",
+    "resetExpired": "Ese enlace de restablecimiento venció o ya se usó. Solicite uno nuevo.",
+    "confirmFailed": "Ese enlace de confirmación no es válido o ya se usó. Intente iniciar sesión o solicite uno nuevo."
   },
   "admin": {
     "metaTitle": "",
@@ -962,7 +967,63 @@
     "greetMorning": "Buenos días, {name}",
     "greetAfternoon": "Buenas tardes, {name}",
     "greetEvening": "Buenas noches, {name}",
-    "navLabel": "Secciones del panel"
+    "navLabel": "Secciones del panel",
+    "accounts": {
+      "heading": "Cuentas",
+      "awaiting": "Esperan aprobación",
+      "loadError": "No se pudieron cargar las cuentas.",
+      "empty": "Todavía no hay cuentas.",
+      "noName": "Sin nombre",
+      "adminTag": "Admin",
+      "you": "Usted",
+      "approve": "Aprobar",
+      "reject": "Rechazar",
+      "revoke": "Revocar acceso",
+      "restore": "Restaurar",
+      "delete": "Eliminar",
+      "deleteConfirm": "¿Eliminar esta cuenta sin confirmar? La dirección volverá a estar disponible.",
+      "col": {
+        "name": "Nombre",
+        "email": "Correo",
+        "status": "Estado",
+        "signedUp": "Registro",
+        "actions": "Acciones"
+      },
+      "status": {
+        "unverified": "Sin confirmar",
+        "pending": "Pendiente",
+        "active": "Activa",
+        "rejected": "Rechazada"
+      },
+      "error": {
+        "forbidden": "Ya no tiene permiso para hacer eso. Inicie sesión de nuevo.",
+        "invalid": "Esa acción no es válida para esta cuenta.",
+        "write_failed": "La base de datos rechazó ese cambio. No se modificó nada."
+      }
+    },
+    "applications": {
+      "heading": "Solicitudes",
+      "loadError": "No se pudieron cargar las solicitudes.",
+      "yes": "Sí",
+      "no": "No",
+      "cols": {
+        "name": "Nombre",
+        "email": "Correo",
+        "phone": "Teléfono",
+        "state": "Estado",
+        "licensed": "Con licencia",
+        "heard": "Nos conoció por",
+        "consent": "Consentimiento",
+        "received": "Recibida"
+      },
+      "heard": {
+        "search": "Búsqueda",
+        "social": "Redes",
+        "referral": "Referencia",
+        "event": "Evento",
+        "other": "Otro"
+      }
+    }
   },
   "engine": {
     "diagramLabel": "Diagrama: Synergy conectada con cada una de sus aseguradoras aliadas.",
@@ -974,5 +1035,80 @@
     "call": "Llame al 407-434-0400",
     "callAria": "Llamar a Synergy Insurance Group al 407-434-0400",
     "join": "Únete a nuestro equipo"
+  },
+  "signup": {
+    "metaTitle": "Cree su cuenta — Synergy Insurance Group",
+    "metaDescription": "Solicite acceso al portal de agentes de Synergy.",
+    "heading": "Cree su cuenta",
+    "subhead": "Para agentes de Synergy. Su cuenta se revisa antes de activarse.",
+    "back": "Volver al sitio",
+    "nameLabel": "Nombre completo",
+    "emailLabel": "Correo de trabajo",
+    "domainHint": "Use su dirección @fflsynergy.com.",
+    "passwordLabel": "Contraseña",
+    "passwordHint": "Mínimo 10 caracteres.",
+    "showPassword": "Mostrar",
+    "hidePassword": "Ocultar",
+    "submit": "Crear cuenta",
+    "haveAccount": "¿Ya tiene una cuenta?",
+    "signIn": "Iniciar sesión",
+    "sent": "Revise su correo. Si esa dirección es elegible, le enviamos un enlace para confirmarla. Una vez confirmada, un administrador revisa su cuenta antes de activarla.",
+    "errorMissing": "Complete todos los campos.",
+    "errorDomain": "Use su dirección de trabajo @fflsynergy.com.",
+    "errorWeak": "Su contraseña necesita al menos 10 caracteres.",
+    "errorThrottled": "Demasiados intentos. Espere unos minutos e inténtelo de nuevo."
+  },
+  "forgot": {
+    "metaTitle": "Restablecer contraseña — Synergy Insurance Group",
+    "metaDescription": "Solicite un enlace para restablecer su contraseña del portal.",
+    "heading": "Restablecer su contraseña",
+    "subhead": "Escriba su correo de trabajo y le enviaremos un enlace para crear una nueva.",
+    "back": "Volver al sitio",
+    "emailLabel": "Correo de trabajo",
+    "submit": "Enviar enlace",
+    "backToSignIn": "Volver a iniciar sesión",
+    "sent": "Si existe una cuenta con esa dirección, le enviamos un enlace para restablecer la contraseña. El enlace vence en una hora.",
+    "errorMissing": "Escriba una dirección de correo válida.",
+    "errorThrottled": "Demasiadas solicitudes. Espere unos minutos e inténtelo de nuevo."
+  },
+  "reset": {
+    "metaTitle": "Nueva contraseña — Synergy Insurance Group",
+    "metaDescription": "Elija una nueva contraseña para su cuenta del portal.",
+    "heading": "Elija una nueva contraseña",
+    "subhead": "Use una contraseña que no utilice en ningún otro sitio.",
+    "back": "Volver al sitio",
+    "passwordLabel": "Nueva contraseña",
+    "passwordHint": "Mínimo 10 caracteres.",
+    "confirmLabel": "Confirme la nueva contraseña",
+    "showPassword": "Mostrar",
+    "hidePassword": "Ocultar",
+    "submit": "Guardar contraseña",
+    "errorMissing": "Complete ambos campos.",
+    "errorMismatch": "Las contraseñas no coinciden.",
+    "errorWeak": "Su contraseña necesita al menos 10 caracteres.",
+    "errorExpired": "Ese enlace venció o ya se usó. Solicite uno nuevo.",
+    "errorFailed": "No pudimos guardar esa contraseña. Pruebe con otra o solicite un enlace nuevo."
+  },
+  "pending": {
+    "metaTitle": "Cuenta pendiente — Synergy Insurance Group",
+    "metaDescription": "Su cuenta del portal de Synergy espera aprobación.",
+    "heading": "Ya casi",
+    "subhead": "Su cuenta espera aprobación.",
+    "subheadUnverified": "Confirme su correo electrónico para continuar.",
+    "back": "Volver al sitio",
+    "notice": "Un administrador revisa cada cuenta nueva. Podrá iniciar sesión en cuanto se apruebe la suya.",
+    "noticeUnverified": "Enviamos un enlace de confirmación a su correo de trabajo. Ábralo para terminar de configurar su cuenta.",
+    "body": "Por ahora no necesitamos nada más de su parte. Si pasó más de un día hábil, comuníquese con su administrador de Synergy.",
+    "signOut": "Cerrar sesión"
+  },
+  "welcome": {
+    "metaTitle": "Bienvenido — Synergy Insurance Group",
+    "metaDescription": "Su cuenta de agente de Synergy.",
+    "heading": "Bienvenido a Synergy",
+    "subhead": "Su cuenta está activa.",
+    "back": "Volver al sitio",
+    "active": "Su cuenta fue aprobada y está activa.",
+    "body": "La capacitación y los recursos para agentes se están preparando y aparecerán aquí. Podrá iniciar sesión con los mismos datos.",
+    "signOut": "Cerrar sesión"
   }
 }

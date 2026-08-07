@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import AdminDashboard from "@/components/admin/AdminDashboard";
 import { getUserAndRole } from "@/lib/supabase/auth";
-import { getAgents, getLeads } from "@/lib/admin/data";
+import { getAgents, getApplications, getLeads, getProfiles } from "@/lib/admin/data";
 
 // 🔴 Auth-gated + live data: must render per request, never prerendered.
 export const dynamic = "force-dynamic";
@@ -33,8 +33,10 @@ export async function generateMetadata({
 
 export default async function AdminPage({
   params: { locale },
+  searchParams,
 }: {
   params: { locale: string };
+  searchParams: { accountError?: string };
 }) {
   unstable_setRequestLocale(locale);
 
@@ -45,7 +47,12 @@ export default async function AdminPage({
      shares the layout's round trip rather than paying for a second one. */
   const { user, role } = await getUserAndRole();
 
-  const [leadsRes, agentsRes] = await Promise.all([getLeads(), getAgents()]);
+  const [leadsRes, agentsRes, profilesRes, applicationsRes] = await Promise.all([
+    getLeads(),
+    getAgents(),
+    getProfiles(),
+    getApplications(),
+  ]);
 
   /* The view is shared with the development-only design preview
      (`(portal)/admin-preview`), so the two can never drift. It renders what it
@@ -57,6 +64,10 @@ export default async function AdminPage({
       role={role}
       leadsRes={leadsRes}
       agentsRes={agentsRes}
+      profilesRes={profilesRes}
+      applicationsRes={applicationsRes}
+      currentUserId={user?.id ?? ""}
+      accountError={searchParams?.accountError}
     />
   );
 }

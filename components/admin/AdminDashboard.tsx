@@ -9,8 +9,9 @@ import AdminCard from "@/components/admin/AdminCard";
 import AgentsManager from "@/components/admin/AgentsManager";
 import StatRow from "@/components/admin/StatRow";
 import DataTable, { type Row } from "@/components/admin/DataTable";
+import ApprovalsQueue from "@/components/admin/ApprovalsQueue";
 import { getContent, type ReadResult } from "@/lib/admin/data";
-import type { Agent, AppRole, Lead } from "@/lib/types";
+import type { Agent, Application, AppRole, Lead, Profile } from "@/lib/types";
 
 /** Which `interest` values are product keys rather than free text. Moved here
  *  with the leads table; identical set to the one the admin page held. */
@@ -50,12 +51,27 @@ export default async function AdminDashboard({
   role,
   leadsRes,
   agentsRes,
+  profilesRes,
+  applicationsRes,
+  currentUserId,
+  accountError,
 }: {
   locale: string;
   userLabel: string;
   role: AppRole | null;
   leadsRes: ReadResult<Lead>;
   agentsRes: ReadResult<Agent>;
+  /* Optional so (portal)/admin-preview — which hands over fixtures and has no
+     Supabase client at all — keeps compiling without inventing fake accounts.
+     Absent means the section is not rendered, never that it is empty. */
+  profilesRes?: ReadResult<Profile>;
+  /* Same optionality reasoning as profilesRes: the design-preview route has no
+     Supabase client, and a table of fixture APPLICATIONS is exactly the kind of
+     thing someone later mistakes for a real recruiting pipeline. */
+  applicationsRes?: ReadResult<Application>;
+  currentUserId?: string;
+  /** Set by a failed approve/reject/delete redirect. Coarse code only. */
+  accountError?: string;
 }) {
   const t = await getTranslations({ locale, namespace: "admin" });
   /* Product NAMES are read from the `services` namespace, not restated here, so
@@ -169,6 +185,27 @@ export default async function AdminDashboard({
     tones: { status: c.status === "published" ? "good" : "warn" },
   }));
 
+  /* 🔴 APPLICATIONS — /join submissions. Read-only by design: 0003 grants the
+     admin SELECT and nothing else, so there is no update path to render and no
+     ApplicationInput type to build a form from. `consent` is shown as a plain
+     yes/no because it is a legal record of what the applicant agreed to, not a
+     status to be styled. */
+  const applications = applicationsRes?.ok ? applicationsRes.rows : [];
+  const applicationRows: Row[] = applications.map((a) => ({
+    id: a.id,
+    cells: {
+      name: `${a.first_name} ${a.last_name}`.trim(),
+      email: a.email,
+      phone: a.phone,
+      state: a.state,
+      licensed: a.licensed ? t("applications.yes") : t("applications.no"),
+      heard: a.heard ? t(`applications.heard.${a.heard}`) : "—",
+      consent: a.consent ? t("applications.yes") : t("applications.no"),
+      received: fmt.format(new Date(a.received_at)),
+    },
+    tones: { licensed: a.licensed ? ("good" as const) : ("warn" as const) },
+  }));
+
   const col = (ns: string, key: string, sortable = true) => ({
     key,
     label: t(`${ns}.cols.${key}`),
@@ -230,6 +267,59 @@ export default async function AdminDashboard({
         </AdminCard>
       </section>
 
+      {/* ---------- ACCOUNTS / APPROVALS — FIRST, AND THAT IS THE POINT.
+          It sits above leads and agents because it is the only section holding a
+          decision that BLOCKS a real person: an agent who signed up cannot reach
+          anything until someone here says yes. Leads and agents are records to
+          review; this is a queue with people waiting in it, and a queue put
+          third is a queue read last.
+
+          🔴 IT RENDERS ONLY WHEN THE PAGE SUPPLIED DATA. The design preview
+          route passes no `profilesRes`, and an approvals table filled with
+          fixture accounts is exactly the kind of thing someone later mistakes
+          for real. Absent means absent. */}
+      {profilesRes ? (
+        <section aria-labelledby="accounts" className="mt-8">
+          <h2 id="accounts" className="sr-only">
+            {t("accounts.heading")}
+          </h2>
+          <AdminCard
+            title={t("accounts.heading")}
+            meta={metaLine(t("accounts.heading"))}
+            statusLabel={t("accounts.awaiting")}
+            statusValue={String(
+              profilesRes.ok
+                ? profilesRes.rows.filter((p) => p.status === "pending").length
+                : 0,
+            )}
+          >
+            {accountError ? (
+              <p
+                role="alert"
+                className="mb-4 rounded-lg border border-[#8A2A1A]/40 bg-[#FBEBE7] px-4 py-3 text-[14px] text-[#7A2416]"
+              >
+                {t(`accounts.error.${accountError === "forbidden" || accountError === "invalid" ? accountError : "write_failed"}`)}
+              </p>
+            ) : null}
+
+            {!profilesRes.ok ? (
+              <p
+                role="alert"
+                className="rounded-lg border border-[#8A2A1A]/40 bg-[#FBEBE7] px-4 py-4 text-[14px] text-[#7A2416]"
+              >
+                {t("accounts.loadError")}
+              </p>
+            ) : (
+              <ApprovalsQueue
+                profiles={profilesRes.rows}
+                locale={locale}
+                currentUserId={currentUserId ?? ""}
+              />
+            )}
+          </AdminCard>
+        </section>
+      ) : null}
+
       {/* ---------- AGENTS — card + plain table + stats ----------
           No master/detail here on purpose: the create/edit form already owns
           the right-hand pane and two editors would compete. */}
@@ -258,6 +348,53 @@ export default async function AdminDashboard({
           )}
         </AdminCard>
       </section>
+
+      {/* ---------- APPLICATIONS — /join submissions, read-only ----------
+          🔴 IT SITS BETWEEN AGENTS AND CONTENT because it is the RECRUITING
+          pipeline: a person who applied but is not yet an agent. It is NOT a
+          lead — no lead form is wired, and the consent wording for lead capture
+          is still owed by the client.
+
+          Read-only, and that is enforced below the UI: 0003 gives the admin
+          SELECT and NOTHING else, and rows are written only by the /join server
+          action's service-role client. There is no edit control to add. */}
+      {applicationsRes ? (
+        <section aria-labelledby="applications" className="mt-8">
+          <h2 id="applications" className="sr-only">
+            {t("applications.heading")}
+          </h2>
+          <AdminCard
+            title={t("applications.heading")}
+            meta={metaLine(t("applications.heading"))}
+            statusLabel={t("card.records")}
+            statusValue={String(applications.length)}
+          >
+            {!applicationsRes.ok ? (
+              <p
+                role="alert"
+                className="rounded-lg border border-[#8A2A1A]/40 bg-[#FBEBE7] px-4 py-4 text-[14px] text-[#7A2416]"
+              >
+                {t("applications.loadError")}
+              </p>
+            ) : (
+              <DataTable
+                caption={t("applications.heading")}
+                columns={[
+                  col("applications", "name"),
+                  col("applications", "email"),
+                  col("applications", "phone", false),
+                  col("applications", "state"),
+                  col("applications", "licensed"),
+                  col("applications", "heard"),
+                  col("applications", "consent", false),
+                  col("applications", "received"),
+                ]}
+                rows={applicationRows}
+              />
+            )}
+          </AdminCard>
+        </section>
+      ) : null}
 
       {/* ---------- CONTENT — card + plain table, no stat row ----------
           Four read-only columns and nothing to detail; its one real figure

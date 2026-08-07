@@ -2,9 +2,11 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Lock, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { signIn, type SignInState } from "@/app/[locale]/(portal)/login/actions";
+import { LINK } from "@/components/portal/authStyles";
 
 /**
  * The sign-in form — LIVE as of auth phase 2. It submits to the `signIn` server
@@ -215,20 +217,30 @@ export default function LoginForm({ locale }: { locale: string }) {
         </div>
 
         <div className="mt-4 flex justify-end">
-          {/* Disabled: /forgot-password does not exist yet. A link is a promise
-              that a page exists (routes.ts). gold-pale on dark, dimmed while
-              disabled. */}
-          <button
-            type="button"
-            disabled
-            className="text-[14px] text-gold-pale underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale disabled:no-underline disabled:opacity-55"
-          >
+          {/* 🔴 LIVE AS OF 0005. It was a DISABLED button because the route did
+              not exist and "a link is a promise that a page exists" (routes.ts).
+              /forgot-password exists now, so the promise is kept and it becomes
+              a real link. */}
+          <Link href={`/${locale}/forgot-password`} className={LINK}>
             {t("forgot")}
-          </button>
+          </Link>
         </div>
 
         <SubmitButton label={t("submit")} />
       </fieldset>
+
+      {/* 🔴 THE SIGN-UP LINK, ALSO NEW IN 0005 — and it is the visible face of
+          the biggest security change in this project. Until now this form
+          deliberately had NO sign-up: accounts were admin-created and that was
+          the control keeping strangers out. Public signup replaces that control
+          with three others (company domain, email verification, and the pending
+          state denied in RLS). See signup/actions.ts. */}
+      <p className="mt-6 text-center text-[14px] text-cream/75">
+        {t("noAccount")}{" "}
+        <Link href={`/${locale}/signup`} className={LINK}>
+          {t("createAccount")}
+        </Link>
+      </p>
 
       {/* Error region. `role="alert"` announces it the moment it appears; it is
           empty (and silent) until the action returns an error. Warm salmon on a

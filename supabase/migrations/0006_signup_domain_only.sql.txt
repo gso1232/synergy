@@ -1,0 +1,106 @@
+-- =============================================================================
+-- 0006_signup_domain_only.sql  —  CLOSE THE ALLOWLIST WIDENING AT THE DATABASE.
+--
+-- HOW TO RUN IT (once): Supabase dashboard -> SQL Editor -> paste -> Run.
+-- Idempotent (`create or replace` + `drop trigger if exists`). Safe to re-run.
+--
+-- =============================================================================
+-- 🔴 WHAT WAS WRONG, AND HOW IT WAS FOUND.
+--
+-- Found by `scripts/test-rls-accounts.mjs` GATE 1, group 2, running against the
+-- live project with the service key. The assertion:
+--
+--     create "mohamed204430@gmail.com" is refused
+--       (allowlisted for SIGN-IN, must not be creatable)
+--     FAIL — got 200, user f30f54eb-… created
+--
+-- 0004's creation trigger reads:
+--
+--     if not (public.is_company_email(new.email)
+--             or public.is_allowlisted_email(new.email)) then raise ...
+--
+-- That `or` is correct for SIGN-IN and wrong for CREATION, and the distinction
+-- did not matter until 0005 opened public signup.
+--
+--   BEFORE 0005 — accounts were admin-created only. The allowlist meant "this
+--   one pre-existing, individually-vetted gmail account may exist and sign in".
+--   Nobody else could create anything, so an allowlisted address being
+--   *creatable* was theoretical.
+--
+--   AFTER 0005 — anyone may cause an account to exist. The same `or` now means
+--   "this specific address may be REGISTERED BY WHOEVER GETS THERE FIRST",
+--   which on a personal gmail address is an account-takeover route: register it,
+--   confirm it from the inbox you control, and you hold an account that
+--   `isCompanyEmail()` accepts at sign-in.
+--
+-- The application layer already draws this line — `isCompanySignupEmail()`
+-- (domains only) for creation vs `isCompanyEmail()` (domains + allowlist) for
+-- sign-in, see lib/auth-domain.ts. This migration makes the DATABASE agree.
+--
+-- 🔴 WHY IT MATTERED EVEN THOUGH THE APP ALREADY BLOCKED IT.
+-- The app check is not the backstop; this trigger is. 0004's own docblock says
+-- it exists to catch "every path that never touches our code" — the dashboard,
+-- the Admin API, invites, a future provider, and the admin's own typo. A
+-- backstop that permits what the front door forbids is not a backstop. The
+-- proof test aimed the Admin API straight at it, which is exactly one of those
+-- paths, and it let the account through.
+--
+-- =============================================================================
+-- WHAT CHANGES, AND WHAT DELIBERATELY DOES NOT.
+--
+--   CHANGED:  the creation trigger no longer consults the allowlist.
+--   UNCHANGED: `public.is_allowlisted_email()` still exists and still returns
+--              true for the allowlisted address. It is the SQL mirror of
+--              ALLOWED_EMAILS in lib/auth-domain.ts, which still honours it at
+--              SIGN-IN. The instruction was that the allowlist stays intact and
+--              must not widen; this keeps it intact and stops the widening.
+--
+-- 🟡 IT IS NOW DEAD IN SQL, AND THAT IS WORTH A DECISION LATER. Nothing in the
+--    database calls `is_allowlisted_email` after this migration, and the account
+--    it names — mohamed204430@gmail.com — DOES NOT EXIST on this project (the
+--    only accounts are @fflsynergy.com; aiman@fflsynergy.com is the admin).
+--    lib/auth-domain.ts already anticipated this: "THIS IS A BRIDGE, NOT THE
+--    DESTINATION … after which this entry should be DELETED". Removing
+--    ALLOWED_EMAILS and this function is the clean end state; it is left in
+--    place here because deleting it was not the instruction, and a dead
+--    allowlist grants nothing now that creation ignores it.
+-- =============================================================================
+
+create or replace function public.enforce_company_domain()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  -- 🔴 DOMAIN ONLY. `or public.is_allowlisted_email(new.email)` was removed
+  -- here on 2026-08-07 — see the box above. Grandfathering an address for
+  -- sign-in must never make it registrable. If a non-company account genuinely
+  -- has to exist again, create it as `postgres` with this trigger temporarily
+  -- disabled, the same privileged path used to mint an admin (0005 §10).
+  if not public.is_company_email(new.email) then
+    raise exception
+      'Account creation denied: only @fflsynergy.com addresses may have portal accounts (got %).',
+      coalesce(split_part(new.email, '@', 2), '<no domain>');
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_domain_check on auth.users;
+create trigger on_auth_user_domain_check
+  before insert on auth.users
+  for each row execute function public.enforce_company_domain();
+
+
+-- =============================================================================
+-- VERIFY — both columns must read as shown.
+-- =============================================================================
+select
+  -- The allowlist FUNCTION is intentionally still true; it is sign-in only now.
+  public.is_allowlisted_email('mohamed204430@gmail.com') as allowlist_intact_expect_true,
+  -- 🔴 The thing that actually gates creation must be FALSE for that address.
+  public.is_company_email('mohamed204430@gmail.com')     as creatable_MUST_BE_false,
+  public.is_company_email('agent@fflsynergy.com')        as company_still_creatable_expect_true,
+  public.is_company_email('evil@mail.fflsynergy.com')    as subdomain_MUST_BE_false,
+  public.is_company_email('a@fflsynergy.com@evil.com')   as multi_at_MUST_BE_false;

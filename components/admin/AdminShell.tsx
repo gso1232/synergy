@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { signOut } from "@/app/[locale]/(portal)/admin/actions";
+import { signOut } from "@/app/[locale]/(portal)/session/actions";
 
 /**
  * The admin chrome: collapsible sidebar + sticky top header.

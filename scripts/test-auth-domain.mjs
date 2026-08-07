@@ -126,8 +126,95 @@ if (!arrayMatch) {
   }
 }
 
-// --- Assert there is no public signup anywhere in app code ------------------
-console.log("\nNO-PUBLIC-SIGNUP ASSERTION\n" + "=".repeat(72));
+// --- SIGN-UP vs SIGN-IN ELIGIBILITY -----------------------------------------
+//
+// 🔴 THE ALLOWLIST MUST NOT WIDEN FROM "MAY SIGN IN" TO "MAY BE REGISTERED".
+//
+// `isCompanyEmail` (sign-in) honours ALLOWED_EMAILS so a pre-existing, vetted
+// account is not locked out of its own portal. `isCompanySignupEmail` (account
+// CREATION) must not, because signup is now open to the public: if creation
+// honoured the allowlist, any stranger could register the allowlisted address
+// and take it over. Grandfathering must never grant creation.
+//
+// This is the single most important behavioural difference between the two
+// functions, and it is one word apart in the source, so it is tested directly.
+console.log("\nSIGN-UP ELIGIBILITY (isCompanySignupEmail)\n" + "=".repeat(72));
+
+const signupSrc = readFileSync(new URL("../lib/auth-domain.ts", import.meta.url), "utf8");
+if (!/export function isCompanySignupEmail/.test(signupSrc)) {
+  console.log("  FAIL  isCompanySignupEmail is missing from lib/auth-domain.ts");
+  failures++;
+} else {
+  // Mirror of the implementation: ALLOWED_DOMAINS only, no allowlist.
+  const isCompanySignupEmail = (email) => {
+    if (typeof email !== "string") return false;
+    const bits = email.trim().toLowerCase().split("@");
+    if (bits.length !== 2) return false;
+    const [local, domain] = bits;
+    if (!local || !domain) return false;
+    return ALLOWED.includes(domain);
+  };
+
+  const SIGNUP_CASES = [
+    ["agent@fflsynergy.com", true, "company domain may register"],
+    ["AGENT@FFLSYNERGY.COM", true, "case-insensitive"],
+    ...ALLOWED_EMAILS.map((e) => [
+      e,
+      false,
+      "🔴 allowlisted address may SIGN IN but must NOT be registrable",
+    ]),
+    ["evil@gmail.com", false, "public mail domain"],
+    ["evil@mail.fflsynergy.com", false, "subdomain is not the domain"],
+    ["evil@notfflsynergy.com", false, "substring attack"],
+    ["a@fflsynergy.com@evil.com", false, "double-@"],
+    ["", false, "empty"],
+    [null, false, "null"],
+    [undefined, false, "undefined"],
+  ];
+
+  for (const [input, expected, why] of SIGNUP_CASES) {
+    const got = isCompanySignupEmail(input);
+    const label = expected ? "ALLOW" : "DENY ";
+    // `JSON.stringify(undefined)` is undefined, not a string — String() first
+    // or the reporter crashes on exactly the fail-closed case it is testing.
+    const shown = String(JSON.stringify(input)).padEnd(38);
+    if (got === expected) {
+      console.log(`  ok    ${label}  ${shown} ${why}`);
+    } else {
+      console.log(`  FAIL  ${label}  ${shown} ${why}`);
+      failures++;
+    }
+  }
+
+  // Drift guard: the two functions must not be collapsed into one.
+  if (/isCompanySignupEmail[\s\S]{0,400}?isAllowlistedEmail/.test(signupSrc)) {
+    console.log(
+      "  FAIL  isCompanySignupEmail appears to consult the allowlist — that widens\n" +
+        "        it from sign-in grandfathering to registrable addresses.",
+    );
+    failures++;
+  } else {
+    console.log("  ok   DRIFT   isCompanySignupEmail does not consult ALLOWED_EMAILS");
+  }
+}
+
+// --- SIGN-UP SURFACE ASSERTION ----------------------------------------------
+//
+// 🔴 THIS ASSERTION IS INVERTED AS OF 0005, AND THE INVERSION IS THE POINT.
+//
+// It used to assert that NO `signUp` call existed anywhere — that was the
+// control keeping strangers out, and this test was its enforcement. 0005 opens
+// public signup, so the old assertion is now false BY DESIGN. Leaving it would
+// mean a permanently red test, and the likely response to a permanently red
+// test is deleting it — losing the guard entirely.
+//
+// What replaces it is TIGHTER, not looser:
+//   · signUp() must exist in EXACTLY ONE file, the one that carries the
+//     company-domain check and the rate limit;
+//   · OTP / OAuth / id-token sign-in must not exist AT ALL, because each is a
+//     self-service entry point that bypasses signup/actions.ts entirely and
+//     therefore bypasses the domain gate with it.
+console.log("\nSIGN-UP SURFACE ASSERTION\n" + "=".repeat(72));
 import { execSync } from "node:child_process";
 // 🔴 MATCH CALL SYNTAX, AND STRIP COMMENTS. A first version grepped the bare
 // word `signUp` and failed on a COMMENT in SiteHeader.tsx reading "There is no
@@ -143,8 +230,16 @@ import { execSync } from "node:child_process";
 // the found-case output is taken from the thrown error's stdout.
 let raw = "";
 try {
+  // 🔴 `--untracked` IS LOAD-BEARING AND ITS ABSENCE WAS A FALSE PASS.
+  // Plain `git grep` searches the INDEX, not the working tree. When
+  // signup/actions.ts was first written it was a new, unstaged file — so the
+  // grep did not see it and this assertion reported "no signUp anywhere" while
+  // a live public-signup action sat on disk. Caught by negative control: the
+  // test passed at a moment it had to fail. Any check that greps source for a
+  // security property must include untracked files, or it silently stops
+  // testing exactly the code that was just added.
   raw = execSync(
-    'git grep -n -E "\\.(signUp|signInWithOtp|signInWithOAuth|signInWithIdToken)[[:space:]]*\\(" -- "*.ts" "*.tsx"',
+    'git grep -n --untracked -E "\\.(signUp|signInWithOtp|signInWithOAuth|signInWithIdToken)[[:space:]]*\\(" -- "*.ts" "*.tsx"',
     { encoding: "utf8" },
   ).trim();
 } catch (e) {
@@ -164,11 +259,44 @@ const signupHits = raw
     return !code.startsWith("*") && !code.startsWith("//") && !code.startsWith("/*");
   });
 
-if (signupHits.length) {
-  console.log("  FAIL  a self-service auth entry point exists:\n" + signupHits.join("\n"));
+// The ONE file allowed to call signUp. Anything else is a regression.
+const SIGNUP_OWNER = "app/[locale]/(portal)/signup/actions.ts";
+
+const otherEntryPoints = signupHits.filter((line) =>
+  /\.(signInWithOtp|signInWithOAuth|signInWithIdToken)\s*\(/.test(line),
+);
+const signUpCalls = signupHits.filter((line) => /\.signUp\s*\(/.test(line));
+const straySignUp = signUpCalls.filter(
+  (line) => !line.replace(/\\/g, "/").startsWith(SIGNUP_OWNER),
+);
+
+if (otherEntryPoints.length) {
+  console.log(
+    "  FAIL  an OTP / OAuth / id-token entry point exists — it would bypass the\n" +
+      "        company-domain check in signup/actions.ts:\n" +
+      otherEntryPoints.join("\n"),
+  );
   failures++;
 } else {
-  console.log("  ok   no signUp / OTP / OAuth CALL anywhere — accounts are admin-created only");
+  console.log("  ok   no OTP / OAuth / id-token sign-in anywhere");
+}
+
+if (straySignUp.length) {
+  console.log(
+    `  FAIL  signUp() is called outside ${SIGNUP_OWNER}:\n` + straySignUp.join("\n"),
+  );
+  failures++;
+} else if (signUpCalls.length === 0) {
+  console.log(
+    "  FAIL  no signUp() call found at all. 0005 requires EXACTLY ONE, in\n" +
+      `        ${SIGNUP_OWNER}. If signup was deliberately removed, this\n` +
+      "        assertion must be reverted to its pre-0005 form in the same commit.",
+  );
+  failures++;
+} else {
+  console.log(
+    `  ok   signUp() exists in exactly one file (${signUpCalls.length} call site) — ${SIGNUP_OWNER}`,
+  );
 }
 
 console.log("\n" + "=".repeat(72));
