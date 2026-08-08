@@ -46,3 +46,12 @@ public/blog gallery/
 
 # --- archives ---
 *.zip
+
+# --- SUPPLIED SOURCE MATERIAL, NOT OURS AND NOT SERVED ---
+# `sfp-agent-pages.md` is a competitor's four agent pages, supplied as source
+# material for the portal rewrite. It sits at the repo root so Next never serves
+# it, but with no git remote the CLI uploads the whole working directory — and
+# uploading another agency's scraped pages to a third-party host is needless
+# exposure for a file the build does not read. Untracked in git for the same
+# reason; this is the upload-side half of that.
+sfp-agent-pages.md
