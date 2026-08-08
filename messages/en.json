@@ -829,7 +829,10 @@
       "dashboard": "Dashboard",
       "leads": "Leads",
       "agents": "Agents",
-      "content": "Content"
+      "content": "Content",
+      "createAccount": "Create an agent",
+      "accounts": "Accounts",
+      "applications": "Applications"
     },
     "card": {
       "records": "Records",

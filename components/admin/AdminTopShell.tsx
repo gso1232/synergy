@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/app/[locale]/(portal)/session/actions";
+import LogoLockup from "@/components/LogoLockup";
+import AdminNav from "./AdminNav";
 import dynamic from "next/dynamic";
 
 /** Code-split for the same reason as EngineNoise: a canvas has no server
@@ -51,39 +53,43 @@ const AdminSilk = dynamic(() => import("./AdminSilk"), { ssr: false });
  * globals.css). Nothing here is measured against the raw shader.
  */
 
+/* 🔴 ALL SIX SECTIONS, IN PAGE ORDER. The previous list carried four and the
+   page renders six — "Create an agent", "Accounts" and "Applications" existed
+   with working anchors and simply were not linked. Two of those three are the
+   page's most important surfaces: AdminDashboard's own docblock calls the
+   create form "the primary action on this page" and the approvals queue "a
+   queue with people waiting in it". A nav that omits the primary action is not
+   a nav, and nothing in the markup hinted at the omission. */
 const NAV = [
   { key: "dashboard", href: "#admin-main" },
   { key: "leads", href: "#leads" },
+  { key: "createAccount", href: "#create-account" },
+  { key: "accounts", href: "#accounts" },
   { key: "agents", href: "#agents" },
+  { key: "applications", href: "#applications" },
   { key: "content", href: "#content" },
 ] as const;
 
-/* ---------------------------------------------------------------------------
-   HIDE-ON-SCROLL — THE PUBLIC HEADER'S MECHANIC, AND ITS MEASURED CONSTANTS.
-   `SiteHeader.tsx` already solved this; the values are lifted from it verbatim
-   so the two bars behave identically rather than "similarly".
+/** Height of the sticky chrome — navy identity strip + white nav row. Sections
+ *  pay it back as `scroll-margin-top` so an anchored heading is not hidden. */
+const BAR_OFFSET = 108;
 
-   🔴 THE DEBOUNCE IS AN ACCUMULATOR, NOT A TIMER, and that is the whole reason
-   it does not flicker. A time-based debounce adds latency to the one gesture
-   that has to feel instant (a decisive scroll-up must reveal immediately). This
-   instead accumulates movement and only flips when a direction change has
-   travelled DIR_DELTA px; the accumulator RESETS the moment direction changes,
-   so a firm reversal clears it at once and sub-pixel jitter never does.
+/* 🔴 THE HIDE-ON-SCROLL MECHANIC IS GONE, CONSTANTS AND ALL.
 
-   🔴 WHAT IS *NOT* COPIED: SiteHeader also polls for a Lenis instance and
-   subscribes to its emitter, because the public site is inside SmoothScroll and
-   Lenis swallows most native scroll events. THE PORTAL IS DELIBERATELY OUTSIDE
-   SmoothScroll (see (site)/layout.tsx — the portal must not render inside a
-   transformed ancestor), so there is no Lenis here and the native listener is
-   the whole story. Adding the Lenis polling would be dead code waiting 4s for
-   an instance that never arrives.
---------------------------------------------------------------------------- */
-/** Below this the bar is NEVER hidden — past its own height, so it cannot
- *  begin sliding away while it still overlaps where it started. */
-const HIDE_AFTER = 120;
-/** Accumulated px before a direction change flips visibility. 8 is far below a
- *  wheel notch (~100px) yet above the sub-pixel noise of momentum scrolling. */
-const DIR_DELTA = 8;
+   It was SiteHeader's accumulator debounce (HIDE_AFTER 120, DIR_DELTA 8), a
+   `data-hidden` transform, a reduced-motion special case and a focus-within
+   guard to stop a translated-off-screen bar trapping keyboard focus. Roughly
+   90 lines, all in service of hiding a bar whose only job is to stay
+   reachable: the admin nav is in-page anchors on a ~4,000px page, so removing
+   it from view is removing the navigation. The bar is `sticky` now and the
+   whole apparatus — including the focus trap it needed a guard for — is
+   deleted rather than left dormant. SiteHeader keeps its copy; the public
+   header has different priorities and is untouched.
+
+   🔴 THE LISTENERS WENT WITH IT. Leaving the effects in place "retired" would
+   have kept a scroll handler and a focusin/focusout pair running on every
+   admin render, doing nothing. Retiring a TREATMENT is this codebase's
+   convention; retiring live event listeners is just a leak. */
 
 /**
  * 🔴 THE GREETING IS COMPUTED ON THE CLIENT, AND THAT IS DELIBERATE.
@@ -173,105 +179,14 @@ export default function AdminTopShell({
 }) {
   const t = useTranslations("admin");
   const greetKey = useGreetingKey();
-  const [active, setActive] = useState<string>("dashboard");
-  const [hidden, setHidden] = useState(false);
-  const [focusWithin, setFocusWithin] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
-  const barRef = useRef<HTMLElement>(null);
 
-  /* Hide on scroll down, reveal on scroll up. See the constants above for why
-     the debounce is an accumulator rather than a timer. */
-  useEffect(() => {
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let lastY = window.scrollY;
-    let accum = 0;
-    let lastDir = 0;
-
-    const read = () => {
-      const y = window.scrollY;
-
-      /* 🔴 REDUCED MOTION SWITCHES THE BEHAVIOUR OFF RATHER THAN MAKING IT
-         INSTANT. Snapping a bar in and out of existence is a jump-cut, which is
-         worse for someone asking for less motion than simply leaving it put.
-         Same call SiteHeader makes. */
-      if (reduce.matches) {
-        setHidden(false);
-        lastY = y;
-        return;
-      }
-
-      const delta = y - lastY;
-      lastY = y;
-
-      // Near the top, direction is ignored entirely.
-      if (y <= HIDE_AFTER) {
-        setHidden(false);
-        accum = 0;
-        lastDir = 0;
-        return;
-      }
-      if (delta === 0) return;
-
-      const dir = delta > 0 ? 1 : -1;
-      if (dir !== lastDir) {
-        accum = 0;
-        lastDir = dir;
-      }
-      accum += Math.abs(delta);
-      if (accum < DIR_DELTA) return;
-
-      setHidden(dir === 1);
-    };
-
-    read();
-    window.addEventListener("scroll", read, { passive: true });
-    return () => window.removeEventListener("scroll", read);
-  }, []);
-
-  /* 🔴 KEYBOARD FOCUS FORCES THE BAR VISIBLE. Tabbing to a link sitting at
-     translateY(-100%) is a focus trap in the literal sense: the element is
-     focusable and its focus ring is off-screen. `focusout` only releases when
-     focus has genuinely left the bar — a relatedTarget still inside means the
-     user is tabbing BETWEEN bar items, which must not drop it. SiteHeader
-     documents the same trap; repeating the guard rather than repeating the bug. */
-  useEffect(() => {
-    const el = barRef.current;
-    if (!el) return;
-    const onIn = () => setFocusWithin(true);
-    const onOut = (e: FocusEvent) => {
-      if (!el.contains(e.relatedTarget as Node | null)) setFocusWithin(false);
-    };
-    el.addEventListener("focusin", onIn);
-    el.addEventListener("focusout", onOut);
-    return () => {
-      el.removeEventListener("focusin", onIn);
-      el.removeEventListener("focusout", onOut);
-    };
-  }, []);
-
-  /* Which section owns the viewport. `rootMargin` biases the trigger line to
-     the upper third so a section counts as active once its heading is
-     comfortably in view, not when its last pixel scrolls past. */
-  useEffect(() => {
-    const ids = ["admin-main", "leads", "agents", "content"];
-    const nodes = ids
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-    if (!nodes.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        const hit = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
-        if (!hit) return;
-        const id = hit.target.id;
-        setActive(id === "admin-main" ? "dashboard" : id);
-      },
-      { rootMargin: "-20% 0px -70% 0px", threshold: 0 },
-    );
-    nodes.forEach((n) => io.observe(n));
-    return () => io.disconnect();
-  }, []);
+  /* 🔴 THE ACTIVE-STATE OBSERVER MOVED TO `AdminNav`, AND ITS BUG WENT WITH IT.
+     The version here watched the section HEADINGS — every one of them `sr-only`,
+     measured 1x1px and clipped — so it fired almost at random and the highlight
+     stuck one item behind. Measured before the rewrite: at scrollY 0 it said
+     "Leads"; clicking Agents lit "Leads"; at scrollY 3600, past Content, it
+     still said "Agents". AdminNav observes the SECTIONS instead and resolves by
+     position rather than by which entry fired last. */
 
   const name = displayName(userLabel);
 
@@ -288,50 +203,60 @@ export default function AdminTopShell({
         {t("skipToContent")}
       </a>
 
-      {/* ---------- THE BAR ----------
-          `data-hidden` drives the transform in globals.css. Focus wins over
-          scroll: a hidden bar with a focused link inside it is unusable. */}
-      <header
-        ref={barRef}
-        data-hidden={hidden && !focusWithin ? "true" : "false"}
-        className="admin-topbar"
-      >
-        <div className="admin-topbar__inner">
-          <div className="admin-topbar__brand">
-            <span className="admin-wordmark">Synergy</span>
-            <span aria-hidden="true" className="admin-topbar__divider" />
-            <nav ref={navRef} aria-label={t("navLabel")} className="admin-nav">
-              {NAV.map((item) => (
-                <a
-                  key={item.key}
-                  href={item.href}
-                  aria-current={active === item.key ? "true" : undefined}
-                  className="admin-nav__link"
-                >
-                  {t(`nav.${item.key}`)}
-                </a>
-              ))}
-            </nav>
-          </div>
+      {/* ---------- THE BAR — the portal's chrome shape, in the light palette.
 
-          <div className="admin-topbar__user">
-            <span className="admin-topbar__identity">
-              <span className="admin-topbar__email">{userLabel}</span>
-              <span className="admin-topbar__role">{userRole}</span>
-            </span>
-            {/* Unchanged: the same server action, the same `locale` field. */}
-            <form action={signOut}>
-              <input type="hidden" name="locale" value={locale} />
-              <button type="submit" className="admin-signout">
-                {t("signOut")}
-              </button>
-            </form>
+          🔴 IT NO LONGER HIDES ON SCROLL, AND THAT IS A DELIBERATE LOSS. The
+          old bar was `position: fixed` with an accumulator-debounced
+          hide-on-scroll lifted from SiteHeader, plus a focus-within guard to
+          stop a hidden bar trapping keyboard focus. All of it is gone. On a
+          4,000px single-page dashboard whose nav is in-page anchors, a bar that
+          removes itself is the wrong trade: the nav's whole job is to be
+          reachable from anywhere in the page. `sticky` keeps it reachable and
+          deletes the focus trap, the 101% transform and the reduced-motion
+          special case along with it.
+
+          🔴 THE IDENTITY STRIP IS NAVY FOR THE SAME REASON THE PORTAL'S IS —
+          the lockup's wordmark measures mean luminance 0.7219, which is 1.36:1
+          on white and 12.78:1 on navy. It also replaces a plain "Synergy" text
+          wordmark, so the admin now carries the same mark as the portal and the
+          login screen rather than a typographic stand-in. */}
+      <header className="sticky top-0 z-30">
+        <div className="bg-navy">
+          <div className="mx-auto flex h-14 max-w-[1440px] items-center justify-between gap-4 px-5 sm:h-16 sm:px-6">
+            <LogoLockup className="h-7 w-auto sm:h-8" />
+
+            <div className="flex items-center gap-3 sm:gap-5">
+              <span className="hidden text-right md:block">
+                <span className="block max-w-[26ch] truncate text-[13px] text-cream">
+                  {userLabel}
+                </span>
+                <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-cream/70">
+                  {userRole}
+                </span>
+              </span>
+              <span className="sr-only md:hidden">{`${userLabel} — ${userRole}`}</span>
+              <form action={signOut}>
+                <input type="hidden" name="locale" value={locale} />
+                <button
+                  type="submit"
+                  className="inline-flex min-h-[36px] items-center rounded-full border border-cream/40 px-4 text-[13px] font-medium text-cream transition-colors duration-200 hover:border-cream hover:bg-cream/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cream motion-reduce:transition-none"
+                >
+                  {t("signOut")}
+                </button>
+              </form>
+            </div>
           </div>
         </div>
+
+        <AdminNav
+          items={NAV.map((n) => ({ key: n.key, href: n.href, label: t(`nav.${n.key}`) }))}
+          label={t("navLabel")}
+          barOffset={BAR_OFFSET}
+        />
       </header>
 
       {/* ---------- CONTENT ---------- */}
-      <main id="admin-main" className="admin-main">
+      <main id="admin-main" className="admin-main admin-main--static">
         {/* 🔴 THE GREETING IS THE PAGE'S OPENING STATEMENT NOW, NOT A CAPTION.
             It shipped as a 14px ink/70 line and read as metadata — the client's
             word was "too subtle". It is now display-face, clamp(30px..44px),

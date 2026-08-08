@@ -829,7 +829,10 @@
       "dashboard": "",
       "leads": "",
       "agents": "",
-      "content": ""
+      "content": "",
+      "createAccount": "",
+      "accounts": "",
+      "applications": ""
     },
     "stats": {
       "leads": "",

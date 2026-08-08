@@ -118,7 +118,7 @@ export default function ApprovalsQueue({
             return (
               <tr key={p.id} className="border-b border-ink/8 align-middle">
                 <td className="px-3 py-3 text-[14px] text-ink">
-                  {p.full_name || <span className="text-ink/45">{t("noName")}</span>}
+                  {p.full_name || <span className="text-ink/70">{t("noName")}</span>}
                   {p.role === "admin" ? (
                     <span className="ml-2 rounded bg-ink/10 px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-ink/70">
                       {t("adminTag")}
@@ -138,7 +138,7 @@ export default function ApprovalsQueue({
                 </td>
                 <td className="px-3 py-3">
                   {isSelf ? (
-                    <span className="text-[13px] text-ink/45">{t("you")}</span>
+                    <span className="text-[13px] text-ink/70">{t("you")}</span>
                   ) : (
                     <div className="flex flex-wrap items-center gap-2">
                       {p.status === "pending" ? (

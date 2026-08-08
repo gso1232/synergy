@@ -1492,6 +1492,28 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   padding: 96px 24px 96px;
 }
 
+/* 🔴 THE BAR IS `sticky` NOW, NOT `fixed`, SO THE 96px TOP PAD IS DOUBLE-COUNTED.
+   `.admin-main`'s 96px existed to pay back a fixed bar that was out of flow. A
+   sticky bar occupies its own space, so that padding became a 96px hole under
+   the nav. 40px is the section rhythm, not a compensation. */
+.admin-main--static {
+  padding-top: 40px;
+}
+
+/* 🔴 IN-PAGE ANCHORS MUST CLEAR THE STICKY BAR. Without this the browser scrolls
+   a section's top edge to y=0, where the 108px bar is sitting on top of it — the
+   heading lands underneath the chrome and the section looks like it starts at
+   its second card. `scroll-margin-top` is the whole fix and it belongs on the
+   TARGETS, not on the bar.
+
+   108 = 64 (navy identity strip) + 44 (nav row). It is duplicated as
+   BAR_OFFSET in AdminTopShell, which feeds the active-state maths; the two are
+   the same measurement and must move together. */
+.admin-main--static [id],
+.admin-main--static section {
+  scroll-margin-top: 116px;
+}
+
 /* 🔴 THE GREETING WAS 14px ink/70 AND READ AS METADATA. The client's word was
    "too subtle". It is now the largest thing on the page: the display face at
    clamp(30 → 44px), full ink, tight leading, with the h1 beneath it.
