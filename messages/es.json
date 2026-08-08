@@ -804,8 +804,6 @@
     "notLiveTitle": "El inicio de sesión todavía no está conectado.",
     "notLiveBody": "Esta pantalla es una vista previa de diseño. No se envía nada, no se verifica ninguna cuenta y no se crea ninguna sesión. Llame al 407-434-0400 si necesita acceso mientras tanto.",
     "metaLabel": "Portal de personal y agentes",
-    "noAccount": "¿No tiene una cuenta?",
-    "createAccount": "Cree una",
     "resetDone": "Su contraseña fue cambiada. Inicie sesión con la nueva contraseña.",
     "resetExpired": "Ese enlace de restablecimiento venció o ya se usó. Solicite uno nuevo.",
     "confirmFailed": "Ese enlace de confirmación no es válido o ya se usó. Intente iniciar sesión o solicite uno nuevo."
@@ -1023,6 +1021,37 @@
         "event": "Evento",
         "other": "Otro"
       }
+    },
+    "createAccount": {
+      "heading": "Crear un agente",
+      "intro": "Introduzca los datos del agente. Synergy le enviará por correo un enlace para que elija su propia contraseña: esta es la única forma de crear una cuenta del portal.",
+      "name": "Nombre completo",
+      "email": "Correo electrónico",
+      "emailHint": "Debe ser una dirección @fflsynergy.com.",
+      "phone": "Teléfono (opcional)",
+      "submit": "Crear agente y enviar enlace",
+      "submitting": "Creando…",
+      "sent": "Enlace de configuración enviado a {email}.",
+      "error": {
+        "name": "Introduzca el nombre completo del agente.",
+        "email": "Introduzca una dirección de correo válida.",
+        "domain": "Las cuentas de agente deben usar una dirección @fflsynergy.com.",
+        "domainTypo": "Ese dominio parece un error de escritura: ¿querías decir @fflsynergy.com? No se creó nada.",
+        "duplicate": "Ya existe una cuenta para esa dirección de correo.",
+        "mail": "La cuenta se creó, pero no se pudo enviar el correo de configuración. Use Reenviar para intentarlo de nuevo.",
+        "forbidden": "Ya no tiene permiso para hacer eso. Inicie sesión de nuevo.",
+        "write_failed": "No se pudo crear la cuenta. No se guardó nada.",
+        "unconfigured": "El servidor no está configurado para enviar invitaciones: falta su credencial de rol de servicio de Supabase. Revise las variables de entorno del despliegue.",
+        "timeout": "Supabase no respondió a tiempo. La cuenta no se creó: compruebe la conexión e inténtelo de nuevo.",
+        "nouser": "No existe ninguna cuenta para esa dirección, o no se pudo generar el enlace."
+      },
+      "manualTitle": "Cuenta creada para {email}, pero no se pudo enviar el correo.",
+      "manualBody": "SMTP aún no está configurado, así que envíele usted mismo este enlace de configuración. Es de un solo uso y establece su contraseña. Trátelo como una contraseña.",
+      "copy": "Copiar enlace",
+      "copied": "Copiado",
+      "existingTitle": "Obtener un enlace para una cuenta existente",
+      "existingBody": "Para una cuenta que ya existe pero nunca recibió su enlace. No crea nada: solo emite un enlace nuevo.",
+      "existingSubmit": "Obtener enlace"
     }
   },
   "engine": {
@@ -1035,28 +1064,6 @@
     "call": "Llame al 407-434-0400",
     "callAria": "Llamar a Synergy Insurance Group al 407-434-0400",
     "join": "Únete a nuestro equipo"
-  },
-  "signup": {
-    "metaTitle": "Cree su cuenta — Synergy Insurance Group",
-    "metaDescription": "Solicite acceso al portal de agentes de Synergy.",
-    "heading": "Cree su cuenta",
-    "subhead": "Para agentes de Synergy. Su cuenta se revisa antes de activarse.",
-    "back": "Volver al sitio",
-    "nameLabel": "Nombre completo",
-    "emailLabel": "Correo de trabajo",
-    "domainHint": "Use su dirección @fflsynergy.com.",
-    "passwordLabel": "Contraseña",
-    "passwordHint": "Mínimo 10 caracteres.",
-    "showPassword": "Mostrar",
-    "hidePassword": "Ocultar",
-    "submit": "Crear cuenta",
-    "haveAccount": "¿Ya tiene una cuenta?",
-    "signIn": "Iniciar sesión",
-    "sent": "Revise su correo. Si esa dirección es elegible, le enviamos un enlace para confirmarla. Una vez confirmada, un administrador revisa su cuenta antes de activarla.",
-    "errorMissing": "Complete todos los campos.",
-    "errorDomain": "Use su dirección de trabajo @fflsynergy.com.",
-    "errorWeak": "Su contraseña necesita al menos 10 caracteres.",
-    "errorThrottled": "Demasiados intentos. Espere unos minutos e inténtelo de nuevo."
   },
   "forgot": {
     "metaTitle": "Restablecer contraseña — Synergy Insurance Group",
@@ -1110,5 +1117,128 @@
     "active": "Su cuenta fue aprobada y está activa.",
     "body": "La capacitación y los recursos para agentes se están preparando y aparecerán aquí. Podrá iniciar sesión con los mismos datos.",
     "signOut": "Cerrar sesión"
+  },
+  "portal": {
+    "metaTitle": "",
+    "metaDescription": "",
+    "heading": "",
+    "subhead": "",
+    "signedInAs": "",
+    "signOut": "",
+    "back": "",
+    "navLabel": "",
+    "nav": {
+      "licensing": "",
+      "contracting": "",
+      "resources": "",
+      "training": ""
+    },
+    "placeholder": {
+      "label": "",
+      "note": ""
+    },
+    "licensing": {
+      "heading": "",
+      "intro": "",
+      "stepLabel": "",
+      "s1": {
+        "heading": "",
+        "body": "",
+        "link1": "",
+        "link2": ""
+      },
+      "s2": {
+        "heading": "",
+        "body": ""
+      },
+      "s3": {
+        "heading": "",
+        "body": "",
+        "link1": ""
+      },
+      "s4": {
+        "heading": "",
+        "body": ""
+      },
+      "s5": {
+        "heading": "",
+        "body": ""
+      },
+      "s6": {
+        "heading": "",
+        "body": ""
+      },
+      "s7": {
+        "heading": "",
+        "body": "",
+        "link1": "",
+        "link2": ""
+      },
+      "s8": {
+        "heading": "",
+        "body": "",
+        "link1": ""
+      },
+      "done": ""
+    },
+    "contracting": {
+      "heading": "",
+      "intro": "",
+      "stepLabel": "",
+      "c1": {
+        "heading": "",
+        "body": "",
+        "rule1": "",
+        "rule2": ""
+      },
+      "c2": {
+        "heading": "",
+        "body": "",
+        "provider": ""
+      },
+      "c3": {
+        "heading": "",
+        "body": "",
+        "doc1": "",
+        "doc2": "",
+        "doc3": "",
+        "doc4": "",
+        "doc5": ""
+      },
+      "c4": {
+        "heading": "",
+        "body": "",
+        "warn": ""
+      },
+      "c5": {
+        "heading": "",
+        "body": "",
+        "item1": "",
+        "item2": ""
+      },
+      "c6": {
+        "heading": "",
+        "body": ""
+      },
+      "after": {
+        "heading": "",
+        "body": ""
+      }
+    },
+    "resources": {
+      "heading": "",
+      "intro": "",
+      "carriersHeading": "",
+      "carriersNote": "",
+      "phoneLabel": "",
+      "agentPhoneLabel": "",
+      "portalLink": "",
+      "portalLinkAria": "",
+      "docsHeading": ""
+    },
+    "training": {
+      "heading": "",
+      "intro": ""
+    }
   }
 }

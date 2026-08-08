@@ -804,8 +804,6 @@
     "notLiveTitle": "Sign-in is not connected yet.",
     "notLiveBody": "This screen is a design preview. Nothing is sent, no account is checked and no session is created. Call 407-434-0400 if you need access in the meantime.",
     "metaLabel": "Staff & agent portal",
-    "noAccount": "Don't have an account?",
-    "createAccount": "Create one",
     "resetDone": "Your password has been changed. Sign in with your new password.",
     "resetExpired": "That reset link has expired or has already been used. Request a new one.",
     "confirmFailed": "That confirmation link is invalid or has already been used. Try signing in, or request a new link."
@@ -1038,6 +1036,37 @@
         "event": "Event",
         "other": "Other"
       }
+    },
+    "createAccount": {
+      "heading": "Create an agent",
+      "intro": "Enter the agent's details. Synergy emails them a link to choose their own password — this is the only way a portal account is created.",
+      "name": "Full name",
+      "email": "Email",
+      "emailHint": "Must be an @fflsynergy.com address.",
+      "phone": "Phone (optional)",
+      "submit": "Create agent & send setup link",
+      "submitting": "Creating…",
+      "sent": "Setup link sent to {email}.",
+      "error": {
+        "name": "Enter the agent's full name.",
+        "email": "Enter a valid email address.",
+        "domain": "Agent accounts must use an @fflsynergy.com email address.",
+        "domainTypo": "That domain looks like a typo — did you mean @fflsynergy.com? Nothing was created.",
+        "duplicate": "An account already exists for that email address.",
+        "mail": "The account was created, but the setup email could not be sent. Use Resend to try again.",
+        "forbidden": "You no longer have permission to do that. Sign in again.",
+        "write_failed": "The account could not be created. Nothing was saved.",
+        "unconfigured": "The server is not configured to send invites — its Supabase service-role credential is missing. Check the deployment environment variables.",
+        "timeout": "Supabase did not respond in time. The account was not created — check the connection and try again.",
+        "nouser": "No account exists for that address, or the link could not be generated."
+      },
+      "manualTitle": "Account created for {email} — but the email could not be sent.",
+      "manualBody": "SMTP is not configured yet, so send this setup link to them yourself. It is single-use and sets their password. Treat it like a password.",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "existingTitle": "Get a setup link for an existing account",
+      "existingBody": "For an account that already exists but never received its link. Creates nothing — it only issues a fresh link.",
+      "existingSubmit": "Get setup link"
     }
   },
   "engine": {
@@ -1050,28 +1079,6 @@
     "call": "Call 407-434-0400",
     "callAria": "Call Synergy Insurance Group on 407-434-0400",
     "join": "Join our team"
-  },
-  "signup": {
-    "metaTitle": "Create your account — Synergy Insurance Group",
-    "metaDescription": "Request access to the Synergy agent portal.",
-    "heading": "Create your account",
-    "subhead": "For Synergy agents. Your account is reviewed before it is activated.",
-    "back": "Back to site",
-    "nameLabel": "Full name",
-    "emailLabel": "Work email",
-    "domainHint": "Use your @fflsynergy.com address.",
-    "passwordLabel": "Password",
-    "passwordHint": "At least 10 characters.",
-    "showPassword": "Show",
-    "hidePassword": "Hide",
-    "submit": "Create account",
-    "haveAccount": "Already have an account?",
-    "signIn": "Sign in",
-    "sent": "Check your inbox. If that address is eligible, we've sent a link to confirm it. Once confirmed, an administrator reviews your account before it is activated.",
-    "errorMissing": "Please fill in every field.",
-    "errorDomain": "Use your @fflsynergy.com work address.",
-    "errorWeak": "Your password needs at least 10 characters.",
-    "errorThrottled": "Too many attempts. Please wait a few minutes and try again."
   },
   "forgot": {
     "metaTitle": "Reset your password — Synergy Insurance Group",
@@ -1125,5 +1132,128 @@
     "active": "Your account has been approved and is active.",
     "body": "Agent training and resources are being prepared and will appear here. You'll be able to sign in with the same details.",
     "signOut": "Sign out"
+  },
+  "portal": {
+    "metaTitle": "Agent Portal — Synergy Insurance Group",
+    "metaDescription": "Licensing, contracting and carrier reference for Synergy agents.",
+    "heading": "Welcome to the Synergy Insurance Portal",
+    "subhead": "Everything you need to get licensed, get contracted and get appointed with our carriers. The sections run in order — each one assumes the one above it is done.",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out",
+    "back": "Back to site",
+    "navLabel": "Portal sections",
+    "nav": {
+      "licensing": "Licensing",
+      "contracting": "Contracting",
+      "resources": "Resources",
+      "training": "Training"
+    },
+    "placeholder": {
+      "label": "Awaiting Synergy detail",
+      "note": "This is a marked gap, not finished copy."
+    },
+    "licensing": {
+      "heading": "Licensing checklist",
+      "intro": "Your route to a resident insurance licence. Take these in order — each step depends on the one before it.",
+      "stepLabel": "Step {n}",
+      "s1": {
+        "heading": "Check what your resident state requires",
+        "body": "Licensing is set state by state. Study hours, the exam itself, the fees and whether you need fingerprints all differ. Confirm your own state's rules before you spend anything.",
+        "link1": "NIPR — licensing requirements by state",
+        "link2": "Prepare2Pass — state requirement detail"
+      },
+      "s2": {
+        "heading": "Enrol in a pre-licensing course",
+        "body": "Register on a desktop or laptop rather than a phone. These enrolment forms are long and they routinely fail on mobile browsers, and a half-completed registration is a problem you have to unpick before you can start studying."
+      },
+      "s3": {
+        "heading": "Book the state exam while you are still studying",
+        "body": "About two-thirds of the way through the course, book your exam. A booked date is a deadline, and a deadline is what gets a course finished. Check your testing provider, your nearest centre and whether a background check is required.",
+        "link1": "Xcel Solutions — exam and licensing requirements"
+      },
+      "s4": {
+        "heading": "Send us your exam date",
+        "body": "Forward the confirmation from the testing provider, or send a screenshot of the booking. Put “Exam date confirmed” and your name in the subject line so it is filed against your record."
+      },
+      "s5": {
+        "heading": "Tell us the moment you pass",
+        "body": "Let the admin team and your team leader know as soon as you have your result. That is what starts the contracting stage, and nothing moves until we hear from you."
+      },
+      "s6": {
+        "heading": "Get fingerprinted, if your state asks for it",
+        "body": "Some states run a background check before they will issue a licence. If yours does, book it as early as you can — results often take longer to come back than the exam result does. The state links in step one tell you whether it applies and who is approved to take them."
+      },
+      "s7": {
+        "heading": "Apply for your resident licence",
+        "body": "The testing centre usually explains how to apply once you have passed. Fees and additional checks vary, so call your state Department of Insurance if anything is unclear. Contracting cannot begin until the licence is issued and your producer number exists.",
+        "link1": "NIPR — apply for a licence",
+        "link2": "Sircon — individual licensing"
+      },
+      "s8": {
+        "heading": "Collect your National Producer Number",
+        "body": "There is nothing to apply for. Your NPN is created automatically when your state reports the approved licence to the national registry. Chase your state department daily if it is slow, then look the number up here once it lands.",
+        "link1": "NIPR — look up your NPN"
+      },
+      "done": "Licensed. Work through the contracting checklist next."
+    },
+    "contracting": {
+      "heading": "New agent checklist",
+      "intro": "Getting appointed with carriers. In order again — the document step assumes everything above it is finished.",
+      "stepLabel": "Step {n}",
+      "c1": {
+        "heading": "Buy errors and omissions cover",
+        "body": "Buy E&O from whichever provider you prefer, and shop around. Two conditions are not negotiable.",
+        "rule1": "Cover of at least $1M per claim and $3M in aggregate.",
+        "rule2": "The policy must start on the first of the current month. If today is 12 April, the start date is 1 April. A policy that begins on the first of next month stops contracting and onboarding until that date arrives."
+      },
+      "c2": {
+        "heading": "Complete an anti-money-laundering course",
+        "body": "Every carrier wants a current AML certificate before it will appoint you. The course runs about an hour, costs very little, and the certificate lasts two years. One certificate from a recognised provider is normally accepted widely, although a few carriers insist on their own version. Keep the completion certificate — it is attached in the next step.",
+        "provider": "WebCE — AML training, course #206954"
+      },
+      "c3": {
+        "heading": "Send your documents in one email",
+        "body": "Attach all five items to a single message. Use the subject line “Ready to contract” followed by your name. Documents sent separately get processed separately, which is slower for you.",
+        "doc1": "Resident insurance licence",
+        "doc2": "National Producer Number, as it appears on NIPR",
+        "doc3": "Driver's licence",
+        "doc4": "E&O certificate",
+        "doc5": "AML completion certificate"
+      },
+      "c4": {
+        "heading": "Prepare a voided check — but do not email it",
+        "body": "Carriers set up payment to you directly, which is why they need your banking details. Save a PDF of a voided check ready for the onboarding call. A voided check is strongly preferred. Failing that, a letter on bank letterhead signed by a bank representative showing your routing number, account number and personal details will do, as will a direct-deposit printout that shows your name, routing number and account number.",
+        "warn": "Do not send this by email. Bring it to the onboarding call."
+      },
+      "c5": {
+        "heading": "Have these ready for the onboarding call",
+        "body": "The call is held over video. Have the following to hand so it can be finished in one sitting.",
+        "item1": "Your bank's name, address and phone number — any branch is fine.",
+        "item2": "Your beneficiary's full name, Social Security number and email address. The beneficiary must be over 18 and legally present in the United States."
+      },
+      "c6": {
+        "heading": "Finish the required product training",
+        "body": "Indexed universal life and annuity carriers will not appoint you until the product training is complete. Do it straight after onboarding and send the admin team a screenshot of your completion screen."
+      },
+      "after": {
+        "heading": "After you send your documents",
+        "body": "The admin team will be in touch to book your onboarding and contracting call over video."
+      }
+    },
+    "resources": {
+      "heading": "Agent resources",
+      "intro": "Carrier contacts and reference material.",
+      "carriersHeading": "Carrier contacts",
+      "carriersNote": "Service lines and agent portals for the carriers Synergy is appointed with.",
+      "phoneLabel": "Service line",
+      "agentPhoneLabel": "Agent support",
+      "portalLink": "Agent portal",
+      "portalLinkAria": "{carrier} agent portal",
+      "docsHeading": "Guides and documents"
+    },
+    "training": {
+      "heading": "New agent bootcamps",
+      "intro": "Live and recorded training for new agents."
+    }
   }
 }
