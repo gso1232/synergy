@@ -19,7 +19,7 @@
 
 // The predicate, mirrored verbatim from lib/auth-domain.ts. Kept in step by
 // this file's own final test, which fails if the source drifts from it.
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 
 const ALLOWED = ["fflsynergy.com"];
 
@@ -88,6 +88,52 @@ const CASES = [
   [{}, false, "an object"],
 ];
 
+/**
+ * NEAR-MISS DETECTION, mirrored from lib/auth-domain.ts exactly as the
+ * predicate above is. Its own drift guard follows the cases.
+ */
+function editDistance(a, b) {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const d = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let i = 0; i < rows; i++) d[i][0] = i;
+  for (let j = 0; j < cols; j++) d[0][j] = j;
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+  }
+  return d[a.length][b.length];
+}
+const TYPO_MAX_EDITS = 2;
+
+function domainOf(email) {
+  if (typeof email !== "string") return null;
+  const bits = email.trim().toLowerCase().split("@");
+  if (bits.length !== 2) return null;
+  const [local, domain] = bits;
+  if (!local || !domain) return null;
+  return domain;
+}
+
+/** Company domain ONLY — no individual allowlist. Account CREATION rule. */
+function isCompanyDomainEmail(email) {
+  const d = domainOf(email);
+  return d !== null && ALLOWED.includes(d);
+}
+
+function looksLikeCompanyDomainTypo(email) {
+  const d = domainOf(email);
+  if (d === null || ALLOWED.includes(d)) return false;
+  return ALLOWED.some(
+    (a) => Math.abs(d.length - a.length) <= TYPO_MAX_EDITS && editDistance(d, a) <= TYPO_MAX_EDITS,
+  );
+}
+
 let failures = 0;
 console.log("\nCOMPANY-DOMAIN PREDICATE — proof tests\n" + "=".repeat(72));
 
@@ -100,6 +146,90 @@ for (const [input, expected, why] of CASES) {
   // is built defensively — the undefined case is one of the cases under test.
   const label = (JSON.stringify(input) ?? String(input)).padEnd(38);
   console.log(`${pass ? "  ok  " : "  FAIL"}  ${verdict}  ${label} ${why}`);
+}
+
+// =============================================================================
+// NEAR-MISS ("did you mean @fflsynergy.com?") — the doubled-L class.
+//
+// 🔴 EVERY ADDRESS BELOW IS STILL DENIED. These cases assert only WHICH message
+// the admin gets. The first block is the reason this exists: an address one
+// keystroke from the real one, which reads as correct at a glance.
+// =============================================================================
+console.log("\nNEAR-MISS DETECTION — typo vs wrong company\n" + "=".repeat(72));
+
+const TYPO_CASES = [
+  // --- MUST be flagged as a typo ---------------------------------------------
+  ["mohamedsamy2@fllsynergy.com", true, "doubled L — the reported case"],
+  ["agent@ffisynergy.com", true, "l -> i, indistinguishable in most fonts"],
+  ["agent@ffsynergy.com", true, "dropped an f"],
+  ["agent@fflsynerg.com", true, "dropped a y"],
+  ["agent@fflsynnergy.com", true, "doubled n"],
+  ["agent@fflsyngery.com", true, "transposed er -> re"],
+  ["agent@fflsynergy.co", true, "truncated TLD"],
+  ["agent@fflsynergy.cm", true, "dropped o in .com"],
+  ["agent@fflsynergy.comm", true, "doubled m"],
+  ["agent@FFLSynergy.Com", false, "correct domain, odd case — NOT a typo"],
+
+  // --- MUST NOT be flagged: these are wrong, not mistyped --------------------
+  ["someone@gmail.com", false, "a different domain entirely"],
+  ["someone@checkmatefinancialgroup.com", false, "a competitor"],
+  ["evil@notfflsynergy.com", false, "prefix attack — 3 edits, not a slip"],
+  ["evil@fflsynergy.com.evil.com", false, "suffix attack — must never read as a typo"],
+  ["evil@mail.fflsynergy.com", false, "subdomain — refused, and not a typo"],
+  ["a@fflsynergy.com@evil.com", false, "double-@ — malformed, not a typo"],
+  ["", false, "empty string"],
+  [null, false, "null"],
+];
+
+for (const [input, expected, why] of TYPO_CASES) {
+  const actual = looksLikeCompanyDomainTypo(input);
+  const pass = actual === expected;
+  if (!pass) failures++;
+  const label = (JSON.stringify(input) ?? String(input)).padEnd(38);
+  console.log(`${pass ? "  ok  " : "  FAIL"}  ${actual ? "TYPO " : "plain"}  ${label} ${why}`);
+}
+
+// 🔴 THE SAFETY PROPERTY. A near miss must never become an ACCEPTANCE. If any
+// address the typo detector recognises also passes the creation gate, the
+// helpful message has turned into a hole.
+const leaked = TYPO_CASES.filter(([e]) => looksLikeCompanyDomainTypo(e) && isCompanyDomainEmail(e));
+if (leaked.length) {
+  console.log(`  FAIL  a near-miss address is ACCEPTED for creation: ${leaked.map(([e]) => e).join(", ")}`);
+  failures++;
+} else {
+  console.log("  ok   no near-miss address is accepted for creation — all still denied");
+}
+
+// 🔴 CREATION IGNORES THE INDIVIDUAL ALLOWLIST. The grandfathered address may
+// sign IN; it must not be a template for creating new accounts.
+if (isCompanyDomainEmail("mohamed204430@gmail.com")) {
+  console.log("  FAIL  isCompanyDomainEmail honours ALLOWED_EMAILS — creation must be domain-only");
+  failures++;
+} else {
+  console.log("  ok   isCompanyDomainEmail ignores the individual allowlist");
+}
+
+// Drift guard for the near-miss helpers.
+{
+  const src = readFileSync(new URL("../lib/auth-domain.ts", import.meta.url), "utf8");
+  const m = src.match(/TYPO_MAX_EDITS\s*=\s*(\d+)/);
+  if (!m) {
+    console.log("  FAIL  DRIFT   TYPO_MAX_EDITS not found in lib/auth-domain.ts");
+    failures++;
+  } else if (Number(m[1]) !== TYPO_MAX_EDITS) {
+    console.log(`  FAIL  DRIFT   source TYPO_MAX_EDITS=${m[1]} != test ${TYPO_MAX_EDITS}`);
+    failures++;
+  } else {
+    console.log(`  ok   DRIFT   TYPO_MAX_EDITS matches this test: ${TYPO_MAX_EDITS}`);
+  }
+  if (!/export function looksLikeCompanyDomainTypo/.test(src)) {
+    console.log("  FAIL  looksLikeCompanyDomainTypo is missing from lib/auth-domain.ts");
+    failures++;
+  }
+  if (!/export function isCompanyDomainEmail/.test(src)) {
+    console.log("  FAIL  isCompanyDomainEmail is missing from lib/auth-domain.ts");
+    failures++;
+  }
 }
 
 // --- Drift guard: the source's ALLOWED_DOMAINS must equal this test's list ---
@@ -126,94 +256,41 @@ if (!arrayMatch) {
   }
 }
 
-// --- SIGN-UP vs SIGN-IN ELIGIBILITY -----------------------------------------
+// --- NO ACCOUNT-CREATION HELPER ---------------------------------------------
 //
-// 🔴 THE ALLOWLIST MUST NOT WIDEN FROM "MAY SIGN IN" TO "MAY BE REGISTERED".
-//
-// `isCompanyEmail` (sign-in) honours ALLOWED_EMAILS so a pre-existing, vetted
-// account is not locked out of its own portal. `isCompanySignupEmail` (account
-// CREATION) must not, because signup is now open to the public: if creation
-// honoured the allowlist, any stranger could register the allowlisted address
-// and take it over. Grandfathering must never grant creation.
-//
-// This is the single most important behavioural difference between the two
-// functions, and it is one word apart in the source, so it is tested directly.
-console.log("\nSIGN-UP ELIGIBILITY (isCompanySignupEmail)\n" + "=".repeat(72));
+// 🔴 REVERTED WITH THE REMOVAL OF PUBLIC SIGNUP. This section used to exercise
+// `isCompanySignupEmail` — the "may this address CREATE an account" check that
+// backed the public signup form. Public signup is gone and so is that function,
+// so the test is now the inverse: assert the helper has NOT come back, because
+// its reappearance would mean a self-service creation path came back with it.
+console.log("\nNO ACCOUNT-CREATION HELPER\n" + "=".repeat(72));
 
 const signupSrc = readFileSync(new URL("../lib/auth-domain.ts", import.meta.url), "utf8");
-if (!/export function isCompanySignupEmail/.test(signupSrc)) {
-  console.log("  FAIL  isCompanySignupEmail is missing from lib/auth-domain.ts");
+if (/export function isCompanySignupEmail/.test(signupSrc)) {
+  console.log(
+    "  FAIL  isCompanySignupEmail is back in lib/auth-domain.ts. It only has a\n" +
+      "        caller if a self-service account-creation path exists. Accounts are\n" +
+      "        admin-created only — remove it, or review the path that needs it.",
+  );
   failures++;
 } else {
-  // Mirror of the implementation: ALLOWED_DOMAINS only, no allowlist.
-  const isCompanySignupEmail = (email) => {
-    if (typeof email !== "string") return false;
-    const bits = email.trim().toLowerCase().split("@");
-    if (bits.length !== 2) return false;
-    const [local, domain] = bits;
-    if (!local || !domain) return false;
-    return ALLOWED.includes(domain);
-  };
-
-  const SIGNUP_CASES = [
-    ["agent@fflsynergy.com", true, "company domain may register"],
-    ["AGENT@FFLSYNERGY.COM", true, "case-insensitive"],
-    ...ALLOWED_EMAILS.map((e) => [
-      e,
-      false,
-      "🔴 allowlisted address may SIGN IN but must NOT be registrable",
-    ]),
-    ["evil@gmail.com", false, "public mail domain"],
-    ["evil@mail.fflsynergy.com", false, "subdomain is not the domain"],
-    ["evil@notfflsynergy.com", false, "substring attack"],
-    ["a@fflsynergy.com@evil.com", false, "double-@"],
-    ["", false, "empty"],
-    [null, false, "null"],
-    [undefined, false, "undefined"],
-  ];
-
-  for (const [input, expected, why] of SIGNUP_CASES) {
-    const got = isCompanySignupEmail(input);
-    const label = expected ? "ALLOW" : "DENY ";
-    // `JSON.stringify(undefined)` is undefined, not a string — String() first
-    // or the reporter crashes on exactly the fail-closed case it is testing.
-    const shown = String(JSON.stringify(input)).padEnd(38);
-    if (got === expected) {
-      console.log(`  ok    ${label}  ${shown} ${why}`);
-    } else {
-      console.log(`  FAIL  ${label}  ${shown} ${why}`);
-      failures++;
-    }
-  }
-
-  // Drift guard: the two functions must not be collapsed into one.
-  if (/isCompanySignupEmail[\s\S]{0,400}?isAllowlistedEmail/.test(signupSrc)) {
-    console.log(
-      "  FAIL  isCompanySignupEmail appears to consult the allowlist — that widens\n" +
-        "        it from sign-in grandfathering to registrable addresses.",
-    );
-    failures++;
-  } else {
-    console.log("  ok   DRIFT   isCompanySignupEmail does not consult ALLOWED_EMAILS");
-  }
+  console.log("  ok   isCompanySignupEmail is absent — no account-creation helper");
 }
 
 // --- SIGN-UP SURFACE ASSERTION ----------------------------------------------
 //
-// 🔴 THIS ASSERTION IS INVERTED AS OF 0005, AND THE INVERSION IS THE POINT.
+// 🔴 RESTORED TO ITS PRE-0005 FORM: NO `signUp` CALL MAY EXIST ANYWHERE.
 //
-// It used to assert that NO `signUp` call existed anywhere — that was the
-// control keeping strangers out, and this test was its enforcement. 0005 opens
-// public signup, so the old assertion is now false BY DESIGN. Leaving it would
-// mean a permanently red test, and the likely response to a permanently red
-// test is deleting it — losing the guard entirely.
+// 0005 opened public signup and this assertion was loosened to "exactly one
+// signUp(), in signup/actions.ts". That decision has been reversed — the route,
+// its action and its form are deleted — so the original, stricter assertion is
+// back, exactly as the 0005 note required if signup were ever removed.
 //
-// What replaces it is TIGHTER, not looser:
-//   · signUp() must exist in EXACTLY ONE file, the one that carries the
-//     company-domain check and the rate limit;
-//   · OTP / OAuth / id-token sign-in must not exist AT ALL, because each is a
-//     self-service entry point that bypasses signup/actions.ts entirely and
-//     therefore bypasses the domain gate with it.
+// The property under test: there is NO self-service account-creation path.
+//   · signUp() must not exist AT ALL;
+//   · OTP / OAuth / id-token sign-in must not exist either, because each is a
+//     self-service entry point that mints an account on first use.
+// Accounts come from an admin, from the admin panel. Nowhere else.
 console.log("\nSIGN-UP SURFACE ASSERTION\n" + "=".repeat(72));
 import { execSync } from "node:child_process";
 // 🔴 MATCH CALL SYNTAX, AND STRIP COMMENTS. A first version grepped the bare
@@ -259,21 +336,15 @@ const signupHits = raw
     return !code.startsWith("*") && !code.startsWith("//") && !code.startsWith("/*");
   });
 
-// The ONE file allowed to call signUp. Anything else is a regression.
-const SIGNUP_OWNER = "app/[locale]/(portal)/signup/actions.ts";
-
 const otherEntryPoints = signupHits.filter((line) =>
   /\.(signInWithOtp|signInWithOAuth|signInWithIdToken)\s*\(/.test(line),
 );
 const signUpCalls = signupHits.filter((line) => /\.signUp\s*\(/.test(line));
-const straySignUp = signUpCalls.filter(
-  (line) => !line.replace(/\\/g, "/").startsWith(SIGNUP_OWNER),
-);
 
 if (otherEntryPoints.length) {
   console.log(
-    "  FAIL  an OTP / OAuth / id-token entry point exists — it would bypass the\n" +
-      "        company-domain check in signup/actions.ts:\n" +
+    "  FAIL  an OTP / OAuth / id-token entry point exists — each mints an account\n" +
+      "        on first use, which is a self-service creation path:\n" +
       otherEntryPoints.join("\n"),
   );
   failures++;
@@ -281,22 +352,28 @@ if (otherEntryPoints.length) {
   console.log("  ok   no OTP / OAuth / id-token sign-in anywhere");
 }
 
-if (straySignUp.length) {
+if (signUpCalls.length) {
   console.log(
-    `  FAIL  signUp() is called outside ${SIGNUP_OWNER}:\n` + straySignUp.join("\n"),
-  );
-  failures++;
-} else if (signUpCalls.length === 0) {
-  console.log(
-    "  FAIL  no signUp() call found at all. 0005 requires EXACTLY ONE, in\n" +
-      `        ${SIGNUP_OWNER}. If signup was deliberately removed, this\n` +
-      "        assertion must be reverted to its pre-0005 form in the same commit.",
+    "  FAIL  signUp() is called — there must be NO self-service account creation.\n" +
+      "        Accounts are created by an admin, from the admin panel, only:\n" +
+      signUpCalls.join("\n"),
   );
   failures++;
 } else {
-  console.log(
-    `  ok   signUp() exists in exactly one file (${signUpCalls.length} call site) — ${SIGNUP_OWNER}`,
-  );
+  console.log("  ok   no signUp() call anywhere — accounts are admin-created only");
+}
+
+// --- NO SIGNUP ROUTE ---------------------------------------------------------
+//
+// The call-site grep above would not catch a signup PAGE that had lost its
+// action, so the route itself is asserted gone as well.
+console.log("\nNO SIGNUP ROUTE\n" + "=".repeat(72));
+const signupRoute = new URL("../app/[locale]/(portal)/signup", import.meta.url);
+if (existsSync(signupRoute)) {
+  console.log("  FAIL  app/[locale]/(portal)/signup still exists on disk");
+  failures++;
+} else {
+  console.log("  ok   app/[locale]/(portal)/signup does not exist");
 }
 
 console.log("\n" + "=".repeat(72));
@@ -304,4 +381,8 @@ if (failures) {
   console.log(`${failures} FAILURE(S)\n`);
   process.exit(1);
 }
-console.log(`ALL ${CASES.length + 2} CHECKS PASSED\n`);
+/* Predicate cases + near-miss cases + the eight standalone assertions (no-leak,
+   allowlist-ignored, two near-miss drift guards, ALLOWED_DOMAINS drift, no
+   signup helper, no OTP/OAuth, no signUp(), no signup route). Counted rather
+   than hard-coded so adding a case cannot silently leave the total stale. */
+console.log(`ALL ${CASES.length + TYPO_CASES.length + 8} CHECKS PASSED\n`);

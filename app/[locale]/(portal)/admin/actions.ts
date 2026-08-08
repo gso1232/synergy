@@ -5,6 +5,9 @@ import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/supabase/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { AGENT_HEARD, AGENT_STAGES, type AgentHeard, type AgentStage } from "@/lib/types";
+import { siteOrigin } from "@/lib/site-origin";
+import { createClient } from "@/lib/supabase/server";
+import { isCompanyDomainEmail, looksLikeCompanyDomainTypo } from "@/lib/auth-domain";
 
 /*
  * 🔴 `signOut` LIVES IN (portal)/session/actions.ts NOW, AND IT IS NOT
@@ -282,4 +285,247 @@ export async function setAgentActive(formData: FormData): Promise<void> {
 
   await admin.supabase.from("agents").update({ active }).eq("id", id);
   revalidatePath(`/${locale}/admin`);
+}
+
+/**
+ * CREATE AN AGENT ACCOUNT AND EMAIL THEM A SETUP LINK.
+ *
+ * =============================================================================
+ * 🔴 THIS IS NOW THE ONLY WAY A PORTAL ACCOUNT COMES INTO EXISTENCE.
+ *
+ * Public signup was removed on 2026-08-08: the /signup route, its action, its
+ * form and its i18n namespace are all deleted, and scripts/test-auth-domain.mjs
+ * fails the build if a `signUp()` call reappears anywhere in the repo. What
+ * replaced it is this form — an admin types a name, an address and a phone
+ * number, and the person receives a link to choose their own password.
+ *
+ * FOUR CONTROLS, NOT ONE:
+ *   1. requireAdmin() FIRST, before the service client is constructed. A
+ *      "use server" action compiles to a public POST endpoint; the admin
+ *      layout gates the PAGE, not this function.
+ *   2. enforce_company_domain (DB trigger on auth.users) rejects any address
+ *      that is not @fflsynergy.com, whatever path created it.
+ *   3. handle_new_user hard-codes role='agent'. Role cannot be requested here,
+ *      and enforce_profile_transition makes it immutable afterwards.
+ *   4. The setup link proves inbox control before a password exists.
+ *
+ * 🔴 WHY THE SERVICE ROLE IS UNAVOIDABLE HERE — the same narrow reason as
+ * deleteUnverifiedAccount above. The row being created lives in `auth.users`,
+ * which Supabase owns; no RLS policy can grant a browser session the right to
+ * mint an auth user. The service client is created only AFTER requireAdmin()
+ * has returned, and is used for exactly two statements.
+ *
+ * 🔴 email_confirm: true IS LOAD-BEARING, NOT CONVENIENCE. handle_new_user reads
+ * email_confirmed_at at INSERT and writes status='unverified' when it is null.
+ * Unverified rows are swept by purge_unverified_accounts after 24 hours — so an
+ * unconfirmed invite would silently delete itself overnight, and Aiman would
+ * watch accounts vanish with no error anywhere. Confirming at creation lands the
+ * profile on 'pending'; the setup link still proves inbox control.
+ * =============================================================================
+ */
+
+// =============================================================================
+// AGENT ACCOUNT CREATION — the only way an account comes into existence.
+// =============================================================================
+
+export type InviteState =
+  | { status: "idle" }
+  | { status: "sent"; email: string }
+  | { status: "manual"; email: string; link: string }
+  /** `detail` carries the raw driver message. Surfaced ON PURPOSE: this is an
+   *  admin-only screen, and the last failure cost an hour precisely because the
+   *  UI showed nothing while the real reason sat in an unreadable terminal. */
+  | { status: "error"; code: string; detail?: string };
+
+/**
+ * 🔴 WHY THIS ONE RETURNS STATE INSTEAD OF REDIRECTING.
+ *
+ * Every other mutation on this page posts a bare <form action> and reports by
+ * redirect (see the AccountErrorCode docblock). This one cannot, for two
+ * reasons that only apply here:
+ *
+ *   1. IT HAS SOMETHING TO HAND BACK. On a delivery failure the admin needs the
+ *      actual setup URL. A redirect would have to carry it in a query string —
+ *      putting a single-use credential into browser history, the address bar and
+ *      every access log between here and there. Returned state keeps it in the
+ *      response body.
+ *   2. THE HANG. The first version awaited resetPasswordForEmail with no
+ *      timeout. With SMTP unconfigured that call blocked, the action never
+ *      returned, and useFormStatus sat on "Creating…" forever — so an admin
+ *      re-clicks and creates duplicates. That is the bug this shape fixes.
+ *
+ * The trade-off is real: useFormState needs JavaScript, so this form alone does
+ * not work with JS off, unlike the approvals buttons. Accepted deliberately —
+ * a copy-me-this-link affordance is useless without JS anyway.
+ */
+
+/** Never let a third-party network call hang the action. */
+async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | "timeout"> {
+  let t: ReturnType<typeof setTimeout>;
+  const timer = new Promise<"timeout">((res) => {
+    t = setTimeout(() => res("timeout"), ms);
+  });
+  return Promise.race([p.finally(() => clearTimeout(t)), timer]);
+}
+
+/**
+ * Build the setup link for an address that already has an account.
+ *
+ * 🔴 generateLink DOES NOT SEND ANYTHING. It asks GoTrue to mint the token and
+ * hands back the URL, so it works with no SMTP configured at all — which is why
+ * it is the backbone of both the create flow's fallback and the resume path for
+ * an account whose email failed. The link is single-use and expires on the
+ * project's recovery-token TTL.
+ */
+async function buildSetupLink(
+  service: NonNullable<ReturnType<typeof createAdminClient>>,
+  email: string,
+  locale: string,
+): Promise<string | null> {
+  const { data, error } = await service.auth.admin.generateLink({
+    type: "recovery",
+    email,
+    options: { redirectTo: `${siteOrigin()}/${locale}/auth/callback?next=reset` },
+  });
+  if (error || !data?.properties?.action_link) {
+    console.log("[admin] generateLink failed", { code: error?.status });
+    return null;
+  }
+  return data.properties.action_link;
+}
+
+export async function inviteAgentAccount(
+  _prev: InviteState,
+  formData: FormData,
+): Promise<InviteState> {
+  const locale = String(formData.get("locale") ?? "en") === "es" ? "es" : "en";
+  const fullName = String(formData.get("full_name") ?? "").trim();
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  const phone = String(formData.get("phone") ?? "").trim();
+
+  const admin = await requireAdmin();
+  if (!admin) return { status: "error", code: "forbidden" };
+
+  if (!fullName || fullName.length > 100) return { status: "error", code: "name" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return { status: "error", code: "email" };
+
+  /* ===========================================================================
+     🔴 THE DOMAIN IS CHECKED HERE, BEFORE ANYTHING IS CREATED.
+
+     It used to be left entirely to `enforce_company_domain` on auth.users, and
+     the admin only found out via whatever message Postgres happened to raise —
+     which the catch below has to pattern-match on (`/fflsynergy|denied|domain/`)
+     to turn back into something readable. A typo'd address like
+     `…@fllsynergy.com` therefore came back as a generic wrong-domain error, or
+     fell through to "write_failed" if the wording did not match.
+
+     The trigger is STILL the authority — it covers the dashboard, the Admin API
+     and any path that never runs this code. This is the fast, specific, honest
+     answer for the one path a human actually types into.
+     =========================================================================== */
+  if (!isCompanyDomainEmail(email)) {
+    return {
+      status: "error",
+      code: looksLikeCompanyDomainTypo(email) ? "domainTypo" : "domain",
+    };
+  }
+
+  const service = createAdminClient();
+  if (!service) return { status: "error", code: "unconfigured" };
+
+  // 1. Mint the auth user. handle_new_user provisions the profile at 'pending'.
+  //    email_confirm: true is load-bearing — see step 2's note.
+  const { data: created, error: createErr } = await service.auth.admin.createUser({
+    email,
+    email_confirm: true,
+    user_metadata: { full_name: fullName },
+  });
+
+  if (createErr || !created?.user) {
+    const msg = createErr?.message ?? "";
+    console.log("[admin] account create rejected", { code: createErr?.status });
+    if (/already|exists|registered|duplicate/i.test(msg)) return { status: "error", code: "duplicate" };
+    if (/fflsynergy|denied|domain/i.test(msg)) return { status: "error", code: "domain" };
+    return { status: "error", code: "write_failed", detail: msg };
+  }
+
+  // 2. Phone the trigger cannot know, and pending -> active. That promotion IS
+  //    the invitation. Service-role write, so enforce_profile_transition sees
+  //    auth.uid() = null and its no-self-approval guard does not fire.
+  const { error: profileErr } = await service
+    .from("profiles")
+    .update({ phone: phone || null, full_name: fullName, status: "active" })
+    .eq("id", created.user.id);
+
+  if (profileErr) {
+    await service.auth.admin.deleteUser(created.user.id).catch(() => {});
+    console.log("[admin] profile write rejected, account rolled back", { code: profileErr.code });
+    return { status: "error", code: "write_failed" };
+  }
+
+  revalidatePath(`/${locale}/admin`);
+
+  // 3. Mint the link FIRST, unconditionally. If delivery then fails or stalls we
+  //    already hold the thing the admin needs, and the account is never left
+  //    unreachable because a mail server was down.
+  const link = await buildSetupLink(service, email, locale);
+
+  // 4. Attempt delivery, but never wait on it indefinitely.
+  const sent = await withTimeout(
+    createClient().auth.resetPasswordForEmail(email, {
+      redirectTo: `${siteOrigin()}/${locale}/auth/callback?next=reset`,
+    }),
+    8000,
+  );
+
+  if (sent === "timeout") {
+    console.log("[admin] setup mail timed out after 8s — SMTP likely unconfigured");
+    return link
+      ? { status: "manual", email, link }
+      : { status: "error", code: "mail" };
+  }
+  if (sent.error) {
+    console.log("[admin] setup mail failed", { code: sent.error.status });
+    return link
+      ? { status: "manual", email, link }
+      : { status: "error", code: "mail" };
+  }
+
+  return { status: "sent", email };
+}
+
+/**
+ * RESUME an account that exists but never received its link — and the general
+ * "get me the link" button. Creates nothing; only mints a fresh token for an
+ * address that already has a user.
+ */
+export async function setupLinkForExisting(
+  _prev: InviteState,
+  formData: FormData,
+): Promise<InviteState> {
+  const locale = String(formData.get("locale") ?? "en") === "es" ? "es" : "en";
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+
+  const admin = await requireAdmin();
+  if (!admin) return { status: "error", code: "forbidden" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return { status: "error", code: "email" };
+
+  /* Same near-miss courtesy as the create form. A mistyped domain has no
+     account behind it, so this would otherwise come back as the truthful but
+     unhelpful "no account exists for that address". */
+  if (!isCompanyDomainEmail(email)) {
+    return {
+      status: "error",
+      code: looksLikeCompanyDomainTypo(email) ? "domainTypo" : "domain",
+    };
+  }
+
+  const service = createAdminClient();
+  if (!service) return { status: "error", code: "unconfigured" };
+
+  const link = await buildSetupLink(service, email, locale);
+  if (!link) return { status: "error", code: "nouser" };
+
+  // Always "manual": this button exists precisely because mail is not arriving.
+  return { status: "manual", email, link };
 }

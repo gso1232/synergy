@@ -111,43 +111,130 @@ export function isCompanyEmail(email: string | null | undefined): boolean {
 }
 
 /**
- * =============================================================================
- * 🔴 MAY THIS ADDRESS **CREATE** AN ACCOUNT? DOMAIN ONLY — THE ALLOWLIST IS
- * DELIBERATELY NOT CONSULTED, AND THAT IS THE ENTIRE REASON THIS EXISTS.
+ * MAY AN ADMIN CREATE AN ACCOUNT FOR THIS ADDRESS? Company domain ONLY.
  *
- * `isCompanyEmail` answers "may this address SIGN IN", and it says yes to
- * ALLOWED_EMAILS so a pre-existing, individually-vetted account is not locked
- * out of its own portal. That is a grandfather clause for accounts that already
- * exist.
+ * 🔴 THIS IS NOT `isCompanySignupEmail` COMING BACK, AND IT IS NOT A SIGN-UP
+ * GATE. There is still no self-service creation path — see the block below, and
+ * the `signUp()` grep in scripts/test-auth-domain.mjs that fails the build if one
+ * appears. The only caller is `inviteAgentAccount`, where the person typing the
+ * address is an ALREADY-AUTHENTICATED ADMIN and the question is "did Aiman make
+ * a mistake", not "may this stranger in".
  *
- * SIGNUP IS A DIFFERENT QUESTION. Public signup opened in 0005; if it reused
- * `isCompanyEmail`, then every address on the allowlist would become an address
- * a STRANGER could register — the allowlist would silently widen from "these
- * specific existing accounts may sign in" to "these specific addresses may be
- * claimed by whoever gets there first". For a personal gmail address that is a
- * live account-takeover route, not a theoretical one.
- *
- * So: creation is company-domain only. Grandfathering never grants creation.
- *
- * The two functions must stay separate even though one currently looks like a
- * subset of the other. Collapsing them is the bug this comment exists to
- * prevent.
- *
- * SAME EXACT-MATCH RULES as everything else here: lowercased, exactly one `@`,
- * domain compared by equality against ALLOWED_DOMAINS. Fails closed on null,
- * empty, malformed and multi-`@` input.
- *
- * 🔴 THIS IS NOT THE ONLY GATE, AND MUST NOT BE THE ONLY GATE. The database
- * trigger `on_auth_user_domain_check` (0004) re-checks the domain at INSERT on
- * auth.users, which covers every path that never touches this code: the
- * dashboard, the Admin API, invites, a future OAuth provider, and an admin's
- * typo. Email verification (0005) is what makes either check mean anything —
- * without it, "the address ends in @fflsynergy.com" is just a string someone
- * typed.
- * =============================================================================
+ * 🔴 IT DELIBERATELY IGNORES `ALLOWED_EMAILS`. The individual allowlist is a
+ * grandfather clause for an account that already exists; it must never be a
+ * template for creating NEW ones. New accounts are company-domain only, full
+ * stop. That is also what the `enforce_company_domain` trigger enforces at
+ * INSERT, and these two must agree.
  */
-export function isCompanySignupEmail(email: string | null | undefined): boolean {
+export function isCompanyDomainEmail(email: string | null | undefined): boolean {
   const p = parts(email);
   if (!p) return false;
   return (ALLOWED_DOMAINS as readonly string[]).includes(p.domain);
 }
+
+/**
+ * =============================================================================
+ * NEAR-MISS DETECTION — "did you mean @fflsynergy.com?"
+ *
+ * 🔴 WHY A WRONG DOMAIN AND A TYPO'D DOMAIN MUST NOT SHARE ONE MESSAGE.
+ *
+ * `mohamedsamy2@fllsynergy.com` — a doubled L — reached account creation and the
+ * admin got a generic "must use an @fflsynergy.com address", which reads as "you
+ * used the wrong company" rather than "you fat-fingered one letter". The address
+ * LOOKS right at a glance; that is exactly what makes the typo expensive. The
+ * account silently fails to be created, or worse gets created somewhere it does
+ * not belong, and nobody spots why.
+ *
+ * `ffl` -> `ffi` / `fll` / `ff1`, a dropped or doubled letter, two swapped
+ * letters, `.com` -> `.cm` / `.co` / `.comm`: all one or two edits away, all
+ * invisible when you are reading fast.
+ *
+ * 🔴 THIS GRANTS NOTHING. It is a message-selection helper and NOTHING else.
+ * `isCompanyEmail` and `isCompanyDomainEmail` are unchanged and still return
+ * false for every one of these; a near miss is still a REJECTION, just an
+ * honest one. If this function were deleted, the same addresses would still be
+ * refused — the admin would simply be told less.
+ *
+ * 🔴 THE THRESHOLD IS TWO EDITS, AND IT IS AN UPPER BOUND ON HELP, NOT ON
+ * SECURITY. `fflsynergy.com` is 14 characters, so two edits cannot reach any
+ * plausible real domain: `gmail.com` is 11 edits away, `notfflsynergy.com` is 3,
+ * and `fflsynergy.com.evil.com` — the suffix attack — is 9. Those all fall
+ * through to the ordinary refusal, which is the correct answer for them.
+ * =============================================================================
+ */
+
+/**
+ * Damerau-Levenshtein (optimal string alignment) distance, capped for cost.
+ * Transpositions count as ONE edit, which is the whole point: `fflsyngery` is a
+ * finger-swap, not two unrelated mistakes.
+ */
+function editDistance(a: string, b: string): number {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const d: number[][] = Array.from({ length: rows }, () => new Array(cols).fill(0));
+  for (let i = 0; i < rows; i++) d[i][0] = i;
+  for (let j = 0; j < cols; j++) d[0][j] = j;
+
+  for (let i = 1; i < rows; i++) {
+    for (let j = 1; j < cols; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(
+        d[i - 1][j] + 1, // deletion
+        d[i][j - 1] + 1, // insertion
+        d[i - 1][j - 1] + cost, // substitution
+      );
+      if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+        d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1); // transposition
+      }
+    }
+  }
+  return d[a.length][b.length];
+}
+
+/** How many edits from an allowed domain before we stop calling it a typo. */
+const TYPO_MAX_EDITS = 2;
+
+/**
+ * Is this a plausible mistyping of a company domain — i.e. refused, but almost
+ * certainly a slip rather than the wrong company?
+ *
+ * Returns false for anything `isCompanyDomainEmail` already accepts, so the two
+ * can be asked in either order without overlapping.
+ */
+export function looksLikeCompanyDomainTypo(email: string | null | undefined): boolean {
+  const p = parts(email);
+  if (!p) return false;
+  if ((ALLOWED_DOMAINS as readonly string[]).includes(p.domain)) return false;
+
+  return (ALLOWED_DOMAINS as readonly string[]).some((allowed) => {
+    /* 🔴 GUARD AGAINST THE SUFFIX ATTACK BEFORE MEASURING. A long hostile
+       domain that merely CONTAINS the real one is not a near miss, and a raw
+       distance check on wildly different lengths is meaningless anyway. */
+    if (Math.abs(p.domain.length - allowed.length) > TYPO_MAX_EDITS) return false;
+    return editDistance(p.domain, allowed) <= TYPO_MAX_EDITS;
+  });
+}
+
+/** The domain to suggest in a near-miss message. One allowed domain today. */
+export const PRIMARY_DOMAIN = ALLOWED_DOMAINS[0];
+
+/**
+ * =============================================================================
+ * 🔴 `isCompanySignupEmail` WAS REMOVED WHEN PUBLIC SIGNUP WAS REMOVED.
+ *
+ * It answered "may this address CREATE an account" for the public signup form,
+ * checking ALLOWED_DOMAINS only (never the allowlist) so that a stranger could
+ * not register a grandfathered address out from under its owner.
+ *
+ * There is no public signup any more, so there is no caller and no question to
+ * answer: accounts are created solely by an admin from the admin panel. A
+ * domain check on the *typed* address was never the real control anyway —
+ * anyone can type an @fflsynergy.com address. Admin creation is the control.
+ *
+ * 🔴 DO NOT REINTRODUCE THIS FUNCTION. Its existence implies a self-service
+ * creation path. If one is ever wanted again, it needs its own review, not a
+ * revived helper. The database trigger `on_auth_user_domain_check` (0004) still
+ * re-checks the domain at INSERT on auth.users, covering the paths that never
+ * touch app code: the dashboard, the Admin API, invites and an admin's typo.
+ * =============================================================================
+ */

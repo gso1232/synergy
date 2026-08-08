@@ -36,7 +36,7 @@ export default async function AdminPage({
   searchParams,
 }: {
   params: { locale: string };
-  searchParams: { accountError?: string };
+  searchParams: { accountError?: string; created?: string; createError?: string };
 }) {
   unstable_setRequestLocale(locale);
 
@@ -68,6 +68,8 @@ export default async function AdminPage({
       applicationsRes={applicationsRes}
       currentUserId={user?.id ?? ""}
       accountError={searchParams?.accountError}
+      created={searchParams?.created}
+      createError={searchParams?.createError}
     />
   );
 }

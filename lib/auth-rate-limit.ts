@@ -28,9 +28,14 @@ import { headers } from "next/headers";
 
 const WINDOW_MS = 15 * 60 * 1000;
 
-/** Per-bucket ceilings. Reset requests are tighter — each one sends an email. */
+/**
+ * Per-bucket ceilings. Reset requests are tighter — each one sends an email.
+ *
+ * The `signup` bucket was removed with the public signup route; nothing calls
+ * it now. Unlisted buckets fall back to the default ceiling in authRateLimited,
+ * so removing the entry cannot silently disable a limit on some other caller.
+ */
 const LIMITS: Record<string, number> = {
-  signup: 5,
   reset: 3,
 };
 

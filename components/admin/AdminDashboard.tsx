@@ -10,6 +10,7 @@ import AgentsManager from "@/components/admin/AgentsManager";
 import StatRow from "@/components/admin/StatRow";
 import DataTable, { type Row } from "@/components/admin/DataTable";
 import ApprovalsQueue from "@/components/admin/ApprovalsQueue";
+import CreateAccountForm from "@/components/admin/CreateAccountForm";
 import { getContent, type ReadResult } from "@/lib/admin/data";
 import type { Agent, Application, AppRole, Lead, Profile } from "@/lib/types";
 
@@ -55,6 +56,8 @@ export default async function AdminDashboard({
   applicationsRes,
   currentUserId,
   accountError,
+  created,
+  createError,
 }: {
   locale: string;
   userLabel: string;
@@ -72,6 +75,11 @@ export default async function AdminDashboard({
   currentUserId?: string;
   /** Set by a failed approve/reject/delete redirect. Coarse code only. */
   accountError?: string;
+  /** Set by a SUCCESSFUL invite redirect — the address the setup link went to. */
+  created?: string;
+  /** Set by a failed invite redirect. Separate channel from accountError so the
+   *  two banners cannot be confused for one another. */
+  createError?: string;
 }) {
   const t = await getTranslations({ locale, namespace: "admin" });
   /* Product NAMES are read from the `services` namespace, not restated here, so
@@ -278,6 +286,30 @@ export default async function AdminDashboard({
           route passes no `profilesRes`, and an approvals table filled with
           fixture accounts is exactly the kind of thing someone later mistakes
           for real. Absent means absent. */}
+      {/* ---------- CREATE AN AGENT — ABOVE THE QUEUE, DELIBERATELY.
+          Public signup was removed on 2026-08-08, so this form is the ONLY way
+          an account comes into existence. It sits above the approvals queue
+          because it is now the primary action on this page, not a secondary
+          one: the queue handles people who are already in the system, this
+          creates them. Gated on `profilesRes` for the same reason the queue is
+          — the design-preview route has no Supabase client, and a live create
+          form on a fixture page would mint real accounts from mock data. */}
+      {profilesRes ? (
+        <section aria-labelledby="create-account" className="mt-8">
+          <h2 id="create-account" className="sr-only">
+            {t("createAccount.heading")}
+          </h2>
+          <AdminCard
+            title={t("createAccount.heading")}
+            meta={metaLine(t("createAccount.heading"))}
+            statusLabel={t("accounts.heading")}
+            statusValue={String(profilesRes.ok ? profilesRes.rows.length : 0)}
+          >
+            <CreateAccountForm locale={locale} />
+          </AdminCard>
+        </section>
+      ) : null}
+
       {profilesRes ? (
         <section aria-labelledby="accounts" className="mt-8">
           <h2 id="accounts" className="sr-only">

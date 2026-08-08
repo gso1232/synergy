@@ -1,8 +1,8 @@
 "use server";
 
-import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { authRateLimited } from "@/lib/auth-rate-limit";
+import { siteOrigin } from "@/lib/site-origin";
 
 export type ForgotState = {
   /**
@@ -90,12 +90,3 @@ export async function requestReset(
   return { status: "sent" };
 }
 
-/** See the identical note in signup/actions.ts. */
-function siteOrigin(): string {
-  const configured = process.env.NEXT_PUBLIC_SITE_URL;
-  if (configured) return configured.replace(/\/$/, "");
-  const h = headers();
-  const host = h.get("x-forwarded-host") ?? h.get("host") ?? "localhost:3000";
-  const proto = h.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
-  return `${proto}://${host}`;
-}

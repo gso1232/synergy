@@ -229,18 +229,13 @@ export default function LoginForm({ locale }: { locale: string }) {
         <SubmitButton label={t("submit")} />
       </fieldset>
 
-      {/* 🔴 THE SIGN-UP LINK, ALSO NEW IN 0005 — and it is the visible face of
-          the biggest security change in this project. Until now this form
-          deliberately had NO sign-up: accounts were admin-created and that was
-          the control keeping strangers out. Public signup replaces that control
-          with three others (company domain, email verification, and the pending
-          state denied in RLS). See signup/actions.ts. */}
-      <p className="mt-6 text-center text-[14px] text-cream/75">
-        {t("noAccount")}{" "}
-        <Link href={`/${locale}/signup`} className={LINK}>
-          {t("createAccount")}
-        </Link>
-      </p>
+      {/* 🔴 NO SIGN-UP LINK, AND NOTHING MAY REINTRODUCE ONE. 0005 opened public
+          signup; that decision has been reversed. Accounts are created ONLY by
+          an admin, from the admin panel, and the absence of a self-service
+          entry point is once again the control that keeps strangers out.
+          The route, its action, its form and its i18n namespace are all gone —
+          scripts/test-auth-domain.mjs fails the build if a `signUp()` call
+          reappears anywhere in the repo. Do not add a link here. */}
 
       {/* Error region. `role="alert"` announces it the moment it appears; it is
           empty (and silent) until the action returns an error. Warm salmon on a
