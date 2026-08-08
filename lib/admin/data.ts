@@ -1,6 +1,6 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
+import { createReadClient } from "@/lib/supabase/server";
 import { getAllArticles } from "@/lib/blog";
 import type { Agent, Application, Lead, Profile } from "@/lib/types";
 
@@ -40,7 +40,7 @@ export type ReadResult<T> =
  */
 export async function getProfiles(): Promise<ReadResult<Profile>> {
   try {
-    const supabase = createClient();
+    const supabase = createReadClient();
     const { data, error } = await supabase
       .from("profiles")
       .select("id, role, status, full_name, email, created_at, approved_at, approved_by")
@@ -60,7 +60,7 @@ export async function getProfiles(): Promise<ReadResult<Profile>> {
 
 export async function getLeads(): Promise<ReadResult<Lead>> {
   try {
-    const supabase = createClient();
+    const supabase = createReadClient();
     const { data, error } = await supabase
       .from("leads")
       .select("*")
@@ -86,7 +86,7 @@ export async function getLeads(): Promise<ReadResult<Lead>> {
  */
 export async function getApplications(): Promise<ReadResult<Application>> {
   try {
-    const supabase = createClient();
+    const supabase = createReadClient();
     const { data, error } = await supabase
       .from("applications")
       .select("*")
@@ -100,7 +100,7 @@ export async function getApplications(): Promise<ReadResult<Application>> {
 
 export async function getAgents(): Promise<ReadResult<Agent>> {
   try {
-    const supabase = createClient();
+    const supabase = createReadClient();
     const { data, error } = await supabase
       .from("agents")
       .select("*")

@@ -1,6 +1,6 @@
 import { cache } from "react";
 import type { User } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createReadClient } from "@/lib/supabase/server";
 import type { AccountStatus, AppRole } from "@/lib/types";
 
 /**
@@ -51,7 +51,12 @@ export const getAccountState = cache(
     status: AccountStatus | null;
   }> => {
     try {
-      const supabase = createClient();
+      /* 🔴 THE READ CLIENT, NOT THE WRITE ONE. This runs inside layouts and
+         pages, which cannot persist a rotated refresh token — see the rule at
+         the top of lib/supabase/server.ts. Refreshing here is what was logging
+         admins out mid-session. Identity is still verified against GoTrue
+         below; only the local refresh heuristic is suppressed. */
+      const supabase = createReadClient();
 
       const {
         data: { user },

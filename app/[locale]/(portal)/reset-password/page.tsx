@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import AuthShell from "@/components/portal/AuthShell";
 import ResetPasswordForm from "@/components/portal/ResetPasswordForm";
-import { createClient } from "@/lib/supabase/server";
+import { createReadClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -46,7 +46,9 @@ export default async function ResetPasswordPage({
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "reset" });
 
-  const supabase = createClient();
+  /* Read client: this is a Server Component and cannot persist a rotated
+     refresh token — see the rule at the top of lib/supabase/server.ts. */
+  const supabase = createReadClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
