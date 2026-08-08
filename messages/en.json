@@ -1147,11 +1147,12 @@
       "licensing": "Licensing",
       "contracting": "Contracting",
       "resources": "Resources",
-      "training": "Training"
+      "training": "Training",
+      "overview": "Overview"
     },
     "placeholder": {
-      "label": "Awaiting Synergy detail",
-      "note": "This is a marked gap, not finished copy."
+      "label": "Needs Synergy detail",
+      "note": "Marked gap — not finished copy."
     },
     "licensing": {
       "heading": "Licensing checklist",
@@ -1255,6 +1256,25 @@
     "training": {
       "heading": "New agent bootcamps",
       "intro": "Live and recorded training for new agents."
+    },
+    "gapChipTitle": "{n} still needed from Synergy",
+    "overview": {
+      "gapsNotice": "{count} details are still to come from Synergy. Every one is marked where it belongs, so you can see exactly what is waiting.",
+      "stepCount": "{count} steps",
+      "gapCount": "{count} to come",
+      "licensing": "Get your resident insurance licence, from checking your state rules to collecting your producer number.",
+      "contracting": "Get appointed with carriers — cover, certificates, documents and the onboarding call.",
+      "resources": "Service lines and agent portals for the carriers Synergy is appointed with.",
+      "training": "Bootcamps and product training for new agents."
+    },
+    "gaps": {
+      "prelicensing": "Where a Synergy agent enrols for pre-licensing study — the provider, the enrolment link, and anything Synergy covers.",
+      "examEmail": "The address a new agent sends their exam date to.",
+      "docsEmail": "The address a new agent sends their contracting documents to.",
+      "training": "Where Synergy’s required IUL and annuity product training lives, and where a completion screenshot goes.",
+      "callback": "How long an agent should expect to wait for the onboarding call.",
+      "documents": "Synergy’s own agent documents, if any exist — onboarding and contracting guides, trackers, scripts.",
+      "bootcamp": "Synergy’s own bootcamp or training destination — where it runs, how an agent joins, and whether there is a Spanish session."
     }
   }
 }

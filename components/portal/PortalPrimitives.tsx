@@ -1,82 +1,83 @@
+/**
+ * The shared parts of the agent portal: section shell, step, external link,
+ * lists and the operational warning.
+ *
+ * =============================================================================
+ * 🔴 THE SURFACE IS LIGHT NOW, AND THAT INVERTS EVERY GOLD DECISION.
+ *
+ * The first build was navy with cream type and `gold` accents. This one is cream
+ * with `ink` type and `gold-deep` accents. The palette rule from HANDOFF §3a is
+ * absolute and it runs the OTHER WAY on light:
+ *
+ *      on DARK   the legal gold is `gold` #C9A84C     (gold-deep is 1.9:1)
+ *      on LIGHT  the legal gold is `gold-deep` #7D641F (gold is 2.09:1)
+ *
+ * So `gold` appears NOWHERE on this surface as text, as a numeral, as a bullet,
+ * as a border on a control, or as a focus ring. It survives only as a wash
+ * (`gold/[0.06]`), where nothing is read off it and it carries no state.
+ *
+ * MEASURED, composited, at the widths that ship — not converted from tokens:
+ *
+ *   ink        #1A1A1A on cream #F8F4EE   15.89:1   body, headings
+ *   ink/70               on cream          5.92:1   secondary prose  (floor)
+ *   gold-deep  #7D641F on cream            5.16:1   numerals, bullets, focus
+ *   gold-deep          on white #FFFFFF    5.65:1   inside cards
+ *   ink        #1A1A1A on white           17.41:1   card body
+ *   navy       #0D1B2A on gold #C9A84C     7.61:1   the one solid-gold fill
+ *
+ * 🔴 `ink/60` IS BANNED ON CREAM. It measures 4.34:1 — under 4.5, and close
+ * enough to look fine. ink/70 is the lightest value used for prose here.
+ *
+ * =============================================================================
+ * 🔴 THE `.sem-*` MARKETING SCALE IS STILL NOT USED. `.sem-h2` is 45.77px and
+ * `.sem-body` is 17.16px/1.8 — built for a page scrolled past once to persuade.
+ * This is a reference document worked through with a browser tab open beside it.
+ * It takes a working scale, closer to the admin dashboard than the homepage.
+ */
 import Link from "next/link";
 
-/**
- * The small shared parts of the agent portal: section wrapper, numbered step,
- * external link, and the two list treatments the checklists need.
- *
- * =============================================================================
- * 🔴 THE MARKETING `.sem-*` SCALE IS DELIBERATELY NOT USED HERE.
- *
- * `.sem-h2` is 45.77px and `.sem-body` is 17.16px at line-height 1.8 — a scale
- * built for a page someone scrolls past once, at speed, to be persuaded. This
- * portal is the opposite: a reference document an agent works through with a
- * browser tab open beside it, returning to step six three days later. It is
- * closer in kind to the admin dashboard than to the homepage, and it takes a
- * working scale to match — roughly 15px body, headings that separate sections
- * without dominating them.
- *
- * Using the marketing scale would have made a nine-step checklist about four
- * screens longer with no gain in legibility.
- *
- * =============================================================================
- * §AA — everything here sits on `navy #0D1B2A` (L 0.0104), so the ratios are
- * fixed and worth stating once:
- *
- *   cream      #F8F4EE   15.87:1
- *   gold-pale  #EFE1B0   13.31:1
- *   gold       #C9A84C    7.61:1
- *   cream/80             ~ 9.9:1
- *   cream/70             ~ 8.1:1
- *   cream/55             ~ 5.4:1   — smallest value used, on 13px+ only
- *
- * 🔴 `gold-deep` NEVER APPEARS ON THIS SURFACE. It is 1.9:1 on navy. On a dark
- * background the legal gold is `gold`; on a light background it is `gold-deep`;
- * they do not cross over. (HANDOFF §3a.)
- */
+/* ---------------------------------------------------------------- section --- */
 
-/** Section shell — anchor target, heading, optional intro. */
 export function PortalSection({
-  id,
   heading,
   intro,
   children,
 }: {
-  id: string;
   heading: string;
   intro?: string;
   children: React.ReactNode;
 }) {
   return (
-    <section
-      aria-labelledby={`${id}-h`}
-      /* scroll-mt clears the sticky bar so an anchored heading is not hidden
-         under it — the bar is 56px at phone and 64px above. */
-      className="scroll-mt-[72px] border-t border-cream/[0.14] pt-10 first:border-t-0 first:pt-0 sm:scroll-mt-[80px] sm:pt-14"
-      id={id}
-    >
-      <h2
-        id={`${id}-h`}
-        className="font-display text-[clamp(24px,3.2vw,32px)] font-medium leading-[1.15] tracking-[-0.01em] text-cream"
+    <section aria-labelledby="section-h">
+      <h1
+        id="section-h"
+        className="font-display text-[clamp(28px,3.4vw,38px)] font-medium leading-[1.12] tracking-[-0.015em] text-ink"
       >
         {heading}
-      </h2>
+      </h1>
       {intro ? (
-        <p className="mt-3 max-w-[34em] text-[15px] leading-[1.65] text-cream/75">{intro}</p>
+        <p className="mt-3 max-w-[34em] text-[16px] leading-[1.6] text-ink/70">{intro}</p>
       ) : null}
-      <div className="mt-8">{children}</div>
+      <div className="mt-9">{children}</div>
     </section>
   );
 }
 
+/* ------------------------------------------------------------------- step --- */
+
 /**
- * A numbered step.
+ * A numbered step, as a card.
+ *
+ * 🔴 HIERARCHY IS THE POINT OF THE REDESIGN. The first build ran heading and
+ * body at nearly the same weight down one hairline rule, so eight steps read as
+ * one grey wall. Now: the ACTION is the heading, at 19–21px medium ink; the
+ * DETAIL sits under it at 15px ink/70; each step is a white card on cream so the
+ * eye can count them; and the numeral is a fixed chip rather than inline text.
  *
  * 🔴 THE NUMERAL IS `aria-hidden` AND THE `<ol>` CARRIES THE ORDER. A screen
- * reader already announces "list item 3 of 8"; painting "03" into the
- * accessible name as well would have it read twice. The digits are typography.
- *
- * They are `gold` rather than `cream/40` because a numeral is a graphic under
- * 1.4.11 and owes 3:1 — cream/40 measures 2.4:1 on navy and would fail.
+ * reader already says "3 of 8"; painting "03" into the accessible name would
+ * read it twice. It is gold-deep, not gold — a numeral is a graphic under
+ * 1.4.11 and owes 3:1, which gold cannot reach on any light surface.
  */
 export function PortalStep({
   n,
@@ -88,31 +89,24 @@ export function PortalStep({
   children: React.ReactNode;
 }) {
   return (
-    <li className="border-t border-cream/[0.10] py-7 first:border-t-0 first:pt-0 sm:py-8">
-      <div className="sm:flex sm:gap-6">
+    <li className="rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] sm:p-6">
+      <div className="flex items-start gap-4">
         <span
           aria-hidden="true"
-          className="mb-2 block font-mono text-[13px] font-medium leading-none tracking-[0.08em] text-gold sm:mb-0 sm:w-10 sm:shrink-0 sm:pt-1"
+          className="mt-[2px] flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-gold-deep/35 bg-gold/[0.10] font-mono text-[12px] font-medium leading-none text-gold-deep"
         >
           {String(n).padStart(2, "0")}
         </span>
         <div className="min-w-0 flex-1">
-          <h3 className="font-display text-[clamp(18px,2vw,21px)] font-medium leading-[1.25] text-cream">
+          <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink">
             {heading}
-          </h3>
-          {/* 🔴 THE MEASURE IS `em`, NOT `ch`, AND IT WAS COUNTED NOT CONVERTED.
-              `ch` is the width of "0", which in IBM Plex Sans is far narrower
-              than its average letter — `max-w-[70ch]` here measured 93 rendered
-              characters per line, the same over-render HANDOFF logs on the
-              article route ("65ch rendered 91 characters, not 65"). 32em at
-              15px is 480px, counted at ~73 characters by per-character Range
-              rects on the built page.
-
-              The article accepts 86 because narrowing it was ruled out on
-              instruction. That decision is specific to that route: this is a
-              checklist someone re-reads at step six three days later, and long
-              lines cost more here than they do in an essay read once. */}
-          <div className="mt-2.5 max-w-[32em] space-y-3 text-[15px] leading-[1.65] text-cream/80">
+          </h2>
+          {/* 🔴 MEASURE IS `em`, COUNTED NOT CONVERTED. `ch` is the width of "0",
+              far narrower than the average letter in IBM Plex Sans: `70ch` here
+              measured 93 rendered characters, the same over-render HANDOFF logs
+              on the article route. 32em at 15px ≈ 480px ≈ 72 characters, counted
+              by per-character Range rects on the built page. */}
+          <div className="mt-2.5 max-w-[32em] space-y-3 text-[15px] leading-[1.6] text-ink/75">
             {children}
           </div>
         </div>
@@ -121,23 +115,26 @@ export function PortalStep({
   );
 }
 
-/** The ordered wrapper the steps live in. */
 export function PortalStepList({ children }: { children: React.ReactNode }) {
-  return <ol>{children}</ol>;
+  return <ol className="space-y-3">{children}</ol>;
 }
+
+/* ------------------------------------------------------------------ links --- */
 
 /**
  * An outbound link to a regulator, provider or carrier.
  *
- * 🔴 EVERY ONE OF THESE LEAVES THE SITE, AND THE LABEL SAYS SO. `target="_blank"`
- * without a warning is a WCAG 3.2.5 problem — the back button stops working and
- * the reader is not told why. The visible arrow is decorative; the accessible
- * name carries "opens in a new tab" via the visually-hidden span.
+ * 🔴 EVERY ONE LEAVES THE SITE AND THE ACCESSIBLE NAME SAYS SO. `target="_blank"`
+ * without warning is a WCAG 3.2.5 problem: the Back button stops working and the
+ * reader is not told why. The arrow is decorative; the visually-hidden span
+ * carries the warning.
  *
- * `rel="noreferrer noopener"` on all of them: `noopener` because a `_blank`
- * target otherwise gets a handle on `window.opener`, and `noreferrer` because
- * a carrier does not need to be told which page of a private portal sent an
- * agent to them.
+ * `rel="noreferrer noopener"` throughout — `noopener` because a `_blank` target
+ * otherwise gets a handle on `window.opener`, `noreferrer` because a carrier
+ * does not need to know which page of a private portal sent an agent to them.
+ *
+ * `py-1` is a TAP TARGET, not spacing: these are standalone controls in list
+ * rows, so WCAG 2.2 SC 2.5.8's 24×24 applies with no inline exception.
  */
 export function PortalLink({
   href,
@@ -153,11 +150,7 @@ export function PortalLink({
       href={href}
       target="_blank"
       rel="noreferrer noopener"
-      /* `py-1` is a TAP TARGET, not spacing. Each of these is a standalone
-         control in its own list row — not a link inside a sentence — so WCAG
-         2.2 SC 2.5.8's 24×24 minimum applies with no inline exception.
-         Unpadded, they measured 23px at phone width. */
-      className="group inline-flex items-baseline gap-1.5 py-1 text-[15px] text-gold-pale underline decoration-gold/40 underline-offset-4 transition-colors duration-200 hover:decoration-gold-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale motion-reduce:transition-none"
+      className="inline-flex items-baseline gap-1.5 py-1 text-[15px] font-medium text-gold-deep underline decoration-gold-deep/35 underline-offset-4 transition-colors duration-200 hover:decoration-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
     >
       <span>{children}</span>
       <svg
@@ -172,24 +165,22 @@ export function PortalLink({
   );
 }
 
-/** A stack of outbound links under a step. */
 export function PortalLinkList({ children }: { children: React.ReactNode }) {
-  return <ul className="mt-3.5 space-y-2">{children}</ul>;
+  return <ul className="mt-3 space-y-1">{children}</ul>;
 }
 
-/**
- * A plain bullet list — the document list, the E&O conditions, the call
- * checklist. Gold markers, because a cream/40 bullet fails 1.4.11 the same way
- * the step numeral would.
- */
+/* ------------------------------------------------------------------ lists --- */
+
+/** Bullets are gold-deep: a marker is a graphic under 1.4.11 and owes 3:1,
+ *  which `gold` (2.09:1 on cream, 2.29:1 on white) cannot reach. */
 export function PortalBullets({ items }: { items: React.ReactNode[] }) {
   return (
     <ul className="mt-3 space-y-2">
       {items.map((item, i) => (
-        <li key={i} className="relative pl-5 text-[15px] leading-[1.6] text-cream/80">
+        <li key={i} className="relative pl-5 text-[15px] leading-[1.6] text-ink/75">
           <span
             aria-hidden="true"
-            className="absolute left-0 top-[0.62em] h-[5px] w-[5px] rounded-full bg-gold"
+            className="absolute left-0 top-[0.6em] h-[5px] w-[5px] rounded-full bg-gold-deep"
           />
           {item}
         </li>
@@ -199,28 +190,48 @@ export function PortalBullets({ items }: { items: React.ReactNode[] }) {
 }
 
 /**
- * An emphasised operational warning — the do-not-email rule on the voided
- * check. Amber rather than the error salmon: nothing has failed, but getting
- * this wrong puts bank details in an inbox.
+ * An emphasised operational warning — the do-not-email rule on the voided check.
+ * `amber-deep #8A5312` is the text-safe amber this palette already carries for
+ * exactly this reason (the brand `amber #E0A458` is a wash, not a type colour).
  */
 export function PortalWarn({ children }: { children: React.ReactNode }) {
   return (
-    <p className="mt-3.5 rounded-lg border border-amber/45 bg-amber/[0.10] px-3.5 py-2.5 text-[14px] font-medium leading-[1.5] text-cream">
+    <p className="mt-3 rounded-lg border border-amber-deep/30 bg-amber/[0.12] px-3.5 py-2.5 text-[14px] font-medium leading-[1.5] text-amber-deep">
       {children}
     </p>
   );
 }
 
-/** The closing line that hands off to the next section. */
-export function PortalHandoff({ href, children }: { href: string; children: React.ReactNode }) {
+/* ------------------------------------------------------------------ pager --- */
+
+/** Foot-of-section navigation. Real links, so Back works and each is bookmarkable. */
+export function PortalPager({
+  prev,
+  next,
+}: {
+  prev: { href: string; label: string } | null;
+  next: { href: string; label: string } | null;
+}) {
   return (
-    <p className="mt-8 border-t border-cream/[0.10] pt-6 text-[15px] leading-[1.6] text-cream/75">
-      <Link
-        href={href}
-        className="text-gold-pale underline decoration-gold/40 underline-offset-4 hover:decoration-gold-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale"
-      >
-        {children}
-      </Link>
-    </p>
+    <nav
+      aria-label="Section"
+      className="mt-12 flex flex-wrap items-stretch justify-between gap-3 border-t border-ink/[0.12] pt-6"
+    >
+      {prev ? <PagerLink {...prev} dir="prev" /> : <span />}
+      {next ? <PagerLink {...next} dir="next" /> : <span />}
+    </nav>
+  );
+}
+
+function PagerLink({ href, label, dir }: { href: string; label: string; dir: "prev" | "next" }) {
+  return (
+    <Link
+      href={href}
+      className="group inline-flex min-h-[44px] items-center gap-2 rounded-lg border border-ink/50 bg-white px-4 py-2 text-[15px] font-medium text-ink transition-colors duration-200 hover:border-gold-deep/50 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
+    >
+      {dir === "prev" ? <span aria-hidden="true">←</span> : null}
+      <span>{label}</span>
+      {dir === "next" ? <span aria-hidden="true">→</span> : null}
+    </Link>
   );
 }

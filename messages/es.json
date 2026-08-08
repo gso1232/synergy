@@ -1132,7 +1132,8 @@
       "licensing": "",
       "contracting": "",
       "resources": "",
-      "training": ""
+      "training": "",
+      "overview": ""
     },
     "placeholder": {
       "label": "",
@@ -1240,6 +1241,25 @@
     "training": {
       "heading": "",
       "intro": ""
+    },
+    "gapChipTitle": "",
+    "overview": {
+      "gapsNotice": "",
+      "stepCount": "",
+      "gapCount": "",
+      "licensing": "",
+      "contracting": "",
+      "resources": "",
+      "training": ""
+    },
+    "gaps": {
+      "prelicensing": "",
+      "examEmail": "",
+      "docsEmail": "",
+      "training": "",
+      "callback": "",
+      "documents": "",
+      "bootcamp": ""
     }
   }
 }

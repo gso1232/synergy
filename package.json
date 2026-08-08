@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "node scripts/check-no-service-role.mjs",
+    "postbuild": "node scripts/check-no-service-role.mjs && node scripts/check-portal-gaps.mjs",
     "check:no-service-role": "node scripts/check-no-service-role.mjs",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check:portal-gaps": "node scripts/check-portal-gaps.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.4",
