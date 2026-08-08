@@ -806,7 +806,8 @@
     "metaLabel": "Staff & agent portal",
     "resetDone": "Your password has been changed. Sign in with your new password.",
     "resetExpired": "That reset link has expired or has already been used. Request a new one.",
-    "confirmFailed": "That confirmation link is invalid or has already been used. Try signing in, or request a new link."
+    "confirmFailed": "That confirmation link is invalid or has already been used. Try signing in, or request a new link.",
+    "linkExpired": "That link has already been used, or it has expired. Ask your admin to issue a new one."
   },
   "admin": {
     "metaTitle": "Admin — Synergy Insurance Group",

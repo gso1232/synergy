@@ -806,7 +806,8 @@
     "metaLabel": "Portal de personal y agentes",
     "resetDone": "Su contraseña fue cambiada. Inicie sesión con la nueva contraseña.",
     "resetExpired": "Ese enlace de restablecimiento venció o ya se usó. Solicite uno nuevo.",
-    "confirmFailed": "Ese enlace de confirmación no es válido o ya se usó. Intente iniciar sesión o solicite uno nuevo."
+    "confirmFailed": "Ese enlace de confirmación no es válido o ya se usó. Intente iniciar sesión o solicite uno nuevo.",
+    "linkExpired": ""
   },
   "admin": {
     "metaTitle": "",

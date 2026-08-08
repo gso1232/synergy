@@ -68,14 +68,23 @@ export default async function LoginPage({
      email link or a password change. `reset=1` is the only one that implies a
      real account — and it is only reachable by someone who just completed a
      reset, i.e. who already proved control of the mailbox. */
+  /* 🔴 `confirm=expired` IS SEPARATE FROM `confirm=failed` ON PURPOSE. A spent
+     one-time token and a broken link used to render the same sentence, and that
+     is precisely what hid the setup-link bug: every link failed on first use
+     while reporting "already been used", so the report matched the wrong
+     explanation and the real fault stayed invisible for as long as it did.
+     "Expired" now means the token was genuinely spent; "failed" means the link
+     did not carry what it should have, which is a wiring fault worth chasing. */
   const notice =
     searchParams?.reset === "1"
       ? t("resetDone")
       : searchParams?.reset === "expired"
         ? t("resetExpired")
-        : searchParams?.confirm === "failed"
-          ? t("confirmFailed")
-          : null;
+        : searchParams?.confirm === "expired"
+          ? t("linkExpired")
+          : searchParams?.confirm === "failed"
+            ? t("confirmFailed")
+            : null;
 
   return (
     <main className="auth-screen relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-5 py-14">

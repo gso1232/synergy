@@ -372,10 +372,41 @@ async function withTimeout<T>(p: Promise<T>, ms: number): Promise<T | "timeout">
  * Build the setup link for an address that already has an account.
  *
  * 🔴 generateLink DOES NOT SEND ANYTHING. It asks GoTrue to mint the token and
- * hands back the URL, so it works with no SMTP configured at all — which is why
- * it is the backbone of both the create flow's fallback and the resume path for
- * an account whose email failed. The link is single-use and expires on the
+ * hands back the pieces, so it works with no SMTP configured at all — which is
+ * why it is the backbone of both the create flow's fallback and the resume path
+ * for an account whose email failed. The token is single-use and expires on the
  * project's recovery-token TTL.
+ *
+ * =============================================================================
+ * 🔴 IT RETURNS `token_hash` POINTED AT OUR OWN CALLBACK, **NOT**
+ * `properties.action_link`. RETURNING action_link BURNED EVERY LINK ON FIRST
+ * USE, AND THE REASON IS NOT OBVIOUS.
+ *
+ * `action_link` points at GoTrue: `…/auth/v1/verify?token=…&redirect_to=…`.
+ * Following it works — the token is accepted, exactly once, and a login is
+ * recorded. But because `generateLink` creates no PKCE flow state (no browser
+ * started this flow), GoTrue answers in the IMPLICIT shape and puts the whole
+ * session in the URL FRAGMENT:
+ *
+ *     303 -> /en/auth/callback?next=reset#access_token=…&refresh_token=…
+ *
+ * A fragment never reaches a server. The callback saw a query containing only
+ * `next`, no `code`, and reported "invalid or already used" — on a token that
+ * had just been accepted. The admin would then request another link and burn
+ * that one the same way, which is why it looked like the links were being
+ * consumed before they were opened.
+ *
+ * Handing out `token_hash` instead keeps the exchange server-side, in the route
+ * handler, which is the only place that can persist the resulting cookies. It
+ * also drops a config dependency: the browser no longer passes through GoTrue's
+ * `redirect_to`, so this link does not need the origin in the project's
+ * Auth -> URL Configuration -> Redirect URLs allowlist.
+ *
+ * 🟡 `redirectTo` IS STILL PASSED. It is unused by the link we build, but it is
+ * what GoTrue stamps into `{{ .ConfirmationURL }}` if SMTP is ever switched on
+ * and the templated email goes out instead. Leaving it correct costs nothing;
+ * removing it would leave a broken link in a code path nobody is testing yet.
+ * =============================================================================
  */
 async function buildSetupLink(
   service: NonNullable<ReturnType<typeof createAdminClient>>,
@@ -387,11 +418,18 @@ async function buildSetupLink(
     email,
     options: { redirectTo: `${siteOrigin()}/${locale}/auth/callback?next=reset` },
   });
-  if (error || !data?.properties?.action_link) {
+
+  const hashedToken = data?.properties?.hashed_token;
+  if (error || !hashedToken) {
     console.log("[admin] generateLink failed", { code: error?.status });
     return null;
   }
-  return data.properties.action_link;
+
+  const url = new URL(`${siteOrigin()}/${locale}/auth/callback`);
+  url.searchParams.set("token_hash", hashedToken);
+  url.searchParams.set("type", "recovery");
+  url.searchParams.set("next", "reset");
+  return url.toString();
 }
 
 export async function inviteAgentAccount(
