@@ -84,7 +84,13 @@ export function PortalStep({
   heading,
   children,
 }: {
-  n: number;
+  /* 🔴 `string` WAS ADDED FOR THE CMS, and it is a widening rather than a
+     change: `String(n).padStart(2, "0")` already produced "03" from `3`, and it
+     is a no-op on a stored "03". The CMS keeps `page_sections.step_number` as
+     TEXT because the leading zero is what the badge renders and because a step
+     is not always a number — "4A" is a legitimate thing for Aiman to type. The
+     four retired hardcoded sections still pass numbers and are unaffected. */
+  n: number | string;
   heading: string;
   children: React.ReactNode;
 }) {

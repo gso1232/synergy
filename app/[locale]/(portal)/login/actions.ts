@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { isCompanyEmail } from "@/lib/auth-domain";
+import { logActivity } from "@/lib/cms/activity";
 import type { AccountStatus, AppRole } from "@/lib/types";
 
 export type SignInState = {
@@ -56,35 +56,43 @@ export async function signIn(
   if (error || !data.user) return { error: "invalid" };
 
   // ===========================================================================
-  // 🔴 GATE 1 — COMPANY DOMAIN. Sign-in succeeded; that is not the same as
+  // 🔴 GATE 1 — CONFIRMED ADDRESS. Sign-in succeeded; that is not the same as
   // access.
   //
-  // THREE THINGS MAKE THIS SAFE, AND ALL THREE ARE DELIBERATE:
+  // 🔴 THE COMPANY-DOMAIN HALF OF THIS GATE WAS REMOVED ON 2026-08-14, ON
+  // INSTRUCTION. It read `!isCompanyEmail(verifiedEmail)` and signed out any
+  // account whose verified address was not @fflsynergy.com (or on a small
+  // individual allowlist). ANY domain may now sign in. The database side went
+  // with it — see supabase/migrations/0009_remove_domain_restriction.sql, and
+  // lib/auth-domain.ts for what still protects this boundary and what does not.
   //
-  // 1. IT READS `data.user.email`, NOT `email` FROM THE FORM. The form value is
-  //    attacker-controlled. `data.user` is what Supabase returned for the
-  //    authenticated account after verifying the credentials, so this is the
-  //    address the account actually owns. Checking the typed value instead would
-  //    be trivially bypassed by typing a company address while signing in to a
-  //    personal account.
+  // The check was DELETED rather than made to always pass: a gate that is still
+  // written but can no longer fail is a gate the next reader will believe in.
   //
-  // 2. IT REQUIRES A CONFIRMED EMAIL. An unconfirmed address is one nobody has
-  //    proven they control, so "it ends in @fflsynergy.com" means nothing yet.
-  //    Supabase leaves `email_confirmed_at` null until the address is verified.
+  // WHAT REMAINS HERE, AND WHY EACH PART STILL MATTERS:
+  //
+  // 1. IT REQUIRES A CONFIRMED EMAIL. An unconfirmed address is one nobody has
+  //    proven they control. Supabase leaves `email_confirmed_at` null until the
+  //    address is verified. This is now the ONLY property of the address itself
+  //    that sign-in tests, which makes it more load-bearing than it was before,
+  //    not less.
+  //
+  // 2. IT READS `data.user.email`, NOT `email` FROM THE FORM. The form value is
+  //    attacker-controlled; `data.user` is what Supabase returned for the
+  //    authenticated account after verifying the credentials. Nothing below
+  //    branches on the address any more, but the variable feeds the activity
+  //    log, and a log written from form input would be a log of what someone
+  //    typed rather than of who signed in.
   //
   // 3. IT SIGNS THE SESSION OUT BEFORE RETURNING. `signInWithPassword` has
   //    ALREADY minted a session and set cookies by this point. Returning an
   //    error without `signOut()` would leave a valid session in the browser —
   //    the user would see "invalid" and yet be logged in.
-  //
-  // `isCompanyEmail` (not `isCompanySignupEmail`) is correct here: sign-in
-  // honours the individual allowlist so a pre-existing vetted account is not
-  // locked out. Creation does not — see lib/auth-domain.ts.
   // ===========================================================================
   const verifiedEmail = data.user.email;
   const emailConfirmed = Boolean(data.user.email_confirmed_at);
 
-  if (!emailConfirmed || !isCompanyEmail(verifiedEmail)) {
+  if (!emailConfirmed) {
     await supabase.auth.signOut();
     return { error: "invalid" };
   }
@@ -93,10 +101,13 @@ export async function signIn(
   // 🔴 GATE 2 — ACCOUNT STATUS. NEW IN 0005, and the reason public signup can be
   // open at all.
   //
-  // A verified company address is now something a STRANGER CAN OBTAIN by
-  // signing up. Passing gate 1 therefore no longer implies "belongs here" — it
-  // only implies "controls an @fflsynergy.com inbox". An admin still has to say
-  // yes, and until they do this account reaches nothing.
+  // Passing gate 1 does not imply "belongs here" — since 2026-08-14 it implies
+  // only "controls the inbox for this address", on any domain. An admin still
+  // has to have set the account active, and until then it reaches nothing.
+  //
+  // 🔴 THIS GATE CARRIES MORE WEIGHT THAN IT USED TO. With the domain rule gone
+  // (see gate 1), `status = 'active'` and the absence of public signup are what
+  // separate an account that belongs here from one that merely exists.
   //
   // Status is read through the RPC, not `select ... from profiles`, because
   // 0005's `profiles_select_own` policy denies a non-active user their own row —
@@ -140,8 +151,22 @@ export async function signIn(
     redirect(`/${locale}/pending`);
   }
 
+  /* 🔴 THE AUDIT TRAIL STARTS HERE, AND IT IS WRITTEN ONLY FOR A SUCCESSFUL,
+     APPROVED SIGN-IN. Every failure path above has already returned — a log of
+     attempts would be a log of which addresses exist, i.e. the enumeration
+     oracle the generic error messages exist to prevent.
+
+     `await`ed BEFORE the redirect, not after: `redirect()` throws NEXT_REDIRECT
+     to unwind the action, so anything below it never runs. The write is
+     best-effort and cannot fail the sign-in (see logActivity's docblock). */
+  await logActivity(data.user.id, "login", verifiedEmail ?? null, { role });
+
   // ACTIVE. Role decides the destination, read from the DB and not the token.
   // Sending an agent to /admin would bounce them off the admin guard and back
   // to /login, a loop.
-  redirect(role === "admin" ? `/${locale}/admin` : `/${locale}/welcome`);
+  //
+  // 🔴 AN AGENT NOW LANDS ON /agents, NOT /welcome. The hardcoded portal is
+  // retired in favour of the CMS-driven area; next.config.mjs redirects the old
+  // routes, so an existing bookmark still works. See that file's block.
+  redirect(role === "admin" ? `/${locale}/admin` : `/${locale}/agents`);
 }

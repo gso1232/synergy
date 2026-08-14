@@ -248,8 +248,20 @@ export default function AdminTopShell({
           </div>
         </div>
 
+        {/* 🔴 THE LAST TWO ITEMS ARE REAL ROUTES, NOT ANCHORS, AND THE NAV
+            HANDLES THAT WITHOUT A CHANGE. AdminNav's observer resolves each
+            href with `getElementById(href.replace(/^#/, ""))`; a path returns
+            null and is filtered out of the observed set, so a route item simply
+            never becomes the "active" anchor — which is correct, because when
+            you are ON that route you are not on this page at all. The CMS and
+            the log are genuinely separate pages: an editor with nested forms
+            and a filterable table do not belong in a dashboard's scroll. */}
         <AdminNav
-          items={NAV.map((n) => ({ key: n.key, href: n.href, label: t(`nav.${n.key}`) }))}
+          items={[
+            ...NAV.map((n) => ({ key: n.key, href: n.href, label: t(`nav.${n.key}`) })),
+            { key: "cms", href: `/${locale}/admin/content`, label: t("nav.cms") },
+            { key: "logs", href: `/${locale}/admin/logs`, label: t("nav.logs") },
+          ]}
           label={t("navLabel")}
           barOffset={BAR_OFFSET}
         />

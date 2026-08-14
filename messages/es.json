@@ -832,7 +832,9 @@
       "content": "",
       "createAccount": "",
       "accounts": "",
-      "applications": ""
+      "applications": "",
+      "cms": "Contenido",
+      "logs": "Actividad"
     },
     "stats": {
       "leads": "",
@@ -1031,7 +1033,7 @@
       "intro": "Introduzca los datos del agente. Synergy le enviará por correo un enlace para que elija su propia contraseña: esta es la única forma de crear una cuenta del portal.",
       "name": "Nombre completo",
       "email": "Correo electrónico",
-      "emailHint": "Debe ser una dirección @fflsynergy.com.",
+      "emailHint": "Cualquier dirección de correo válida: el agente la usará para iniciar sesión.",
       "phone": "Teléfono (opcional)",
       "submit": "Crear agente y enviar enlace",
       "submitting": "Creando…",
@@ -1039,15 +1041,17 @@
       "error": {
         "name": "Introduzca el nombre completo del agente.",
         "email": "Introduzca una dirección de correo válida.",
-        "domain": "Las cuentas de agente deben usar una dirección @fflsynergy.com.",
-        "domainTypo": "Ese dominio parece un error de escritura: ¿querías decir @fflsynergy.com? No se creó nada.",
+        "domain": "La base de datos rechazó esa dirección. Si todavía hay una regla de dominio activa, aplique la migración 0009_remove_domain_restriction.sql.",
+        "domainTypo": "Revise esa dirección con atención antes de reintentar: ya ninguna regla de dominio la valida.",
         "duplicate": "Ya existe una cuenta para esa dirección de correo.",
         "mail": "La cuenta se creó, pero no se pudo enviar el correo de configuración. Use Reenviar para intentarlo de nuevo.",
         "forbidden": "Ya no tiene permiso para hacer eso. Inicie sesión de nuevo.",
         "write_failed": "No se pudo crear la cuenta. No se guardó nada.",
         "unconfigured": "El servidor no está configurado para enviar invitaciones: falta su credencial de rol de servicio de Supabase. Revise las variables de entorno del despliegue.",
         "timeout": "Supabase no respondió a tiempo. La cuenta no se creó: compruebe la conexión e inténtelo de nuevo.",
-        "nouser": "No existe ninguna cuenta para esa dirección, o no se pudo generar el enlace."
+        "nouser": "No existe ninguna cuenta para esa dirección, o no se pudo generar el enlace.",
+        "passwordShort": "La contraseña debe tener al menos 10 caracteres. No se creó nada.",
+        "passwordMismatch": "Las dos contraseñas no coinciden. No se creó nada."
       },
       "manualTitle": "Cuenta creada para {email}, pero no se pudo enviar el correo.",
       "manualBody": "SMTP aún no está configurado, así que envíele usted mismo este enlace de configuración. Es de un solo uso y establece su contraseña. Trátelo como una contraseña.",
@@ -1055,7 +1059,117 @@
       "copied": "Copiado",
       "existingTitle": "Obtener un enlace para una cuenta existente",
       "existingBody": "Para una cuenta que ya existe pero nunca recibió su enlace. No crea nada: solo emite un enlace nuevo.",
-      "existingSubmit": "Obtener enlace"
+      "existingSubmit": "Obtener enlace",
+      "created": "Cuenta creada para {email}. Facilítele la contraseña que acaba de elegir y pídale que la cambie desde «¿Olvidó su contraseña?» en la pantalla de inicio de sesión.",
+      "pwTitle": "O establezca usted mismo la contraseña",
+      "pwBody": "Use esto cuando esté con el nuevo agente, o cuando no se estén entregando los correos de configuración. Usted conocerá su contraseña, así que pídale que la cambie al entrar; la invitación de arriba evita eso.",
+      "password": "Contraseña",
+      "passwordHint": "Al menos 10 caracteres. Tendrá que decirle al agente cuál es.",
+      "passwordConfirm": "Confirmar contraseña",
+      "pwSubmit": "Crear agente con esta contraseña"
+    },
+    "cms": {
+      "metaTitle": "Contenido",
+      "heading": "Páginas de agentes",
+      "intro": "Todo lo que hay bajo /agents se edita aquí. Cree una página, añádale secciones y añada enlaces a una sección. Nada de lo que cree será visible para los agentes hasta que lo publique.",
+      "pagesHeading": "Páginas",
+      "loadError": "No se pudieron cargar las páginas. No se ha cambiado nada.",
+      "noPages": "Todavía no existe ninguna página. Cree la primera abajo.",
+      "published": "Publicada",
+      "draft": "Borrador",
+      "protected": "Contraseña",
+      "childOf": "Aparece bajo «{parent}» en el menú",
+      "newHeading": "Crear una página",
+      "newBody": "Una página nueva empieza como borrador: no aparecerá en el menú de ningún agente hasta que marque «Publicada» en sus ajustes.",
+      "createPage": "Crear página",
+      "backToList": "Todas las páginas",
+      "viewLive": "Ver la página",
+      "saved": "Guardado.",
+      "settingsHeading": "Ajustes de la página",
+      "savePage": "Guardar ajustes",
+      "sectionsHeading": "Secciones",
+      "sectionsIntro": "Una sección con número de paso se muestra como paso numerado; sin él, se muestra como una tarjeta simple. Las secciones aparecen en el orden de abajo.",
+      "noSections": "Esta página aún no tiene secciones. Añada la primera abajo.",
+      "step": "Paso",
+      "block": "Bloque",
+      "moveUp": "Subir",
+      "moveDown": "Bajar",
+      "deleteSection": "Eliminar sección",
+      "saveSection": "Guardar sección",
+      "linksHeading": "Enlaces",
+      "noLinks": "Esta sección no tiene enlaces.",
+      "deleteLink": "Quitar",
+      "addLink": "Añadir enlace",
+      "addSectionHeading": "Añadir una sección",
+      "addSection": "Añadir sección",
+      "deleteHeading": "Eliminar esta página",
+      "deleteWarning": "Al eliminarla se borran la página y sus {count} sección(es) de forma permanente, sin paso de confirmación y sin deshacer. Si solo quiere ocultarla a los agentes, desmarque «Publicada» arriba.",
+      "deletePage": "Eliminar página permanentemente",
+      "error": {
+        "forbidden": "Ya no tiene permiso para hacer eso. Inicie sesión de nuevo.",
+        "invalid": "Algunos de esos datos no son válidos. No se guardó nada.",
+        "write_failed": "No se pudo guardar ese cambio. No se ha cambiado nada."
+      },
+      "field": {
+        "title": "Título",
+        "slug": "Identificador (slug)",
+        "slugHint": "Minúsculas, números y guiones. Se convierte en la dirección web de la página.",
+        "slugWarning": "Cambiar esto cambia la dirección de la página: los marcadores y enlaces existentes dejarán de funcionar.",
+        "subtitle": "Subtítulo (opcional)",
+        "parent": "Aparece bajo",
+        "noParent": "Nivel superior",
+        "sort": "Orden",
+        "published": "Publicada",
+        "publishedHint": "Sin marcar, solo los administradores pueden ver esta página.",
+        "protected": "Requerir contraseña",
+        "protectedHint": "Los agentes deben escribir la contraseña antes de que se les envíe cualquier contenido de esta página.",
+        "password": "Contraseña",
+        "passwordHint": "Déjelo en blanco para conservar la contraseña actual. Escriba aquí para reemplazarla. La contraseña guardada nunca se muestra a nadie, incluido usted.",
+        "passwordSet": "Hay una contraseña establecida: déjelo en blanco para conservarla",
+        "step": "N.º de paso",
+        "stepHint": "p. ej. 01. Déjelo en blanco para un bloque simple.",
+        "heading": "Encabezado",
+        "body": "Cuerpo",
+        "bodyHint": "Una línea en blanco inicia un párrafo nuevo. **negrita** para dar énfasis, [texto](https://ejemplo.com) para un enlace. Lo que escriba como [ADMIN: …] aparece en la página como un aviso inconfundible de «falta por completar»: así marcan las páginas iniciales los datos que Synergy aún debe aportar.",
+        "linkLabel": "Texto",
+        "linkUrl": "Dirección",
+        "linkUrlHint": "Una dirección https:// completa, o una ruta de este sitio que empiece por /."
+      }
+    },
+    "logs": {
+      "metaTitle": "Actividad",
+      "heading": "Registro de actividad",
+      "intro": "Quién inició sesión, quién abrió cada página y todos los cambios hechos en las páginas de agentes. Lo más reciente primero.",
+      "loadError": "No se pudo cargar el registro.",
+      "empty": "Ninguna actividad coincide con esos filtros.",
+      "deletedUser": "Cuenta eliminada",
+      "count": "{count} entradas.",
+      "capped": "Se muestran las {count} entradas más recientes; ajuste los filtros para ver actividad anterior.",
+      "cols": {
+        "when": "Cuándo",
+        "who": "Quién",
+        "what": "Qué",
+        "target": "Objetivo",
+        "detail": "Detalle"
+      },
+      "filter": {
+        "user": "Persona",
+        "anyUser": "Cualquiera",
+        "action": "Acción",
+        "anyAction": "Cualquier acción",
+        "from": "Desde",
+        "to": "Hasta",
+        "apply": "Aplicar filtros",
+        "clear": "Limpiar"
+      },
+      "action": {
+        "login": "Inició sesión",
+        "view_page": "Abrió una página",
+        "page_unlocked": "Desbloqueó una página",
+        "cms_edit": "Editó contenido",
+        "account_created": "Creó una cuenta",
+        "account_status_changed": "Cambió el estado de una cuenta"
+      }
     }
   },
   "engine": {
@@ -1263,6 +1377,44 @@
       "callback": "",
       "documents": "",
       "bootcamp": ""
+    }
+  },
+  "agents": {
+    "metaTitle": "Agentes",
+    "metaDescription": "Recursos privados para los agentes de Synergy.",
+    "home": "Inicio de Synergy",
+    "signedInAs": "Sesión iniciada como {email}",
+    "signOut": "Cerrar sesión",
+    "nav": {
+      "overview": "Resumen",
+      "label": "Páginas de agentes",
+      "protected": "Requiere contraseña",
+      "admin": "Administración"
+    },
+    "indexHeading": "Recursos para agentes",
+    "indexIntro": "Todo lo que necesita para obtener su licencia, contratarse y empezar a vender. La primera vez, sígalos en orden.",
+    "empty": "Todavía no se ha publicado ninguna página. Su administrador las publica desde el panel de administración; vuelva a consultar en breve.",
+    "open": "Abrir",
+    "emptyPage": "Esta página aún no tiene contenido. Su administrador la está preparando.",
+    "draftNotice": "Esta página es un borrador. Los agentes no pueden verla; usted la ve porque es administrador.",
+    "gate": {
+      "heading": "Este contenido está protegido con contraseña",
+      "body": "Para verlo, introduzca la contraseña a continuación. Su líder de equipo o el Equipo Administrativo se la facilitará.",
+      "label": "Contraseña",
+      "submit": "Desbloquear",
+      "invalid": "Esa contraseña no es correcta. Confírmela con su líder de equipo e inténtelo de nuevo.",
+      "missing": "Introduzca la contraseña para continuar.",
+      "throttled": "Demasiados intentos. Espere unos minutos e inténtelo de nuevo.",
+      "lockAgain": "Volver a bloquear esta página"
+    },
+    "loadError": {
+      "heading": "No se pudieron cargar estas páginas.",
+      "body": "Es un problema para acceder al contenido, no un portal vacío: sus páginas siguen ahí. Inténtelo de nuevo en un momento; si continúa, avise a su administrador."
+    },
+    "schemaMissing": {
+      "heading": "El contenido para agentes aún no está configurado.",
+      "body": "El portal funciona, pero las tablas donde viven sus páginas todavía no existen en la base de datos. No se ha perdido nada: aún no se ha creado nada.",
+      "adminFix": "Administrador: ejecute supabase/migrations/0007_agent_cms.sql en el editor SQL de Supabase y vuelva a cargar. Consulte AGENT_PORTAL.md, sección 2."
     }
   }
 }

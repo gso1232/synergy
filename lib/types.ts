@@ -100,3 +100,91 @@ export type AgentInput = {
 
 export const AGENT_STAGES: readonly AgentStage[] = ["touch", "meet", "licensed", "appointed"];
 export const AGENT_HEARD: readonly AgentHeard[] = ["search", "social", "referral", "event", "other"];
+
+// ---- AGENT-AREA CMS (0007_agent_cms.sql) ------------------------------------
+
+/**
+ * A row of public.pages, AS A CLIENT CAN SEE IT.
+ *
+ * 🔴 THERE IS NO `password` FIELD, AND ITS ABSENCE IS THE SCHEMA TELLING THE
+ * TRUTH. 0007 revokes SELECT on that column from `authenticated`, so no session
+ * — admin included — can read it back. Adding it here optimistically would
+ * produce a type that says a value exists where the database returns nothing,
+ * and the first `page.password` comparison written against it would silently
+ * always fail. Protection is set and verified, never displayed:
+ *   set     -> admin CMS writes the column
+ *   verify  -> public.agent_page(slug, attempt) does the comparison in Postgres
+ */
+export type Page = {
+  id: string;
+  parent_id: string | null;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  is_password_protected: boolean;
+  is_published: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+};
+
+/** A row of public.section_links, as returned inside `AgentPage`. */
+export type SectionLink = {
+  id: string;
+  label: string;
+  url: string;
+};
+
+/** A row of public.page_sections. */
+export type PageSection = {
+  id: string;
+  page_id?: string;
+  /** '01', '02'… TEXT, not a number: the leading zero is what the badge renders. */
+  step_number: string | null;
+  heading: string | null;
+  body: string | null;
+  sort_order: number;
+  links?: SectionLink[];
+};
+
+/**
+ * What `public.agent_page(slug, password)` returns.
+ *
+ * 🔴 `locked: true` COMES WITH `sections: []` FROM THE DATABASE, not from the
+ * UI choosing to hide them. The gate is server-side; this type just carries the
+ * verdict. See the function's docblock in 0007.
+ */
+export type AgentPage = {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string | null;
+  parent_id: string | null;
+  is_published: boolean;
+  is_password_protected: boolean;
+  locked: boolean;
+  sections: PageSection[];
+};
+
+/** A row of public.activity_logs, joined with the actor's address for display. */
+export type ActivityLog = {
+  id: string;
+  user_id: string | null;
+  action: string;
+  target: string | null;
+  metadata: Record<string, unknown> | null;
+  created_at: string;
+  /** Filled in by the reader from `profiles`; the table itself stores only the id. */
+  actor_email?: string | null;
+};
+
+/** The actions this app writes. Free text in the database (see 0007) — this
+ *  list is for the log filter's dropdown, not a constraint. */
+export const ACTIVITY_ACTIONS = [
+  "login",
+  "view_page",
+  "page_unlocked",
+  "cms_edit",
+  "account_created",
+  "account_status_changed",
+] as const;

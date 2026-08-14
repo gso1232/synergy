@@ -63,3 +63,9 @@ lighthouse-reports/
 # PREFIX instead, which a suffix cannot defeat.
 .env*
 !.env.example
+
+# The competitor agent pages supplied as source material for the /agents
+# rebuild. Already excluded from the Vercel upload (.vercelignore); this keeps
+# it out of git history too. It is reference material we were handed, not ours
+# to publish, and a file removed in a later commit still lives in the history.
+sfp-agent-pages.md

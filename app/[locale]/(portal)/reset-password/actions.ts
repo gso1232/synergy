@@ -31,7 +31,8 @@ const MIN_PASSWORD = 10;
  * lands INSIDE the portal without ever knowing a password. Signing out forces
  * the new password to be used at /login, where every gate applies again:
  *
- *   · the company-domain check (`isCompanyEmail` on the VERIFIED address),
+ *   · the confirmed-address check on the VERIFIED address (the company-domain
+ *     half of that gate was removed on 2026-08-14 — see login/actions.ts),
  *   · the `email_confirmed_at` requirement,
  *   · 🔴 and the ACCOUNT STATUS gate — so a `pending` or `rejected` account
  *     cannot use the reset flow as a side door into an approved session.

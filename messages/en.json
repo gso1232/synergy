@@ -832,7 +832,9 @@
       "content": "Content",
       "createAccount": "Create an agent",
       "accounts": "Accounts",
-      "applications": "Applications"
+      "applications": "Applications",
+      "cms": "Content",
+      "logs": "Activity"
     },
     "card": {
       "records": "Records",
@@ -1046,7 +1048,7 @@
       "intro": "Enter the agent's details. Synergy emails them a link to choose their own password — this is the only way a portal account is created.",
       "name": "Full name",
       "email": "Email",
-      "emailHint": "Must be an @fflsynergy.com address.",
+      "emailHint": "Any valid email address — the agent will use it to sign in.",
       "phone": "Phone (optional)",
       "submit": "Create agent & send setup link",
       "submitting": "Creating…",
@@ -1054,15 +1056,17 @@
       "error": {
         "name": "Enter the agent's full name.",
         "email": "Enter a valid email address.",
-        "domain": "Agent accounts must use an @fflsynergy.com email address.",
-        "domainTypo": "That domain looks like a typo — did you mean @fflsynergy.com? Nothing was created.",
+        "domain": "That address was rejected by the database. If a company-domain rule is still active, apply migration 0009_remove_domain_restriction.sql.",
+        "domainTypo": "Check that address carefully before retrying — no domain rule validates it any more.",
         "duplicate": "An account already exists for that email address.",
         "mail": "The account was created, but the setup email could not be sent. Use Resend to try again.",
         "forbidden": "You no longer have permission to do that. Sign in again.",
         "write_failed": "The account could not be created. Nothing was saved.",
         "unconfigured": "The server is not configured to send invites — its Supabase service-role credential is missing. Check the deployment environment variables.",
         "timeout": "Supabase did not respond in time. The account was not created — check the connection and try again.",
-        "nouser": "No account exists for that address, or the link could not be generated."
+        "nouser": "No account exists for that address, or the link could not be generated.",
+        "passwordShort": "The password must be at least 10 characters. Nothing was created.",
+        "passwordMismatch": "The two passwords do not match. Nothing was created."
       },
       "manualTitle": "Account created for {email} — but the email could not be sent.",
       "manualBody": "SMTP is not configured yet, so send this setup link to them yourself. It is single-use and sets their password. Treat it like a password.",
@@ -1070,7 +1074,117 @@
       "copied": "Copied",
       "existingTitle": "Get a setup link for an existing account",
       "existingBody": "For an account that already exists but never received its link. Creates nothing — it only issues a fresh link.",
-      "existingSubmit": "Get setup link"
+      "existingSubmit": "Get setup link",
+      "created": "Account created for {email}. Give them the password you just chose, and ask them to change it from “Forgot password” on the sign-in screen.",
+      "pwTitle": "Or set the password yourself",
+      "pwBody": "Use this when you are sitting with the new agent, or when setup emails are not being delivered. You will know their password, so ask them to change it once they are in — the invite above avoids that.",
+      "password": "Password",
+      "passwordHint": "At least 10 characters. You will need to tell the agent what it is.",
+      "passwordConfirm": "Confirm password",
+      "pwSubmit": "Create agent with this password"
+    },
+    "cms": {
+      "metaTitle": "Content",
+      "heading": "Agent pages",
+      "intro": "Everything under /agents is edited here. Create a page, add sections to it, and add links to a section. Nothing you create is visible to agents until you publish it.",
+      "pagesHeading": "Pages",
+      "loadError": "The pages could not be loaded. Nothing has been changed.",
+      "noPages": "No pages exist yet. Create the first one below.",
+      "published": "Published",
+      "draft": "Draft",
+      "protected": "Password",
+      "childOf": "Sits under “{parent}” in the menu",
+      "newHeading": "Create a page",
+      "newBody": "A new page starts as a draft — it will not appear in any agent's menu until you tick “Published” in its settings.",
+      "createPage": "Create page",
+      "backToList": "All pages",
+      "viewLive": "View the page",
+      "saved": "Saved.",
+      "settingsHeading": "Page settings",
+      "savePage": "Save settings",
+      "sectionsHeading": "Sections",
+      "sectionsIntro": "A section with a step number renders as a numbered step; one without renders as a plain card. Sections show in the order below.",
+      "noSections": "This page has no sections yet. Add the first one below.",
+      "step": "Step",
+      "block": "Block",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "deleteSection": "Delete section",
+      "saveSection": "Save section",
+      "linksHeading": "Links",
+      "noLinks": "No links on this section.",
+      "deleteLink": "Remove",
+      "addLink": "Add link",
+      "addSectionHeading": "Add a section",
+      "addSection": "Add section",
+      "deleteHeading": "Delete this page",
+      "deleteWarning": "Deleting removes the page and its {count} section(s) permanently, and there is no confirmation step and no undo. If you only want it hidden from agents, untick “Published” above instead.",
+      "deletePage": "Delete page permanently",
+      "error": {
+        "forbidden": "You no longer have permission to do that. Sign in again.",
+        "invalid": "Some of those details are not valid. Nothing was saved.",
+        "write_failed": "That change could not be saved. Nothing was changed."
+      },
+      "field": {
+        "title": "Title",
+        "slug": "Slug",
+        "slugHint": "Lowercase letters, numbers and hyphens. This becomes the page's web address.",
+        "slugWarning": "Changing this changes the page's address — existing bookmarks and links will break.",
+        "subtitle": "Subtitle (optional)",
+        "parent": "Sits under",
+        "noParent": "Top level",
+        "sort": "Order",
+        "published": "Published",
+        "publishedHint": "Unticked, only admins can see this page.",
+        "protected": "Require a password",
+        "protectedHint": "Agents must type the password before any of this page's content is sent to them.",
+        "password": "Password",
+        "passwordHint": "Leave blank to keep the current password. Type here to replace it. The stored password is never shown back to anyone, including you.",
+        "passwordSet": "A password is set — leave blank to keep it",
+        "step": "Step no.",
+        "stepHint": "e.g. 01. Leave blank for a plain block.",
+        "heading": "Heading",
+        "body": "Body",
+        "bodyHint": "A blank line starts a new paragraph. **bold** for emphasis, [label](https://example.com) for a link. Anything you write as [ADMIN: …] shows on the page as an unmissable “still missing” marker — that is how the seeded pages flag the details Synergy still owes.",
+        "linkLabel": "Label",
+        "linkUrl": "Address",
+        "linkUrlHint": "A full https:// address, or a path on this site starting with /."
+      }
+    },
+    "logs": {
+      "metaTitle": "Activity",
+      "heading": "Activity log",
+      "intro": "Who signed in, who opened which page, and every change made to the agent pages. Newest first.",
+      "loadError": "The log could not be loaded.",
+      "empty": "No activity matches those filters.",
+      "deletedUser": "Deleted account",
+      "count": "{count} entries.",
+      "capped": "Showing the most recent {count} entries — narrow the filters to see older activity.",
+      "cols": {
+        "when": "When",
+        "who": "Who",
+        "what": "What",
+        "target": "Target",
+        "detail": "Detail"
+      },
+      "filter": {
+        "user": "Person",
+        "anyUser": "Anyone",
+        "action": "Action",
+        "anyAction": "Any action",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply filters",
+        "clear": "Clear"
+      },
+      "action": {
+        "login": "Signed in",
+        "view_page": "Opened a page",
+        "page_unlocked": "Unlocked a page",
+        "cms_edit": "Edited content",
+        "account_created": "Created an account",
+        "account_status_changed": "Changed an account's status"
+      }
     }
   },
   "engine": {
@@ -1278,6 +1392,44 @@
       "callback": "How long an agent should expect to wait for the onboarding call.",
       "documents": "Synergy’s own agent documents, if any exist — onboarding and contracting guides, trackers, scripts.",
       "bootcamp": "Synergy’s own bootcamp or training destination — where it runs, how an agent joins, and whether there is a Spanish session."
+    }
+  },
+  "agents": {
+    "metaTitle": "Agents",
+    "metaDescription": "Private resources for Synergy agents.",
+    "home": "Synergy home",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out",
+    "nav": {
+      "overview": "Overview",
+      "label": "Agent pages",
+      "protected": "Password required",
+      "admin": "Admin"
+    },
+    "indexHeading": "Agent resources",
+    "indexIntro": "Everything you need to get licensed, get contracted and get selling. Work through them in order the first time.",
+    "empty": "No pages have been published yet. Your admin publishes them from the admin panel — check back shortly.",
+    "open": "Open",
+    "emptyPage": "This page has no content yet. Your admin is still putting it together.",
+    "draftNotice": "This page is a draft. Agents cannot see it — you are viewing it because you are an admin.",
+    "gate": {
+      "heading": "This content is password-protected",
+      "body": "To view it, please enter the password below. Your team leader or the Admin Team will give it to you.",
+      "label": "Password",
+      "submit": "Unlock",
+      "invalid": "That password is not correct. Check it with your Team Leader and try again.",
+      "missing": "Enter the password to continue.",
+      "throttled": "Too many attempts. Wait a few minutes and try again.",
+      "lockAgain": "Lock this page again"
+    },
+    "loadError": {
+      "heading": "These pages could not be loaded.",
+      "body": "This is a problem reaching the content, not an empty portal — your pages are still there. Try again in a moment; if it keeps happening, tell your admin."
+    },
+    "schemaMissing": {
+      "heading": "The agent content has not been set up yet.",
+      "body": "The portal is working, but the tables its pages live in do not exist in the database yet. No content has been lost — nothing has been created yet.",
+      "adminFix": "Admin: run supabase/migrations/0007_agent_cms.sql in the Supabase SQL Editor, then reload. See AGENT_PORTAL.md section 2."
     }
   }
 }

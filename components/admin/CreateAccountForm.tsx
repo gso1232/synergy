@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import {
+  createAgentWithPassword,
   inviteAgentAccount,
   setupLinkForExisting,
   type InviteState,
@@ -16,6 +17,8 @@ const labelCls = "mb-1 block text-[13px] font-semibold text-ink";
 const KNOWN_ERRORS = [
   "name", "email", "domain", "domainTypo", "duplicate", "mail",
   "forbidden", "unconfigured", "timeout", "nouser",
+  // Password mode.
+  "passwordShort", "passwordMismatch",
 ];
 
 function SubmitButton({ idle, busy }: { idle: string; busy: string }) {
@@ -72,6 +75,17 @@ function LinkPanel({ email, link, t }: { email: string; link: string; t: (k: str
 }
 
 function Feedback({ state, t }: { state: InviteState; t: (k: string, v?: Record<string, string>) => string }) {
+  /* 🔴 THE PASSWORD IS NOT ECHOED HERE, AND THE ACTION DOES NOT RETURN IT. The
+     admin typed it; they have it. Rendering it back would put a live credential
+     into a response body, a screenshot and whatever is behind the admin's
+     shoulder — for no gain at all. */
+  if (state.status === "created") {
+    return (
+      <p role="status" className="mb-4 rounded-lg border border-navy/25 bg-[#EEF3F8] px-4 py-3 text-[14px] text-navy">
+        {t("createAccount.created", { email: state.email })}
+      </p>
+    );
+  }
   if (state.status === "sent") {
     return (
       <p role="status" className="mb-4 rounded-lg border border-navy/25 bg-[#EEF3F8] px-4 py-3 text-[14px] text-navy">
@@ -117,6 +131,10 @@ export default function CreateAccountForm({ locale }: { locale: string }) {
     setupLinkForExisting,
     { status: "idle" },
   );
+  const [pwState, pwAction] = useFormState<InviteState, FormData>(
+    createAgentWithPassword,
+    { status: "idle" },
+  );
 
   return (
     <div>
@@ -156,6 +174,90 @@ export default function CreateAccountForm({ locale }: { locale: string }) {
           <SubmitButton idle={t("createAccount.submit")} busy={t("createAccount.submitting")} />
         </div>
       </form>
+
+      {/* ==================================================================
+          SET THE PASSWORD YOURSELF — the second creation path.
+
+          🔴 IT SITS BELOW THE INVITE FORM DELIBERATELY. The invite is the
+          better default: nobody but the agent ever knows their password. This
+          one is for the case the invite cannot serve — sitting with a new agent,
+          or mail not being delivered — and the hint under it says so plainly
+          rather than presenting the two as equivalent choices.
+
+          `autoComplete="new-password"` on both fields so the admin's own
+          password manager does not offer to fill, or offer to save, a
+          credential that belongs to somebody else.
+          ================================================================== */}
+      <div className="mt-6 border-t border-ink/15 pt-5">
+        <h3 className="mb-1 font-display text-[16px] text-ink">{t("createAccount.pwTitle")}</h3>
+        <p className="mb-3 max-w-[60ch] text-[14px] leading-[1.5] text-ink/80">
+          {t("createAccount.pwBody")}
+        </p>
+
+        <Feedback state={pwState} t={t} />
+
+        <form action={pwAction} className="rounded border border-ink/20 bg-white p-5">
+          <input type="hidden" name="locale" value={locale} />
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="pw-name" className={labelCls}>{t("createAccount.name")}</label>
+              <input id="pw-name" name="full_name" type="text" required className={control} />
+            </div>
+            <div>
+              <label htmlFor="pw-email" className={labelCls}>{t("createAccount.email")}</label>
+              <input
+                id="pw-email"
+                name="email"
+                type="email"
+                required
+                autoComplete="off"
+                aria-describedby="pw-email-hint"
+                className={control}
+              />
+              <p id="pw-email-hint" className="mt-1 text-[13px] text-ink/70">
+                {t("createAccount.emailHint")}
+              </p>
+            </div>
+            <div>
+              <label htmlFor="pw-phone" className={labelCls}>{t("createAccount.phone")}</label>
+              <input id="pw-phone" name="phone" type="tel" className={control} />
+            </div>
+            <div />
+            <div>
+              <label htmlFor="pw-password" className={labelCls}>{t("createAccount.password")}</label>
+              <input
+                id="pw-password"
+                name="password"
+                type="password"
+                required
+                minLength={10}
+                autoComplete="new-password"
+                aria-describedby="pw-password-hint"
+                className={control}
+              />
+              <p id="pw-password-hint" className="mt-1 text-[13px] text-ink/70">
+                {t("createAccount.passwordHint")}
+              </p>
+            </div>
+            <div>
+              <label htmlFor="pw-confirm" className={labelCls}>{t("createAccount.passwordConfirm")}</label>
+              <input
+                id="pw-confirm"
+                name="password_confirm"
+                type="password"
+                required
+                minLength={10}
+                autoComplete="new-password"
+                className={control}
+              />
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <SubmitButton idle={t("createAccount.pwSubmit")} busy={t("createAccount.submitting")} />
+          </div>
+        </form>
+      </div>
 
       {/* ---------- RE-ISSUE A LINK FOR AN EXISTING ACCOUNT ---------- */}
       <div className="mt-6 border-t border-ink/15 pt-5">
