@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { getAccountState } from "@/lib/supabase/auth";
 import { getAgentPage } from "@/lib/cms/pages";
 import { logActivity } from "@/lib/cms/activity";
@@ -103,6 +104,25 @@ export async function unlockPage(formData: FormData): Promise<void> {
 
   await logActivity(user.id, "page_unlocked", slug);
 
+  /* =========================================================================
+     🔴 WITHOUT THIS THE UNLOCK APPEARS TO FAIL. Measured, not theorised.
+
+     The redirect below is a CLIENT-SIDE navigation, and the App Router serves
+     it from the router cache — which still holds the render made moments ago,
+     when the page was locked. So a correct password produced: the URL changing
+     to the clean base (success), the cookie being set, and the screen still
+     showing the gate WITH the previous attempt's "that password is not correct"
+     message underneath it. A fetch of the same URL in the same session returned
+     the unlocked page, which is how the cache was identified as the culprit.
+
+     An agent hitting that would conclude the password they were given is wrong.
+
+     `force-dynamic` on the page does not help: it governs SERVER rendering, not
+     the client's cached RSC payload. `revalidatePath` is what evicts that entry,
+     so the redirect re-fetches instead of replaying the locked render.
+     ========================================================================= */
+  revalidatePath(base);
+
   redirect(base);
 }
 
@@ -114,5 +134,8 @@ export async function lockPage(formData: FormData): Promise<void> {
   if (!slug || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) redirect(`/${locale}/agents`);
 
   cookies().delete({ name: gateCookieName(slug), path: gateCookiePath(locale, slug) });
+  // Same router-cache eviction as the unlock — without it, re-locking leaves the
+  // UNLOCKED page on screen, which is the more dangerous direction of the bug.
+  revalidatePath(`/${locale}/agents/${slug}`);
   redirect(`/${locale}/agents/${slug}`);
 }

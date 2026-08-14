@@ -5,6 +5,7 @@ import {
   PortalStep,
   PortalStepList,
 } from "@/components/portal/PortalPrimitives";
+import { isInternalHref, localeHref } from "@/lib/cms/links";
 import type { PageSection } from "@/lib/types";
 
 /**
@@ -32,7 +33,7 @@ import type { PageSection } from "@/lib/types";
  */
 
 /** Links hanging off a section. Rendered under the body in both shapes. */
-function SectionLinks({ links }: { links: PageSection["links"] }) {
+function SectionLinks({ links, locale }: { links: PageSection["links"]; locale: string }) {
   if (!links?.length) return null;
   return (
     <PortalLinkList>
@@ -40,10 +41,14 @@ function SectionLinks({ links }: { links: PageSection["links"] }) {
         <li key={l.id}>
           {/* Internal links (the seed's "New Agent Checklist" cross-reference)
               are plain anchors: PortalLink opens a new tab and announces that it
-              does, which would be a lie about a link that stays on the site. */}
-          {l.url.startsWith("/") ? (
+              does, which would be a lie about a link that stays on the site.
+
+              🔴 `localeHref` IS LOAD-BEARING, NOT TIDINESS. The stored URL is
+              `/agents/new-agent-checklist`; rendered raw it 404s, because every
+              route lives under a locale segment. See lib/cms/links.ts. */}
+          {isInternalHref(l.url) ? (
             <a
-              href={l.url}
+              href={localeHref(l.url, locale)}
               className="inline-flex items-baseline gap-1.5 py-1 text-[15px] font-medium text-gold-deep underline decoration-gold-deep/35 underline-offset-4 transition-colors duration-200 hover:decoration-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
             >
               {l.label}
@@ -58,7 +63,7 @@ function SectionLinks({ links }: { links: PageSection["links"] }) {
 }
 
 /** A section with no step number — a card, not a list item. */
-function PlainSection({ section }: { section: PageSection }) {
+function PlainSection({ section, locale }: { section: PageSection; locale: string }) {
   return (
     <div className="rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] sm:p-6">
       {section.heading ? (
@@ -71,14 +76,20 @@ function PlainSection({ section }: { section: PageSection }) {
           section.heading ? "mt-2.5" : ""
         }`}
       >
-        <RichText body={section.body} />
-        <SectionLinks links={section.links} />
+        <RichText body={section.body} locale={locale} />
+        <SectionLinks links={section.links} locale={locale} />
       </div>
     </div>
   );
 }
 
-export default function CmsSections({ sections }: { sections: PageSection[] }) {
+export default function CmsSections({
+  sections,
+  locale,
+}: {
+  sections: PageSection[];
+  locale: string;
+}) {
   if (!sections.length) {
     return null;
   }
@@ -101,15 +112,15 @@ export default function CmsSections({ sections }: { sections: PageSection[] }) {
           <PortalStepList key={gi}>
             {g.items.map((s) => (
               <PortalStep key={s.id} n={s.step_number!.trim()} heading={s.heading ?? ""}>
-                <RichText body={s.body} />
-                <SectionLinks links={s.links} />
+                <RichText body={s.body} locale={locale} />
+                <SectionLinks links={s.links} locale={locale} />
               </PortalStep>
             ))}
           </PortalStepList>
         ) : (
           <div key={gi} className="space-y-3">
             {g.items.map((s) => (
-              <PlainSection key={s.id} section={s} />
+              <PlainSection key={s.id} section={s} locale={locale} />
             ))}
           </div>
         ),

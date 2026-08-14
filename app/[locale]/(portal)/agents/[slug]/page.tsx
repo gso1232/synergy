@@ -147,7 +147,7 @@ export default async function AgentCmsPage({
                   {t("emptyPage")}
                 </p>
               ) : (
-                <CmsSections sections={page.sections} />
+                <CmsSections sections={page.sections} locale={locale} />
               )}
 
               {/* Only offered on a page that was actually gated — a "lock again"

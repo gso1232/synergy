@@ -1,4 +1,5 @@
 import { PortalLink } from "@/components/portal/PortalPrimitives";
+import { isInternalHref, localeHref } from "@/lib/cms/links";
 
 /**
  * THE BODY RENDERER FOR CMS TEXT.
@@ -70,7 +71,7 @@ function GapChip({ text }: { text: string }) {
  * One line of text -> React nodes. Three passes, outermost first, so a gap
  * marker inside a link label cannot be double-processed.
  */
-function inline(text: string, keyPrefix: string): React.ReactNode[] {
+function inline(text: string, keyPrefix: string, locale: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
   let cursor = 0;
   let n = 0;
@@ -80,19 +81,19 @@ function inline(text: string, keyPrefix: string): React.ReactNode[] {
   let match: RegExpExecArray | null;
   while ((match = ADMIN_GAP.exec(text)) !== null) {
     if (match.index > cursor) {
-      out.push(...linkPass(text.slice(cursor, match.index), `${keyPrefix}-t${n++}`));
+      out.push(...linkPass(text.slice(cursor, match.index), `${keyPrefix}-t${n++}`, locale));
     }
     out.push(<GapChip key={`${keyPrefix}-g${n++}`} text={match[0]} />);
     cursor = match.index + match[0].length;
   }
   if (cursor < text.length) {
-    out.push(...linkPass(text.slice(cursor), `${keyPrefix}-t${n++}`));
+    out.push(...linkPass(text.slice(cursor), `${keyPrefix}-t${n++}`, locale));
   }
   return out;
 }
 
 /** Pass 2 — inline links. */
-function linkPass(text: string, keyPrefix: string): React.ReactNode[] {
+function linkPass(text: string, keyPrefix: string, locale: string): React.ReactNode[] {
   const out: React.ReactNode[] = [];
   let cursor = 0;
   let n = 0;
@@ -105,16 +106,18 @@ function linkPass(text: string, keyPrefix: string): React.ReactNode[] {
     const href = safeHref(match[2]);
     if (href) {
       out.push(
-        href.startsWith("/") ? (
+        isInternalHref(href) ? (
           // Internal: a normal link, no new tab, no external warning.
           <a
             key={`${keyPrefix}-l${n++}`}
-            href={href}
+            href={localeHref(href, locale)}
             className="font-medium text-gold-deep underline decoration-gold-deep/35 underline-offset-4 hover:decoration-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
           >
             {match[1]}
           </a>
         ) : (
+          /* External — `localeHref` would pass it through untouched, so calling
+             it here would only imply this branch could ever be site-relative. */
           <PortalLink key={`${keyPrefix}-l${n++}`} href={href}>
             {match[1]}
           </PortalLink>
@@ -152,7 +155,15 @@ function boldPass(text: string, keyPrefix: string): React.ReactNode[] {
   return out;
 }
 
-export default function RichText({ body }: { body: string | null | undefined }) {
+export default function RichText({
+  body,
+  locale,
+}: {
+  body: string | null | undefined;
+  /** Needed so a site-relative link in a body gets its locale segment — an
+   *  href of `/agents/x` without it is a hard 404. See lib/cms/links.ts. */
+  locale: string;
+}) {
   if (!body || !body.trim()) return null;
 
   /* Blocks split on a blank line. `\r\n` is normalised first — a body pasted
@@ -170,7 +181,7 @@ export default function RichText({ body }: { body: string | null | undefined }) 
             {lines.map((line, li) => (
               <span key={li}>
                 {li > 0 ? <br /> : null}
-                {inline(line, `b${bi}l${li}`)}
+                {inline(line, `b${bi}l${li}`, locale)}
               </span>
             ))}
           </p>
