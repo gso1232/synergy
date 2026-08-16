@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Kufam, IBM_Plex_Sans, Inter } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans, Inter } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import {
@@ -10,11 +10,48 @@ import {
 import { locales, type Locale } from "@/i18n";
 import "../globals.css";
 
-// Kufam — display / headings (matches reyou.life). Tops out at 500; headings get
-// their weight from size + the face, never a synthetic bold.
-const display = Kufam({
+/**
+ * Fraunces — display / headings. Drives 96 heading sites across the app.
+ *
+ * 🔴 REPLACED KUFAM (2026-08-16) ON THE BRIEF "fix the font ... more relaxed
+ * more aesthetically pleasing". Kufam was inherited from reyou.life along with
+ * that site's layout measurements; it is a tight, upright display sans whose
+ * Latin cut is fairly neutral, and set at heading sizes over a photograph it
+ * reads brisk and corporate rather than warm. Nothing was broken about it —
+ * this is a taste instruction, executed as one.
+ *
+ * WHY THIS FACE SPECIFICALLY, rather than "a nicer font":
+ *
+ *   · IT IS A SOFT OLD-STYLE SERIF. Rounded terminals and a gentle stroke
+ *     modulation are what "relaxed" actually means typographically — the
+ *     opposite of the flat, even stems Kufam sets. It carries warmth at
+ *     display sizes without becoming decorative at small ones.
+ *   · IT AGREES WITH THE LOGO. The supplied lockup's SYNERGY is a classical
+ *     high-contrast serif. Kufam put a geometric sans directly beneath a serif
+ *     wordmark on every page; a serif display resolves that argument.
+ *   · IT IS VARIABLE, so 400-600 are REAL weights cut by the designer, not the
+ *     browser's synthetic smear. That preserves the rule Kufam was carrying —
+ *     headings take their weight from size and the face, never a faux-bold —
+ *     while removing the "never above 500" ceiling that existed only because
+ *     Kufam had nothing above it.
+ *
+ * 🔴 `.cap-display` IN globals.css WAS RE-DERIVED IN THE SAME COMMIT, and it
+ * had to be: those trim values are computed from the LOADED face's cap height,
+ * ascent and descent, and are wrong the instant the face changes. The
+ * derivation, the measurement method and Fraunces's numbers are written out at
+ * that rule. This is the same discipline the Overpass -> IBM Plex Sans swap
+ * followed, and the note there explains what silently breaks when it is
+ * skipped.
+ *
+ * `axes` is deliberately NOT set. Fraunces ships SOFT and WONK as extra axes;
+ * requesting them adds bytes to every page and neither is being driven from
+ * CSS. The defaults (SOFT 0, WONK 0) are the calm cut, which is the one wanted
+ * here. `font-optical-sizing` stays at the browser default of `auto`, so the
+ * face thins its own hairlines as headings scale up — which is most of why it
+ * stays comfortable at the hero's clamp() ceiling.
+ */
+const display = Fraunces({
   subsets: ["latin"],
-  weight: ["400", "500"],
   display: "swap",
   adjustFontFallback: true,
   variable: "--font-display",

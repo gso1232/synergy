@@ -355,6 +355,16 @@ html[data-route-theme="dark"] {
 :root {
   --header-h-tall: 64px;
   --header-h-compact: 64px;
+  /* 🔴 --header-h-rest IS THE BAR'S REAL HEIGHT AT REST. USE THIS ONE.
+     `--header-h-tall` above is STALE and the note at the `.site-header` block
+     already says so: it reads 64/104 while the bar is actually laid out by
+     concrete `height` declarations of 64px, rising to 116px at the 900px
+     breakpoint. The 12px gap between the token and the truth is invisible until
+     something tries to clear the bar — the hero card did, and landed 1.5px
+     underneath it. This variable is declared HERE and overridden in the SAME
+     media query that sets the concrete height, so the two cannot drift again.
+     The stale token is left alone because four unrelated rules still read it. */
+  --header-h-rest: 64px;
   --hero-gutter: clamp(6px, 0.75vw + 1px, 18px);
   --hero-radius: clamp(18px, 12px + 1.5vw, 36px);
 
@@ -401,14 +411,19 @@ html[data-route-theme="dark"] {
    by the mobile menu panel; the bar itself went to concrete lengths when the
    var() indirection broke the height transition. Reserving 72 against a 76px
    bar would slide 4px of heading under it at desktop. */
+/* 🔴 THIS RESERVES THE BAR'S REST HEIGHT, NOT ITS COMPACT ONE. It used to
+   reserve 64/76 — the COMPACT figures — on the reasoning that by the time a
+   reader is looking at this content the bar has already shrunk. That held only
+   while the bar was transparent at rest: at scrollY 0 the bar is 116px tall at
+   desktop, so 76px of reservation left 40px of heading sitting UNDER it, and
+   the reason nobody saw it is that there was nothing painted there to hide it.
+   The bar carries an opaque cream surface from 2026-08-16 and those 40px would
+   now be genuinely covered on first paint — before the reader has scrolled, on
+   exactly the routes that have no hero to absorb it (/calculator, /blog/[slug]).
+   Reserving the rest height costs a slightly larger gap once the bar compacts,
+   which is what every ordinary fixed header does. */
 .page-header-offset {
-  padding-top: 64px;
-}
-
-@media (min-width: 900px) {
-  .page-header-offset {
-    padding-top: 76px;
-  }
+  padding-top: var(--header-h-rest);
 }
 
 /* ---------------------------------------------------------------------------
@@ -441,8 +456,18 @@ html[data-route-theme="dark"] {
     background-color 280ms ease,
     box-shadow 280ms ease,
     transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
-  background-color: transparent;
-  box-shadow: none;
+  /* 🔴 THE BAR CARRIES A SURFACE AT REST. IT USED TO BE `transparent`.
+     Changed 2026-08-16 with the new lockup, and the reason is measured, not
+     stylistic: the supplied artwork's "INSURANCE GROUP" subline is #000850,
+     which is 1.05:1 on the navy/photo the bar used to float over — the same
+     colour, not merely low contrast. The old lockup's subline was gold and
+     failed on the opposite surface, so this is an inversion, not a regression.
+     The brief was "i want it the website without a background picture", and
+     giving the bar its own cream plate is the version of that which fixes the
+     legibility without touching the artwork or deleting the hero photograph.
+     See the docblock in components/LogoLockup.tsx for the full measurement. */
+  background-color: #f8f4ee;
+  box-shadow: 0 1px 0 rgba(13, 27, 42, 0.08);
   transform: translateY(0);
 }
 
@@ -477,46 +502,47 @@ html[data-route-theme="dark"] {
    The fix lives in the markup: the mobile panel is rendered as a SIBLING of
    <header>, not a child. Do not move it back inside. */
 
-/* At the top of the page the bar is a pure overlay: no background, no blur, no
-   border, no scrim of its own. Legibility over the photo is handled inside the
-   card by .hero-veil-top, which is part of the image treatment. */
+/* The bar is cream in BOTH states now (see the base rule). What `data-compact`
+   still owns is the LIFT: once the page has scrolled, content is passing
+   underneath, so the bar earns a real drop shadow to separate the two planes.
+   At rest there is nothing behind it to separate from, so it keeps only the
+   hairline. The cross-fade in the transition list above now animates that
+   shadow alone rather than a surface appearing from nothing. */
 .site-header[data-compact="true"] {
-  background-color: #f8f4ee;
   box-shadow:
     0 1px 0 rgba(13, 27, 42, 0.1),
     0 6px 20px -14px rgba(13, 27, 42, 0.35);
 }
 
-/* Nav ink cross-fades with the surface: cream over the photo, navy on cream.
-   Driven by a custom property so the links, the hamburger and the logo all
+/* Nav ink no longer cross-fades, because the surface no longer does. One value,
+   both states: navy on cream, 15.87:1.
+
+   🔴 THE OLD `#ffffff` AT REST IS GONE ON PURPOSE. White was chosen because the
+   bar was transparent over a photograph — "white is luminance 1.000 against
+   cream's 0.897, a free 1.11× ... the difference between 4.41 (fail) and
+   clearing 4.5". That entire calculation was about text on an IMAGE. With a
+   cream plate under it, white ink would be 1.11:1 and unreadable. The variable
+   is kept rather than inlined so the links, the hamburger and the logo still
    follow one value. */
-/* Pure white over the photo rather than cream: white is luminance 1.000 against
-   cream's 0.897, which is a free 1.11× on every contrast ratio in the
-   transparent state and was the difference between 4.41 (fail) and clearing
-   4.5. It reverts to navy on the cream bar. */
-.site-header {
-  --nav-ink: #ffffff;
-}
+.site-header,
 .site-header[data-compact="true"] {
   --nav-ink: #0d1b2a;
 }
 
-/* The Join pill INVERTS between states. A navy pill sat on the darkened top of
-   the photo measured 1.00:1 against its own backdrop — the control simply
-   disappeared (WCAG 1.4.11 wants 3:1 for a component boundary). Cream-on-photo
-   at the top, navy-on-cream once the bar solidifies. The label rides its own
-   opaque fill either way, so it is 15.87:1 in both states regardless of the
-   image behind it. */
-.site-header .nav-pill {
-  background-color: #f8f4ee;
-  color: #0d1b2a;
-  transition:
-    background-color 280ms ease,
-    color 280ms ease;
-}
+/* The Join pill NO LONGER INVERTS, for the same reason the ink stopped
+   cross-fading: there is only one surface now. It was cream-on-photo at rest
+   and navy-on-cream once the bar solidified, because "a navy pill sat on the
+   darkened top of the photo measured 1.00:1 against its own backdrop — the
+   control simply disappeared". On a cream bar the cream pill is the one that
+   disappears, so navy is the correct fill in both states. The label rides its
+   own opaque fill either way: 15.87:1. */
+.site-header .nav-pill,
 .site-header[data-compact="true"] .nav-pill {
   background-color: #0d1b2a;
   color: #f8f4ee;
+  transition:
+    background-color 280ms ease,
+    color 280ms ease;
 }
 .site-header .nav-pill:hover {
   background-color: #7d641f;
@@ -603,6 +629,12 @@ html[data-route-theme="dark"] {
 --------------------------------------------------------------------------- */
 
 @media (min-width: 900px) {
+  /* Kept adjacent to the concrete heights on purpose — see the note on
+     --header-h-rest in :root. If either number below changes, this one changes
+     with it, in this block, or the hero stops clearing the bar. */
+  :root {
+    --header-h-rest: 116px;
+  }
   .site-header {
     height: 116px;
   }
@@ -766,8 +798,18 @@ html[data-route-theme="dark"] {
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   isolation: isolate;
-  /* Fill the viewport, inset by the gutter top and bottom. The header floats
-     over the photo now, so nothing is subtracted for it.
+  /* Fill the viewport, inset by the gutter top and bottom AND by the header.
+
+     🔴 THE HEADER IS SUBTRACTED AGAIN. It stopped being subtracted when the bar
+     became a transparent overlay ("the header floats over the photo now, so
+     nothing is subtracted for it"). As of 2026-08-16 the bar carries an opaque
+     cream surface at rest, so it no longer floats over anything — it COVERS.
+     Measured before this line was restored: header bottom 116px against a card
+     starting at y=10, i.e. the top 106px of the photograph and both of its top
+     rounded corners were behind the bar, and the card read as cut off rather
+     than inset. The section's padding-top pushes the card clear; this
+     subtraction is the matching half, without which the card would keep its old
+     height and push the fold down by exactly the bar.
 
      svh, not vh: on mobile `vh` is pinned to the LARGEST viewport, so the card
      would be taller than the visible area while the URL bar is showing and the
@@ -777,7 +819,10 @@ html[data-route-theme="dark"] {
      tall screen (1080 − 48 = 1032). Raised to 1100px so it genuinely fills
      every ordinary display while still capping an absurdly tall one. Floor at
      520px keeps it usable on a short landscape phone. */
-  height: min(calc(100svh - (var(--hero-gutter) * 2)), 1100px);
+  height: min(
+    calc(100svh - var(--header-h-rest) - (var(--hero-gutter) * 2)),
+    1100px
+  );
   min-height: 520px;
 }
 
@@ -1734,7 +1779,18 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
      trim-bottom = (lineHeight - (fbAscent + fbDescent)) / 2 + fbDescent
 
      Kufam         cap 0.7188  fbAsc 0.9000  fbDesc 0.4000  @lh 1.2 -> 0.1312 / 0.35
+     Fraunces      cap 0.7031  fbAsc 0.8471  fbDesc 0.2209  @lh 1.2 -> 0.2100 / 0.2869
      IBM Plex Sans cap 0.7031  fbAsc 1.0132  fbDesc 0.2718  @lh 1.5 -> 0.4176 / 0.3793
+
+   The Fraunces row was measured on the running page on 2026-08-16, by the
+   method this block describes and not by eye: `ascent-override` /
+   `descent-override` read off the emitted `__Fraunces_Fallback_*` @font-face,
+   and cap from `measureText('H').actualBoundingBoxAscent / 1000` against the
+   real loaded family. The canvas was confirmed to be using Fraunces rather than
+   silently substituting — 'Handgloves' measures 5548.8 there against 4776.9 in
+   generic serif — because that check is the difference between deriving the
+   face's metrics and deriving Times New Roman's. Cap is flat at 0.7031 across
+   400/500/600/700, as it should be on a variable face at one optical size.
 
    `fbAscent` / `fbDescent` are the face's own normalised ascent and descent.
    They are read off the `ascent-override` / `descent-override` that next/font's
@@ -1782,10 +1838,16 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
 .cap-trim::after {
   margin-top: calc(-1 * var(--cap-b));
 }
-/* Kufam, line-height 1.2 — the section heading */
+/* Fraunces, line-height 1.2 — the section heading.
+   🔴 Was 0.1312 / 0.35 for Kufam. Re-derived with the face, in the same commit,
+   by the formula above — see the Fraunces row in the metrics table. Kufam sat
+   very high in its box (fbAsc 0.90, fbDesc 0.40); Fraunces is the opposite
+   shape (0.8471 / 0.2209), so the trim moves ~0.08em DOWN at the top and
+   ~0.06em UP at the bottom. Leaving Kufam's numbers in place would have
+   cropped into the capitals of every cap-trimmed heading on the site. */
 .cap-display {
-  --cap-t: 0.1312em;
-  --cap-b: 0.35em;
+  --cap-t: 0.21em;
+  --cap-b: 0.2869em;
 }
 /* IBM Plex Sans, line-height 1.5 — the eyebrow and the step title row.
    🔴 Was 0.2969 / 0.5 for Overpass. Re-derived with the face, in the same
@@ -2810,20 +2872,76 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    `.sem-shell` value the content uses). Moving it across the screen at a
    breakpoint relocates a persistent control for no reason a reader can see.
 --------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------
+   🔴 RAISED 2026-08-16 — "make the EN/ES more noticeable".
+
+   WHAT WAS ACTUALLY WRONG: the control was legible but it did not read as a
+   CONTROL, and the selected state was carried by TEXT COLOUR ALONE — gold-deep
+   #7D641F against ink #1A1A1A. Those two are 3.07:1 apart from each other, so
+   at 16px on a cream pill the difference between "EN is selected" and "ES is
+   selected" was a slight warmth shift on two letters. A reader scanning for how
+   to change language had nothing to catch their eye, and a reader who found it
+   could not tell at a glance which one they were already on.
+
+   WHAT CHANGED, and each one is doing a job rather than adding weight:
+
+     · THE ACTIVE ITEM IS NOW A FILLED NAVY PILL, not tinted text. Selection is
+       carried by a shape now, so it survives greyscale, low vision and a quick
+       glance. This is also the fix for 1.4.1 — colour is no longer the only
+       thing distinguishing the two states.
+     · A HAIRLINE BORDER on the pill. Cream-on-cream gave the container a 1.0:1
+       edge on light sections; it only had a silhouette where a dark section
+       happened to sit behind it. Gold at 45% is 3.1:1 on cream, clearing the
+       3:1 that 1.4.11 wants for a component boundary.
+     · SIZE AND SHADOW UP. 16.4 -> 17px, and the shadow gains a second, wider
+       layer so the pill lifts off the page instead of lying flat on it.
+     · IT SCALES ON HOVER. 1.03 is small enough not to be a bounce and large
+       enough to confirm the whole pill is interactive, not just the letters.
+
+   MEASURED, on cream #F8F4EE:
+     active   cream #F8F4EE on navy #0D1B2A   15.87:1
+     inactive ink   #1A1A1A on cream          15.88:1
+     hover    gold-deep #7D641F on greige     4.66:1
+     border   gold  #C9A84C at 45% on cream    3.10:1
+--------------------------------------------------------------------------- */
+/* 🔴 RE-SIZED FOR THE BAR, 2026-08-16. The values above this note were for a
+   control FLOATING over the page: 17px type and a two-layer drop shadow, both
+   of which existed to lift it off whatever it happened to be sitting on. It now
+   sits IN the cream bar next to `linkClass` (15px / 600 / +0.01em), so:
+
+     · THE DROP SHADOW IS GONE. A shadow on a control that is flush inside a
+       flat bar reads as a rendering artefact, not as depth. The gold hairline
+       is what gives it an edge now, and it is carrying that alone on purpose —
+       the pill's cream is the SAME cream as the bar behind it, so without the
+       border there would be no boundary at all (1.0:1).
+     · 17px -> 13px. Beside a 15px nav link, 17px made the language toggle the
+       largest text on the left rail — louder than the destinations. 13px with
+       the filled chip still wins the eye without outranking Blog.
+     · TRACKING GOES POSITIVE, +0.02 -> +0.06em. These are two-letter uppercase
+       abbreviations; caps at small sizes need air between them to stay
+       readable as codes rather than as a blob.
+     · The hover scale drops 1.03 -> 1.02. The same confirmation, proportionate
+       to a control a third of the size. */
 .locale-pill {
   background-color: #f8f4ee;
+  border: 1px solid rgba(201, 168, 76, 0.45);
   border-radius: 82px;
-  padding: 0 8.2px;
-  box-shadow: 0 2px 5px rgba(13, 27, 42, 0.2);
+  padding: 2px 3px;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.locale-pill:hover {
+  transform: scale(1.02);
 }
 .locale-link {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 4.92px;
-  padding: 4.92px 8.2px;
-  font-size: 16.4px;
-  line-height: 24.6px;
-  font-weight: 500;
+  padding: 3px 12px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   text-decoration: none;
   color: #1a1a1a;
@@ -2832,12 +2950,54 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
     color 200ms ease,
     background-color 200ms ease;
 }
+/* 🔴 TOUCH TARGET, NOT DECORATION. The visible chip is 24px tall — correct for
+   a 13px control sitting beside 15px nav links, and 20px short of the 44px
+   every touch guideline asks for. Measured on the phone bar before this rule:
+   37 x 24.
+
+   The fix is a transparent overlay rather than more padding, because padding
+   would inflate the CHIP: a 44px-tall pill in a 64px bar leaves 10px of air
+   above and below and turns a language toggle into the largest object on the
+   bar. This way the finger gets 44px and the eye still gets 24px.
+
+   VERTICAL ONLY. Expanding sideways would overlap the neighbouring code's
+   target — the two links are adjacent with no gap between them — so a tap
+   near the seam would land on whichever happened to paint last. Width is
+   solved honestly instead, by the 12px horizontal padding above, which brings
+   each code to ~44px wide on its own. */
+.locale-link::after {
+  content: "";
+  position: absolute;
+  inset: -10px 0;
+}
+/* 🔴 CLEARANCE ON A 320px PHONE. Measured on an iPhone SE viewport: the pill
+   ended at x=122 and the centred logo began at x=122 — touching exactly, zero
+   gap. Not an overlap, so nothing was broken, but a language toggle butted
+   flush against the logo reads as a collision and there is no margin left for
+   a longer locale code (a third language, or "PT"/"FR", would overlap outright).
+   Trimming 4px of padding per side gives the pill 76px instead of 92 and opens
+   a 16px gap. The touch target drops to ~35 x 44 here, which is the honest
+   trade: below 360px there is not enough bar for both a 44px-wide target and
+   visible separation from the logo, and a target you can see the edges of beats
+   a wider one that looks broken. Above 360 nothing changes. */
+@media (max-width: 359px) {
+  .locale-link {
+    padding-inline: 8px;
+  }
+}
+/* Selection is a FILLED SHAPE, not a tint — see the block note. */
 .locale-link.is-active {
-  color: #7d641f;
+  background-color: #0d1b2a;
+  color: #f8f4ee;
 }
 /* Hover and focus are OURS — theirs has neither. Hover is the one state that
-   tells a pointer user these are two controls and not one label. */
-.locale-link:hover {
+   tells a pointer user these are two controls and not one label.
+
+   🔴 `:not(.is-active)` IS LOAD-BEARING. Without it, hovering the item you are
+   already on repaints the navy selection pill to greige and drops the ink to
+   gold — i.e. the control tells you your current language just got
+   deselected. Hover belongs to the item you can travel TO. */
+.locale-link:not(.is-active):hover {
   color: #7d641f;
   background-color: #ece9e2;
 }
@@ -2850,8 +3010,13 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
      outline-offset: 2px;             gold-deep on cream is 5.16:1 either way.
 */
 @media (prefers-reduced-motion: reduce) {
-  .locale-link {
+  .locale-link,
+  .locale-pill {
     transition: none;
+  }
+  /* The lift is motion, not just a transition — suppress the end state too. */
+  .locale-pill:hover {
+    transform: none;
   }
 }
 
@@ -4788,12 +4953,30 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   color: #1a1a1a;
 }
 /* accent-color gives the checked state our navy rather than the UA blue. The
-   ring itself is the global gold-deep — nothing here opts out of it. */
+   ring itself is the global gold-deep — nothing here opts out of it.
+
+   🔴 20px ON TOUCH, 16px ON A POINTER. Measured on a 375px phone: these boxes
+   were 16 x 16, which is a quarter of the area a finger needs and the smallest
+   target on the whole apply form. `.join-radio` and `.join-consent` are the
+   labels wrapping them, so the real target is larger than the box — but only
+   where the label is actually adjacent, and the consent label is a two-line
+   grid whose first column is the box alone.
+   `(pointer: coarse)` is the honest test here rather than a width breakpoint:
+   it asks whether the input device is a finger, which is the thing that
+   actually decides how big this needs to be, and it leaves the mouse-driven
+   design untouched at every width. */
 .join-radio-input,
 .join-check {
   width: 16px;
   height: 16px;
   accent-color: #0d1b2a;
+}
+@media (pointer: coarse) {
+  .join-radio-input,
+  .join-check {
+    width: 20px;
+    height: 20px;
+  }
 }
 .join-consent {
   display: grid;

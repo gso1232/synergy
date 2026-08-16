@@ -71,7 +71,41 @@ import { locales, type Locale } from "@/i18n";
 const LOCALE_SWITCHER_READY: boolean = true;
 
 /**
- * Site-wide locale switcher — a fixed pill, bottom-right.
+ * 🔴 IT IS NOT A FLOATING PILL ANY MORE. MOVED INTO THE HEADER 2026-08-16 on the
+ * instruction "خلي EN ES فوق على الشمال جنب Blog" — top-left, next to Blog.
+ *
+ * WHAT IT WAS: `position: fixed`, bottom-right, z-30, mounted once in
+ * `(site)/layout.tsx` and floating over every public page. Everything below
+ * about restaurantsem.com's measurements describes THAT control and is kept
+ * because the colour and anchor reasoning still holds; the POSITIONING notes in
+ * it are now history, not spec.
+ *
+ * WHERE IT LIVES NOW — two mounts in components/SiteHeader.tsx, and the split is
+ * the breakpoint, not a duplicate:
+ *
+ *   ≥900 (`card:`)  an <li> at the END of the LEFT nav list, i.e. directly
+ *                   after Blog, which is what was asked for. LEFT_LINKS is
+ *                   Home · About · Services · Blog, so it reads as the fifth
+ *                   item on the left rail.
+ *   <900            the bar's FIRST GRID COLUMN, which on a phone is empty —
+ *                   both nav <ul>s are `hidden` there and the bar is logo +
+ *                   hamburger with `col-start-1` standing vacant. Dropping the
+ *                   switcher into that cell puts it top-left on a phone too,
+ *                   with no new row and no layout shift.
+ *
+ * ⚠️ IT IS DELIBERATELY NOT IN THE MOBILE PANEL. It is visible in the bar at
+ * all times on mobile, so a copy inside the hamburger menu would be a second
+ * control for the same job — and the panel is `fixed inset-0`, so a reader who
+ * changed language from inside it would navigate with the menu still open.
+ *
+ * 🔴 THE FIXED-POSITION MOUNT IS GONE FROM `(site)/layout.tsx`. It had a
+ * load-bearing comment there about Lenis — a `position: fixed` child of a
+ * transformed ancestor positions against that ancestor, not the viewport. That
+ * trap no longer applies to this component because it is no longer fixed, but
+ * it still applies to the mobile panel, which documents it in SiteHeader.
+ *
+ * ---------------------------------------------------------------------------
+ * ORIGINALLY: a fixed pill, bottom-right.
  *
  * Modelled on restaurantsem.com's `.locales-wrapper`, re-measured live today at
  * 1536. Their numbers, rebuilt in our tokens; none of their CSS is copied and
@@ -121,7 +155,11 @@ const LOCALE_SWITCHER_READY: boolean = true;
  * existed for the retired components/Nav.tsx and are already translated in
  * es.json. Nothing was written to a message file for this component.
  */
-export default function LocaleSwitcher() {
+export default function LocaleSwitcher({
+  className = "",
+}: {
+  className?: string;
+}) {
   const t = useTranslations("nav");
   const active = useLocale();
   const pathname = usePathname();
@@ -131,7 +169,7 @@ export default function LocaleSwitcher() {
   return (
     <nav
       aria-label={t("langLabel")}
-      className="locale-switcher fixed bottom-[32.8px] right-[19.07px] z-30 md:right-[49.2px]"
+      className={`locale-switcher ${className}`}
     >
       <ul role="list" className="locale-pill flex items-center">
         {locales.map((loc: Locale) => {

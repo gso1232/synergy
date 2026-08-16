@@ -264,8 +264,23 @@ export default function Footer() {
   }));
 
   // Hover is an UNDERLINE, not a colour. See NO GOLD ANYWHERE above.
+  /* 🔴 `block py-2.5` IS THE TOUCH TARGET, NOT STYLING. Measured on a 375px
+     phone before this change: every footer link was 21px tall — 14px of text at
+     leading 1.5 — against the 44px every touch guideline asks for. That included
+     `407-434-0400` and the email address, which on a phone are the two most
+     likely taps in the entire footer and were the two hardest to hit.
+
+     `inline-block` -> `block` so the box spans the column and the padding has
+     something to apply to vertically; 10px top and bottom takes 21 -> 41.
+
+     THE LISTS DROP FROM `space-y-3` TO `space-y-1` IN THE SAME CHANGE. Left at
+     12px, the padded boxes would have grown the footer by 24px per row AND the
+     hit areas would still have been separated by a 12px dead strip. At 4px the
+     row pitch goes 33 -> 45, i.e. the footer grows ~12px per row, and adjacent
+     targets sit 4px apart — close, but never overlapping, so a tap is never
+     ambiguous about which link it meant. */
   const linkClass =
-    "inline-block text-[14px] leading-[1.5] text-ink underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink md:text-[15px]";
+    "block py-2.5 text-[14px] leading-[1.5] text-ink underline-offset-[3px] transition-[text-decoration-color] duration-150 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink md:text-[15px]";
   const headingClass =
     "font-display text-[15px] font-semibold leading-[1.2] tracking-[-0.01em] text-ink md:text-[17px]";
   // Solid ink, not ink/70. See EVERY PIECE OF TYPE IS SOLID INK above.
@@ -377,7 +392,9 @@ export default function Footer() {
             <h3 id="footer-nav-heading" className={headingClass}>
               {t("navTitle")}
             </h3>
-            <ul className="mt-5 space-y-3">
+            {/* space-y-1, not -3 — the links now carry their own 10px of
+                padding as a touch target. See linkClass. */}
+            <ul className="mt-5 space-y-1">
               {navItems.map(({ key, href }) => (
                 <li key={key}>
                   <Link href={href} className={linkClass}>
@@ -391,7 +408,11 @@ export default function Footer() {
           {/* CONTACT — <address> because it is one */}
           <address className="not-italic lg:col-span-3 lg:col-start-8">
             <h3 className={headingClass}>{t("contactTitle")}</h3>
-            <ul className="mt-5 space-y-3">
+            {/* space-y-1 for the same reason as the nav list. The two plain
+                rows below take the padding explicitly rather than inheriting a
+                gap, so the address and hours keep the breathing room they had
+                while the phone and email get real targets. */}
+            <ul className="mt-5 space-y-1">
               <li>
                 <a href={t("phoneHref")} className={linkClass}>
                   {t("phone")}
@@ -402,8 +423,8 @@ export default function Footer() {
                   {t("email")}
                 </a>
               </li>
-              <li className={plainClass}>{t("address")}</li>
-              <li className={plainClass}>{t("hours")}</li>
+              <li className={`py-1 ${plainClass}`}>{t("address")}</li>
+              <li className={`py-1 ${plainClass}`}>{t("hours")}</li>
             </ul>
           </address>
 

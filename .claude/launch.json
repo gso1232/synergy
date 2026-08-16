@@ -9,6 +9,12 @@
       "autoPort": true
     },
     {
+      "name": "synergy-start",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start", "--", "--port", "3200"],
+      "port": 3200
+    },
+    {
       "name": "synergy-portal",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "E:/synergy-portal", "run", "dev", "--", "--port", "3100"],

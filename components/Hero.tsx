@@ -105,10 +105,17 @@ export default function Hero() {
     <section
       aria-labelledby="hero-heading"
       className="font-hero"
-      // Same slim gutter on all four sides now, top included — the header
-      // floats over the photo rather than sitting in a band above it, so there
-      // is no cream tail to optically compensate for any more.
-      style={{ padding: "var(--hero-gutter)" }}
+      // 🔴 THE TOP GUTTER CARRIES THE HEADER AGAIN. It was "same slim gutter on
+      // all four sides now, top included — the header floats over the photo
+      // rather than sitting in a band above it", which was true while the bar
+      // was transparent. It is opaque cream from 2026-08-16, so an equal top
+      // gutter put the card's top 106px (and both top corners) behind it.
+      // `.hero-card`'s height subtracts the same variable, so the card still
+      // ends exactly one gutter above the fold rather than overflowing it.
+      style={{
+        padding: "var(--hero-gutter)",
+        paddingTop: "calc(var(--header-h-rest) + var(--hero-gutter))",
+      }}
     >
       <div className="hero-card bg-navy">
         {/* MEDIA.
@@ -172,7 +179,33 @@ export default function Hero() {
               initial="hidden"
               animate="show"
               aria-label={`${lines[0]} ${lines[1]}`}
-              className="text-[clamp(28px,3.6vw,52px)] font-semibold leading-[1.06] tracking-[-0.03em] text-white"
+              /* 🔴 THE HEADLINE LEAVES THE HERO'S OWN FACE. Everything else in
+                 this section stays on Inter via `font-hero` on the <section> —
+                 the sub-copy, the CTAs, the ITIN line — because they are UI and
+                 Inter is the right tool for them. The headline is not UI, it is
+                 the first impression, and it was the last place on the site
+                 still setting a tight grotesque under a serif logo.
+
+                 FOUR VALUES CHANGED, ALL IN THE SAME DIRECTION (2026-08-16,
+                 brief: "more relaxed more aesthetically pleasing"):
+                   font        font-hero (Inter) -> font-display (Fraunces)
+                   weight      600 semibold      -> 500 medium
+                   tracking    -0.03em           -> -0.005em
+                   leading     1.06              -> 1.1
+                 -0.03em is a correction grotesques need at display size and
+                 serifs actively fight; keeping it would have jammed Fraunces's
+                 serifs into each other at the clamp ceiling. 600 + tight
+                 tracking + 1.06 leading is a headline that is SHOUTING, which
+                 is the opposite of the instruction.
+
+                 ⚠️ THE `pb-[0.14em] -mb-[0.14em]` PAIR ON THE LINE SPANS BELOW
+                 STILL COVERS THIS. It exists so `overflow-hidden` masks the
+                 character rise without clipping descenders (the "g" in
+                 Protecting / Building). Checked against the new face rather
+                 than assumed: Fraunces's descent is 0.2209 against Inter's
+                 0.2256, i.e. marginally SHALLOWER, so the existing 0.14em
+                 allowance has more room than it did, not less. */
+              className="font-display text-[clamp(28px,3.6vw,52px)] font-medium leading-[1.1] tracking-[-0.005em] text-white"
             >
               {lines.map((line, li) => (
                 // pb/-mb pair: overflow-hidden masks the character rise without

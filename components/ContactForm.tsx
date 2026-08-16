@@ -109,8 +109,12 @@ export default async function ContactForm({ locale }: { locale: string }) {
   //
   // `focus:border-gold-deep` is KEPT — it is the field's own affordance, not
   // the focus indicator, and at 5.65:1 it reinforces rather than replaces.
+  // 🔴 `text-[16px] md:text-[15px]` — same iOS zoom-on-focus fix applied to
+  // JoinApplyForm's FIELD, and applied here in the same pass so the two forms
+  // do not diverge. Mobile Safari zooms the page in when a field under 16px
+  // takes focus and never zooms back out. See the note on that constant.
   const field =
-    "w-full rounded border border-ink/50 bg-white px-3.5 py-2.5 text-[15px] text-ink transition-colors duration-200 focus:border-gold-deep disabled:bg-ink/[0.03] disabled:text-ink/55";
+    "w-full rounded border border-ink/50 bg-white px-3.5 py-2.5 text-[16px] text-ink transition-colors duration-200 focus:border-gold-deep disabled:bg-ink/[0.03] disabled:text-ink/55 md:text-[15px]";
 
   return (
     <form

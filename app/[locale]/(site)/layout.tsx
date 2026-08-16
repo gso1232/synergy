@@ -1,6 +1,5 @@
 import { unstable_setRequestLocale } from "next-intl/server";
 import SmoothScroll from "@/components/SmoothScroll";
-import LocaleSwitcher from "@/components/LocaleSwitcher";
 import SiteHeader from "@/components/SiteHeader";
 import Footer from "@/components/Footer";
 import Splash from "@/components/Splash";
@@ -85,21 +84,20 @@ export default async function SiteLayout({
         {children}
         <Footer />
       </SmoothScroll>
-      {/* Locale switcher — a fixed pill, bottom-right, on every route.
-          ---------------------------------------------------------------
-          🔴 IT RENDERS NOTHING TODAY. `LOCALE_SWITCHER_READY` is `false`
-          inside the component and it returns null; the mount is here so
-          that turning it on is one constant, not a hunt through the tree.
-          es.json is 43.0% translated with the whole About page and the
-          homepage hero at zero, so a visitor clicking ES would get English
-          content at a Spanish URL. See the component docblock.
+      {/* 🔴 THE LOCALE SWITCHER USED TO MOUNT HERE, AND NO LONGER DOES.
+          2026-08-16: it moved into the header — top-left, after Blog at
+          desktop and in the bar's empty first column on a phone — on the
+          instruction "خلي EN ES فوق على الشمال جنب Blog". It is mounted twice
+          in components/SiteHeader.tsx, once per breakpoint; see that file and
+          the component's own docblock.
 
-          OUTSIDE SmoothScroll, and that is deliberate: it is
-          `position: fixed`, so it must not sit inside the element Lenis
-          transforms. A fixed child of a transformed ancestor is positioned
-          against that ancestor instead of the viewport — the same trap the
-          mobile menu panel already documents in SiteHeader. */}
-      <LocaleSwitcher />
+          WHAT THIS MOUNT WAS CARRYING, so it is not re-added by reflex: it sat
+          OUTSIDE <SmoothScroll> because the pill was `position: fixed`, and a
+          fixed child of a transformed ancestor positions against that ancestor
+          rather than the viewport. The component is not fixed any more, so that
+          constraint died with the mount. The trap itself is still real and is
+          still documented where it still bites — the mobile menu panel in
+          SiteHeader. */}
     </>
   );
 }

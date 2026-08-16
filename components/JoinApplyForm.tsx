@@ -70,8 +70,18 @@ import { submitApplication, type ApplyState } from "@/app/[locale]/(site)/join/a
  * gold-deep #7D641F, 5.65:1 on the white field and 5.16:1 on the cream ground.
  */
 
+/* 🔴 `text-[16px] md:text-[15px]` IS AN iOS FIX, NOT A SIZE PREFERENCE.
+   Mobile Safari ZOOMS THE WHOLE PAGE IN when a text field with a font-size
+   below 16px receives focus, and it does not zoom back out when the field
+   blurs. At 15px every input on this form did that: tapping "First name" threw
+   the layout out of the viewport and left the applicant scrolling sideways
+   through the rest of the form. It is one of the most visible mobile defects a
+   form can have and it is invisible on a desktop browser at any width, which
+   is why it survived here.
+   16px at phone widths is the documented threshold; `md:` restores the
+   intended 15px from 768 up, where no zoom behaviour exists. */
 const FIELD =
-  "w-full rounded border border-ink/50 bg-white px-3.5 py-2.5 text-[15px] text-ink transition-colors duration-200 focus:border-gold-deep disabled:bg-ink/[0.03] disabled:text-ink/55 aria-[invalid=true]:border-[#8A2A1A]";
+  "w-full rounded border border-ink/50 bg-white px-3.5 py-2.5 text-[16px] text-ink transition-colors duration-200 focus:border-gold-deep disabled:bg-ink/[0.03] disabled:text-ink/55 aria-[invalid=true]:border-[#8A2A1A] md:text-[15px]";
 
 /** Disables the whole fieldset while the action is in flight, and swaps the
  *  button label — so a slow network cannot be double-submitted. */

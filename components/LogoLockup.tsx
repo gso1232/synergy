@@ -1,135 +1,107 @@
+import Image from "next/image";
+import lockup from "@/assets/synergy-lockup-2026.png";
+
 /**
- * The client's hi-res lockup — `public/synergy-logo_1.webp`, adopted
- * 2026-08-07 on instruction. ONE component so the four placements cannot drift.
+ * The client's lockup — supplied 2026-08-16 as `LATEST SYNERGY.PNG` and adopted
+ * the same day. ONE component so the five placements cannot drift.
  *
  * ---------------------------------------------------------------------------
- * 🔴 WHAT CHANGED, AND WHY IT IS NOT THE FILE THAT WAS HANDED OVER.
+ * 🔴 THE ARTWORK IS THE SUPPLIED FILE, UNMODIFIED. The instruction was "the
+ * exact one in the png ... without changing any thing of it", and the only
+ * operation applied to any surviving pixel is a TRANSLATION — the transparent
+ * canvas around the mark is cropped away and nothing else. No key, no
+ * threshold, no recolour, no trace. `scripts/build-logo-2026.mjs` is that crop,
+ * re-runnable against a fresh export, and it records why the alpha floor is 16.
  *
- * The instruction was "change to synergy-logo_1.svg". That file CANNOT be
- * served as-is, measured:
- *
- *   synergy-logo_1.svg   1254 x 1254   100% opaque, 100% opaque EDGES
- *
- * It is not a vector at all. It is a single 1254² **RGB PNG with no alpha
- * channel**, base64-embedded in an SVG wrapper — an export of the logo sitting
- * on a SOLID BLACK SQUARE. 87.7% of it is pure black; the lockup itself only
- * occupies rows 388-820, columns 112-1178. Dropped into the header it renders a
- * black box, and because the canvas is square while the lockup is 2.47:1, the
- * artwork inside it would shrink to roughly a third of the band height.
- * `synergy-logo_2.svg` was byte-identical to it; `_3` and `-tight` were
- * auto-traces of the same black export (2,990 paths, 2,851 near-black colours).
- *
- * 🔴 WHAT SHIPS: THE PLATE IS GONE, BUT THE SHIELD KEEPS ITS OWN DARK FILL.
- * That distinction is the whole point and it is easy to undo by accident.
- * Three passes were needed to land it, and the two rejected ones are recorded
- * so neither gets re-proposed:
- *
- *   pass 1  keyed the black out everywhere -> the page showed THROUGH the
- *           shield. Rejected: the shield lost its body.
- *   pass 2  kept the whole black square -> a black rectangle behind the
- *           wordmark too. Rejected: "not the whole logo".
- *   pass 3  SHIPPED. Black keyed out around the wordmark; the shield's
- *           enclosed interior stays opaque with its original colours.
- *
- * HOW PASS 3 IS BUILT — reproducible, and no pixel is recoloured by hand:
- *   1. alpha = max(r,g,b), floored at 12 to kill the export's noise, then
- *      unpremultiplied so the golds stay saturated.
- *   2. Threshold at 90 to get the SOLID artwork only, label it, take the
- *      largest connected component — that is the shield (x 120-449, y 400-813).
- *      🔴 90, NOT 12: at the low threshold the soft blue glow at the shield's
- *      top-right joins the component and `binary_fill_holes` closes a loop
- *      around it, painting a dark blob into the corner. Measured and looked at.
- *   3. `binary_fill_holes` on that component, masked to x < 520 — the x-clamp
- *      is what stops the counters inside the S, R and G of "SYNERGY" being
- *      filled in solid.
- *   4. Inside that region: alpha 255 and the ORIGINAL rgb, because those pixels
- *      genuinely sit on their own plate inside the shield. Everywhere else:
- *      the keyed values from step 1, so the glow survives as a soft halo.
- *
- *   Result: 68.7% of the canvas fully transparent, 18.7% fully opaque.
- *
- * CROP is the alpha bbox plus 24px — (93,361) to (1196,839), 1103 x 478
- * (2.31:1), served at 591 x 256.
- *
- * `public/synergy-logo_1.svg` IS LEFT ON DISK EXACTLY AS DELIVERED. This is a
- * derivative, not a replacement of the source.
- *
- * FORMAT IS WEBP, NOT SVG, AND THAT IS FORCED. The source has no vector data to
- * preserve — re-wrapping the raster in SVG would only add base64's 33% inflation
- * (95 KB vs 71 KB) for a file that is a bitmap either way.
+ * WHY IT IS NOT AN SVG, THOUGH AN SVG WAS ASKED FOR. The supplied file is a
+ * photoreal 3D render: gradient-mesh bevels on the gold, a specular sweep
+ * across every letter, a soft drop shadow. There is no vector data in it to
+ * recover, so "convert to SVG" can only mean AUTO-TRACE — thousands of flat
+ * polygons approximating those gradients, which visibly changes the artwork.
+ * That is the one thing this pass was told not to do, so format follows the
+ * artwork and it ships as a raster. This repo already contains that mistake
+ * made once: `public/synergy-logo_3.svg` is 391 KB of traced polygons standing
+ * in for the same bitmap. An SVG WRAPPER around the raster is available if a
+ * file with that extension is ever required for a third party — it is the same
+ * bitmap plus base64's 33% inflation, and it would be strictly worse here.
  *
  * ---------------------------------------------------------------------------
- * RESOLUTION. 591 x 256, against a largest render of 58.7px (header at rest,
- * h-11 x the bar's scale(1.3333)) — 176px at 3x DPR. 256 clears every placement
- * at 3x with 45% to spare. Nothing is upscaled anywhere.
+ * 🔴 IT IS A LIGHT-SURFACE MARK. THIS IS THE OPPOSITE OF THE FILE IT REPLACES,
+ * AND IT IS WHY THE HEADER NOW CARRIES A SURFACE AT REST.
  *
- * COST: 45 KB against the 5.7 KB of the file it replaces, on every route above
- * the fold. That is the price of real artwork over a reconstruction — see the
- * `<text>` note below for what the old file actually was.
+ * Measured off the supplied pixels, against the two surfaces this site uses:
  *
- * 🔴 IT IS STILL A DARK-SURFACE MARK. The shield now carries its own body and
- * reads on anything, but the WORDMARK is bare gold on whatever sits behind it:
- * 7.67:1 on navy, 2.07:1 on cream. Composited and looked at on both. All four
- * live slots — header over the navy/photo hero, mobile panel, footer, login
- * panel — are dark surfaces, so this is not a live problem. Do not put this
- * file on cream without looking at it first.
+ *   "INSURANCE GROUP"  #000850  on cream #F8F4EE   16.66:1
+ *   "INSURANCE GROUP"  #000850  on navy  #0D1B2A    1.05:1   <- invisible
  *
- * ---------------------------------------------------------------------------
- * WHAT THE OLD FILE WAS, AND WHY THIS IS AN UPGRADE DESPITE THE BYTES.
+ * The old lockup failed on the opposite surface: its subline was gold, which
+ * sang on navy and died on cream. So this is not a regression to route around,
+ * it is a straight inversion of which background the mark needs.
  *
- * `public/synergy-logo.svg` drew its wordmark as LIVE <text> in
- * `font-family="Georgia, 'Times New Roman', serif"` with no @font-face and no
- * outlines — so the wordmark was never the brand lettering, it was Georgia
- * standing in for it, and it substituted to Times or a generic serif on any
- * client without Georgia. SiteHeader's own note 3 records the same finding.
- * The new artwork has the real letterforms baked in as pixels, which is
- * platform-stable in a way live <text> can never be.
+ * 1.05:1 is not "low contrast", it is the same colour. Dropped onto the
+ * transparent-over-photo header the site used to run, the subline would simply
+ * not be there. THE FIX IS THE SURFACE, NOT THE FILE: the header is now solid
+ * cream from the top of the page rather than a bare overlay on the hero
+ * photograph, per the instruction "i want it the website without a background
+ * picture". Nothing about the artwork changed to achieve this.
  *
- * 🔴 AND THE OLD FILE IS GONE FROM DISK. `public/synergy-logo.svg` was deleted
- * from the working tree on 2026-08-07 (not by this change) and was 404ing at
- * every placement — `naturalWidth` 0 in the live header — before this swap.
- * It is still tracked in git at 6e75423 if it is ever wanted back:
- *     git checkout -- public/synergy-logo.svg
+ * THE OTHER FOUR PLACEMENTS WERE MEASURED ON THE RUNNING PAGE RATHER THAN
+ * ASSUMED, and all four were already light. The docblock this one replaces
+ * described the footer and the login panel as navy — that was true of an
+ * earlier layout and is not true now:
  *
- * ---------------------------------------------------------------------------
- * 🔴 IT IS A DARK-SURFACE MARK. MEASURED:
+ *   header      cream #F8F4EE                              16.66:1
+ *   login panel cream #F8F4EE (NOT the navy panel of old)  16.66:1
+ *   footer      the sunrise photograph, sampled through
+ *               the logo's own footprint: rgb(233,202,156)
+ *               mean, 0.5844 darkest                       11.03:1 worst case
+ *   mobile pane cream
  *
- *   gold wordmark #D6A521  on navy  #0D1B2A   7.67:1
- *   gold wordmark #D6A521  on cream #F8F4EE   2.07:1
- *   shield face   #0A0D14  on cream #F8F4EE  17.74:1
- *   shield face   #0A0D14  on navy  #0D1B2A   1.12:1
+ * So no placement needed a plate in the end. The footer is the one to re-check
+ * if that photograph is ever swapped — it passes because the image is a light
+ * sunrise, not because anything is defending it.
  *
- * So the two halves of the mark fail on OPPOSITE surfaces: on navy the shield
- * plate vanishes into the background (1.12:1) and the gold wordmark sings; on
- * cream the shield is crisp and the wordmark is the weak part. On navy the
- * shield still reads because its gold edge and blue border draw the silhouette
- * — the plate disappearing is not the same as the mark disappearing.
+ * ⚠️ DO NOT PUT THIS COMPONENT ON A DARK SURFACE WITHOUT LOOKING AT IT. If a
+ * dark one is ever needed, give it a cream plate — do not recolour the file.
  *
- * None of this is a WCAG failure: 1.4.3 exempts "text that is part of a logo or
- * brand name" and 1.4.11 exempts logotypes. These are legibility numbers.
- *
- * The retired inline <Logo> solved the cream case by recolouring its wordmark
- * to ink #1A1A1A. This file bakes the gold gradient in and cannot do that, so
- * on light surfaces the wordmark is simply weaker than what it replaced. That
- * is a known, accepted trade — see SiteHeader's docblock.
+ * None of this is a WCAG failure either way: 1.4.3 exempts "text that is part
+ * of a logo or brand name" and 1.4.11 exempts logotypes. These are legibility
+ * numbers, not conformance ones.
  *
  * ---------------------------------------------------------------------------
- * SIZING. The header is the reference. Everything else is scaled DOWN or held
- * level with it, never past it.
+ * RESOLUTION AND WEIGHT. The master is 772x305 (2.531:1) and lives in
+ * `assets/`, NOT `public/` — deliberately. A file in public/ is served
+ * verbatim at its full 280 KB; a static import is handed to next/image, which
+ * emits AVIF at the handful of sizes this mark actually renders. The largest is
+ * the header at rest, 58.7px tall = ~149px wide, so 3x DPR wants ~447px and the
+ * master has 772 to give. Nothing is upscaled anywhere.
+ *
+ * FORMAT IS FORCED BY MEASUREMENT, not preference. Each candidate was
+ * composited over the real surfaces and compared against a lossless control
+ * (which returns PSNR ∞, so the harness is sound):
+ *
+ *   webp lossless   172.1 KB   PSNR ∞
+ *   webp q95         85.7 KB   PSNR 32.9   <- WebP mangles the gold-on-blue
+ *   avif q95        103.0 KB   PSNR 48.1
+ *
+ * Hence AVIF, which `next.config.mjs` already lists first in `images.formats`.
+ *
+ * SIZING LADDER. The header is the reference. Everything else is scaled DOWN or
+ * held level with it, never past it.
  *
  *   header at rest    58.7px  (h-11 x the bar's own scale(1.3333))  <- LARGEST
  *   header scrolled   44px    h-11 / card:h-12
- *   login navy panel  56px    h-14
+ *   login panel       56px    h-14
  *   footer            48px    h-12
  *   mobile panel      36px    h-9
- *   engine hub        --      REMOVED 2026-08-07 with TheEngine
+ *   admin bar         28px    h-7 / sm:h-8
  *
  * 🔴 THE SUBLINE IS BELOW READING SIZE AT ALL OF THEM. "INSURANCE GROUP" is
- * 47px in a 340px canvas, so at 48px tall it renders 6.6px and at 36px it
- * renders 5.0px. It is texture, not type. That is tolerable ONLY because every
- * placement is wrapped in something that carries the company name for assistive
- * tech — a link with `aria-label`, or an adjacent heading — which is why `alt`
- * is empty here by default rather than repeating the name.
+ * 27px in a 305px canvas, so at 48px tall it renders 4.2px. It is texture, not
+ * type. That is tolerable ONLY because every placement is wrapped in something
+ * that carries the company name for assistive tech — a link with `aria-label`,
+ * or an adjacent heading — which is why `alt` is empty here by default rather
+ * than repeating the name.
  *
  * `alt` defaults to "" (decorative). Pass one ONLY where the lockup is the sole
  * carrier of the name and nothing around it announces the company.
@@ -142,22 +114,26 @@ export default function LogoLockup({
   alt?: string;
 }) {
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      /* src="/synergy-logo.svg" — SUPERSEDED 2026-08-07, kept for one round.
-         1120x340 vector, 5.7KB, but its wordmark was live Georgia <text> and
-         the file is no longer on disk (see the docblock). Reverting is this one
-         line plus `git checkout -- public/synergy-logo.svg`. */
-      src="/synergy-logo_1.webp"
+    <Image
+      src={lockup}
       alt={alt}
-      /* Intrinsic size, so the box is reserved before the bitmap arrives — this
-         is what keeps the header's CLS at 0 now that the source is a raster
-         rather than a vector. 591x256 = the padded crop's 2.31:1. */
-      width={591}
-      height={256}
-      // NEVER lazy: every placement is either above the fold (header, login)
-      // or inside a section the reader has already reached.
-      decoding="async"
+      /* The static import carries the master's 772x305, so the box is reserved
+         from the intrinsic ratio and CLS stays at 0 while the bitmap arrives.
+         Height is what every placement actually sets (h-11, h-12, h-14...), so
+         `sizes` is expressed against the widest of them at 3x. */
+      sizes="160px"
+      /* 🔴 NOT THE DEFAULT 75. This is the one image on the site where that
+         default is measurably wrong: the mark is saturated gold against
+         saturated blue, which is exactly the chroma case lossy codecs handle
+         worst, and it renders at ~64px where artefacts land on the letterforms
+         rather than in open sky. Encoding the master at q75 against a lossless
+         control returned PSNR 32.9 — visible mush on the bevels. At 90 the same
+         comparison clears 48. The mark is 160px wide on the wire, so the extra
+         quality costs single-digit kilobytes. */
+      quality={90}
+      /* NEVER lazy: every placement is either above the fold (header, login,
+         admin bar) or inside a section the reader has already reached. */
+      priority
       className={className}
     />
   );

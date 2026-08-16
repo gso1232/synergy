@@ -12,6 +12,7 @@ import {
   type RouteKey,
 } from "@/routes";
 import LogoLockup from "./LogoLockup";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 /**
  * The bar is a three-column grid with the logo dead centre, so the nav is
@@ -670,14 +671,34 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             phone bar looked fine on the DESKTOP-first reading of this file and
             wrong on the device.
         */}
-        {/* LEFT — starts exactly on the headline's left edge */}
+        {/* LEFT — starts exactly on the headline's left edge.
+            EN/ES closes this list, i.e. sits directly after Blog (LEFT_LINKS is
+            Home · About · Services · Blog), per the instruction to put it top-
+            left beside Blog. `gap-8` already separates it from Blog by the same
+            32px every other pair uses, so it needs no margin of its own. */}
         <ul className="col-start-1 hidden items-center gap-8 card:flex">
           {LEFT_LINKS.map((key) => (
             <li key={key}>
               <NavLink routeKey={key} className={linkClass} />
             </li>
           ))}
+          <li>
+            <LocaleSwitcher />
+          </li>
         </ul>
+
+        {/* THE SAME CONTROL, PHONE PLACEMENT. Below `card` both <ul>s above are
+            `hidden` and this grid column stands empty while the bar is logo +
+            hamburger — so this is the top-left of a phone bar, which is where
+            it was asked to go, and it costs no new row. `card:hidden` is what
+            stops it rendering twice at desktop.
+
+            ⚠️ IT IS A SIBLING OF THE LEFT <ul>, NOT INSIDE IT. Putting it in
+            that list would inherit the list's own `hidden card:flex` and vanish
+            on exactly the breakpoint this mount exists to serve. */}
+        <div className="col-start-1 flex items-center card:hidden">
+          <LocaleSwitcher />
+        </div>
 
         {/* CENTRE — logo. A wordmark in the top-left (or here, top-centre) is
             expected to be the way home, and it was `href="#"`. It is the one
@@ -737,7 +758,17 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               optimise, so the image pipeline would only add a proxy hop. It is
               `priority`-equivalent by being inline in the bar, and it must not
               lazy-load — it is above the fold on every route. */}
-          <LogoLockup className="site-header__logo h-11 w-auto card:h-12" />
+          {/* 🔴 `max-[359px]:h-9` IS CLEARANCE FOR THE EN/ES PILL, NOT TASTE.
+              The logo is centred in its own grid column, so on a 320px viewport
+              it starts at (320-111)/2 ≈ 106 — which is exactly where the
+              switcher in column 1 ends. Measured: a 0px gap, the two flush
+              against each other. Shrinking the PILL does not help, because the
+              logo is centred rather than packed: it just moves to its natural
+              centre and they touch again, which is what the first attempt at
+              this proved. Taking the logo from 44px to 36px narrows it to ~91px
+              and moves its centred left edge out to ~115, opening a real gap.
+              360px and up is untouched — at 375 the two already clear by 10px. */}
+          <LogoLockup className="site-header__logo h-11 w-auto max-[359px]:h-9 card:h-12" />
         </Link>
 
         {/* RIGHT — ends exactly on the headline's right edge */}
@@ -967,7 +998,12 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               <Link
                 href={`/${locale}/login`}
                 onClick={close}
-                className="mt-6 self-start text-[15px] font-medium text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+                /* `py-2.5` with `mt-4` rather than a bare `mt-6`: measured at
+                   23px tall on a 375px phone, the smallest target in the open
+                   panel. The padding takes it to 43px and the reduced margin
+                   gives back the 8px the padding added, so the gap above it
+                   still reads as the 24px it was. */
+                className="mt-4 self-start py-2.5 text-[15px] font-medium text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
               >
                 {t("login")}
               </Link>
@@ -981,7 +1017,8 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               <Link
                 href={`/${locale}/admin`}
                 onClick={close}
-                className="mt-4 self-start text-[15px] font-semibold text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
+                /* Same touch-target padding as the login link above it. */
+                className="mt-2 self-start py-2.5 text-[15px] font-semibold text-navy underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep"
               >
                 {t("admin")}
               </Link>
