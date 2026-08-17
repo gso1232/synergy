@@ -227,7 +227,12 @@ export default async function ServicesPage({
           alt=""
           fill
           priority
-          sizes="100vw"
+          /* `sizes` describes the BOX; `object-cover` in a portrait box renders
+             the image `boxHeight x sourceAR` wide instead. Measured at 375: the
+             box is 375x812, the 1.50:1 source renders 1218 CSS px wide, and
+             `100vw` asked for 375 — w=750 enlarged 3.2x. See the full derivation
+             and the byte table in components/Hero.tsx. */
+          sizes="(max-width: 640px) 270vw, (max-width: 1024px) 130vw, 100vw"
           quality={74}
           className="object-cover object-center"
         />

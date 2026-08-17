@@ -173,7 +173,10 @@ export default async function JoinPage({
           alt={t("hero.imageAlt")}
           fill
           priority
-          sizes="100vw"
+          /* See components/Hero.tsx: `object-cover` in a portrait box renders
+             the image `boxHeight x sourceAR` wide, which `100vw` understates by
+             roughly 3x on a phone. */
+          sizes="(max-width: 640px) 270vw, (max-width: 1024px) 130vw, 100vw"
           quality={74}
           className="object-cover object-center"
         />

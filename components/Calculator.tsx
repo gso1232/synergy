@@ -244,8 +244,27 @@ export default function Calculator({
           <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-5 shadow-[0_1px_2px_rgba(13,27,42,0.04),0_12px_32px_-20px_rgba(13,27,42,0.18)] sm:p-8 lg:p-12">
             {/* Two equal columns, exactly as theirs */}
             <div className="grid gap-5 lg:grid-cols-2">
-              {/* INPUTS — order-2 on mobile so the result reads first */}
-              <div className="order-2 rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8 lg:order-1">
+              {/* INPUTS — first in the DOM and first on the page, at every width.
+                  🔴 THE `order-*` PAIR IS GONE. It was `order-2` here and
+                  `order-1` on the result, "so the result reads first" on mobile.
+                  Measured at 375: the result card painted at y=441 and the
+                  sliders that produce it at y=664, so the phone opened on a
+                  $-figure sitting 223px ABOVE the only controls that change it —
+                  an answer before its question.
+
+                  IT WAS ALSO A SEQUENCE BUG, NOT ONLY A TASTE ONE. `order`
+                  repaints the box without moving it in the DOM, so the visual
+                  order and the reading/tab order disagreed: a screen-reader or
+                  keyboard user got inputs → result while a sighted phone user
+                  saw result → inputs. That is 1.3.2 (Meaningful Sequence) and
+                  2.4.3 (Focus Order).
+
+                  DELETING ALL FOUR CLASSES IS THE WHOLE FIX, and the desktop
+                  half needs no replacement: the DOM is already inputs-then-
+                  result, so `lg:order-1`/`lg:order-2` were restating the
+                  natural grid flow and the two columns still land left/right
+                  exactly as before. */}
+              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8">
                 <div className="flex h-full flex-col justify-center gap-8">
                   <Slider
                     id={`${uid}-monthly`}
@@ -314,7 +333,10 @@ export default function Calculator({
                       braces so a pathological value wraps rather than spills.
                   No mechanic changes: same `d.iul`, same `resultUnit`/`age`,
                   same `resultCaption`, same Figure settle. */}
-              <div className="order-1 rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8 lg:order-2">
+              {/* RESULT — second in the DOM, and now second on the page too.
+                  See the note on the inputs card above for why the `order-1` /
+                  `lg:order-2` pair was removed rather than re-pointed. */}
+              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8">
                 <div className="flex h-full min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] bg-navy px-6 py-9 text-center">
                   <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-pale">
                     {t("resultCaption")}

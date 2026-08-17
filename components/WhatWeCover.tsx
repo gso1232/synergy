@@ -82,16 +82,47 @@ export default function WhatWeCover() {
     >
       {/* Full-bleed parallax photograph */}
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        {/* 🔴 `cover-photo-layer` REBUILDS THIS LAYER BELOW 1024px. The desktop
+            geometry here — `top-[-30%] h-[160%]`, sized to absorb the ±16
+            yPercent parallax travel — is UNCHANGED and still the only thing
+            this element does at lg and up. See the media query in globals.css.
+
+            WHY IT HAD TO CHANGE. The section is 2824px tall on a 375px phone
+            (three stacked cards at min-h-360 plus the heading block), so the
+            160% layer resolved to 375x4518 — a 0.083:1 box holding a 1.50:1
+            photograph. `object-cover` fits by HEIGHT there, so it kept 9% of
+            the frame and enlarged what was left 11.3x. That is the blurred
+            green smear behind the cards; the file is a real 2400x1602 capture
+            and was never the problem.
+
+            `sizes` COULD NOT HAVE SAVED IT. Under object-cover the rendered
+            image width is `boxHeight x sourceAR` = 4518 x 1.5 = 6777 CSS px,
+            which is past next/image's 3840 ceiling — no derivative exists that
+            would have been sharp in this box. The geometry is the fix, and the
+            `sizes` below is then simply the truth about the new geometry:
+            under 630px the band is floored at 420px tall so the photo renders
+            630px wide; above that the band is 66.67vw tall, so it renders
+            exactly 100vw. Both are now reachable derivatives.
+
+            🔴 THE FIRST FIGURE IS 600px, NOT THE 630px THE GEOMETRY ASKS FOR,
+            AND THE 5% IS DELIBERATE. next/image's deviceSizes step
+            ...1080, 1200, 1920..., and the browser takes the first candidate at
+            or above `sizes x DPR`. 630 x 2 = 1260 clears 1200 and jumps to
+            w=1920 — 1.5x more pixels than the band can show. 600 x 2 = 1200
+            lands exactly on that derivative and renders at 95% of 1:1, which
+            is not a visible softness on a photograph and is a large byte saving
+            on the one connection that cannot afford it. DPR 3 resolves to 1920
+            either way, so nothing is lost there. */}
         <div
           ref={bgRef}
-          className="absolute inset-x-0 top-[-30%] h-[160%] will-change-transform"
+          className="cover-photo-layer absolute inset-x-0 top-[-30%] h-[160%] will-change-transform"
         >
           <Image
             src="/synergy/coverage-family-meadow.jpg"
             alt=""
             fill
             priority
-            sizes="100vw"
+            sizes="(max-width: 630px) 600px, 100vw"
             className="cover-photo object-cover object-[center_40%]"
           />
         </div>

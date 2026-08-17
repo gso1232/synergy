@@ -257,7 +257,17 @@ export default async function AboutPage({
           alt=""
           fill
           priority
-          sizes="100vw"
+          /* See components/Hero.tsx for the derivation: under `object-cover` a
+             portrait box renders the image `boxHeight x sourceAR` wide, so
+             `100vw` understated this by 3.2x and w=750 was enlarged to fill
+             2436 device px at 375.
+             🔴 THIS SOURCE IS ONLY 1620x1080, so Next cannot emit a derivative
+             above w=1620 and the phone tops out at ~66% of 1:1 rather than the
+             ~84% the other heroes reach. Still far better than 31%, but if this
+             hero is ever to be pixel-sharp on a phone the FILE has to be
+             re-exported larger — no `sizes` value can conjure pixels the source
+             does not have. */
+          sizes="(max-width: 640px) 270vw, (max-width: 1024px) 130vw, 100vw"
           /* 🔴 q88, UP FROM q74 — THE ONLY HONEST SHARPENING AVAILABLE HERE.
              The client reports this hero as soft. It is: the file is 1620x1080
              and a 1536-wide hero needs 3072px at 2x, so it is 47.3% short and

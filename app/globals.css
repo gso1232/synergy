@@ -2189,6 +2189,78 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    heading and the closing statement sit directly on the photograph), easing to
    clear through the middle third where the cards sit and carry their own tint.
    Edge-anchored, no mid-frame pool. */
+/* ---------------------------------------------------------------------------
+   THE COVERAGE PHOTOGRAPH, BELOW 1024px — A BAND, NOT A FULL-BLEED FILL.
+
+   THE DESKTOP LAYER IS NOT TOUCHED. At lg and up the element keeps the
+   `top-[-30%] h-[160%]` box it has always had, which exists to absorb the ±16
+   yPercent parallax travel without exposing an edge. This block only overrides
+   the geometry where that box collapses.
+
+   WHAT COLLAPSED. The section's height is content-driven, and on a phone the
+   three cards stack: 2824px at 375px wide. 160% of that is a 375x4518 layer —
+   a 0.083:1 box holding a 1.50:1 photograph. `object-cover` matches the long
+   axis, so it kept 9% of the frame and enlarged it 11.3x. Measured, not
+   estimated. No `object-position` reaches this: the required image is 6777px
+   wide (4518 x 1.50), past next/image's 3840 ceiling, so no derivative Next
+   can emit would have been sharp in that box.
+
+     layer box    box AR   frame shown   image width needed
+     ------------------------------------------------------
+     375x4518     0.083        9%          6777px   (unreachable)
+     375x 420     0.893       60%           630px   (w=1280 at DPR 2)
+
+   THE HEIGHT IS `max(420px, 66.67vw)` AND BOTH HALVES ARE LOAD-BEARING.
+   66.67vw is the photograph's own 1.50:1 against a full-width band, so from
+   630px up the band matches the frame exactly and crops NOTHING — the same
+   rule the footer's `aspect-[3/2]` layer uses, so the two photographic
+   surfaces on this site are governed by one idea. Below 630px that would fall
+   to a 250px sliver with no presence behind the cards, so a 420px floor takes
+   over and spends a 40% crop on keeping the photograph a real surface. 60%
+   of the frame, sharp, beats 9% of it enlarged 11.3x.
+
+   CENTRED WITH AUTO MARGINS, NOT A TRANSLATE, AND THAT IS NOT A STYLE CHOICE.
+   GSAP animates this element with `yPercent`, which compiles to a
+   `transform: translate()`; a Tailwind `-translate-y-1/2` would be overwritten
+   by the tween on its first frame and the band would jump out of position.
+   `inset-block: 0` + `margin-block: auto` centres an absolutely positioned box
+   of definite height using the MARGIN algorithm, which the transform never
+   touches. The parallax then drifts the band ±16% of its own height (±67px)
+   about that centre, which is why the band is placed at the section's middle:
+   that is where `.cover-veil` is fully transparent (48%-60%), so the travel
+   never carries an edge into view.
+
+   THE MASK IS WHAT MAKES IT A WASH RATHER THAN A PASTED RECTANGLE. The band's
+   top and bottom edges sit inside the veil's clear window, so without a feather
+   they would read as two hard seams against the navy. 16%/84% stops fade both
+   edges out over ~67px. `-webkit-mask-image` is restated for iOS Safari, which
+   still needs the prefix.
+--------------------------------------------------------------------------- */
+@media (max-width: 1023.98px) {
+  .cover-photo-layer {
+    top: auto;
+    bottom: auto;
+    inset-block: 0;
+    margin-block: auto;
+    height: max(420px, 66.67vw);
+    max-height: 100%;
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 16%,
+      #000 84%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      #000 16%,
+      #000 84%,
+      transparent 100%
+    );
+  }
+}
+
 .cover-veil {
   pointer-events: none;
   background: linear-gradient(

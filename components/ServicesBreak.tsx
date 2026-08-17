@@ -60,7 +60,11 @@ export default function ServicesBreak({ alt }: { alt: string }) {
           src="/synergy/services-break-dusk.jpg"
           alt={alt}
           fill
-          sizes="100vw"
+          /* Measured at 375: the box is 375x442 (0.85:1) against a 1.50:1
+             source, so the image renders 663 CSS px wide while `100vw` asked
+             for 375. 160vw lands on w=1200 at DPR 2 — 90% of 1:1. See
+             components/Hero.tsx for the derivation. */
+          sizes="(max-width: 640px) 160vw, (max-width: 1024px) 110vw, 100vw"
           quality={72}
           className="object-cover object-center"
         />

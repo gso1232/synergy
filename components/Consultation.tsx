@@ -113,7 +113,12 @@ export default function Consultation() {
             src="/synergy/consultation-family-walk.jpg"
             alt=""
             fill
-            sizes="100vw"
+            /* Measured at 375: the box is 375x525 (0.71:1) against a 1.50:1
+               source, so `object-cover` renders the image 788 CSS px wide and
+               `100vw` asked for 375 — w=750 enlarged 2.1x and 52% of the frame
+               was cropped. 200vw is the honest figure. See components/Hero.tsx
+               for why the box width is the wrong thing to declare here. */
+            sizes="(max-width: 640px) 200vw, (max-width: 1024px) 120vw, 100vw"
             className="object-cover"
           />
         </div>

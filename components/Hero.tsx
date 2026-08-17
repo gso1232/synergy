@@ -142,11 +142,59 @@ export default function Hero() {
           priority
           fetchPriority="high"
           placeholder="blur"
-          quality={82}
-          // The card is the viewport minus two slim gutters at every width.
+          /* 🔴 82 -> 65, AND IT MAKES THE DESKTOP FASTER AS WELL AS THE PHONE
+             SHARPER. Correcting `sizes` below moved the phone from w=750 to
+             w=2048, and at q82 that is a 500KB LCP image — unshippable on the
+             one connection least able to afford it. Measured on this build,
+             AVIF, same source:
+
+               w=750  q82    81KB    34% of 1:1   <- the reported blur
+               w=1200 q82   192KB    54%
+               w=1920 q82   447KB    87%          <- what desktop pays today
+               w=2048 q82   500KB    93%
+               w=1920 q65   239KB    87%
+               w=2048 q65   266KB    93%          <- phone now
+               w=2048 q55   174KB    93%
+
+             THE TABLE SAYS RESOLUTION BEATS QUALITY, and that is the whole
+             argument: w=2048 q55 is 174KB at 93% of 1:1, CHEAPER than w=1200
+             q82 at 192KB and 54%. Spending the byte budget on pixels rather
+             than on precision is strictly the better buy when the image is
+             being enlarged, because compression artefacts at this resolution
+             land below one device pixel while an enlargement does not.
+
+             65 rather than 55 because `quality` is one value for every
+             breakpoint, and the desktop shows this photograph at roughly 1:1
+             where q55 AVIF starts to show banding in the sky. At 65 the phone
+             takes 266KB for a genuinely sharp hero (from 81KB and blurred) and
+             the desktop DROPS from 447KB to 239KB for the same 87%. */
+          quality={65}
+          // 🔴 THE OLD NOTE HERE WAS WRONG, AND IT IS WORTH SAYING WHY. It read:
+          // "the card is the viewport minus two slim gutters at every width.
           // With a 6805px source every derivative Next picks (up to 3840) is a
-          // genuine downscale, so the browser never has to enlarge.
-          sizes="98.5vw"
+          // genuine downscale, so the browser never has to enlarge." The first
+          // sentence is true and the conclusion does not follow from it.
+          //
+          // `sizes` describes the BOX. Under `object-cover` the rendered IMAGE
+          // is not the box: in a portrait box the image is scaled until its
+          // HEIGHT fills, so it renders `boxHeight x sourceAR` wide and hangs
+          // off both sides. Measured on a 375px phone: the card is 363x736, so
+          // the image renders 1104 CSS px wide (736 x 1.50) — but `98.5vw` asked
+          // for 363, the browser fetched w=750, and at DPR 2 it enlarged that
+          // 3.0x to fill 2208 device px. "A genuine downscale of the source" and
+          // "an enlargement on screen" are both true at once; only the second
+          // one is visible, and it is the reported blur.
+          //
+          // The three values are the real requirement at the three shapes the
+          // card takes. Phone (box AR 0.49): 736 x 1.50 = 1104 CSS px = 294vw,
+          // rounded to 270vw so DPR 2 lands on w=2048 rather than overshooting
+          // to 3840 — 92% of 1:1, which is not a visible softness. Tablet
+          // (0.84): the honest figure is 175vw, held to 130vw for the same
+          // reason, since an LCP image is the one place bytes are least
+          // affordable. Desktop is unchanged: from about 1.50:1 up the box is
+          // WIDER than the cover-scaled image, so the box governs again and
+          // 98.5vw was correct there all along.
+          sizes="(max-width: 640px) 270vw, (max-width: 1024px) 130vw, 98.5vw"
           // Subject is centred, copy sits bottom-left.
           //   X 47.5% — the family group spans 0.330–0.635 of the frame width
           //   (centre 0.4825). On a phone the card is ~0.45 aspect, so

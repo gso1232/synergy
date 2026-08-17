@@ -313,7 +313,20 @@ export default function Footer() {
     // FULL BLEED. No wrapper, no gutter, no card, no radius. `bg-cream` is the
     // base the gradient's alpha-1 top stop matches, and the fallback if the
     // photograph 404s.
-    <footer className="relative isolate [--melt:clamp(140px,16vw,240px)] [--reveal:clamp(200px,26vw,380px)]">
+    // 🔴 --melt's FLOOR CAME DOWN 140px -> 72px WITH THE ASPECT-RATIO LAYER
+    // BELOW, and the two must be read together. The melt is a cream fade
+    // anchored to the TOP of the photo layer; while that layer was the whole
+    // footer (1346px on a phone) a 140px fade was a rounding error on it. The
+    // layer is now the photograph's own 3:2 box — 250px tall at 375px wide — so
+    // the old floor would have covered 56% of the band in cream and left ~110px
+    // of actual photograph. 72px leaves 178px.
+    //
+    // ONLY THE FLOOR MOVED. 16vw still governs from 450px up (16vw = 72 at
+    // 450), so tablet and desktop resolve exactly as before: 123px at 768,
+    // 205px at 1280, 240px at the cap. --reveal is untouched — it is the
+    // footer's own bottom padding and the scrim's flat region reads the same
+    // variable, and neither depends on the layer's height.
+    <footer className="relative isolate [--melt:clamp(72px,16vw,240px)] [--reveal:clamp(200px,26vw,380px)]">
       {/* The landmark is named for assistive tech without putting a visible
           heading on the page. */}
       <h2 className="sr-only">{t("srTitle")}</h2>
@@ -321,9 +334,60 @@ export default function Footer() {
       {/* ---------------------------------------------------------------
           THE SCENE. Fills the entire footer, not a strip at the bottom.
           --------------------------------------------------------------- */}
+      {/* 🔴 THE LAYER TAKES THE PHOTOGRAPH'S OWN ASPECT RATIO. IT USED TO BE
+          `inset-0` — the full footer box — AND THAT IS WHAT MADE IT UNREADABLE
+          ON A PHONE.
+
+          The docblock above already spotted the symptom ("at 390 the box is
+          0.31:1 against a 1.50:1 source ... the mobile visitor sees a narrow
+          centre column of the frame") but treated it as a CONTRAST problem and
+          swept `object-position` looking for a better slice. It is a GEOMETRY
+          problem, and no object-position can fix it. Measured on this build:
+
+            width   layer box     box AR   frame shown   image width needed
+            ---------------------------------------------------------------
+             375    375x1346       0.28        19%        2020px  (got 750)
+             768    753x1153       0.65        44%        1730px  (got 828)
+            1280   1265x 922       1.37        92%        1382px  (fine)
+
+          TWO FAULTS, ONE CAUSE. `object-cover` on a portrait box scales the
+          image until its HEIGHT fills, so (a) it throws away 81% of the frame
+          and (b) the rendered image is 2020px wide while `sizes="100vw"` asks
+          the browser for a 375px-wide box — it fetched 750px and enlarged it
+          5.4x. That 5.4x IS the "not clear on mobile" report; the file is a
+          genuine 3840x2555 capture and was never the problem.
+
+          `aspect-[3/2]` is the source's own 1.50:1, so the box and the frame
+          agree and `object-cover` crops NOTHING: the whole photograph shows, at
+          every width, and the rendered image width equals the layer width —
+          which is what `sizes="100vw"` has been claiming all along. The 750px
+          derivative a phone already downloads becomes exactly right at DPR 2.
+          Sharper AND fewer bytes, with no new assets.
+
+          `max-h-full` is the cap, and it is what keeps the desktop untouched:
+          on a wide/short footer (1920, box ~2.16:1) the aspect box would be
+          taller than the footer, so the cap wins and the layer stays exactly
+          the full-bleed box it is today. The rule therefore only engages where
+          the footer is taller than width/1.5 — i.e. only where it was broken.
+
+          `bottom-0` anchors it: the photograph is the ground the footer stands
+          on, so it grows UP from the bottom edge and the cream page above melts
+          into it. AA improves as a side effect — the type that used to sit on
+          the washed photo at 4.93:1 (the tightest block, `copyright`) now sits
+          on plain cream at 15.87:1. */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 -z-10 select-none"
+        /* 🔴 SCOPED TO `max-lg` SO THE DESKTOP IS BYTE-FOR-BYTE THE OLD LAYER.
+           The aspect box was first written unscoped, on the reasoning that
+           `max-h-full` alone would cap it back to full-bleed on wide screens.
+           That is true at 1920 but NOT at 1440: the footer is 978px tall there
+           and 3:2 of 1425 is 950, so the cap never engaged and the layer came
+           out 28px short with a band of cream above it. Small, but it is a
+           desktop change, and the desktop was never the broken case — it
+           already showed 92-97% of the frame at a sane 1.0-1.4x scale.
+           Below lg the override applies in full and the reasoning above holds
+           unchanged. */
+        className="pointer-events-none absolute inset-0 -z-10 select-none max-lg:bottom-0 max-lg:top-auto max-lg:aspect-[3/2] max-lg:max-h-full"
       >
         <Image
           src="/footer/ground-sunrise-hills.jpg"
