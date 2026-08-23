@@ -172,14 +172,30 @@ export default async function AdminDashboard({
           : t("leads.consent.none"),
       status: t(`leads.status.${l.status}`),
       received: fmt.format(new Date(l.received_at)),
+      /* 🔴 CRM DELIVERY. The lead is committed to Postgres BEFORE GoHighLevel
+         is called, so a CRM outage leaves a real, working lead sitting in this
+         table that no automation will ever pick up. Without this column that
+         state is invisible and the lead is silently never worked — which is the
+         entire reason 0010 added it. Shown for every row, not only failures:
+         the one state that needs action must not also be the only one anybody
+         has to go looking for. */
+      crm: t(`leads.crm.${l.ghl_status ?? "pending"}`),
     },
     /* Built conditionally: `tones` types its values as a fixed union, so an
        explicit `undefined` would not typecheck. */
-    ...(l.status === "new"
-      ? { tones: { status: "good" as const } }
-      : l.status === "closed"
-        ? { tones: { status: "warn" as const } }
-        : {}),
+    /* Two independent tones: the lead's own workflow status, and whether it
+       actually reached the CRM. They are unrelated — a 'closed' lead can be
+       delivered and a brand-new one can have failed. */
+    tones: {
+      ...(l.status === "new"
+        ? { status: "good" as const }
+        : l.status === "closed"
+          ? { status: "warn" as const }
+          : {}),
+      ...(l.ghl_status === "delivered"
+        ? { crm: "good" as const }
+        : { crm: "warn" as const }),
+    },
   }));
 
   const contentRows: Row[] = content.map((c) => ({
@@ -266,6 +282,7 @@ export default async function AdminDashboard({
                   col("leads", "consent", false),
                   col("leads", "status"),
                   col("leads", "received"),
+                  col("leads", "crm"),
                 ]}
                 rows={leadRows}
               />

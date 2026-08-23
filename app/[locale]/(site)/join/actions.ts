@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { deliverToGhl, type GhlPayload } from "@/lib/ghl";
 
 /**
  * THE /join APPLICATION INTAKE.
@@ -147,21 +148,81 @@ export async function submitApplication(
   // 🔴 THE ROW IS BUILT FIELD BY FIELD FROM VALIDATED LOCALS. Never spread from
   // FormData — that is how an attacker-supplied key reaches a column it should
   // not (e.g. an `id` or a future `status`).
-  const { error } = await supabase.from("applications").insert({
+  const consent = str(formData.get("consent")) === "on";
+
+  const { data: inserted, error } = await supabase
+    .from("applications")
+    .insert({
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone,
+      state,
+      licensed: licensedRaw === "yes",
+      heard: heardRaw || null,
+      consent,
+      ghl_status: "pending",
+    })
+    .select("id")
+    .single();
+
+  if (error || !inserted) {
+    // Logged server-side, never returned — the message can name columns.
+    console.error("[apply] insert failed:", error?.message);
+    return { status: "error", error: "failed" };
+  }
+
+  /* ---------------------------------------------------------------------------
+     CRM DELIVERY — ADDED 2026-08-16, AND IT IS BOLTED ON AFTER THE INSERT ON
+     PURPOSE.
+
+     An agent application is a lead like any other: it needs to reach
+     GoHighLevel so the recruiting automations fire. But this form has been
+     storing to Postgres successfully since 2026-08-03, and that path is the one
+     the client depends on — so CRM delivery is added STRICTLY DOWNSTREAM of it.
+
+     🔴 NOTHING BELOW THIS LINE CAN CHANGE WHAT THIS FUNCTION RETURNS ON A
+     SUCCESSFUL INSERT. `deliverToGhl` never throws, the status update is
+     allowed to fail quietly, and the success path is unchanged. If the webhook
+     is unset, times out, or 500s, the applicant still gets their confirmation
+     and the row still exists — it is simply flagged `ghl_status <> 'delivered'`
+     for someone to pick up. Making a CRM outage able to reject an application
+     would be trading a captured recruit for a tidier log line.
+  --------------------------------------------------------------------------- */
+  const ghl = await deliverToGhl("apply", {
+    source: "apply",
     first_name: firstName,
     last_name: lastName,
+    full_name: `${firstName} ${lastName}`.trim(),
     email,
     phone,
-    state,
+    // The applicant's residential state is the routing fact a recruiting
+    // workflow branches on, so it rides in `interest` — the same slot the
+    // contact form uses for its product key.
+    interest: state,
+    consent,
     licensed: licensedRaw === "yes",
-    heard: heardRaw || null,
-    consent: str(formData.get("consent")) === "on",
-  });
+    heard: heardRaw || undefined,
+    submitted_at: new Date().toISOString(),
+  } satisfies GhlPayload);
 
-  if (error) {
-    // Logged server-side, never returned — the message can name columns.
-    console.error("[apply] insert failed:", error.message);
-    return { status: "error", error: "failed" };
+  await supabase
+    .from("applications")
+    .update(
+      ghl.ok
+        ? { ghl_status: "delivered", ghl_delivered_at: new Date().toISOString() }
+        : {
+            ghl_status: ghl.reason === "unconfigured" ? "unconfigured" : "failed",
+            ghl_detail: ghl.reason === "http" ? `http ${ghl.status}` : ghl.reason,
+          },
+    )
+    .eq("id", inserted.id);
+
+  if (!ghl.ok && ghl.reason !== "unconfigured") {
+    console.error(
+      `[apply] application ${inserted.id} stored but NOT delivered to GHL:`,
+      ghl.reason,
+    );
   }
 
   // The ONLY success path in this file, and it is after the row exists.

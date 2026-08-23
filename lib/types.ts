@@ -49,6 +49,18 @@ export type Lead = {
   email_optin: boolean;
   status: LeadStatus;
   received_at: string;
+  /** Free text from the contact form. Added 0010_lead_intake_ghl.sql. */
+  message: string | null;
+  /** "en" | "es" — the language the visitor filled the form in. */
+  locale: string | null;
+  /**
+   * CRM delivery record. 'delivered' means GoHighLevel returned 2xx; anything
+   * else means THIS LEAD IS NOT IN THE CRM and has to be worked by hand. The
+   * row is committed before delivery is attempted, so a lead is never lost —
+   * but it can be un-delivered, which is exactly what this column is for.
+   */
+  ghl_status: "pending" | "delivered" | "failed" | "unconfigured" | null;
+  ghl_detail: string | null;
 };
 
 /** A row of public.agents. */

@@ -101,6 +101,10 @@ const MOCK_LEADS: Lead[] = [
     email_optin: true,
     status: "new",
     received_at: "2026-08-02T14:20:00.000Z",
+    message: null,
+    locale: "en",
+    ghl_status: "delivered",
+    ghl_detail: null,
   },
   {
     id: "22222222-2222-4222-8222-222222222222",
@@ -113,6 +117,10 @@ const MOCK_LEADS: Lead[] = [
     email_optin: true,
     status: "contacted",
     received_at: "2026-08-01T09:05:00.000Z",
+    message: "We just had our second child and want to review cover before the end of the year.",
+    locale: "en",
+    ghl_status: "delivered",
+    ghl_detail: null,
   },
   {
     id: "33333333-3333-4333-8333-333333333333",
@@ -125,6 +133,14 @@ const MOCK_LEADS: Lead[] = [
     email_optin: false,
     status: "qualified",
     received_at: "2026-07-29T16:48:00.000Z",
+    message: "Necesito ayuda para mi madre. Prefiero hablar en espanol.",
+    locale: "es",
+    /* 🔴 DELIBERATELY THE FAILED CASE. The preview exists so the admin UI can
+       be reviewed without real data, and the state that most needs reviewing is
+       the one nobody sees in a happy-path screenshot: a lead that was captured
+       but never reached GoHighLevel and has to be worked by hand. */
+    ghl_status: "failed",
+    ghl_detail: "http 502",
   },
   {
     id: "44444444-4444-4444-8444-444444444444",
@@ -137,6 +153,10 @@ const MOCK_LEADS: Lead[] = [
     email_optin: false,
     status: "closed",
     received_at: "2026-07-24T11:12:00.000Z",
+    message: null,
+    locale: "en",
+    ghl_status: "delivered",
+    ghl_detail: null,
   },
 ];
 

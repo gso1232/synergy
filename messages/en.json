@@ -750,7 +750,14 @@
       "legalNote": "By submitting this form you acknowledge our Privacy Policy and Terms of Service.",
       "submit": "Request My Free Quote",
       "disabledTitle": "This form isn't connected yet.",
-      "disabledBody": "Your details won't be sent anywhere and no one will be contacted. Call 407-434-0400 to speak with a licensed advisor in the meantime."
+      "disabledBody": "Your details won't be sent anywhere and no one will be contacted. Call 407-434-0400 to speak with a licensed advisor in the meantime.",
+      "submitting": "Sending…",
+      "successTitle": "Thank you — we have your details.",
+      "successBody": "A licensed advisor will be in touch shortly. If you would rather talk sooner, call 407-434-0400 and you will reach the same office.",
+      "errorInvalid": "Some details need checking. The fields marked below are the ones to look at.",
+      "errorThrottled": "That is several attempts in a short time. Wait a few minutes and try again.",
+      "errorUnavailable": "This form cannot send right now. Please call 407-434-0400 and we will take your details by phone.",
+      "errorFailed": "Something went wrong sending that and it was not saved. Please try again, or call 407-434-0400."
     }
   },
   "footer": {
@@ -881,7 +888,9 @@
         "interest": "Interest",
         "consent": "Consent",
         "status": "Status",
-        "received": "Received"
+        "received": "Received",
+        "message": "Message",
+        "crm": "CRM delivery"
       },
       "source": {
         "contact": "Contact form",
@@ -900,7 +909,13 @@
       },
       "empty": "No leads yet. They'll appear here once the intake webhook is connected.",
       "loadError": "Couldn't load leads. Refresh to try again.",
-      "selectorLabel": "Lead"
+      "selectorLabel": "Lead",
+      "crm": {
+        "delivered": "Sent to GoHighLevel",
+        "failed": "NOT sent — work this lead manually",
+        "pending": "Not attempted",
+        "unconfigured": "No CRM webhook configured"
+      }
     },
     "agents": {
       "heading": "Agents",

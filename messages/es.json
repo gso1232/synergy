@@ -750,7 +750,14 @@
       "legalNote": "Al enviar este formulario, usted reconoce nuestra Política de Privacidad y nuestros Términos de Servicio.",
       "submit": "Solicitar mi cotización gratis",
       "disabledTitle": "Este formulario todavía no está conectado.",
-      "disabledBody": "Sus datos no se enviarán a ningún lado y nadie será contactado. Mientras tanto, llame al 407-434-0400 para hablar con un asesor licenciado."
+      "disabledBody": "Sus datos no se enviarán a ningún lado y nadie será contactado. Mientras tanto, llame al 407-434-0400 para hablar con un asesor licenciado.",
+      "submitting": "Enviando…",
+      "successTitle": "Gracias — tenemos sus datos.",
+      "successBody": "Un asesor licenciado se pondrá en contacto con usted en breve. Si prefiere hablar antes, llame al 407-434-0400 y llegará a la misma oficina.",
+      "errorInvalid": "Hay datos que revisar. Los campos marcados abajo son los que debe corregir.",
+      "errorThrottled": "Son varios intentos en poco tiempo. Espere unos minutos e inténtelo de nuevo.",
+      "errorUnavailable": "Este formulario no puede enviarse en este momento. Llame al 407-434-0400 y tomaremos sus datos por teléfono.",
+      "errorFailed": "Algo falló al enviar y no se guardó. Inténtelo de nuevo o llame al 407-434-0400."
     }
   },
   "footer": {
@@ -873,7 +880,9 @@
         "interest": "",
         "consent": "",
         "status": "",
-        "received": ""
+        "received": "",
+        "message": "",
+        "crm": ""
       },
       "source": {
         "contact": "",
@@ -896,7 +905,13 @@
         "status": "",
         "export": ""
       },
-      "selectorLabel": ""
+      "selectorLabel": "",
+      "crm": {
+        "delivered": "",
+        "failed": "",
+        "pending": "",
+        "unconfigured": ""
+      }
     },
     "agents": {
       "heading": "",

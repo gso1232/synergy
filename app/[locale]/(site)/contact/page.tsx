@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
 import ContactForm from "@/components/ContactForm";
+import { contactIntakeReady } from "./actions";
 import RevealText from "@/components/RevealText";
 
 /**
@@ -186,6 +187,13 @@ export default async function ContactPage({
 }) {
   unstable_setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "contact" });
+
+  /* 🔴 READ AT REQUEST TIME, NOT BUILD TIME. This is what turns the form on the
+     day the GoHighLevel webhook is added: `contactIntakeReady()` checks the
+     environment for a webhook URL and a Supabase secret key, so setting
+     GHL_CONTACT_WEBHOOK_URL in Vercel and redeploying is the entire switch —
+     there is no flag in the source to flip. See (site)/contact/actions.ts. */
+  const intakeReady = await contactIntakeReady();
   const f = await getTranslations({ locale, namespace: "footer" });
 
   return (
@@ -319,7 +327,7 @@ export default async function ContactPage({
                   <p className="sem-body contact-lead-body text-ink">
                     {t("agentBody")}
                   </p>
-                  <ContactForm locale={locale} />
+                  <ContactForm locale={locale} enabled={intakeReady} />
                 </FadeUp>
               </div>
             </div>
