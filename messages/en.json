@@ -836,11 +836,11 @@
       "dashboard": "Dashboard",
       "leads": "Leads",
       "agents": "Agents",
-      "content": "Content",
+      "content": "Site content",
       "createAccount": "Create an agent",
       "accounts": "Accounts",
       "applications": "Applications",
-      "cms": "Content",
+      "cms": "Agent pages",
       "logs": "Activity"
     },
     "card": {
@@ -979,8 +979,8 @@
       }
     },
     "content": {
-      "heading": "Content",
-      "note": "A read-only reflection of what's in the repo — articles on disk and the built pages. Editing content is a separate phase.",
+      "heading": "Site content",
+      "note": "A read-only view of the public website — blog articles and the main pages. These live in the code, not the database, so they are not editable here. The agent portal pages ARE editable, under 'Agent pages'.",
       "empty": "No content found.",
       "cols": {
         "title": "Title",

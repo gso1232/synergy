@@ -67,7 +67,6 @@ const NAV = [
   { key: "accounts", href: "#accounts" },
   { key: "agents", href: "#agents" },
   { key: "applications", href: "#applications" },
-  { key: "content", href: "#content" },
 ] as const;
 
 /** Height of the sticky chrome — navy identity strip + white nav row. Sections
@@ -259,6 +258,13 @@ export default function AdminTopShell({
         <AdminNav
           items={[
             ...NAV.map((n) => ({ key: n.key, href: n.href, label: t(`nav.${n.key}`) })),
+            /* 🔴 "Site content" IS A ROUTE NOW, NOT AN ANCHOR. It used to be
+               `#content` — a jump to the read-only inventory table further down
+               this same page. That table still exists and is still useful, but
+               it is a LIST OF WHAT EXISTS, not a way to change anything, and it
+               was the only thing the nav offered under that name. The route
+               below is the actual editor for the public site's copy. */
+            { key: "content", href: `/${locale}/admin/site-content`, label: t("nav.content") },
             { key: "cms", href: `/${locale}/admin/content`, label: t("nav.cms") },
             { key: "logs", href: `/${locale}/admin/logs`, label: t("nav.logs") },
           ]}

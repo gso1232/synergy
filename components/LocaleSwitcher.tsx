@@ -6,7 +6,11 @@ import { useLocale, useTranslations } from "next-intl";
 // href becomes /es/en/about and 404s — measured on the built page, and
 // TypeScript accepts it silently. See the docblock in navigation.ts.
 import { Link, usePathname } from "@/navigation";
-import { locales, type Locale } from "@/i18n";
+/* 🔴 FROM @/lib/locales, NOT @/i18n. This is a client component; importing the
+   next-intl request config here pulls its whole server dependency graph —
+   including @supabase/supabase-js — into the browser bundle. A build guard
+   caught exactly that. See lib/locales.ts. */
+import { locales, type Locale } from "@/lib/locales";
 
 /**
  * 🔴 SHIPPED OFF. FLIP THIS TO `true` WHEN es.json CARRIES REAL COPY.

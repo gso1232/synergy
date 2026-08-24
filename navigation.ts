@@ -1,5 +1,12 @@
 import { createSharedPathnamesNavigation } from "next-intl/navigation";
-import { locales } from "./i18n";
+/* 🔴 FROM ./lib/locales, NOT ./i18n. This module is imported by
+   components/LocaleSwitcher.tsx, which is a client component — so anything
+   reachable from here is reachable from the browser bundle. `i18n.ts` pulls in
+   the admin-copy override reader and therefore @supabase/supabase-js; routing
+   that through this file put the whole Supabase client on every public page and
+   tripped scripts/check-no-service-role.mjs. lib/locales.ts has no imports and
+   never can. See its docblock. */
+import { locales } from "./lib/locales";
 
 /**
  * next-intl's locale-aware navigation APIs.

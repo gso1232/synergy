@@ -15,13 +15,19 @@ import { usePathname } from "next/navigation";
  * reason for existing — "four surfaces that can disagree about what exists" —
  * is answered by the database instead.
  *
- * 🔴 A PARENT IS A BUTTON, NOT A LINK, WHEN IT HAS CHILDREN. "New Agent
- * Bootcamps" is a container: it has no sections of its own, so a link to it
- * would land on an empty page. `<button aria-expanded>` says "this opens
- * something" to a screen reader; a link that opens a menu does not.
+ * 🔴 A PARENT WITH CHILDREN IS A LINK **AND** A BUTTON — SUPERSEDED 2026-08-24.
+ * It used to be a button alone, because "New Agent Bootcamps" was a container
+ * with no sections of its own and a link would have landed on an empty page.
+ * That is no longer true: the page carries real content, and the button-only
+ * version was reported as broken — clicking the item named after a page did not
+ * open that page, it opened a menu.
  *
- * A parent with NO children is a normal link — Aiman can add a page today and
- * give it children next month, and the nav has to be right in both states.
+ * So the label is a `<Link>` to the page and the chevron beside it is a
+ * `<button aria-expanded>` for the menu. Each control does one job and says so
+ * to a screen reader, which a single element doing both cannot.
+ *
+ * A parent with NO children is still a plain link — Aiman can add a page today
+ * and give it children next month, and the nav has to be right in both states.
  *
  * =============================================================================
  * §BEHAVIOUR, and why each piece is here rather than left to CSS.
@@ -151,25 +157,53 @@ export default function AgentsNav({
             const isOpen = open === item.slug;
             return (
               <li key={item.slug} className="relative">
-                <button
-                  type="button"
-                  data-menu-trigger={item.slug}
-                  aria-expanded={isOpen}
-                  aria-haspopup="true"
-                  onClick={() => setOpen(isOpen ? null : item.slug)}
-                  className={`${base} ${current ? `${on} ${underline}` : off}`}
-                >
-                  {item.title}
-                  <svg
-                    aria-hidden="true"
-                    viewBox="0 0 10 10"
-                    className={`h-[9px] w-[9px] shrink-0 fill-none stroke-current stroke-[1.6] transition-transform duration-200 motion-reduce:transition-none ${
-                      isOpen ? "rotate-180" : ""
+                {/* 🔴 THE LABEL IS A LINK AND THE CHEVRON IS A BUTTON — TWO
+                    CONTROLS, NOT ONE. This whole item used to be a single
+                    <button>, on the reasoning recorded above: "New Agent
+                    Bootcamps is a container: it has no sections of its own, so
+                    a link to it would land on an empty page."
+
+                    THAT REASONING EXPIRED. The page has real content now, and
+                    the old behaviour was reported as a bug in exactly the words
+                    you would expect — clicking the thing named after a page did
+                    not go to that page. A parent that is BOTH a destination and
+                    a menu needs both affordances, and collapsing them into one
+                    control means one of the two jobs always loses.
+
+                    ⚠️ THE CHEVRON KEEPS `data-menu-trigger`. The Escape handler
+                    above returns focus by querying that attribute, so moving it
+                    to the link would send focus to the wrong element and the
+                    menu would reopen on the next Enter. */}
+                <span className="relative inline-flex items-center">
+                  <Link
+                    href={`/${locale}/agents/${item.slug}`}
+                    aria-current={isCurrent(item.slug) ? "page" : undefined}
+                    className={`${base} ${current ? `${on} ${underline}` : off}`}
+                  >
+                    {item.title}
+                  </Link>
+                  <button
+                    type="button"
+                    data-menu-trigger={item.slug}
+                    aria-expanded={isOpen}
+                    aria-haspopup="true"
+                    aria-label={`${item.title} — ${item.children.length}`}
+                    onClick={() => setOpen(isOpen ? null : item.slug)}
+                    className={`inline-flex min-h-[44px] items-center px-1.5 transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none ${
+                      current ? on : off
                     }`}
                   >
-                    <path d="M2 3.75 5 6.75l3-3" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
+                    <svg
+                      aria-hidden="true"
+                      viewBox="0 0 10 10"
+                      className={`h-[9px] w-[9px] shrink-0 fill-none stroke-current stroke-[1.6] transition-transform duration-200 motion-reduce:transition-none ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    >
+                      <path d="M2 3.75 5 6.75l3-3" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </span>
 
                 {isOpen ? (
                   <ul className="absolute left-0 top-full z-40 mt-px min-w-[15rem] rounded-lg border border-ink/[0.12] bg-white py-1.5 shadow-[0_8px_24px_rgba(26,26,26,0.10)]">

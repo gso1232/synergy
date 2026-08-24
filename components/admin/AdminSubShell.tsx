@@ -38,12 +38,18 @@ export default async function AdminSubShell({
   children: React.ReactNode;
   locale: string;
   userLabel: string;
-  current: "dashboard" | "cms" | "logs";
+  current: "dashboard" | "siteContent" | "cms" | "logs";
 }) {
   const t = await getTranslations({ locale, namespace: "admin" });
 
+  /* 🔴 FOUR ENTRIES, AND THE TWO CONTENT ONES ARE DIFFERENT PRODUCTS.
+     `siteContent` edits the copy on the PUBLIC pages (messages catalogue ->
+     public.content_strings). `cms` edits the AGENT PORTAL pages (public.pages).
+     They were both labelled "Content" until 2026-08-24, which is exactly the
+     confusion this nav now has to avoid rather than reproduce. */
   const items = [
     { key: "dashboard", href: `/${locale}/admin`, label: t("nav.dashboard") },
+    { key: "siteContent", href: `/${locale}/admin/site-content`, label: t("nav.content") },
     { key: "cms", href: `/${locale}/admin/content`, label: t("nav.cms") },
     { key: "logs", href: `/${locale}/admin/logs`, label: t("nav.logs") },
   ] as const;
