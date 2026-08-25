@@ -1,6 +1,15 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
+/* 🔴 TWO Links, AND MIXING THEM UP IS WHAT BROKE BOTH UTILITY LINKS.
+   `@/navigation`'s Link is next-intl's: it PREPENDS the active locale to
+   whatever href it is given. The language switcher needs exactly that. The two
+   utility links do not — they were handed `/${locale}/login`, which the Link
+   then prefixed again and shipped as `/en/en/login`. Both 404'd in production.
+   navigation.ts documents this same trap for `usePathname`; it applies to Link
+   for the same reason. Plain `next/link` for anything already carrying its
+   locale. */
+import NextLink from "next/link";
 import { Link, usePathname } from "@/navigation";
 import { locales } from "@/lib/locales";
 import { routeHref } from "@/routes";
@@ -152,7 +161,7 @@ export default function TopUtilityBar() {
         </nav>
 
         <div className="flex flex-1 items-center justify-center gap-2 whitespace-nowrap font-semibold card:flex-none card:justify-end card:gap-3">
-          <Link
+          <NextLink
             /* A literal path, not `routeHref`: /login is deliberately absent
                from the RouteKey registry (it is portal chrome, not a marketing
                route) and SiteHeader links it the same way. */
@@ -161,17 +170,17 @@ export default function TopUtilityBar() {
           >
             <PersonBadge />
             {t("login")}
-          </Link>
+          </NextLink>
           <span aria-hidden="true" className="text-ink/25">
             |
           </span>
-          <Link
+          <NextLink
             href={routeHref(locale, "join")}
             className="inline-flex items-center gap-1.5 whitespace-nowrap transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
           >
             <ArrowBadge />
             {tHero("ctaApply")}
-          </Link>
+          </NextLink>
         </div>
       </div>
     </div>
