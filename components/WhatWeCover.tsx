@@ -12,7 +12,11 @@ import { useParallax } from "./useParallax";
 
 // Three products (Final Expense dropped): Term (protect now), IUL (grow),
 // Tax-Free Retirement (the only card carrying the ITIN "No SSN required" line).
-const CARDS = ["term", "iul", "taxfree"] as const;
+/* 🔴 FIVE NOW, NOT THREE — Health and Medicare added on instruction 2026-08-25.
+   The grid below moves from `md:grid-cols-3` to a 2/3 split so five items do not
+   leave a lone card stranded in a half-empty final row: two up top, three
+   beneath at desktop. */
+const CARDS = ["term", "iul", "taxfree", "health", "medicare"] as const;
 
 export default function WhatWeCover() {
   const t = useTranslations("whatWeCover");
@@ -178,7 +182,7 @@ export default function WhatWeCover() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, margin: "-90px" }}
-          className="mt-12 grid gap-7 md:grid-cols-3"
+          className="mt-12 grid gap-7 sm:grid-cols-2 lg:grid-cols-3"
         >
           {CARDS.map((key) => (
             <motion.a

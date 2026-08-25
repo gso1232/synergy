@@ -165,6 +165,18 @@
         "name": "Final Expense",
         "desc": "A smaller policy that covers funerals and final costs, so your family is left with grief to process, not bills to pay. Simple approval, affordable premiums, lasting peace of mind.",
         "alt": "An older couple smiling together outdoors at golden hour"
+      },
+      "health": {
+        "eyebrow": "Everyday cover",
+        "name": "Health Insurance",
+        "desc": "Cover for doctor visits, prescriptions and the bills that arrive without warning — matched to your household, your budget and the plans you actually qualify for.",
+        "alt": "A family at home reviewing paperwork together"
+      },
+      "medicare": {
+        "eyebrow": "Age 65 and over",
+        "name": "Medicare Insurance",
+        "desc": "Plain-English help choosing between Medicare Advantage, Supplement and Part D — what each one covers, what it leaves out, and which fits the doctors you already see.",
+        "alt": "An older couple talking with an advisor"
       }
     }
   },
@@ -1457,5 +1469,16 @@
       "body": "The portal is working, but the tables its pages live in do not exist in the database yet. No content has been lost — nothing has been created yet.",
       "adminFix": "Admin: run supabase/migrations/0007_agent_cms.sql in the Supabase SQL Editor, then reload. See AGENT_PORTAL.md section 2."
     }
+  },
+  "impact": {
+    "s1v": "$15",
+    "s1u": "Billion +",
+    "s1l": "Life Insurance Placed",
+    "s2v": "100,000+",
+    "s2u": "",
+    "s2l": "Families Helped",
+    "s3v": "$80",
+    "s3u": "Million +",
+    "s3l": "Premium Sold"
   }
 }

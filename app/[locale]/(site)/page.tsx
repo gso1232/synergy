@@ -4,6 +4,7 @@ import { unstable_setRequestLocale } from "next-intl/server";
 // in this file or in the hero. components/Nav.tsx is the superseded three-zone
 // version and is no longer rendered anywhere.
 import Hero from "@/components/Hero";
+import ImpactStats from "@/components/ImpactStats";
 import CarrierStrip from "@/components/CarrierStrip";
 // import TheEngine from "@/components/TheEngine";
 //   🔴 REMOVED FROM THE PAGE 2026-08-07, ON INSTRUCTION — see the call site
@@ -61,6 +62,9 @@ export default function HomePage({
     <>
       <main>
         <Hero locale={locale} />
+        {/* Directly under the hero, before the carrier marquee — the position
+            the reference puts it in. */}
+        <ImpactStats />
         {/* MARQUEE 1 — directly under the hero, on instruction. Carries the
             kicker; marquee 2 does not, so the line is not said twice. */}
         <CarrierStrip />

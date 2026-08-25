@@ -165,6 +165,18 @@
         "name": "Gastos Finales",
         "desc": "Una póliza más pequeña que cubre el funeral y los gastos finales, para que su familia quede con el duelo por procesar y no con cuentas por pagar. Aprobación sencilla, primas accesibles, tranquilidad duradera.",
         "alt": "Una pareja mayor sonriendo al aire libre durante la hora dorada"
+      },
+      "health": {
+        "eyebrow": "Cobertura diaria",
+        "name": "Seguro de Salud",
+        "desc": "Cobertura para consultas médicas, recetas y las facturas que llegan sin avisar — ajustada a su hogar, su presupuesto y los planes para los que realmente califica.",
+        "alt": "Una familia en casa revisando papeles"
+      },
+      "medicare": {
+        "eyebrow": "65 años en adelante",
+        "name": "Seguro Medicare",
+        "desc": "Ayuda en español claro para elegir entre Medicare Advantage, Suplemento y Parte D — qué cubre cada uno, qué deja fuera y cuál se ajusta a los médicos que ya visita.",
+        "alt": "Una pareja mayor hablando con un asesor"
       }
     }
   },
@@ -1442,5 +1454,16 @@
       "body": "El portal funciona, pero las tablas donde viven sus páginas todavía no existen en la base de datos. No se ha perdido nada: aún no se ha creado nada.",
       "adminFix": "Administrador: ejecute supabase/migrations/0007_agent_cms.sql en el editor SQL de Supabase y vuelva a cargar. Consulte AGENT_PORTAL.md, sección 2."
     }
+  },
+  "impact": {
+    "s1v": "$15",
+    "s1u": "Mil millones +",
+    "s1l": "En seguros de vida colocados",
+    "s2v": "100,000+",
+    "s2u": "",
+    "s2l": "Familias ayudadas",
+    "s3v": "$80",
+    "s3u": "Millones +",
+    "s3l": "En primas vendidas"
   }
 }
