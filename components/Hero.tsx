@@ -113,7 +113,21 @@ export default function Hero({ locale }: { locale: string }) {
         /* The hero image is the LCP element on the homepage: it must not lazy
            load and it must not wait behind anything else. */
         priority
-        className="z-0 object-cover object-center"
+        /* 🔴 20% FROM THE TOP, NOT CENTRED — THE FACES WERE BEHIND THE COPY.
+           `hero-porch-family.jpg` is 6805x4537 (3:2) inside a box that is much
+           wider than it is tall, so `cover` crops 884px vertically and nothing
+           horizontally. Centred, that crop lands the family group in the exact
+           vertical middle of the frame, which is where the headline and the
+           buttons sit — the man on the steps and the girl beside him were
+           behind the text.
+
+           Biasing the window toward the top of the photograph pushes the group
+           DOWN into the clear band under the blurb. 884px of crop is the whole
+           budget, so 50% -> 12% is worth ~80px on screen at 1440: small, and it
+           is the entire range this image allows. If more separation is ever
+           wanted the fix is a taller frame or a different crop of the source,
+           not a bigger number here — anything past 0% simply clamps. */
+        className="z-0 object-cover object-[center_12%]"
       />
 
       {/* 🔴 THE SCRIM IS NOT DECORATION, IT IS THE REASON THE TEXT IS LEGIBLE.
@@ -130,7 +144,12 @@ export default function Hero({ locale }: { locale: string }) {
           colour behind the photo while it decodes. */}
       <div aria-hidden="true" className="absolute inset-0 z-10 bg-navy/[0.52]" />
 
-      <div className="relative z-20 mx-auto flex max-w-[900px] flex-col items-center px-5 py-[clamp(72px,14vw,200px)] text-center sm:px-8">
+      {/* 🔴 THE PADDING IS ASYMMETRIC BECAUSE THE REFERENCE'S IS — 200 top,
+          240 bottom. It is not decoration here: a taller box brings the frame
+          ratio closer to the photograph's own 3:2, so `cover` crops less of it
+          away, and the extra height lands BELOW the copy, which is the band the
+          family group needs to be visible in. */}
+      <div className="relative z-20 mx-auto flex max-w-[900px] flex-col items-center px-5 pb-[clamp(96px,17vw,240px)] pt-[clamp(72px,14vw,200px)] text-center sm:px-8">
         <h1
           id="hero-heading"
           className="text-[clamp(30px,4.2vw,44px)] font-bold leading-[1.16] text-white"

@@ -492,9 +492,20 @@ html[data-route-theme="dark"] {
 
    Easing is our `out-expo` token — the same curve FadeUp uses — so the reveal
    decelerates into place rather than arriving linearly. */
+/* 🔴 THE HIDE-ON-SCROLL IS OFF, ON INSTRUCTION (2026-08-24): "it should stay
+   fixed and not disappear when I scroll".
+
+   The rule that lived here translated the bar fully off the top whenever the
+   reader scrolled DOWN past 160px, and brought it back on the first upward
+   gesture. The JS that drives it is untouched — `data-hidden` is still computed
+   and still written to the element — so restoring the behaviour is restoring
+   this one declaration, and none of the direction/threshold logic had to be
+   unpicked to switch it off.
+
 .site-header[data-hidden="true"] {
   transform: translateY(-100%);
 }
+*/
 
 /* NOTE — the containing-block trap, and why there is no CSS workaround here.
    `transform` makes an element the containing block for its position:fixed
@@ -646,16 +657,13 @@ html[data-route-theme="dark"] {
   .site-header {
     height: 156px;
   }
-  /* 🔴 THE STRIP HIDES ON SCROLL AND THE COMPACT HEIGHT IS THEREFORE UNCHANGED.
-     It is utility, not primary navigation: keeping it would spend 40px of a
-     scrolled viewport on two links nobody scrolled to reach. Hiding it is also
-     what keeps the compaction feeling like a compaction — 156 -> 76 rather than
-     156 -> 116. */
+  /* 🔴 116 = 76 NAV ROW + 40 STRIP, AND THE STRIP NO LONGER HIDES. It was
+     dropped on compaction to save 40px of a scrolled viewport; the instruction
+     is that the bar and the strip above it stay put on every page and through
+     every scroll, so the compact height has to carry it. The compaction is now
+     156 -> 116: the nav row still shrinks, the strip simply comes with it. */
   .site-header[data-compact="true"] {
-    height: 76px;
-  }
-  .site-header[data-compact="true"] .top-utility-bar {
-    display: none;
+    height: 116px;
   }
 }
 

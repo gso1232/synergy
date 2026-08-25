@@ -45,15 +45,49 @@ import { routeHref } from "@/routes";
 
 const LABELS: Record<string, string> = { en: "English", es: "Español" };
 
-/** The small filled circle the reference puts before each utility link. */
-function Dot() {
+/**
+ * The two badges the reference puts before each utility link.
+ *
+ * 🔴 THEY ARE NOT THE SAME MARK. The first pass drew one generic filled dot for
+ * both, which is what a glance at a small screenshot suggests — but the
+ * reference uses a PERSON for the login and an ARROW for the application, and
+ * that difference is the only thing distinguishing the two links at 15px before
+ * you read the words. Reproducing them as one shape loses the signal that made
+ * them worth having.
+ *
+ * Both are drawn rather than fetched: a 15px glyph is a handful of path data,
+ * and an icon font or a sprite request for two shapes on every page would cost
+ * more than it saves.
+ */
+
+/** Red disc with a white person silhouette — the account/login badge. */
+function PersonBadge() {
   return (
     <span
       aria-hidden="true"
-      className="inline-flex h-[15px] w-[15px] shrink-0 items-center justify-center rounded-full bg-[#ED1C24]"
+      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-[#ED1C24]"
     >
-      <svg viewBox="0 0 10 10" className="h-[7px] w-[7px] fill-white">
-        <circle cx="5" cy="5" r="5" />
+      <svg viewBox="0 0 16 16" className="h-[11px] w-[11px] fill-white">
+        <circle cx="8" cy="5.6" r="2.9" />
+        <path d="M8 9.4c-3 0-5 1.9-5 3.9v.6h10v-.6c0-2-2-3.9-5-3.9z" />
+      </svg>
+    </span>
+  );
+}
+
+/** Red disc with a white arrow — the "go and apply" badge. */
+function ArrowBadge() {
+  return (
+    <span
+      aria-hidden="true"
+      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-[#ED1C24]"
+    >
+      <svg
+        viewBox="0 0 16 16"
+        className="h-[10px] w-[10px] fill-none stroke-white stroke-[2.2]"
+      >
+        <path d="M2.5 8h10" strokeLinecap="round" />
+        <path d="M8.6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </span>
   );
@@ -106,7 +140,7 @@ export default function TopUtilityBar() {
             href={`/${locale}/login`}
             className="inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
           >
-            <Dot />
+            <PersonBadge />
             {t("login")}
           </Link>
           <span aria-hidden="true" className="text-ink/25">
@@ -116,7 +150,7 @@ export default function TopUtilityBar() {
             href={routeHref(locale, "join")}
             className="inline-flex items-center gap-1.5 whitespace-nowrap transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
           >
-            <Dot />
+            <ArrowBadge />
             {tHero("ctaApply")}
           </Link>
         </div>
