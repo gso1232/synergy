@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, useInView, useReducedMotion } from "framer-motion";
+import { animate, motion, useInView, useReducedMotion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
@@ -257,8 +257,67 @@ function GrowthIcon() {
 
 const ICONS = { s1: PolicyIcon, s2: FamilyIcon, s3: GrowthIcon } as const;
 
+/* ---------------------------------------------------------------------------
+   THE ENTRANCE, TAKEN OFF THE REFERENCE RATHER THAN INVENTED.
+
+   Each of its three columns carries an Elementor animation setting, read live
+   from `data-settings`:
+
+     left    fadeInRight · delay 200ms · `animated-slow`  (2s)
+     middle  zoomIn      · delay 100ms · default          (1.25s)
+     right   fadeInRight · delay 200ms · `animated-slow`  (2s)
+
+   🔴 BOTH OUTER CARDS COME FROM THE RIGHT, INCLUDING THE LEFT ONE. That looks
+   like a mistake in their build and it is not being 'corrected' here — it is
+   what the page does, it is what was asked to be cloned, and the left card
+   passing over the centre one on its way into place is a visible part of the
+   effect rather than a side effect of it.
+
+   The values below are animate.css's own, which is the library Elementor ships:
+   fadeInRight starts at `translate3d(100%,0,0)`, zoomIn at `scale3d(.3,.3,.3)`
+   with opacity reaching 1 at the halfway keyframe — hence the separate, shorter
+   opacity transition on the middle card. The easing is `ease`, animate.css's
+   default, spelled out as its cubic-bezier because framer has no such keyword.
+   --------------------------------------------------------------------------- */
+
+/** animate.css runs on the CSS `ease` default; framer needs it as a curve. */
+const EASE = [0.25, 0.1, 0.25, 1] as const;
+
+const OUTER_VARIANTS = {
+  hidden: { opacity: 0, x: "100%" },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 2, delay: 0.2, ease: EASE },
+  },
+};
+
+const FEATURE_VARIANTS = {
+  hidden: { opacity: 0, scale: 0.3 },
+  show: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      scale: { duration: 1.25, delay: 0.1, ease: EASE },
+      opacity: { duration: 0.625, delay: 0.1, ease: EASE },
+    },
+  },
+};
+
+/**
+ * ⚠️ REDUCED MOTION GETS A PLAIN FADE, NOT A FASTER SLIDE. A 427px horizontal
+ * translate and a 0.3 -> 1 zoom are exactly the two things the preference
+ * exists to suppress, so both collapse to opacity alone — the same substitution
+ * FadeUp and the hero already make elsewhere in this codebase.
+ */
+const STILL_VARIANTS = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { duration: 0.3 } },
+};
+
 export default function ImpactStats() {
   const t = useTranslations("impact");
+  const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   /* -120px: the counters start when the band is properly on screen rather than
      the instant its first pixel appears, which on a 460px card would mean the
@@ -278,19 +337,37 @@ export default function ImpactStats() {
          🔴 THE PULL IS SMALLER ON A PHONE. -125px is measured at desktop, where
          the hero's bottom padding is 240. On a 375px screen that padding clamps
          down to 96, and pulling 125 through it would put the first card on top
-         of the blurb. -56 clears it and keeps the overlap visible. */
-      className="font-hero relative z-10 -mt-[56px] md:-mt-[125px]"
+         of the blurb. -56 clears it and keeps the overlap visible.
+
+         🔴 overflow-hidden IS LOAD-BEARING, NOT TIDINESS. The outer cards enter
+         from `translateX(100%)` — 427px to the right of where they land — and
+         the RIGHT-hand card starts that journey outside the viewport. Without
+         clipping here the page grows a horizontal scrollbar for the two seconds
+         the animation runs, on every first visit. It cannot clip the centre
+         card's overhang, because the section's height is set BY that card. */
+      className="font-hero relative z-10 -mt-[56px] overflow-hidden md:-mt-[125px]"
     >
       <h2 id="impact-heading" className="sr-only">
         {t("s1l")} · {t("s2l")} · {t("s3l")}
       </h2>
 
-      <ul className="mx-auto flex max-w-[1280px] list-none flex-col px-5 md:flex-row md:px-6 lg:px-0">
+      <motion.ul
+        variants={{ hidden: {}, show: {} }}
+        initial="hidden"
+        /* The same threshold the counters use, so the figures start climbing as
+           the card that holds them arrives rather than at some other moment. */
+        whileInView="show"
+        viewport={{ once: true, margin: "-120px" }}
+        className="mx-auto flex max-w-[1280px] list-none flex-col px-5 md:flex-row md:px-6 lg:px-0"
+      >
         {STATS.map((s) => {
           const Icon = ICONS[s.key];
           return (
-            <li
+            <motion.li
               key={s.key}
+              variants={
+                reduce ? STILL_VARIANTS : s.feature ? FEATURE_VARIANTS : OUTER_VARIANTS
+              }
               className={`flex flex-1 flex-col items-center justify-center px-8 py-12 text-center sm:px-[60px] md:py-[60px] ${
                 s.feature
                   ? "bg-navy-soft text-cream"
@@ -325,10 +402,10 @@ export default function ImpactStats() {
               <p className="mt-7 text-[clamp(17px,1.6vw,20px)] font-bold leading-[1.36]">
                 {t(`${s.key}l`)}
               </p>
-            </li>
+            </motion.li>
           );
         })}
-      </ul>
+      </motion.ul>
     </section>
   );
 }
