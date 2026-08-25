@@ -364,11 +364,13 @@ html[data-route-theme="dark"] {
      underneath it. This variable is declared HERE and overridden in the SAME
      media query that sets the concrete height, so the two cannot drift again.
      The stale token is left alone because four unrelated rules still read it. */
-  --header-h-rest: 64px;
-  /* The utility strip's own height, referenced by the bar's total below. It is
-     `card:block` only, so it contributes NOTHING under 900 — which is why the
-     base --header-h-rest above stays 64. */
-  --utility-bar-h: 40px;
+  /* 🔴 100 = 64 NAV ROW + 36 UTILITY STRIP. The strip renders on a phone too as
+     of 2026-08-24, so it is no longer free below 900 and the base height has to
+     carry it — .page-header-offset reserves this value on the routes with no
+     hero to absorb the bar. 36 rather than 40: the strip drops to 12px type on
+     a phone, so it needs less room. */
+  --header-h-rest: 100px;
+  --utility-bar-h: 36px;
   --hero-gutter: clamp(6px, 0.75vw + 1px, 18px);
   --hero-radius: clamp(18px, 12px + 1.5vw, 36px);
 
@@ -456,7 +458,7 @@ html[data-route-theme="dark"] {
      overflowed it by exactly the strip. */
   display: flex;
   flex-direction: column;
-  height: 64px;
+  height: 100px;
   /* Surface cross-fade runs slightly longer than the compaction so the cream
      arrives softly instead of snapping in under the moving logo. Both are
      `ease`, both are two-way — the state is recomputed from window.scrollY on

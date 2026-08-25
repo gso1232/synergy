@@ -717,6 +717,12 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             ⚠️ IT IS A SIBLING OF THE LEFT <ul>, NOT INSIDE IT. Putting it in
             that list would inherit the list's own `hidden card:flex` and vanish
             on exactly the breakpoint this mount exists to serve. */}
+        {/* 🔴 THE PHONE'S LANGUAGE CONTROL, AND IT IS BACK BECAUSE THE STRIP GAVE
+            IT UP. The strip carries the language at desktop and the two utility
+            links on a phone — the reference's own split, and the only one that
+            fits 375px. So below `card` the switcher lives here in the bar's
+            otherwise-empty first column, which is where it was before the strip
+            existed. There is exactly one language control at every width. */}
         <div className="col-start-1 flex items-center card:hidden">
           <LocaleSwitcher />
         </div>
