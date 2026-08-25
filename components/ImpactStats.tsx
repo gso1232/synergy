@@ -98,6 +98,20 @@ const STATS: Stat[] = [
 ];
 
 /**
+ * The card entrance timings, in seconds — read off the reference's own
+ * `data-settings` (see the note above the variants below).
+ *
+ * They live up here, apart from the variants, because the COUNTERS derive their
+ * start from them too: a counter waits until its card's entrance is half done.
+ * One source, so retuning the slide cannot silently leave the numbers counting
+ * behind a transparent card again.
+ */
+const ENTRANCE = {
+  outer: { delay: 0.2, duration: 2 },
+  feature: { delay: 0.1, duration: 1.25 },
+} as const;
+
+/**
  * Split a display figure into the parts a counter needs.
  *
  * The messages hold ONE string per figure — "$15", "100,000+", "$80" — because
@@ -132,8 +146,26 @@ function parseFigure(raw: string) {
  * counter is the one animation where the intermediate frames carry information
  * the reader might mistake for the answer, so honouring the preference means
  * skipping straight to the value.
+ *
+ * 🔴 IT WAITS FOR ITS OWN CARD, WHICH THE REFERENCE DOES NOT DO. Elementor
+ * fires the counter and the column animation off the same waypoint, so on
+ * familyfirstlife.com more than half of every count happens while the card
+ * holding it is still transparent and still sliding — by the time you can read
+ * the figure it has almost finished moving. Faithful, and invisible.
+ *
+ * So the count is held until its card's entrance is halfway through: opacity is
+ * up, the number is legible, and the rest of the climb happens in the open.
+ * This is the one timing in this file that is deliberately NOT the reference's,
+ * and it is the difference between an animation that exists and one that is
+ * seen.
  */
-function useCountUp(target: number | null, from: number, duration: number, inView: boolean) {
+function useCountUp(
+  target: number | null,
+  from: number,
+  duration: number,
+  delay: number,
+  inView: boolean,
+) {
   const reduce = useReducedMotion();
   const [value, setValue] = useState(() => (target == null ? 0 : from));
 
@@ -146,12 +178,13 @@ function useCountUp(target: number | null, from: number, duration: number, inVie
     if (!inView) return;
     const controls = animate(from, target, {
       duration: duration / 1000,
+      delay,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setValue(v),
       onComplete: () => setValue(target),
     });
     return () => controls.stop();
-  }, [target, from, duration, inView, reduce]);
+  }, [target, from, duration, delay, inView, reduce]);
 
   return value;
 }
@@ -159,7 +192,16 @@ function useCountUp(target: number | null, from: number, duration: number, inVie
 function Figure({ raw, stat, inView }: { raw: string; stat: Stat; inView: boolean }) {
   const { prefix, target, suffix, grouped } = parseFigure(raw);
   const from = target == null ? 0 : Math.round(target * stat.fromFraction);
-  const value = useCountUp(target, from, stat.duration, inView);
+  /* Half of its own card's entrance — derived, not typed twice, so the two
+     cannot drift if either timing is ever retuned. */
+  const entrance = ENTRANCE[stat.feature ? "feature" : "outer"];
+  const value = useCountUp(
+    target,
+    from,
+    stat.duration,
+    entrance.delay + entrance.duration / 2,
+    inView,
+  );
 
   if (target == null) return <>{raw}</>;
 
@@ -288,7 +330,7 @@ const OUTER_VARIANTS = {
   show: {
     opacity: 1,
     x: 0,
-    transition: { duration: 2, delay: 0.2, ease: EASE },
+    transition: { ...ENTRANCE.outer, ease: EASE },
   },
 };
 
@@ -298,8 +340,14 @@ const FEATURE_VARIANTS = {
     opacity: 1,
     scale: 1,
     transition: {
-      scale: { duration: 1.25, delay: 0.1, ease: EASE },
-      opacity: { duration: 0.625, delay: 0.1, ease: EASE },
+      scale: { ...ENTRANCE.feature, ease: EASE },
+      /* zoomIn's keyframes put opacity at 1 by the halfway mark, so it fades in
+         over half the time the scale takes. */
+      opacity: {
+        delay: ENTRANCE.feature.delay,
+        duration: ENTRANCE.feature.duration / 2,
+        ease: EASE,
+      },
     },
   },
 };
