@@ -1,366 +1,188 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
-import CtaPair from "./CtaPair";
-
-// Kept for the one-edit revert back to the clip — see the MEDIA block below.
-// const HERO_VIDEO = "/hero-video.mp4";
-
-/**
- * public/hero-porch-family.jpg — THE SAME PHOTOGRAPH the client placed in
- * public/, re-sourced at full original resolution.
- *
- *   Multi-generation family on the white porch steps of a house, greenery
- *   either side. By Jelly Marketing, on Pexels.
- *   https://www.pexels.com/photo/multigenerational-family-on-porch-steps-38674354/
- *   Pexels License — "Free to use." / "No attribution required."
- *   Commercial and non-commercial use. Not a Pexels+ paid asset.
- *
- *   Native 6805×4537 (3:2), 5.44 MB, 30.87 MP.
- *
- * The client's own copy (public/image-1785087312955.jpg) is the identical frame
- * at 1100×733 / 0.81 MP — a preview, not a master. At the card's 1404 CSS px it
- * needed a 1.95× upscale at 1× DPR and 3.89× at 2×, which is why it looked
- * soft; no `sizes`, `quality` or derivative change can add detail that is not
- * in the file. That copy is left in place but is no longer referenced.
- *
- * Imported statically rather than by path string: that is what lets Next derive
- * the intrinsic size and generate the `blurDataURL` from the real file at build
- * time, instead of us hand-pasting a base64 blob that nothing verifies.
- */
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { routeHref } from "@/routes";
 import heroPhoto from "../public/hero-porch-family.jpg";
 
 /**
- * Hero — a rounded card floating on the cream page.
+ * THE HOMEPAGE HERO — rebuilt 2026-08-24 to match familyfirstlife.com's.
  *
- * The card is inset by `--hero-gutter` on all four sides (left, right, bottom,
- * and top measured from the bottom edge of the fixed header) and clipped to
- * `--hero-radius`. Both are continuous clamp() ramps, so the inset and the
- * corner grow with the viewport instead of stepping at breakpoints — see the
- * block at the top of globals.css for the resolved values.
+ * =============================================================================
+ * WHAT THIS REPLACED, so the old decisions are not re-derived by accident.
  *
- * Height is `100svh` minus the header minus both gutters, capped at 880px.
- * svh, not vh: on mobile `vh` is pinned to the *largest* viewport, so the card
- * would be taller than the visible area while the URL bar is showing and the
- * layout would jump the moment it collapsed.
+ * The previous hero was a LEFT-ALIGNED INSET CARD: a rounded photo card sitting
+ * inside `--hero-gutter` with the copy stacked down its left edge, a per-word
+ * mask-reveal animation on the headline, an eyebrow, a sub, a CtaPair and the
+ * ITIN tagline. It is gone in full. What it was is recoverable from git; what
+ * matters here is that its geometry no longer applies:
  *
- * `.hero-card` carries overflow:hidden + translateZ(0). The translateZ is not
- * cosmetic — Safari drops the rounded clip on composited/transformed children
- * without its own layer, and the media punches square corners through the
- * radius. CHECK THIS IN SAFARI.
+ *   · NO GUTTER, NO RADIUS. The reference hero is full-bleed, edge to edge.
+ *     `--hero-gutter` and `--hero-radius` are not read by this file any more.
+ *   · CENTRED, NOT LEFT-ALIGNED. Every line is centred on the page axis.
+ *   · THE PHOTO IS A BACKGROUND, NOT A CARD. `fill` + `object-cover` behind an
+ *     absolutely-positioned scrim, rather than a bounded element with its own
+ *     rounded clip.
  *
- * The navbar that used to float in here is gone; the site header is a real
- * global component mounted in the layout.
+ * =============================================================================
+ * MEASURED OFF THE REFERENCE AT 1440, NOT APPROXIMATED. Read from the live
+ * page's computed styles:
  *
- * The copy block is unchanged from the version that was signed off — same
- * order (headline, subhead, buttons, ITIN tagline), same sizes, same bottom-left
- * anchor, same per-word `whitespace-nowrap` wrapper that stopped the trailing
- * "s." from orphaning onto its own row. The only difference is that its padding
- * is now measured from the card edge rather than the viewport edge.
+ *   headline      44px / 700 / lh 51px
+ *   second line   30px / 700 / lh 40px / +1px tracking
+ *   product row   21px / 600 / lh 28px / +1.3px tracking
+ *   buttons       13px / 800 / uppercase / +0.4px tracking / 17px padding /
+ *                 square corners / grey #6B6B6B and red #ED1C24
+ *   blurb         17px / 400 / lh 23.8px
+ *   section       200px top padding, 240px bottom
+ *
+ * The sizes ship as `clamp()` rather than fixed px because the reference's own
+ * narrow layout drops the headline to 32px, and a clamp reaches that without a
+ * breakpoint. Ceilings are the measured desktop values.
+ *
+ * 🔴 THE PHOTOGRAPH IS SYNERGY'S OWN, AND THAT IS DELIBERATE. The reference
+ * serves `home-hero-v3.jpg` from its own WordPress uploads. Pointing at that
+ * file would put a third-party URL in the critical render path of this site's
+ * largest image — it can be renamed or removed without warning, and it would
+ * not be optimised by next/image. `hero-porch-family.jpg` is already in this
+ * repo, already the right warm register, and already served as AVIF/WebP.
+ *
+ * =============================================================================
+ * 🔴 THE FIVE PRODUCTS WRAP; THEY ARE NOT A 2x2 GRID. The reference ships four
+ * in two fixed rows. Synergy has five, and a hard grid would leave the fifth
+ * stranded in a half-empty row at every width. `flex-wrap` centred gives 2+2+1
+ * at desktop — visually the reference's block plus one centred line — and
+ * collapses to one per line on a phone without a media query.
+ *
+ * ⚠️ THE TICK IS DECORATIVE AND IS MARKED SO. It is `aria-hidden`; a screen
+ * reader gets the product name and no "check mark" after every item.
  */
-export default function Hero() {
+
+/**
+ * Measured off the reference: uppercase, heavy, square, tight tracking.
+ *
+ * 🔴 THE HORIZONTAL PADDING IS RESPONSIVE AND THE 50px IS THE DESKTOP VALUE.
+ * The reference sets 50px either side. On a 375px phone the buttons go full
+ * width (335px), and 100px of padding leaves 235px for "APPLY TO WORK WITH
+ * SYNERGY" at 13px — which wraps, making that button 60px tall against the
+ * other one's 47px. Measured. 20px below `sm` keeps both on one line and both
+ * the same height.
+ */
+const BTN =
+  "inline-flex items-center justify-center gap-2 px-5 py-[17px] sm:px-[50px] text-[13px] font-extrabold uppercase leading-[13px] tracking-[0.4px] text-white transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none";
+
+function Chevron() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 6 10"
+      className="h-[10px] w-[6px] shrink-0 fill-none stroke-current stroke-[1.8]"
+    >
+      <path d="M1 1l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Tick() {
+  return (
+    <span aria-hidden="true" className="ml-1.5 text-[#3DD35F]">
+      ✓
+    </span>
+  );
+}
+
+export default function Hero({ locale }: { locale: string }) {
   const t = useTranslations("hero");
-  // The phone number lives in `nav` and is already the footer's tel: href.
-  // Read from there rather than duplicating a phone number into a second key
-  // that could drift out of sync with it.
-  const tNav = useTranslations("nav");
-  const tCta = useTranslations("cta");
-  const locale = useLocale();
-  const reduce = useReducedMotion();
 
-  const lines = [t("headlineA"), t("headlineB")];
-
-  const group: Variants = reduce
-    ? { hidden: {}, show: {} }
-    : {
-        hidden: {},
-        show: { transition: { staggerChildren: 0.018, delayChildren: 0.15 } },
-      };
-
-  const char: Variants = reduce
-    ? { hidden: { opacity: 1 }, show: { opacity: 1 } }
-    : {
-        hidden: { opacity: 0, y: "0.45em" },
-        show: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-        },
-      };
-
-  const fadeIn: Variants = reduce
-    ? { hidden: { opacity: 1 }, show: { opacity: 1 } }
-    : {
-        hidden: { opacity: 0, y: 20 },
-        show: (d: number = 0) => ({
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.8, delay: d, ease: [0.22, 1, 0.36, 1] },
-        }),
-      };
+  const products = ["p1", "p2", "p3", "p4", "p5"] as const;
 
   return (
     <section
       aria-labelledby="hero-heading"
-      className="font-hero"
-      // 🔴 THE TOP GUTTER CARRIES THE HEADER AGAIN. It was "same slim gutter on
-      // all four sides now, top included — the header floats over the photo
-      // rather than sitting in a band above it", which was true while the bar
-      // was transparent. It is opaque cream from 2026-08-16, so an equal top
-      // gutter put the card's top 106px (and both top corners) behind it.
-      // `.hero-card`'s height subtracts the same variable, so the card still
-      // ends exactly one gutter above the fold rather than overflowing it.
-      style={{
-        padding: "var(--hero-gutter)",
-        paddingTop: "calc(var(--header-h-rest) + var(--hero-gutter))",
-      }}
+      /* `font-hero` is Be Vietnam Pro and is scoped to this element — see the
+         note on that slot in app/[locale]/layout.tsx. */
+      className="font-hero relative isolate overflow-hidden bg-navy"
     >
-      <div className="hero-card bg-navy">
-        {/* MEDIA.
-            REVERT TO VIDEO: delete the <Image> below, uncomment this block and
-            the HERO_VIDEO const at the top of the file. Nothing else changes —
-            the card, the gradient and the copy are media-agnostic.
+      <Image
+        src={heroPhoto}
+        alt=""
+        aria-hidden="true"
+        fill
+        sizes="100vw"
+        /* The hero image is the LCP element on the homepage: it must not lazy
+           load and it must not wait behind anything else. */
+        priority
+        className="z-0 object-cover object-center"
+      />
 
-            <video
-              data-hero-video
-              className="absolute inset-0 h-full w-full object-cover"
-              src={HERO_VIDEO}
-              autoPlay={!reduce}
-              loop
-              muted
-              playsInline
-              preload="auto"
-              aria-hidden="true"
-            />
-        */}
-        <Image
-          src={heroPhoto}
-          alt={t("imageAlt")}
-          fill
-          priority
-          fetchPriority="high"
-          placeholder="blur"
-          /* 🔴 82 -> 65, AND IT MAKES THE DESKTOP FASTER AS WELL AS THE PHONE
-             SHARPER. Correcting `sizes` below moved the phone from w=750 to
-             w=2048, and at q82 that is a 500KB LCP image — unshippable on the
-             one connection least able to afford it. Measured on this build,
-             AVIF, same source:
+      {/* 🔴 THE SCRIM IS NOT DECORATION, IT IS THE REASON THE TEXT IS LEGIBLE.
+          The reference's photograph is already a dark sunset and carries its own
+          contrast; `hero-porch-family.jpg` is brighter, so white type over it
+          needs help. A flat tint at 52% measured as the lightest value that
+          holds body copy above 4.5:1 across the whole frame rather than only
+          where the photo happens to be dark. */}
+      {/* 🔴 z-10, NOT -z-10. A NEGATIVE z-index inside this section paints
+          BEHIND the section's own `bg-navy`, so the photograph and the scrim
+          both disappeared under a flat navy rectangle — which is exactly what
+          the first render did. The stack is: photo 0, scrim 10, copy 20, all
+          positive, all inside the `isolate` context. `bg-navy` stays as the
+          colour behind the photo while it decodes. */}
+      <div aria-hidden="true" className="absolute inset-0 z-10 bg-navy/[0.52]" />
 
-               w=750  q82    81KB    34% of 1:1   <- the reported blur
-               w=1200 q82   192KB    54%
-               w=1920 q82   447KB    87%          <- what desktop pays today
-               w=2048 q82   500KB    93%
-               w=1920 q65   239KB    87%
-               w=2048 q65   266KB    93%          <- phone now
-               w=2048 q55   174KB    93%
+      <div className="relative z-20 mx-auto flex max-w-[900px] flex-col items-center px-5 py-[clamp(72px,14vw,200px)] text-center sm:px-8">
+        <h1
+          id="hero-heading"
+          className="text-[clamp(30px,4.2vw,44px)] font-bold leading-[1.16] text-white"
+        >
+          {t("protectHeadline")}
+        </h1>
 
-             THE TABLE SAYS RESOLUTION BEATS QUALITY, and that is the whole
-             argument: w=2048 q55 is 174KB at 93% of 1:1, CHEAPER than w=1200
-             q82 at 192KB and 54%. Spending the byte budget on pixels rather
-             than on precision is strictly the better buy when the image is
-             being enlarged, because compression artefacts at this resolution
-             land below one device pixel while an enlargement does not.
+        {/* A second line of the same heading, not a separate one — it reads as
+            one sentence and must not open a new outline level. */}
+        <p className="mt-1 text-[clamp(21px,2.9vw,30px)] font-bold leading-[1.33] tracking-[1px] text-white">
+          {t("protectSub")}
+        </p>
 
-             65 rather than 55 because `quality` is one value for every
-             breakpoint, and the desktop shows this photograph at roughly 1:1
-             where q55 AVIF starts to show banding in the sky. At 65 the phone
-             takes 266KB for a genuinely sharp hero (from 81KB and blurred) and
-             the desktop DROPS from 447KB to 239KB for the same 87%. */
-          quality={65}
-          // 🔴 THE OLD NOTE HERE WAS WRONG, AND IT IS WORTH SAYING WHY. It read:
-          // "the card is the viewport minus two slim gutters at every width.
-          // With a 6805px source every derivative Next picks (up to 3840) is a
-          // genuine downscale, so the browser never has to enlarge." The first
-          // sentence is true and the conclusion does not follow from it.
-          //
-          // `sizes` describes the BOX. Under `object-cover` the rendered IMAGE
-          // is not the box: in a portrait box the image is scaled until its
-          // HEIGHT fills, so it renders `boxHeight x sourceAR` wide and hangs
-          // off both sides. Measured on a 375px phone: the card is 363x736, so
-          // the image renders 1104 CSS px wide (736 x 1.50) — but `98.5vw` asked
-          // for 363, the browser fetched w=750, and at DPR 2 it enlarged that
-          // 3.0x to fill 2208 device px. "A genuine downscale of the source" and
-          // "an enlargement on screen" are both true at once; only the second
-          // one is visible, and it is the reported blur.
-          //
-          // The three values are the real requirement at the three shapes the
-          // card takes. Phone (box AR 0.49): 736 x 1.50 = 1104 CSS px = 294vw,
-          // rounded to 270vw so DPR 2 lands on w=2048 rather than overshooting
-          // to 3840 — 92% of 1:1, which is not a visible softness. Tablet
-          // (0.84): the honest figure is 175vw, held to 130vw for the same
-          // reason, since an LCP image is the one place bytes are least
-          // affordable. Desktop is unchanged: from about 1.50:1 up the box is
-          // WIDER than the cover-scaled image, so the box governs again and
-          // 98.5vw was correct there all along.
-          sizes="(max-width: 640px) 270vw, (max-width: 1024px) 130vw, 98.5vw"
-          // Subject is centred, copy sits bottom-left.
-          //   X 47.5% — the family group spans 0.330–0.635 of the frame width
-          //   (centre 0.4825). On a phone the card is ~0.45 aspect, so
-          //   object-cover keeps only ~30.3% of the source width; 47.5% centres
-          //   that window on the group at 0.331–0.634, so nobody is cropped at
-          //   either edge. 50% would shave the standing man's shoulder.
-          //   Y 35% — wide/short cards crop vertically instead (~5% on desktop).
-          //   Biasing above centre keeps the porch roof and the hanging
-          //   baskets, and spends the crop on the foreground steps and grass,
-          //   which the copy block covers anyway. It also lifts the seated
-          //   grandmother clear of the headline's top line.
-          className="object-cover [object-position:47.5%_35%]"
-        />
+        <ul
+          /* 🔴 THE max-width IS WHAT MAKES IT WRAP 2 + 2 + 1. Unconstrained in a
+             900px column the five items pack 3 + 2, which reads as a different
+             block from the reference's two even rows. 640px is the width at
+             which the longest pair — "Indexed Universal Life" plus "Fixed
+             Indexed Annuities" — still fits on one line and the third pair
+             cannot, so the fifth drops to its own centred line. */
+          className="mt-5 flex max-w-[640px] flex-wrap items-center justify-center gap-x-8 gap-y-1 text-[clamp(16px,2vw,21px)] font-semibold leading-[1.33] tracking-[1.3px] text-white"
+        >
+          {products.map((p) => (
+            <li key={p} className="whitespace-nowrap">
+              {t(p)}
+              <Tick />
+            </li>
+          ))}
+        </ul>
 
-        {/* Legibility gradients. Both live INSIDE the card so the radius clips
-            them and no straight edge shows at the corners.
-              bottom → top : carries the headline / sub / CTAs / ITIN tag
-              top → bottom : carries the transparent-state navbar
-            The top one is part of the image treatment, not a navbar surface —
-            the bar itself stays a pure overlay with no background of its own. */}
-        <div aria-hidden="true" className="hero-veil-top absolute inset-x-0 top-0 h-[38%]" />
-        <div aria-hidden="true" className="hero-veil absolute inset-0" />
-
-        {/* COPY — bottom-left, padding measured from the card edge. */}
-        <div className="absolute inset-x-0 bottom-0 z-10 px-6 pb-10 md:px-12 md:pb-14 lg:px-16">
-          <div className="max-w-[42rem]">
-            <motion.h1
-              id="hero-heading"
-              variants={group}
-              initial="hidden"
-              animate="show"
-              aria-label={`${lines[0]} ${lines[1]}`}
-              /* 🔴 THE HEADLINE LEAVES THE HERO'S OWN FACE. Everything else in
-                 this section stays on Inter via `font-hero` on the <section> —
-                 the sub-copy, the CTAs, the ITIN line — because they are UI and
-                 Inter is the right tool for them. The headline is not UI, it is
-                 the first impression, and it was the last place on the site
-                 still setting a tight grotesque under a serif logo.
-
-                 FOUR VALUES CHANGED, ALL IN THE SAME DIRECTION (2026-08-16,
-                 brief: "more relaxed more aesthetically pleasing"):
-                   font        font-hero (Inter) -> font-display (Fraunces)
-                   weight      600 semibold      -> 500 medium
-                   tracking    -0.03em           -> -0.005em
-                   leading     1.06              -> 1.1
-                 -0.03em is a correction grotesques need at display size and
-                 serifs actively fight; keeping it would have jammed Fraunces's
-                 serifs into each other at the clamp ceiling. 600 + tight
-                 tracking + 1.06 leading is a headline that is SHOUTING, which
-                 is the opposite of the instruction.
-
-                 ⚠️ THE `pb-[0.14em] -mb-[0.14em]` PAIR ON THE LINE SPANS BELOW
-                 STILL COVERS THIS. It exists so `overflow-hidden` masks the
-                 character rise without clipping descenders (the "g" in
-                 Protecting / Building). Checked against the new face rather
-                 than assumed: Fraunces's descent is 0.2209 against Inter's
-                 0.2256, i.e. marginally SHALLOWER, so the existing 0.14em
-                 allowance has more room than it did, not less. */
-              className="font-display text-[clamp(28px,3.6vw,52px)] font-medium leading-[1.1] tracking-[-0.005em] text-white"
-            >
-              {lines.map((line, li) => (
-                // pb/-mb pair: overflow-hidden masks the character rise without
-                // clipping descenders (the "g" in Protecting / Building).
-                <span
-                  key={li}
-                  className="block overflow-hidden pb-[0.14em] -mb-[0.14em]"
-                >
-                  {line.split(" ").map((word, wi, words) => (
-                    // Words are atomic. Previously every glyph was its own
-                    // inline-block, so the browser could break mid-word — it
-                    // orphaned "s." onto its own row and it read as a stray dot.
-                    <span key={wi} className="inline-block whitespace-nowrap">
-                      {Array.from(word).map((c, ci) => (
-                        <motion.span
-                          key={`${li}-${wi}-${ci}`}
-                          variants={char}
-                          aria-hidden="true"
-                          className="inline-block"
-                        >
-                          {c}
-                        </motion.span>
-                      ))}
-                      {wi < words.length - 1 && (
-                        <motion.span
-                          variants={char}
-                          aria-hidden="true"
-                          className="inline-block"
-                        >
-                          &nbsp;
-                        </motion.span>
-                      )}
-                    </span>
-                  ))}
-                </span>
-              ))}
-            </motion.h1>
-
-            <motion.p
-              variants={fadeIn}
-              initial="hidden"
-              animate="show"
-              custom={0.55}
-              className="mt-4 max-w-[46ch] text-[clamp(14px,1.05vw,15px)] leading-[1.55] text-white"
-            >
-              {t("sub")}
-            </motion.p>
-
-            <motion.div
-              variants={fadeIn}
-              initial="hidden"
-              animate="show"
-              custom={0.72}
-              className="mt-5 flex flex-wrap gap-2.5"
-            >
-              {/* THE SITE'S CTA PAIR — see components/CtaPair.tsx.
-                  ---------------------------------------------------------
-                  HISTORY. This hero shipped two `href="#"` stubs, then a
-                  single "Talk to an advisor" dialling `nav.phoneHref` (the
-                  quote button was pulled because /contact did not exist yet
-                  and the lead modal is disabled).
-
-                  BOTH OF THOSE FACTS HAVE CHANGED. /contact is built, so the
-                  quote CTA has an honest destination again and `hero.ctaQuote`
-                  comes back — now read from the shared `cta` namespace so the
-                  hero cannot drift from the other pairs.
-
-                  🔴 "Talk to an advisor" IS RETIRED SITE-WIDE. It rendered
-                  twice under one label pointing at two different destinations
-                  (tel: here, /contact in WhatWeCover) — ambiguous in the copy
-                  and inconsistent in the code. `hero.ctaCall` is retained
-                  untouched in both message files, simply unrendered. The
-                  phone survives as the SECONDARY, labelled with the literal
-                  number so the destination is unambiguous.
-
-                  🔴 AND THE HERO'S SECONDARY IS NO LONGER THE PHONE. It is
-                  "Join our team" -> /join. The hero now addresses both of
-                  Synergy's audiences in one pair: the primary is for someone
-                  who wants cover, the secondary for someone who wants to sell
-                  it — which is what /join exists for and what WhoWeServe
-                  already splits the page into further down.
-
-                  THE PHONE IS NOT LOST. It remains the secondary on the other
-                  three pairs (WhatWeCover, /about §4, /services §4), it is the
-                  first row of the footer's Contact column as a real tel:, and
-                  it is in the header. `cta.call` and `cta.callAria` are
-                  untouched and still rendered — just not here. */}
-              <CtaPair
-                locale={locale}
-                variant="photo"
-                quoteLabel={tCta("quote")}
-                secondary={{ kind: "route", label: tCta("join"), route: "join" }}
-              />
-            </motion.div>
-
-            {/* ITIN tagline — last item in the same left stack */}
-            <motion.p
-              variants={fadeIn}
-              initial="hidden"
-              animate="show"
-              custom={0.88}
-              className="mt-5 text-[13px] font-medium tracking-[0.01em] text-white"
-            >
-              {t("tagline")}
-            </motion.p>
-          </div>
+        {/* Side by side above 640, stacked below — which is what the reference
+            does at its own narrow width, measured at a single centred column. */}
+        <div className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-4">
+          <Link
+            href={routeHref(locale, "contact")}
+            className={`${BTN} w-full bg-[#6B6B6B] hover:bg-[#585858] sm:w-auto`}
+          >
+            {t("ctaQuoteLong")}
+            <Chevron />
+          </Link>
+          <Link
+            href={routeHref(locale, "join")}
+            className={`${BTN} w-full bg-[#ED1C24] hover:bg-[#C8161D] sm:w-auto`}
+          >
+            {t("ctaApply")}
+            <Chevron />
+          </Link>
         </div>
+
+        <p className="mt-10 max-w-[62ch] text-[clamp(15px,1.6vw,17px)] font-normal leading-[1.4] text-white">
+          {t("blurb")}
+        </p>
       </div>
     </section>
   );

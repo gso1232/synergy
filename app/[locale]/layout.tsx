@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans, Inter } from "next/font/google";
+import { Fraunces, IBM_Plex_Sans, Be_Vietnam_Pro } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import {
@@ -102,11 +102,31 @@ const body = IBM_Plex_Sans({
   variable: "--font-body",
 });
 
-// Inter — used ONLY inside the VEX-spec hero (via `font-hero`), per that spec.
-// The rest of the site stays on Kufam / IBM Plex Sans.
-const hero = Inter({
+/**
+ * Be Vietnam Pro — the HERO ONLY, via `font-hero`.
+ *
+ * 🔴 REPLACED INTER (2026-08-24). The homepage hero was rebuilt to match
+ * familyfirstlife.com's, on the client's instruction, and that layout's whole
+ * character is its typeface: a geometric sans set very heavy and very tight,
+ * which is what makes "Protect What Matters Most" read as a poster rather than
+ * a sentence. Measured off the reference: 44px/700 for the headline, 30px/700
+ * with +1px tracking for the second line, 21px/600 with +1.3px for the product
+ * row, 13px/800 uppercase with +0.4px for the buttons. Inter set to those
+ * numbers is visibly a different design.
+ *
+ * THIS SLOT ALREADY EXISTED AND IS STILL SCOPED THE SAME WAY. `--font-hero` is
+ * referenced by exactly one element — the hero <section> — so nothing else on
+ * the site pays for this font, and the rest stays on Fraunces / IBM Plex Sans.
+ * Swapping the family inside the existing slot is why this change costs one
+ * font rather than a fourth one.
+ *
+ * 800 is loaded because the buttons genuinely use it; dropping it would have
+ * the browser synthesise a fake bold from 600 and thicken the letterforms
+ * unevenly at 13px, which is exactly where it shows.
+ */
+const hero = Be_Vietnam_Pro({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "600", "700", "800"],
   display: "swap",
   variable: "--font-hero",
 });

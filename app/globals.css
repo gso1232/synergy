@@ -365,6 +365,10 @@ html[data-route-theme="dark"] {
      media query that sets the concrete height, so the two cannot drift again.
      The stale token is left alone because four unrelated rules still read it. */
   --header-h-rest: 64px;
+  /* The utility strip's own height, referenced by the bar's total below. It is
+     `card:block` only, so it contributes NOTHING under 900 — which is why the
+     base --header-h-rest above stays 64. */
+  --utility-bar-h: 40px;
   --hero-gutter: clamp(6px, 0.75vw + 1px, 18px);
   --hero-radius: clamp(18px, 12px + 1.5vw, 36px);
 
@@ -632,14 +636,26 @@ html[data-route-theme="dark"] {
   /* Kept adjacent to the concrete heights on purpose — see the note on
      --header-h-rest in :root. If either number below changes, this one changes
      with it, in this block, or the hero stops clearing the bar. */
+  /* 🔴 156 = 116 NAV ROW + 40 UTILITY STRIP. The strip is the header's first
+     child (see TopUtilityBar), so the bar's declared height has to carry it or
+     the nav row is clipped. `--header-h-rest` follows the same number because
+     .page-header-offset reserves it on the routes with no hero to absorb it. */
   :root {
-    --header-h-rest: 116px;
+    --header-h-rest: 156px;
   }
   .site-header {
-    height: 116px;
+    height: 156px;
   }
+  /* 🔴 THE STRIP HIDES ON SCROLL AND THE COMPACT HEIGHT IS THEREFORE UNCHANGED.
+     It is utility, not primary navigation: keeping it would spend 40px of a
+     scrolled viewport on two links nobody scrolled to reach. Hiding it is also
+     what keeps the compaction feeling like a compaction — 156 -> 76 rather than
+     156 -> 116. */
   .site-header[data-compact="true"] {
     height: 76px;
+  }
+  .site-header[data-compact="true"] .top-utility-bar {
+    display: none;
   }
 }
 

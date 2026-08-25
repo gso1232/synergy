@@ -13,6 +13,7 @@ import {
 } from "@/routes";
 import LogoLockup from "./LogoLockup";
 import LocaleSwitcher from "./LocaleSwitcher";
+import TopUtilityBar from "./TopUtilityBar";
 
 /**
  * The bar is a three-column grid with the logo dead centre, so the nav is
@@ -641,6 +642,14 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
           any absolute positioning, and the left and right groups are balanced
           containers around it. Everything is vertically centred over the FULL
           bar height, so nothing sits against the card's top edge. */}
+      {/* 🔴 THE UTILITY STRIP IS INSIDE THE FIXED HEADER, NOT ABOVE IT.
+          The header is `position: fixed`; a sibling above it would not move
+          with it and would be left behind the moment the page scrolled. Being
+          the first child also means the header's own height declarations are
+          the single place the strip's 40px is accounted for. It is `card:block`
+          only — a phone bar has no room for it, which is what the reference
+          does at its own narrow width too. */}
+      <TopUtilityBar />
       <nav
         aria-label={t("ariaLabel")}
         className="grid h-full grid-cols-[1fr_auto_1fr] items-center"
@@ -682,9 +691,13 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               <NavLink routeKey={key} className={linkClass} />
             </li>
           ))}
+          {/* 🔴 THE EN/ES PILL WAS HERE AND MOVED TO THE UTILITY STRIP. Keeping
+              both would put two language switchers on one screen. See the note
+              in components/TopUtilityBar.tsx — restoring it is uncommenting
+              this and deleting the strip's copy.
           <li>
             <LocaleSwitcher />
-          </li>
+          </li> */}
         </ul>
 
         {/* THE SAME CONTROL, PHONE PLACEMENT. Below `card` both <ul>s above are
@@ -813,6 +826,17 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               Join pill — same 15px column but `font-medium` against their
               `font-semibold`, no pill, no border. It reads as utility chrome
               rather than a sixth destination competing with the CTA. */}
+          {/* 🔴 MOVED TO THE UTILITY STRIP (2026-08-24), NOT DELETED. The strip
+              above the nav row now carries "Agent Login" and "Apply to Work
+              with Synergy", matching the reference this header was cloned
+              toward. Rendering it here as well put the same words twice on one
+              screen, 40px apart.
+
+              `AGENT_LOGIN_LINK_READY` still gates the MOBILE panel entry below,
+              so the flag keeps its job and its docblock above stays accurate —
+              this is the desktop copy only. Restoring it is uncommenting this
+              and removing the strip's copy.
+
           {AGENT_LOGIN_LINK_READY && (
             <Link
               href={`/${locale}/login`}
@@ -820,7 +844,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             >
               {t("login")}
             </Link>
-          )}
+          )} */}
 
           {/* ADMIN ENTRY — RENDERS ONLY FOR A VERIFIED ADMIN.
               ---------------------------------------------------------------

@@ -60,7 +60,7 @@ export default function HomePage({
   return (
     <>
       <main>
-        <Hero />
+        <Hero locale={locale} />
         {/* MARQUEE 1 — directly under the hero, on instruction. Carries the
             kicker; marquee 2 does not, so the line is not said twice. */}
         <CarrierStrip />
