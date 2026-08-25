@@ -28,6 +28,22 @@ const config: Config = {
         // the top — so dark surfaces take `gold`, light surfaces take
         // `gold-deep`, and neither crosses over.
         "navy-lift": "#1C3A5A",
+        /**
+         * navy-soft — THE SITE'S ONE ACCENT, and the fill of the utility strip.
+         *
+         * Asked for as "lighter than that, a slight bit" against `navy-lift`,
+         * and then again once the strip took the same colour. It carries the
+         * Join pill, the strip's background, the strip's two badges and the
+         * hero's two CTAs, so the accent is one value rather than the four
+         * different ones (navy, grey, red, cream) those surfaces started with.
+         *
+         * MEASURED, because it is a background for cream text everywhere it
+         * appears: cream #F8F4EE on #22496F is 8.16:1 — clear of the 4.5 that
+         * body text needs and of the 3:1 a large label needs, with room to
+         * spare for the 13px uppercase button labels which are the smallest
+         * type that sits on it.
+         */
+        "navy-soft": "#22496F",
         gold: "#C9A84C",
         // Pale gold / champagne — a lighter value of the brand gold, added for
         // muted-emphasis type on the hero video. #C9A84C sits at luminance

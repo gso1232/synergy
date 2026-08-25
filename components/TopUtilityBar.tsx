@@ -58,6 +58,12 @@ const LABELS: Record<string, string> = { en: "English", es: "Español" };
  * Both are drawn rather than fetched: a 15px glyph is a handful of path data,
  * and an icon font or a sprite request for two shapes on every page would cost
  * more than it saves.
+ *
+ * 🔴 THE BADGES ARE INVERTED, AND THEY HAVE TO BE. The strip's own background
+ * is now `navy-soft`; a `navy-soft` disc on it would be invisible. So the disc
+ * is cream and the glyph inside it is navy — the same two colours, swapped.
+ * The reference's red is gone site-wide; see the note on the button colours in
+ * components/Hero.tsx.
  */
 
 /** Red disc with a white person silhouette — the account/login badge. */
@@ -65,9 +71,9 @@ function PersonBadge() {
   return (
     <span
       aria-hidden="true"
-      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-[#ED1C24]"
+      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-cream"
     >
-      <svg viewBox="0 0 16 16" className="h-[11px] w-[11px] fill-white">
+      <svg viewBox="0 0 16 16" className="h-[11px] w-[11px] fill-navy-soft">
         <circle cx="8" cy="5.6" r="2.9" />
         <path d="M8 9.4c-3 0-5 1.9-5 3.9v.6h10v-.6c0-2-2-3.9-5-3.9z" />
       </svg>
@@ -80,11 +86,11 @@ function ArrowBadge() {
   return (
     <span
       aria-hidden="true"
-      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-[#ED1C24]"
+      className="inline-flex h-[17px] w-[17px] shrink-0 items-center justify-center rounded-full bg-cream"
     >
       <svg
         viewBox="0 0 16 16"
-        className="h-[10px] w-[10px] fill-none stroke-white stroke-[2.2]"
+        className="h-[10px] w-[10px] fill-none stroke-navy-soft stroke-[2.2]"
       >
         <path d="M2.5 8h10" strokeLinecap="round" />
         <path d="M8.6 4l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
@@ -100,7 +106,7 @@ export default function TopUtilityBar() {
   const tHero = useTranslations("hero");
 
   return (
-    <div className="top-utility-bar hidden bg-[#EDEDED] text-ink card:block">
+    <div className="top-utility-bar hidden bg-navy-soft text-cream card:block">
       {/* 🔴 A GRID WITH THREE EQUAL TRACKS, NOT flex + fixed side widths. The
             first attempt gave each side a hard 220px, which was narrower than
             "Agent Login | Apply to Work with Synergy" and wrapped it onto two
@@ -122,8 +128,8 @@ export default function TopUtilityBar() {
                 href={pathname}
                 locale={l}
                 aria-current={active ? "true" : undefined}
-                className={`transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none ${
-                  active ? "font-bold text-ink" : "font-normal text-ink/70"
+                className={`transition-colors duration-200 hover:text-gold-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale motion-reduce:transition-none ${
+                  active ? "font-bold text-cream" : "font-normal text-cream/70"
                 }`}
               >
                 {LABELS[l] ?? l}
@@ -138,17 +144,17 @@ export default function TopUtilityBar() {
                from the RouteKey registry (it is portal chrome, not a marketing
                route) and SiteHeader links it the same way. */
             href={`/${locale}/login`}
-            className="inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
+            className="inline-flex items-center gap-1.5 transition-colors duration-200 hover:text-gold-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale motion-reduce:transition-none"
           >
             <PersonBadge />
             {t("login")}
           </Link>
-          <span aria-hidden="true" className="text-ink/25">
+          <span aria-hidden="true" className="text-cream/30">
             |
           </span>
           <Link
             href={routeHref(locale, "join")}
-            className="inline-flex items-center gap-1.5 whitespace-nowrap transition-colors duration-200 hover:text-gold-deep focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap transition-colors duration-200 hover:text-gold-pale focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-pale motion-reduce:transition-none"
           >
             <ArrowBadge />
             {tHero("ctaApply")}

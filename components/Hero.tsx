@@ -33,7 +33,15 @@ import heroPhoto from "../public/hero-porch-family.jpg";
  *   second line   30px / 700 / lh 40px / +1px tracking
  *   product row   21px / 600 / lh 28px / +1.3px tracking
  *   buttons       13px / 800 / uppercase / +0.4px tracking / 17px padding /
- *                 square corners / grey #6B6B6B and red #ED1C24
+ *                 square corners
+ *
+ * 🔴 THE BUTTON COLOURS ARE THE ONE DELIBERATE DEPARTURE FROM THE REFERENCE.
+ * It ships grey #6B6B6B and red #ED1C24. Both are `navy-lift` #1C3A5A here, on
+ * instruction, so the whole site carries ONE accent: the Join pill, the strip's
+ * two badges and these two CTAs. `navy-lift` is not a new colour invented for
+ * this — it is already in the palette, derived as the lightest navy that keeps
+ * gold legal as normal text (5.10:1), which is why it reads as navy rather than
+ * as a fifth brand colour.
  *   blurb         17px / 400 / lh 23.8px
  *   section       200px top padding, 240px bottom
  *
@@ -144,12 +152,19 @@ export default function Hero({ locale }: { locale: string }) {
           colour behind the photo while it decodes. */}
       <div aria-hidden="true" className="absolute inset-0 z-10 bg-navy/[0.52]" />
 
-      {/* 🔴 THE PADDING IS ASYMMETRIC BECAUSE THE REFERENCE'S IS — 200 top,
-          240 bottom. It is not decoration here: a taller box brings the frame
+      {/* 🔴 THE TOP PADDING IS MEASURED FROM THE BAR, NOT GUESSED. The header
+          is `position: fixed`, so it sits OVER this section — a bare 200px
+          happened to clear it at 1440 and did not at every width. Deriving it
+          from `--header-h-rest` means the copy clears the bar by the same
+          visible gap whatever the bar is, and the variable is set beside the
+          bar's own height so the two cannot drift.
+
+          THE BOTTOM STAYS LARGER THAN THE TOP because the reference's is — 200
+          top, 240 bottom. It is not decoration here: a taller box brings the frame
           ratio closer to the photograph's own 3:2, so `cover` crops less of it
           away, and the extra height lands BELOW the copy, which is the band the
           family group needs to be visible in. */}
-      <div className="relative z-20 mx-auto flex max-w-[900px] flex-col items-center px-5 pb-[clamp(96px,17vw,240px)] pt-[clamp(72px,14vw,200px)] text-center sm:px-8">
+      <div className="relative z-20 mx-auto flex max-w-[900px] flex-col items-center px-5 pb-[clamp(96px,17vw,240px)] pt-[calc(var(--header-h-rest)+clamp(40px,7vw,100px))] text-center sm:px-8">
         <h1
           id="hero-heading"
           className="text-[clamp(30px,4.2vw,44px)] font-bold leading-[1.16] text-white"
@@ -185,14 +200,14 @@ export default function Hero({ locale }: { locale: string }) {
         <div className="mt-8 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-4">
           <Link
             href={routeHref(locale, "contact")}
-            className={`${BTN} w-full bg-[#6B6B6B] hover:bg-[#585858] sm:w-auto`}
+            className={`${BTN} w-full bg-navy-soft hover:bg-navy-lift sm:w-auto`}
           >
             {t("ctaQuoteLong")}
             <Chevron />
           </Link>
           <Link
             href={routeHref(locale, "join")}
-            className={`${BTN} w-full bg-[#ED1C24] hover:bg-[#C8161D] sm:w-auto`}
+            className={`${BTN} w-full bg-navy-soft hover:bg-navy-lift sm:w-auto`}
           >
             {t("ctaApply")}
             <Chevron />

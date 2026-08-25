@@ -652,7 +652,15 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
       <TopUtilityBar />
       <nav
         aria-label={t("ariaLabel")}
-        className="grid h-full grid-cols-[1fr_auto_1fr] items-center"
+        /* 🔴 `flex-1`, NOT `h-full`. `h-full` is height:100% of the HEADER, and
+           since 2026-08-24 the header's first child is the 40px utility strip —
+           so this row was 116px tall starting 40px down, overflowing the bar and
+           centring its contents 20px below where they belong. Measured: logo,
+           links and pill all sat at cy 98 in a row whose true centre is 78.
+           `flex-1` on a flex-column header takes whatever is left after the
+           strip, at any header height and any breakpoint, with no number to
+           keep in sync. `min-h-0` stops the grid's content forcing it taller. */
+        className="grid min-h-0 flex-1 grid-cols-[1fr_auto_1fr] items-center"
         style={{ paddingInline: "var(--nav-inset)" }}
       >
         {/* 🔴 THE THREE COLUMNS ARE PLACED EXPLICITLY, AND THAT IS A BUG FIX,

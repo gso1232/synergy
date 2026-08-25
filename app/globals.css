@@ -450,6 +450,12 @@ html[data-route-theme="dark"] {
    at its previous value — rotating a tablet from landscape to portrait left a
    104px bar on a 64px layout. Concrete values invalidate correctly. */
 .site-header {
+  /* A COLUMN so the utility strip and the nav row can divide the bar's height
+     between them: the strip takes its own 40px, the nav row takes the rest via
+     `flex-1`. Before this the nav row asked for height:100% of the header and
+     overflowed it by exactly the strip. */
+  display: flex;
+  flex-direction: column;
   height: 64px;
   /* Surface cross-fade runs slightly longer than the compaction so the cream
      arrives softly instead of snapping in under the moving logo. Both are
@@ -551,9 +557,13 @@ html[data-route-theme="dark"] {
    control simply disappeared". On a cream bar the cream pill is the one that
    disappears, so navy is the correct fill in both states. The label rides its
    own opaque fill either way: 15.87:1. */
+/* 🔴 navy-lift #1C3A5A, NOT navy #0D1B2A — "a slight bit lighter than this".
+   It is the same accent the strip's badges and the hero's two CTAs now carry,
+   so the site has one, and it is already a palette token rather than a colour
+   invented for this pill. Cream on #1C3A5A measures 12.8:1. */
 .site-header .nav-pill,
 .site-header[data-compact="true"] .nav-pill {
-  background-color: #0d1b2a;
+  background-color: #22496f;
   color: #f8f4ee;
   transition:
     background-color 280ms ease,
@@ -652,16 +662,21 @@ html[data-route-theme="dark"] {
      the nav row is clipped. `--header-h-rest` follows the same number because
      .page-header-offset reserves it on the routes with no hero to absorb it. */
   :root {
-    --header-h-rest: 156px;
+    --header-h-rest: 116px;
   }
-  .site-header {
-    height: 156px;
-  }
-  /* 🔴 116 = 76 NAV ROW + 40 STRIP, AND THE STRIP NO LONGER HIDES. It was
-     dropped on compaction to save 40px of a scrolled viewport; the instruction
-     is that the bar and the strip above it stay put on every page and through
-     every scroll, so the compact height has to carry it. The compaction is now
-     156 -> 116: the nav row still shrinks, the strip simply comes with it. */
+  /* 🔴 ONE HEIGHT IN BOTH STATES, ON INSTRUCTION: "I don't want the nav bar to
+     get bigger in the hero, I want it one size like the whole website."
+
+     It was 156 at rest and 116 once compacted, so the bar grew by 40px on any
+     page whose first viewport it sat over and shrank again the moment you
+     scrolled. That is also what made the copy appear to shift under it — the
+     thing the reader was looking at moved because the CHROME resized, not
+     because the page did.
+
+     116 = 76 nav row + 40 utility strip, i.e. the compacted size, kept
+     everywhere. `data-compact` still exists and still owns the drop shadow;
+     it simply no longer owns height. */
+  .site-header,
   .site-header[data-compact="true"] {
     height: 116px;
   }
@@ -795,6 +810,11 @@ html[data-route-theme="dark"] {
 /* The row is now full-bar-height with everything vertically centred, so the
    logo's rise comes from the bar's own height change (centre 58 → 38, a 20px
    rise) rather than from a translate. Only the scale is animated. */
+/* 🔴 THE LOGO NO LONGER SCALES EITHER. It grew to 1.3333 while the bar was at
+   its taller rest height and dropped to 1 on compaction — which was the whole
+   point when the bar resized, and is just a jitter now that it does not. One
+   size, like the bar.
+
 @media (min-width: 900px) {
   .site-header[data-compact="false"] .site-header__logo {
     transform: scale(1.3333);
@@ -803,6 +823,7 @@ html[data-route-theme="dark"] {
     transform: scale(1);
   }
 }
+*/
 
 @media (prefers-reduced-motion: reduce) {
   .site-header,
