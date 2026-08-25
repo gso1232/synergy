@@ -660,7 +660,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
            `flex-1` on a flex-column header takes whatever is left after the
            strip, at any header height and any breakpoint, with no number to
            keep in sync. `min-h-0` stops the grid's content forcing it taller. */
-        className="grid min-h-0 flex-1 grid-cols-[1fr_auto_1fr] items-center"
+        className="site-header__row grid min-h-0 flex-1 grid-cols-[auto_1fr_auto] items-center"
         style={{ paddingInline: "var(--nav-inset)" }}
       >
         {/* 🔴 THE THREE COLUMNS ARE PLACED EXPLICITLY, AND THAT IS A BUG FIX,
@@ -687,14 +687,31 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             leaves an empty cell rather than collapsing the row. This is why the
             phone bar looked fine on the DESKTOP-first reading of this file and
             wrong on the device.
+
+            🔴 `row-start-1` IS ON ALL THREE FOR THE SAME CLASS OF REASON, and
+            it was added after the bar split into TWO ROWS. The centred link
+            list is written BEFORE the logo in this file, so with only a column
+            pinned, auto-placement filled column 2 of row 1 with the list and
+            then had to open a ROW 2 for the logo (column 1, already behind the
+            cursor) and the actions. Measured: links centred at cy 53, logo and
+            CTA at cy 91, in a row whose centre is 78 — three items, no two of
+            them aligned. Pinning the row as well as the column makes placement
+            independent of source order.
         */}
         {/* LEFT — starts exactly on the headline's left edge.
             EN/ES closes this list, i.e. sits directly after Blog (LEFT_LINKS is
             Home · About · Services · Blog), per the instruction to put it top-
             left beside Blog. `gap-8` already separates it from Blog by the same
             32px every other pair uses, so it needs no margin of its own. */}
-        <ul className="col-start-1 hidden items-center gap-8 card:flex">
-          {LEFT_LINKS.map((key) => (
+        {/* 🔴 ONE CENTRED LIST, NOT A SPLIT EITHER SIDE OF THE LOGO. The bar was
+            rebuilt to the reference's arrangement on 2026-08-24: logo hard left,
+            every destination centred, one CTA hard right. LEFT_LINKS/RIGHT_LINKS
+            and the `SPLIT_AT` formula above exist only because the logo used to
+            sit in the middle and needed the links divided around it — they are
+            kept, unused by this row, because restoring the centred-logo bar is
+            re-splitting this one list rather than re-deriving the maths. */}
+        <ul className="col-start-2 row-start-1 hidden items-center justify-center gap-8 justify-self-center card:flex">
+          {HEADER_ROUTES_TEXT.map((key) => (
             <li key={key}>
               <NavLink routeKey={key} className={linkClass} />
             </li>
@@ -723,9 +740,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             fits 375px. So below `card` the switcher lives here in the bar's
             otherwise-empty first column, which is where it was before the strip
             existed. There is exactly one language control at every width. */}
-        <div className="col-start-1 flex items-center card:hidden">
-          <LocaleSwitcher />
-        </div>
+
 
         {/* CENTRE — logo. A wordmark in the top-left (or here, top-centre) is
             expected to be the way home, and it was `href="#"`. It is the one
@@ -738,7 +753,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
         <Link
           href={routeHref(locale, "home")}
           aria-label={t("company")}
-          className="col-start-2 flex items-center justify-self-center"
+          className="col-start-1 row-start-1 flex items-center justify-self-start"
         >
           {/* The wordmark follows the surface. `light` is the wordmark
               recoloured to ink, which is right on cream and unreadable on the
@@ -799,15 +814,14 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
         </Link>
 
         {/* RIGHT — ends exactly on the headline's right edge */}
-        <div className="col-start-3 flex items-center justify-end gap-8">
-          <ul className="hidden items-center gap-8 card:flex">
-            {RIGHT_LINKS.map((key) => (
-              <li key={key}>
-                <NavLink routeKey={key} className={linkClass} />
-              </li>
-            ))}
-          </ul>
-
+        {/* RIGHT — the CTA at desktop, language + hamburger on a phone. The
+            language pill moved here from column 1 when the logo took that
+            column: the reference puts EN/ES beside the hamburger on a phone,
+            and column 1 is no longer empty to host it. */}
+        <div className="col-start-3 row-start-1 flex items-center justify-end gap-4 card:gap-8">
+          <div className="flex items-center card:hidden">
+            <LocaleSwitcher />
+          </div>
           {/* AGENT LOGIN — the portal's front door, public from today.
               ---------------------------------------------------------------
               🔴 THIS REVERSES A DELIBERATE DECISION, AND THE REASON IT WAS MADE
@@ -899,22 +913,38 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               seventh text link a few pixels from this pill, and the split
               around the centred logo would be thrown off (it would go 5/2
               instead of the intended 4/2). */}
+          {/* 🔴 THE BAR'S CTA IS "GET A QUOTE" AND IT IS A SQUARE OUTLINE, NOT
+              THE ROUND JOIN PILL. Changed 2026-08-24 to the reference's
+              arrangement: its bar ends in a bordered box reading GET A QUOTE,
+              and the recruiting call-to-action lives in the utility strip
+              above ("Apply to Work with Synergy") rather than competing with it
+              here.
+
+              So the two audiences are split across the two rows instead of
+              stacked in one: the strip recruits, the bar sells. `join` is still
+              in HEADER_ROUTES via HEADER_PILL_ROUTE — the mobile panel's CTA
+              still renders from it — this row simply no longer draws it.
+
+              OUTLINE, NOT FILL: it sits on cream beside six text links, and a
+              filled navy block there reads louder than the reference's does on
+              white. The border and label carry `navy-soft`, the site's one
+              accent, so it is the same colour family as the strip's badges and
+              the hero's buttons without shouting over the nav. */}
           <Link
-            href={routeHref(locale, HEADER_PILL_ROUTE)}
-            // The pill is a nav item now, so it marks the current page like
-            // every other one. Without this, /join was the only route in the
-            // bar that never announced itself as current. The visible half is
-            // `.nav-pill[aria-current]` in globals.css — a rule under the
-            // label, the same SHAPE the text links use, because 1.4.1 is not
-            // satisfied by a fill colour alone.
+            href={routeHref(locale, "contact")}
             aria-current={
-              isCurrentRoute(pathname, locale, HEADER_PILL_ROUTE)
-                ? "page"
-                : undefined
+              isCurrentRoute(pathname, locale, "contact") ? "page" : undefined
             }
-            className="nav-pill hidden h-10 items-center rounded-full px-6 text-[15px] font-semibold card:inline-flex"
+            className="hidden items-center gap-2 border-2 border-navy-soft px-6 py-3 text-[13px] font-extrabold uppercase leading-none tracking-[0.4px] text-navy-soft transition-colors duration-200 hover:bg-navy-soft hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none card:inline-flex"
           >
-            {t("join")}
+            {t("quoteCta")}
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 6 10"
+              className="h-[10px] w-[6px] shrink-0 fill-none stroke-current stroke-[1.8]"
+            >
+              <path d="M1 1l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
           </Link>
 
           <button

@@ -478,9 +478,51 @@ html[data-route-theme="dark"] {
      giving the bar its own cream plate is the version of that which fixes the
      legibility without touching the artwork or deleting the hero photograph.
      See the docblock in components/LogoLockup.tsx for the full measurement. */
+  /* 🔴 THE HEADER ITSELF IS NO LONGER PAINTED, AND THAT IS WHAT LETS THE TWO
+     ROWS MOVE INDEPENDENTLY. The strip must stay pinned while the nav row
+     slides away on scroll-down, so the cream cannot belong to the shared
+     parent — a painted parent would leave a cream band hanging where the nav
+     row used to be. Each row now carries its own background.
+
+     `pointer-events: none` because that empty band is still a 116px box over
+     the page: without it, the area the nav row vacated would keep swallowing
+     clicks meant for the content underneath. Both rows switch it back on. */
+  background-color: transparent;
+  box-shadow: none;
+  pointer-events: none;
+  transform: translateY(0);
+}
+
+/* --- the two rows, which is where the surface lives now --- */
+.top-utility-bar {
+  position: relative;
+  /* Above the nav row so the nav slides UNDER it rather than over it. */
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.site-header__row {
+  position: relative;
+  z-index: 1;
+  pointer-events: auto;
   background-color: #f8f4ee;
   box-shadow: 0 1px 0 rgba(13, 27, 42, 0.08);
-  transform: translateY(0);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* 🔴 THE NAV ROW HIDES ON SCROLL-DOWN; THE STRIP NEVER DOES. Asked for exactly
+   that way: "the banner always fixed, but the nav bar disappears when we go
+   down and appears when we go up".
+
+   `data-hidden` is direction-driven and was already being computed in
+   SiteHeader — the JS never stopped setting it, only the CSS that acted on it
+   was switched off. This puts it back on the ROW instead of the whole header,
+   which is the difference between the old behaviour and this one.
+
+   -100% of the ROW, not of the header: it travels exactly its own height and
+   comes to rest directly behind the strip. */
+.site-header[data-hidden="true"] .site-header__row {
+  transform: translateY(-100%);
 }
 
 /* ---------------------------------------------------------------------------
@@ -500,8 +542,10 @@ html[data-route-theme="dark"] {
 
    Easing is our `out-expo` token — the same curve FadeUp uses — so the reveal
    decelerates into place rather than arriving linearly. */
-/* 🔴 THE HIDE-ON-SCROLL IS OFF, ON INSTRUCTION (2026-08-24): "it should stay
-   fixed and not disappear when I scroll".
+/* 🔴 SUPERSEDED. The hide-on-scroll was switched off entirely, then asked for
+   again but scoped to the NAV ROW ONLY — see `.site-header__row` above, which
+   is where `data-hidden` now acts. This block is the old WHOLE-HEADER version
+   and must stay off, or the strip would travel with the row.
 
    The rule that lived here translated the bar fully off the top whenever the
    reader scrolled DOWN past 160px, and brought it back on the first upward
@@ -531,7 +575,7 @@ html[data-route-theme="dark"] {
    At rest there is nothing behind it to separate from, so it keeps only the
    hairline. The cross-fade in the transition list above now animates that
    shadow alone rather than a surface appearing from nothing. */
-.site-header[data-compact="true"] {
+.site-header[data-compact="true"] .site-header__row {
   box-shadow:
     0 1px 0 rgba(13, 27, 42, 0.1),
     0 6px 20px -14px rgba(13, 27, 42, 0.35);
