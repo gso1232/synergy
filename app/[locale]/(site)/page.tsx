@@ -14,7 +14,10 @@ import CarrierStrip from "@/components/CarrierStrip";
 import WhatWeCover from "@/components/WhatWeCover";
 import WhoWeServe from "@/components/WhoWeServe";
 import HowItWorks from "@/components/HowItWorks";
-import Testimonials from "@/components/Testimonials";
+// import Testimonials from "@/components/Testimonials";
+//   🔴 REMOVED FROM THE PAGE 2026-09-01, ON INSTRUCTION — see the call site
+//   below. The component file is UNTOUCHED on disk; restoring it is
+//   uncommenting this line and the one in the tree below.
 import GoogleReviews from "@/components/GoogleReviews";
 import Consultation from "@/components/Consultation";
 // 🟢 CARRIERSTRIP IS BACK — 2026-08-07, and it is now rendered TWICE.
@@ -129,16 +132,41 @@ export default function HomePage({
             Testimonials(cream) → Footer(navy) run from collapsing into one dark
             mass. See the seam note in HANDOFF for the cost this left behind at
             the vacated slot. */}
-        <Testimonials />
-        {/* GOOGLE REVIEWS — five real, linkable reviews off the Google Business
-            listing, placed DIRECTLY under <Testimonials /> on purpose: the
-            section above is three unlinkable quotes the reader has to take on
-            trust, and this one is the same claim with a click-through to the
-            source. Reversing the order would put the checkable evidence first
-            and make the unverifiable quotes read as the weaker afterthought.
+        {/* 🔴 <Testimonials /> IS REMOVED, 2026-09-01, ON INSTRUCTION.
+            COMMENTED, NOT DELETED — components/Testimonials.tsx is untouched on
+            disk and reverting is uncommenting the import above and the line
+            below.
 
-            It is greige, not cream, so it does not merge into the cream
-            Testimonials above it — see the seam note in the component. */}
+                <Testimonials />
+
+            WHY. It and <GoogleReviews /> both headed a section "What Our
+            Clients Say", one directly under the other, so the page asked the
+            same question twice in a row. Of the two, this is the one that goes:
+            its three quotes are unattributed to any verifiable source, while
+            every review in the section that stays links to the public Google
+            listing it was copied from.
+
+            WHAT WENT WITH IT. `testimonials.*` — an eyebrow still marked
+            [PLACEHOLDER], the "What Our Clients Say" heading, three quotes
+            (Michael & Laura Adams, Brian & Jessica Williams, Mark) with their
+            ratings, and the carousel's two arrow labels. NO MESSAGE KEY IS
+            DELETED; they sit unused exactly as `whySynergy.rows.r4`-`r8`
+            already do, so the revert needs no translation work.
+
+            🟡 ONE PAPERCUT, LOGGED. Those strings still appear in the admin
+            copy editor under Homepage, because lib/cms/editable-keys.ts walks
+            every namespace in en.json and has no idea which components are
+            mounted. Aiman can therefore edit twelve strings that render
+            nowhere. Hiding them means adding `testimonials` to
+            EXCLUDED_NAMESPACES, which is currently the STAFF-ONLY set and means
+            something else — so this is flagged rather than fixed by widening
+            what that set is for. */}
+        {/* GOOGLE REVIEWS — five real reviews off the Google Business listing,
+            each card linking to the review it quotes. Now the only "what our
+            clients say" section on the page, and the last one before the
+            footer, which is why it carries no background of its own: it
+            inherits the body cream exactly as <Testimonials /> did, keeping the
+            Consultation(navy) -> light -> Footer(navy) rhythm intact. */}
         <GoogleReviews />
       </main>
     </>

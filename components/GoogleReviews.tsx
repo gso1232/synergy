@@ -294,7 +294,9 @@ function ReviewCard({ review }: { review: Review }) {
         "w-[84%] sm:w-[62%]",
         // Desktop: three per row, the last two centred by the parent's wrap.
         "md:w-[calc((100%-3rem)/3)]",
-        "rounded-[4px] border border-ink/10 bg-white p-6 sm:p-7",
+        /* ink/[0.12], not /10: the card is white on a cream that is only
+   a shade off white, so this hairline is the whole boundary. */
+        "rounded-[4px] border border-ink/[0.12] bg-white p-6 sm:p-7",
         "transition-[transform,box-shadow,border-color] duration-300 ease-out-expo",
         "hover:-translate-y-1 hover:border-ink/15 hover:shadow-[0_14px_34px_-14px_rgba(13,27,42,0.28)]",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -400,14 +402,19 @@ export default function GoogleReviews() {
     "inline-flex h-12 items-center justify-center gap-2 rounded-full px-7 text-[14px] font-medium transition-transform duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
   return (
-    /* 🔴 greige, NOT cream, AND THAT IS A SEAM DECISION. This sits directly
-       under <Testimonials />, which is cream, and directly above the navy
-       footer. Two cream sections in a row read as one long section with a
-       heading floating in the middle of it; #ECE9E2 is one step down, enough to
-       separate them, and it makes the white cards read as cards rather than as
-       holes. It also keeps the Consultation(navy) -> light -> Footer(navy)
-       rhythm the page comment in page.tsx asks for. */
-    <section aria-labelledby="google-reviews-heading" className="bg-greige">
+    /* 🔴 NO BACKGROUND CLASS, AND THAT IS THE POINT. This shipped on greige
+       #ECE9E2 for one reason: it sat directly under <Testimonials />, which is
+       cream, and two cream sections in a row read as one long section with a
+       heading floating in the middle. <Testimonials /> was removed on
+       2026-09-01, so that reason is gone and the section it was guarding
+       against no longer exists.
+
+       It now inherits the body cream gradient exactly as <Testimonials /> did,
+       which is what keeps the Consultation(navy) -> light -> Footer(navy)
+       rhythm the page comment in page.tsx asks for. The cards stay white; the
+       hairline below is what separates them from a surface only a shade darker
+       than they are. */
+    <section aria-labelledby="google-reviews-heading">
       <div className="mx-auto w-full max-w-content px-5 py-16 md:px-7 lg:py-20">
         {/* ---------- Header ---------- */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
