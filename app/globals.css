@@ -1426,10 +1426,16 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   pointer-events: none;
 }
 
+/* 🔴 WHITE, AND IT WAS MISSED ON THE FIRST PASS. This is the admin's actual
+   page surface, and it was written as `rgba(248, 244, 238, 0.88)` rather than
+   as the hex, so the sweep that turned #F8F4EE into #FFFFFF walked straight
+   past it and left the whole admin cream under a white `.admin-page`. The
+   alpha is unchanged: 12% of the silk texture still reads through, it is just
+   neutral now instead of warm. */
 .admin-silk-scrim {
   position: absolute;
   inset: 0;
-  background: rgba(248, 244, 238, 0.88);
+  background: rgba(255, 255, 255, 0.88);
 }
 
 /* Everything above the backdrop. A single stacking rule rather than z-index
@@ -1452,8 +1458,12 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   inset-inline: 0;
   top: 0;
   border-bottom: 1px solid rgba(26, 26, 26, 0.1);
-  /* 0.94 — the first alpha at which gold-deep clears 4.5 here. See the table. */
-  background: rgba(248, 244, 238, 0.94);
+  /* 0.94 — the first alpha at which gold-deep clears 4.5 here. See the table.
+     Held at 0.94 rather than raised: white is LIGHTER than the cream this was
+     measured against, so gold-deep clears 4.5 by more than it used to, not
+     less. The 1px bottom border is what keeps the bar readable as a bar now
+     that it is the same colour as the page under it. */
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);

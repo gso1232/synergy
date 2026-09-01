@@ -403,15 +403,25 @@ export default function Footer() {
           className="absolute inset-0"
           style={{
             backgroundImage: [
-              // THE MELT — top-anchored. Cream at alpha 1 exactly at the seam,
-              // gone by --melt.
-              "linear-gradient(to bottom, rgba(244,239,228,1) 0px, rgba(244,239,228,0) var(--melt))",
+              // THE MELT — top-anchored. THE PAGE COLOUR at alpha 1 exactly at
+              // the seam, gone by --melt.
+              //
+              // 🔴 IT IS WHITE BECAUSE THE PAGE IS. This was
+              // rgba(244,239,228,1), the old cream. Its entire job is to BE the
+              // background of whatever sits above the footer, so the photograph
+              // has nothing to melt out of. When the site went pure white this
+              // one stop did not, and the result was a hard cream band starting
+              // at the seam and running the height of the footer against a
+              // white page. It was written as rgba(), not as the hex, which is
+              // how the sweep missed it. Any future change to the page colour
+              // has to change this line in the same commit.
+              "linear-gradient(to bottom, rgba(255,255,255,1) 0px, rgba(255,255,255,0) var(--melt))",
               // THE SCRIM — bottom-anchored. Zero at the very bottom edge, up
               // to 0.55 by the top of --reveal, then held at 0.55 for the whole
               // height above it. --reveal is the footer's own bottom padding,
               // so the flat 0.55 region is exactly the region the content
               // occupies, at every breakpoint, whatever the content does.
-              "linear-gradient(to top, rgba(244,239,228,0) 0px, rgba(244,239,228,0.55) var(--reveal), rgba(244,239,228,0.55) 100%)",
+              "linear-gradient(to top, rgba(255,255,255,0) 0px, rgba(255,255,255,0.55) var(--reveal), rgba(255,255,255,0.55) 100%)",
             ].join(", "),
           }}
         />
