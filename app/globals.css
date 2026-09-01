@@ -823,17 +823,25 @@ html[data-route-theme="dark"] {
   --focus-ring: #efe1b0;
 }
 
-/* Links sit on a busy photograph in the transparent state, so they carry a soft
-   shadow as well as the top gradient. Dropped entirely once the bar is cream —
-   a shadow on cream just looks smudged. */
+/* 🔴 THE NAV TEXT-SHADOW IS GONE, 2026-09-01, AND IT HAD BEEN WRONG FOR A WHILE.
+   It was `0 1px 14px rgba(13, 27, 42, 0.6)` — a navy glow that existed for one
+   reason: the bar used to be TRANSPARENT over the hero photograph at rest, and
+   the links needed help separating from whatever pixels sat behind them.
+
+   That state does not exist any more. The nav row has been solid in BOTH states
+   since the "one bar, one height, it never resizes" change — see the note above
+   `.site-header[data-compact="true"] .site-header__row`, where `data-compact`
+   now owns only the drop shadow. So the rule was painting a dark glow behind
+   navy text on a solid plate, which is not legibility, it is a smudge.
+
+   It survived because it was scoped to `[data-compact="false"]`, which is the
+   TOP of every page — the one place nobody scrolls past slowly enough to
+   question it. Pure white made it obvious.
+
+   The `transition` stays, minus the `text-shadow` entry: `.nav-ink` still
+   cross-fades `color` on hover. */
 .site-header .nav-ink {
-  text-shadow: 0 1px 14px rgba(13, 27, 42, 0.6);
-  transition:
-    color 280ms ease,
-    text-shadow 280ms ease;
-}
-.site-header[data-compact="true"] .nav-ink {
-  text-shadow: none;
+  transition: color 280ms ease;
 }
 
 @media (prefers-reduced-motion: reduce) {
