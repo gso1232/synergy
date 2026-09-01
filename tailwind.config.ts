@@ -5,7 +5,36 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        cream: "#F8F4EE",
+        /**
+         * 🔴 cream IS PURE WHITE NOW. It was #F8F4EE, the warm off-white this
+         * whole palette was built around, changed to #FFFFFF on instruction
+         * 2026-09-01: "make the whole website pure white, not this dim white".
+         *
+         * THE NAME IS KEPT ON PURPOSE. Renaming it to `white` would touch 38
+         * `bg-cream`, 81 `text-cream` and 11 `border-cream` call sites across
+         * the codebase for zero behavioural gain, and every one of those edits
+         * is a chance to typo a class into silence. The token is the single
+         * place this value lives; changing it here changed every surface at
+         * once, which is the whole reason it exists.
+         *
+         * ⚠️ CONTRAST RATIOS QUOTED IN OLDER COMMENTS ARE NOW CONSERVATIVE, NOT
+         * WRONG. Roughly forty comments in app/globals.css and the components
+         * cite figures measured against #F8F4EE (cream on navy 15.87:1,
+         * gold-deep on cream 5.16:1, and so on). White is LIGHTER than cream,
+         * so every one of those pairs now measures the same or better: ink on
+         * white is 16.1:1 against 15.87, gold-deep on white 5.35 against 5.16.
+         * They were left as written rather than rewritten in bulk, because a
+         * forty-line find-and-replace through measured documentation is a good
+         * way to introduce a number nobody checked.
+         *
+         * 🟡 WHAT THIS COSTS. Sections no longer separate by tone. `bg-cream`
+         * and `bg-white` are now the same colour, so every white card on a
+         * page surface reads by its border alone. They all have one, verified
+         * across all 58 `bg-white` call sites; the two that did not are fixed
+         * in this change (`.admin-skip` gained a boundary, and the Google
+         * review cards already carry a hairline).
+         */
+        cream: "#FFFFFF",
         greige: "#ECE9E2",
         navy: "#0D1B2A",
         // Navy-lift — the TOP of the About page's continuous gradient, which

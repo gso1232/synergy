@@ -272,8 +272,12 @@ html {
    section wrapper without re-reading this.
 --------------------------------------------------------------------------- */
 body {
-  background-color: #f8f4ee;
-  background-image: linear-gradient(180deg, #f8f4ee 0%, #f4efe4 100%);
+  /* 🔴 FLAT #FFFFFF, AND THE GRADIENT IS GONE RATHER THAN SET TO WHITE-ON-WHITE.
+     This was cream #F8F4EE descending to #F4EFE4 over the whole document. Both
+     stops are now pure white on instruction, which makes the gradient a no-op
+     the compositor still has to paint on every scroll, so it is removed instead
+     of neutralised. */
+  background-color: #ffffff;
 }
 
 /* Dark routes paint the CANVAS, not just the page.
@@ -505,7 +509,7 @@ html[data-route-theme="dark"] {
   position: relative;
   z-index: 1;
   pointer-events: auto;
-  background-color: #f8f4ee;
+  background-color: #ffffff;
   box-shadow: 0 1px 0 rgba(13, 27, 42, 0.08);
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -610,14 +614,14 @@ html[data-route-theme="dark"] {
 .site-header .nav-pill,
 .site-header[data-compact="true"] .nav-pill {
   background-color: #22496f;
-  color: #f8f4ee;
+  color: #ffffff;
   transition:
     background-color 280ms ease,
     color 280ms ease;
 }
 .site-header .nav-pill:hover {
   background-color: #7d641f;
-  color: #f8f4ee;
+  color: #ffffff;
 }
 .site-header .nav-ink {
   color: var(--nav-ink);
@@ -684,18 +688,18 @@ html[data-route-theme="dark"] {
   box-shadow: 0 1px 0 rgba(248, 244, 238, 0.12);
 }
 .site-header[data-surface="dark"][data-compact="true"] {
-  --nav-ink: #f8f4ee;
+  --nav-ink: #ffffff;
 }
 .site-header[data-surface="dark"][data-compact="true"] .nav-ink:hover {
   color: #efe1b0;
 }
 .site-header[data-surface="dark"][data-compact="true"] .nav-pill {
-  background-color: #f8f4ee;
+  background-color: #ffffff;
   color: #0d1b2a;
 }
 .site-header[data-surface="dark"][data-compact="true"] .nav-pill:hover {
   background-color: #7d641f;
-  color: #f8f4ee;
+  color: #ffffff;
 }
 --------------------------------------------------------------------------- */
 
@@ -1400,7 +1404,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    silk is allowed to read, and the bar is where legibility wins.
    =========================================================================== */
 .admin-page {
-  background-color: #f8f4ee;
+  background-color: #ffffff;
 }
 
 /* Fixed, so the silk does not scroll with a long table — a backdrop that
@@ -1683,7 +1687,12 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   left: -9999px;
   top: 0;
   padding: 12px 16px;
-  background: #f8f4ee;
+  /* 🔴 THE BORDER IS NOT DECORATION. This chip was cream on a cream page and
+     read as a distinct surface by tone alone. Both are #FFFFFF now, so without
+     a boundary the first thing a keyboard user tabs to on the admin is an
+     invisible rectangle. */
+  background: #ffffff;
+  border: 1px solid rgba(26, 26, 26, 0.25);
   color: #1a1a1a;
   font-weight: 600;
 }
@@ -2957,7 +2966,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
   /* background-color: #f8f4ee; — INVERTED, see above. 1.00:1 on cream. */
   background-color: #0d1b2a;
   /* color: #0d1b2a; — INVERTED. */
-  color: #f8f4ee;
+  color: #ffffff;
   border-radius: 82px;
   padding: 7.38px 32.8px;
   transition: background-color 200ms ease;
@@ -2975,7 +2984,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    so a navy band (the /join closing CTA, for one) does not invent a second
    button. */
 .sem-pill-cta--on-dark {
-  background-color: #f8f4ee;
+  background-color: #ffffff;
   color: #0d1b2a;
 }
 .sem-pill-cta--on-dark:hover {
@@ -3086,7 +3095,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
      · The hover scale drops 1.03 -> 1.02. The same confirmation, proportionate
        to a control a third of the size. */
 .locale-pill {
-  background-color: #f8f4ee;
+  background-color: #ffffff;
   border: 1px solid rgba(201, 168, 76, 0.45);
   border-radius: 82px;
   padding: 2px 3px;
@@ -3151,7 +3160,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
 /* Selection is a FILLED SHAPE, not a tint — see the block note. */
 .locale-link.is-active {
   background-color: #0d1b2a;
-  color: #f8f4ee;
+  color: #ffffff;
 }
 /* Hover and focus are OURS — theirs has neither. Hover is the one state that
    tells a pointer user these are two controls and not one label.
@@ -5032,7 +5041,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
 .join-cta--ghost:hover {
   border-color: rgba(248, 244, 238, 0.75);
   background-color: rgba(248, 244, 238, 0.16);
-  color: #f8f4ee;
+  color: #ffffff;
 }
 @media (prefers-reduced-motion: reduce) {
   .join-cta--ghost {
@@ -6001,7 +6010,7 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    🔴 THE IN-LINES ARE 1.90:1 AND THAT IS DELIBERATE — see `.engine-line`.
    =========================================================================== */
 .engine-surface-light {
-  background-color: #f8f4ee;
+  background-color: #ffffff;
   background-image:
     linear-gradient(to right, rgba(26, 26, 26, 0.045) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(26, 26, 26, 0.045) 1px, transparent 1px),
