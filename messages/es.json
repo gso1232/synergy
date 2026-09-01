@@ -1478,5 +1478,10 @@
     "cardAria": "Leer la reseña de {name} en Google",
     "starsAria": "Calificación de {n} de 5",
     "translated": "Traducido por Google"
+  },
+  "social": {
+    "youtube": "Synergy en YouTube",
+    "instagram": "Synergy en Instagram",
+    "facebook": "Synergy en Facebook"
   }
 }

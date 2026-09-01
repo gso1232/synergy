@@ -1493,5 +1493,10 @@
     "cardAria": "Read the review by {name} on Google",
     "starsAria": "Rated {n} out of 5",
     "translated": "Translated by Google"
+  },
+  "social": {
+    "youtube": "Synergy on YouTube",
+    "instagram": "Synergy on Instagram",
+    "facebook": "Synergy on Facebook"
   }
 }
