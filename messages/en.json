@@ -1480,5 +1480,18 @@
     "s3v": "$80",
     "s3u": "Million +",
     "s3l": "Premium Sold"
+  },
+  "googleReviews": {
+    "eyebrow": "Verified on Google",
+    "heading": "What our clients say on Google",
+    "summary": "based on {count} Google reviews",
+    "seeAll": "See all reviews on Google",
+    "writeReview": "Review us on Google",
+    "postedOn": "Posted on Google",
+    "readMore": "Read more",
+    "showLess": "Show less",
+    "cardAria": "Read the review by {name} on Google",
+    "starsAria": "Rated {n} out of 5",
+    "translated": "Translated by Google"
   }
 }

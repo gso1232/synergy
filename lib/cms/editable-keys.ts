@@ -65,6 +65,16 @@ export const GROUPS: { id: string; label: string; namespaces: string[] }[] = [
       "consultation",
       "cta",
       "engine",
+      // The impact band's three figures and their labels. It was reaching the
+      // editor already, but through the "other" fallback, which is not where
+      // anyone editing the homepage would look for it.
+      "impact",
+      // 🔴 THE SECTION CHROME ONLY. The five review texts are NOT here and must
+      // not be added: they are verbatim, attributed statements by named members
+      // of the public, and an edit box over them is a tool for altering what
+      // someone said about this business. See the header of
+      // components/GoogleReviews.tsx.
+      "googleReviews",
     ],
   },
   { id: "about", label: "About page", namespaces: ["about"] },

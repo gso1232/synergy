@@ -15,6 +15,7 @@ import WhatWeCover from "@/components/WhatWeCover";
 import WhoWeServe from "@/components/WhoWeServe";
 import HowItWorks from "@/components/HowItWorks";
 import Testimonials from "@/components/Testimonials";
+import GoogleReviews from "@/components/GoogleReviews";
 import Consultation from "@/components/Consultation";
 // 🟢 CARRIERSTRIP IS BACK — 2026-08-07, and it is now rendered TWICE.
 //   It was commented out on 2026-08-01 because TheEngine rendered the same 21
@@ -129,6 +130,16 @@ export default function HomePage({
             mass. See the seam note in HANDOFF for the cost this left behind at
             the vacated slot. */}
         <Testimonials />
+        {/* GOOGLE REVIEWS — five real, linkable reviews off the Google Business
+            listing, placed DIRECTLY under <Testimonials /> on purpose: the
+            section above is three unlinkable quotes the reader has to take on
+            trust, and this one is the same claim with a click-through to the
+            source. Reversing the order would put the checkable evidence first
+            and make the unverifiable quotes read as the weaker afterthought.
+
+            It is greige, not cream, so it does not merge into the cream
+            Testimonials above it — see the seam note in the component. */}
+        <GoogleReviews />
       </main>
     </>
   );

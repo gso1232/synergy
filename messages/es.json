@@ -1465,5 +1465,18 @@
     "s3v": "$80",
     "s3u": "Millones +",
     "s3l": "En primas vendidas"
+  },
+  "googleReviews": {
+    "eyebrow": "Verificado en Google",
+    "heading": "Lo que dicen nuestros clientes en Google",
+    "summary": "con base en {count} reseñas de Google",
+    "seeAll": "Ver todas las reseñas en Google",
+    "writeReview": "Escríbenos una reseña en Google",
+    "postedOn": "Publicado en Google",
+    "readMore": "Leer más",
+    "showLess": "Ver menos",
+    "cardAria": "Leer la reseña de {name} en Google",
+    "starsAria": "Calificación de {n} de 5",
+    "translated": "Traducido por Google"
   }
 }
