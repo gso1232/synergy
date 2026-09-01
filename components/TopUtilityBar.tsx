@@ -13,6 +13,7 @@ import NextLink from "next/link";
 import { Link, usePathname } from "@/navigation";
 import { locales } from "@/lib/locales";
 import { routeHref } from "@/routes";
+import { SOCIALS } from "@/components/social";
 
 /**
  * The thin utility strip above the main nav, matching familyfirstlife.com's.
@@ -126,114 +127,10 @@ function ArrowBadge() {
   );
 }
 
-/* ---------------------------------------------------------------------------
-   THE SOCIAL MARKS.
-
-   🔴 FULL BRAND COLOUR, NOT MONOCHROME, AND THAT IS THE ASK. The reference
-   renders its social row as flat dark glyphs and the rest of this strip is
-   ink-on-grey, so a monochrome set would sit more quietly here. "Must have the
-   icons of the apps, logo of YouTube, Facebook and Instagram" is a request for
-   the marks people recognise at a glance, and at 17px the thing that makes a
-   YouTube icon read as YouTube is the red.
-
-   ⚠️ THESE ARE OTHER COMPANIES' TRADEMARKS AND THEY ARE REPRODUCED UNALTERED.
-   Every one of these three brands requires its mark be used in its own colours
-   and proportions, not recoloured to a host palette. So this is the one place
-   on the site exempt from the Synergy palette, for the same reason the Google
-   G in components/GoogleReviews.tsx is.
-
-   Drawn inline rather than fetched: three glyphs are a few hundred bytes of
-   path data against three network requests on every page of the site.
-
-   Each is `aria-hidden`; the accessible name lives on the <a> that wraps it,
-   because an icon with no text needs a name a screen reader can announce and
-   "YouTube" alone does not say what the link does.
-   --------------------------------------------------------------------------- */
-
-function YouTubeMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
-      <path
-        fill="#FF0000"
-        d="M23.5 6.2a3 3 0 0 0-2.12-2.13C19.5 3.55 12 3.55 12 3.55s-7.5 0-9.38.52A3 3 0 0 0 .5 6.2C0 8.07 0 12 0 12s0 3.93.5 5.8a3 3 0 0 0 2.12 2.13c1.88.52 9.38.52 9.38.52s7.5 0 9.38-.52a3 3 0 0 0 2.12-2.13C24 15.93 24 12 24 12s0-3.93-.5-5.8z"
-      />
-      <path fill="#FFFFFF" d="M9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
-    </svg>
-  );
-}
-
-function FacebookMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
-      <path
-        fill="#1877F2"
-        d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.09 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.09 24 18.1 24 12.07z"
-      />
-      <path
-        fill="#FFFFFF"
-        d="M16.67 15.56l.53-3.49h-3.33V9.82c0-.96.47-1.89 1.96-1.89h1.51V4.96s-1.37-.24-2.68-.24c-2.74 0-4.53 1.67-4.53 4.69v2.66H7.08v3.49h3.05V24a12.1 12.1 0 0 0 3.74 0v-8.44h2.8z"
-      />
-    </svg>
-  );
-}
-
-/**
- * Instagram's mark is a gradient, not a flat colour, and reproducing it flat
- * would be the altered-trademark problem the note above is about.
- *
- * The gradient id is namespaced (`syn-ig-*`) because SVG gradient ids are
- * GLOBAL to the document, not scoped to their <svg>. A bare `id="a"` would be
- * one collision away from another inline SVG on the page repainting this icon.
- */
-function InstagramMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id="syn-ig-grad" cx="30%" cy="107%" r="150%">
-          <stop offset="0%" stopColor="#FDF497" />
-          <stop offset="5%" stopColor="#FDF497" />
-          <stop offset="45%" stopColor="#FD5949" />
-          <stop offset="60%" stopColor="#D6249F" />
-          <stop offset="90%" stopColor="#285AEB" />
-        </radialGradient>
-      </defs>
-      <rect x="0" y="0" width="24" height="24" rx="6.5" fill="url(#syn-ig-grad)" />
-      <path
-        fill="none"
-        stroke="#FFFFFF"
-        strokeWidth="1.8"
-        d="M8.4 4.9h7.2a3.5 3.5 0 0 1 3.5 3.5v7.2a3.5 3.5 0 0 1-3.5 3.5H8.4a3.5 3.5 0 0 1-3.5-3.5V8.4a3.5 3.5 0 0 1 3.5-3.5z"
-      />
-      <circle cx="12" cy="12" r="3.1" fill="none" stroke="#FFFFFF" strokeWidth="1.8" />
-      <circle cx="16.6" cy="7.5" r="1.05" fill="#FFFFFF" />
-    </svg>
-  );
-}
-
-/**
- * 🔴 THE FACEBOOK URL IS THE `profile.php?id=` FORM ON PURPOSE. Facebook
- * redirects it to /people/Synergy-Insurance-Group/61591480711718/, which is
- * prettier and is NOT used: that form embeds the page NAME, so it breaks the
- * day the page is renamed. The numeric id never changes. Verified 2026-09-01 to
- * resolve to "Synergy Insurance Group | Orlando FL".
- */
-const SOCIALS = [
-  {
-    key: "youtube" as const,
-    href: "https://www.youtube.com/channel/UC0sjqMP_obt8m9M0_5tgzig",
-    Mark: YouTubeMark,
-  },
-  {
-    key: "instagram" as const,
-    href: "https://www.instagram.com/synergyinsurance_g/",
-    Mark: InstagramMark,
-  },
-  {
-    key: "facebook" as const,
-    href: "https://www.facebook.com/profile.php?id=61591480711718",
-    Mark: FacebookMark,
-  },
-];
+/* The three marks and their URLs live in components/social.tsx, because the
+   footer renders the same three links and two copies of three third-party URLs
+   is one place to forget when an account moves. The reasoning about brand
+   colour, trademarks and the gradient id is all documented there. */
 
 export default function TopUtilityBar() {
   const locale = useLocale();
@@ -282,7 +179,7 @@ export default function TopUtilityBar() {
                 {/* Hover is OPACITY, not colour. These are trademarks that have
                     to stay in their own colours, so the one hover affordance
                     available is to dim the whole mark uniformly. */}
-                <Mark className="h-[16px] w-[16px] card:h-[18px] card:w-[18px]" />
+                <Mark instanceId="bar" className="h-[16px] w-[16px] card:h-[18px] card:w-[18px]" />
               </a>
             </li>
           ))}

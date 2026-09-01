@@ -39,7 +39,11 @@ const IMAGE = process.env.FOOTER_IMAGE ?? "public/footer/ground-sunrise-hills.jp
 /** The page gradient's BOTTOM stop — the surface the footer actually opens on.
  *  Was [248,244,238] when the page was flat cream. MUST track the end stop of
  *  the body gradient in globals.css and the two stops in Footer.tsx. */
-const CREAM = [244, 239, 228];
+// The PAGE colour the footer gradients composite over. #FFFFFF since
+// 2026-09-01; was [244,239,228] when the page was cream. This must track the
+// melt and scrim stops in components/Footer.tsx or the ratios this script
+// reports are measured against a background the site does not have.
+const CREAM = [255, 255, 255];
 /** Held alpha of the bottom-anchored scrim across the content region. */
 const SCRIM = 0.55;
 

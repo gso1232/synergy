@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
+import { SOCIALS } from "@/components/social";
 import { FOOTER_ROUTES, routeHref } from "@/routes";
 import LogoLockup from "./LogoLockup";
 
@@ -22,23 +23,22 @@ import LogoLockup from "./LogoLockup";
  * a hidden sliver, and a hard tonal line where the greige stopped.
  *
  * ---------------------------------------------------------------------------
- * THE MELT. The footer paints NO background of its own; the page gradient on
- * <body> shows through it. Over that sits a gradient on the photograph whose
- * FIRST STOP IS #F4EFE4 AT ALPHA 1.
+ * THE MELT. The footer paints NO background of its own; the page surface shows
+ * through it. Over that sits a gradient on the photograph whose FIRST STOP IS
+ * THE PAGE COLOUR AT ALPHA 1 — #FFFFFF since 2026-09-01.
  *
- * 🔴 THAT VALUE IS THE PAGE GRADIENT'S BOTTOM, NOT CREAM, AND THE DIFFERENCE IS
- * THE WHOLE SEAM. The page surface is `linear-gradient(180deg,#F8F4EE,#F4EFE4)`
- * on <body>, so by the time the document reaches the footer it has arrived at
- * #F4EFE4. This footer used to open on flat #F8F4EE, matching the flat-cream
- * page it was built against. Against the gradient that same value is 0.043 of
- * luminance TOO LIGHT at exactly the point the two meet — a visible step across
- * the full width, which is the one thing this footer exists to not have.
+ * 🔴 THE STOP IS WHATEVER THE PAGE IS, AND KEEPING THEM IN STEP IS THE WHOLE
+ * SEAM. The history is the warning: this opened on flat #F8F4EE, matching the
+ * flat-cream page it was built against; when <body> became a gradient ending at
+ * #F4EFE4 that same value was 0.043 of luminance too light at exactly the point
+ * the two meet, a visible step across the full width. It was corrected to
+ * #F4EFE4. Then the whole site went pure white and this stop did NOT follow, so
+ * a hard cream band ran the height of the footer against a white page in
+ * production until it was caught.
  *
- * Opening on #F4EFE4 instead means the section above and the footer are again
- * the same colour at the boundary, and it carries no information. If the page
- * gradient's end stop ever changes, THESE THREE VALUES CHANGE WITH IT: the
- * melt's stop, the scrim's stop, and the CREAM constant in
- * scripts/measure-footer-aa.mjs.
+ * IF THE PAGE COLOUR CHANGES AGAIN, THESE THREE CHANGE WITH IT IN THE SAME
+ * COMMIT: the melt's stop, the scrim's stop, and the PAGE constant in
+ * scripts/measure-footer-aa.mjs. There is no test that catches this.
  *
  * ---------------------------------------------------------------------------
  * TWO GRADIENTS, EACH ANCHORED TO AN EDGE IN PIXELS.
@@ -131,11 +131,20 @@ import LogoLockup from "./LogoLockup";
  * pretending to be links. When the routes exist, wrap them in <Link> and change
  * nothing else — the strings are already in both message files.
  *
- * 🔴 SOCIALS — DROPPED, NOT UNBUILT. The reference puts a social row under the
- * logo. Searched the whole tree for facebook / instagram / linkedin / twitter /
- * x.com / youtube / tiktok across components, app, lib and both message files:
- * ZERO hits. There is no Synergy account to link. Three icons pointing at "#"
- * is the same lie as a dead Privacy link in a more clickable shape.
+ * 🟢 SOCIALS — RESTORED 2026-09-01. The note here used to read:
+ *
+ *     "SOCIALS — DROPPED, NOT UNBUILT. The reference puts a social row under
+ *      the logo. Searched the whole tree for facebook / instagram / linkedin /
+ *      twitter / x.com / youtube / tiktok across components, app, lib and both
+ *      message files: ZERO hits. There is no Synergy account to link. Three
+ *      icons pointing at '#' is the same lie as a dead Privacy link in a more
+ *      clickable shape."
+ *
+ * That was true when it was written and is not now. Three accounts exist, and
+ * the objection above is answered the only way it can be: each one was opened
+ * and confirmed to be Synergy's before being linked. They live in
+ * components/social.tsx, shared with the header strip so the URLs have one
+ * home. LinkedIn, X and TikTok are still absent, for the original reason.
  *
  * 🔴 NEWSLETTER — DROPPED. The reference has a "Join Newsletter" field. There is
  * no mailing list, no provider and no endpoint; the form on /contact is itself
@@ -253,6 +262,7 @@ import LogoLockup from "./LogoLockup";
 export default function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
+  const tSocial = useTranslations("social");
   const locale = useLocale();
   // Rendered server-side. On a statically exported build this is baked at
   // build time, which is the same behaviour as fflsynergy's hard-coded year.
@@ -454,8 +464,37 @@ export default function Footer() {
 
             <p className={`mt-4 max-w-[40ch] ${plainClass}`}>{mission}</p>
 
-            {/* 🔴 SOCIAL ROW SITS HERE IN THE REFERENCE. Not rendered — there
-                are no Synergy accounts. See SOCIALS in the docblock. */}
+            {/* 🟢 THE SOCIAL ROW, RESTORED 2026-09-01. This is the reference's
+                own slot for it, and it stood empty because there were no
+                accounts to link. There are now three, all opened and confirmed
+                before being linked — see components/social.tsx, which is also
+                where the strip in the header gets them from.
+
+                24px against the header strip's 16-18px: this row sits on its
+                own under a 26px tagline with nothing competing for the space,
+                where the strip is a 36px band with two text links beside it. */}
+            <ul className="mt-7 flex list-none items-center gap-4">
+              {SOCIALS.map(({ key, href, Mark }) => (
+                <li key={key} className="flex">
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={tSocial(key)}
+                    /* min-h/w 44px: this is the one place these icons are a
+                       primary target rather than a secondary one in a utility
+                       strip, and a 24px tap target on a phone is below every
+                       guideline. The box is padded around the mark rather than
+                       the mark being grown. */
+                    className="-m-2.5 inline-flex h-11 w-11 items-center justify-center rounded-full transition-opacity duration-200 hover:opacity-70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none"
+                  >
+                    {/* Opacity, not colour: these marks have to stay in their
+                        own brand colours. */}
+                    <Mark instanceId="footer" className="h-6 w-6" />
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
 
           {/* NAVIGATION */}
