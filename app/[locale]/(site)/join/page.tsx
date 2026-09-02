@@ -7,7 +7,13 @@ import JoinSteps from "@/components/JoinSteps";
 import JoinFrame from "@/components/JoinFrame";
 import VideoEmbed from "@/components/VideoEmbed";
 import JoinHeroCtas from "@/components/JoinHeroCtas";
-import JoinApplyForm from "@/components/JoinApplyForm";
+/* 🔴 THE LONG FORM IS REPLACED BY THE QUIZ, 2026-09-02, ON INSTRUCTION.
+   components/JoinApplyForm.tsx is untouched on disk and still exports the same
+   22 fields in one scrolling column; swapping back is this import and the call
+   site below. The quiz asks the same 22 questions one at a time and gates on
+   US residency and work authorisation before it asks any of them. */
+// import JoinApplyForm from "@/components/JoinApplyForm";
+import JoinQuiz from "@/components/JoinQuiz";
 import { routeHref } from "@/routes";
 
 /**
@@ -517,7 +523,7 @@ export default async function JoinPage({
                 and reads its strings from the next-intl provider like every
                 other client component. */}
             <FadeUp index={1}>
-              <JoinApplyForm />
+              <JoinQuiz />
             </FadeUp>
           </div>
         </div>
