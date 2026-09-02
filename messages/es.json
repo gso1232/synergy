@@ -715,7 +715,42 @@
       "errorInvalid": "Hay datos que revisar. Los campos marcados abajo son los que debe corregir.",
       "errorThrottled": "Son varios intentos en poco tiempo. Espere unos minutos e inténtelo de nuevo.",
       "errorUnavailable": "Este formulario no puede enviarse en este momento. Llame a la oficina al número de arriba y tomaremos sus datos por teléfono.",
-      "errorFailed": "Algo falló al enviar y no se guardó. Inténtelo de nuevo o llame a la oficina al número de arriba."
+      "errorFailed": "Algo falló al enviar y no se guardó. Inténtelo de nuevo o llame a la oficina al número de arriba.",
+      "optional": "Opcional",
+      "groupName": "Nombre",
+      "middleName": "Segundo nombre",
+      "groupAddress": "Dirección",
+      "street": "Dirección",
+      "city": "Ciudad",
+      "zip": "Código postal",
+      "groupWork": "El trabajo",
+      "workType": "¿Busca tiempo parcial o tiempo completo?",
+      "workTypeOptions": {
+        "part_time": "Tiempo parcial",
+        "full_time": "Tiempo completo",
+        "either": "Cualquiera de los dos"
+      },
+      "selfEmployed": "¿Está de acuerdo con trabajar por cuenta propia y recibir un 1099?",
+      "selfEmployedYes": "Sí",
+      "selfEmployedNo": "No",
+      "licensedFull": "¿Tiene actualmente licencia de seguros de Vida y Salud?",
+      "activelySelling": "Si tiene licencia, ¿está vendiendo seguros actualmente?",
+      "activelySellingOptions": {
+        "yes": "Sí, estoy vendiendo ahora",
+        "no": "No, en este momento no",
+        "not_licensed": "Todavía no tengo licencia"
+      },
+      "agencyDetail": "Cuéntenos sobre la agencia o IMO con la que trabaja ahora, o con la que trabajó antes. ¿Por qué desea cambiar? ¿Firmó un contrato con ellos y ya dio aviso de terminación?",
+      "agencyDetailNote": "Le preguntamos esto porque indicó que está vendiendo actualmente.",
+      "groupBackground": "Sobre usted",
+      "salesExperience": "¿Tiene experiencia previa en ventas? Por favor descríbala.",
+      "background": "Describa brevemente su experiencia profesional.",
+      "whyUs": "¿Por qué le interesa trabajar con Synergy?",
+      "socialHandles": "Usuario de Facebook, Instagram, TikTok o X",
+      "incomeRange": "¿A qué nivel de ingresos está acostumbrado?",
+      "recruiter": "Nombre del líder de equipo o reclutador",
+      "comments": "Algo más que quiera que sepamos",
+      "consent": "Al hacer clic en “enviar”, usted da su consentimiento a Synergy Insurance Group para enviarle mensajes SMS relacionados con nuestras ofertas y servicios. Puede recibir hasta 1 mensaje por semana. Para AYUDA, escríbanos al 407-434-0400. Para cancelar la suscripción, envíe STOP. Pueden aplicarse tarifas estándar de mensajes y datos."
     },
     "range": {
       "eyebrow": "LOS PRODUCTOS",
@@ -1483,5 +1518,9 @@
     "youtube": "Synergy en YouTube",
     "instagram": "Synergy en Instagram",
     "facebook": "Synergy en Facebook"
+  },
+  "video": {
+    "title": "Conozca Synergy Insurance Group en 3 minutos",
+    "playAria": "Reproducir el video de Synergy Insurance Group, 3 minutos 22 segundos"
   }
 }

@@ -5206,6 +5206,32 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
     grid-template-columns: 1fr 1fr;
   }
 }
+/* The two markers the long intake needs.
+
+   `.join-optional` exists because the form is now 22 fields and most of them
+   are required: without a marker on the five that are not, every field reads as
+   compulsory and the form looks longer than it is. It rides INSIDE the label so
+   a screen reader announces "Middle name, optional" as one name, rather than as
+   a separate node the user has to go looking for.
+
+   `.join-help` is the note under the conditional agency question. */
+.join-optional {
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: rgba(11, 31, 58, 0.55);
+}
+.join-help {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(11, 31, 58, 0.62);
+}
+textarea.w-full {
+  min-height: 96px;
+  resize: vertical;
+}
+
 .join-label {
   display: block;
   margin-bottom: 6px;

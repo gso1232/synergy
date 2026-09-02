@@ -5,6 +5,7 @@ import { getTranslations, unstable_setRequestLocale } from "next-intl/server";
 import FadeUp from "@/components/FadeUp";
 import JoinSteps from "@/components/JoinSteps";
 import JoinFrame from "@/components/JoinFrame";
+import VideoEmbed from "@/components/VideoEmbed";
 import JoinHeroCtas from "@/components/JoinHeroCtas";
 import JoinApplyForm from "@/components/JoinApplyForm";
 import { routeHref } from "@/routes";
@@ -271,11 +272,25 @@ export default async function JoinPage({
               this size a 130% travelling layer would need an ~18% upscale, and
               the reference frame has no parallax anyway. `opening.imageAlt`
               describes this frame; entry is <FadeUp>, like every block here. */}
+          {/* 🔴 THE FILM TAKES THE SLOT THE PHOTOGRAPH USED TO HOLD, 2026-09-02,
+              on instruction: video directly under the phrase, photograph moved
+              to the bottom of the block.
+
+              It earns the position. The phrase above it is an argument — "you
+              are not buying a job" — and three minutes of the founder saying so
+              in her own voice answers it better than a still of five agents
+              does. The photograph is not deleted; it now closes the block
+              instead of opening it, which is a reasonable place for a team
+              frame anyway.
+
+              ⚠️ IT LOADS NOTHING FROM GOOGLE UNTIL SOMEONE PRESSES PLAY. See
+              components/VideoEmbed.tsx — a plain iframe would cost ~900KB and
+              set YouTube cookies on every visit to this page, including the
+              majority who never watch. */}
           <FadeUp className="join-opening-gap">
-            <JoinFrame
-              src="/synergy/join-opening-agents.jpg"
-              alt={t("opening.imageAlt")}
-            />
+            <div className="mx-auto w-full max-w-[760px]">
+              <VideoEmbed id="yitE9FQD-EY" poster="/synergy/join-video-poster.jpg" />
+            </div>
           </FadeUp>
 
           <FadeUp>
@@ -295,6 +310,16 @@ export default async function JoinPage({
                 </div>
               ))}
             </div>
+          </FadeUp>
+
+          {/* The team frame, moved here from directly under the phrase so the
+              film could take that slot. Same component, same source, same alt
+              string — only the position changed. */}
+          <FadeUp className="join-opening-gap">
+            <JoinFrame
+              src="/synergy/join-opening-agents.jpg"
+              alt={t("opening.imageAlt")}
+            />
           </FadeUp>
         </div>
       </section>

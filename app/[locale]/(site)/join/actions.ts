@@ -99,6 +99,11 @@ const US_STATES = new Set([
   "Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming",
 ]);
 
+/** The three shapes the work-type question can take. */
+const WORK_TYPES = ["part_time", "full_time", "either"] as const;
+/** "not_licensed" is a real answer, not a missing one. */
+const SELLING = ["yes", "no", "not_licensed"] as const;
+
 const str = (v: FormDataEntryValue | null) =>
   typeof v === "string" ? v.trim() : "";
 
@@ -109,12 +114,27 @@ export async function submitApplication(
   if (rateLimited(clientIp())) return { status: "error", error: "throttled" };
 
   const firstName = str(formData.get("firstName"));
+  const middleName = str(formData.get("middleName"));
   const lastName = str(formData.get("lastName"));
   const email = str(formData.get("email"));
   const phone = str(formData.get("phone"));
+  const street = str(formData.get("street"));
+  const city = str(formData.get("city"));
   const state = str(formData.get("state"));
+  const zip = str(formData.get("zip"));
+  const workType = str(formData.get("workType"));
+  const selfEmployedRaw = str(formData.get("selfEmployed"));
   const licensedRaw = str(formData.get("licensed"));
+  const activelySelling = str(formData.get("activelySelling"));
+  const agencyDetail = str(formData.get("agencyDetail"));
+  const salesExperience = str(formData.get("salesExperience"));
+  const background = str(formData.get("background"));
+  const whyUs = str(formData.get("whyUs"));
+  const socialHandles = str(formData.get("socialHandles"));
+  const incomeRange = str(formData.get("incomeRange"));
   const heardRaw = str(formData.get("hear"));
+  const recruiter = str(formData.get("recruiter"));
+  const comments = str(formData.get("comments"));
 
   const fields: string[] = [];
 
@@ -136,6 +156,45 @@ export async function submitApplication(
   if (heardRaw && !HEARD.includes(heardRaw as (typeof HEARD)[number]))
     fields.push("hear");
 
+  // ---- the full intake, 2026-09-02 ----------------------------------------
+  if (street.length < 2 || street.length > 200) fields.push("street");
+  if (city.length < 2 || city.length > 100) fields.push("city");
+  // US ZIP, five digits or ZIP+4. Cheap to check and wrong postage is expensive.
+  if (!/^\d{5}(-\d{4})?$/.test(zip)) fields.push("zip");
+  if (!WORK_TYPES.includes(workType as (typeof WORK_TYPES)[number]))
+    fields.push("workType");
+  if (selfEmployedRaw !== "yes" && selfEmployedRaw !== "no")
+    fields.push("selfEmployed");
+  if (!SELLING.includes(activelySelling as (typeof SELLING)[number]))
+    fields.push("activelySelling");
+
+  /* 🔴 agencyDetail IS CONDITIONALLY REQUIRED, AND THAT IS NOT A SHORTCUT. The
+     reference form marks "tell us about your current Agency/IMO, why are you
+     switching, did you sign a contract, have you given notice" as Required with
+     no condition attached — which, taken literally, blocks every applicant who
+     has never been licensed from finishing the form at all. It is required only
+     when the applicant says they are actively selling, which is the only case
+     in which the question has an answer. */
+  if (activelySelling === "yes" && (agencyDetail.length < 10 || agencyDetail.length > 4000))
+    fields.push("agencyDetail");
+
+  if (salesExperience.length < 2 || salesExperience.length > 4000)
+    fields.push("salesExperience");
+  if (background.length < 2 || background.length > 4000) fields.push("background");
+  if (whyUs.length < 2 || whyUs.length > 4000) fields.push("whyUs");
+
+  // The five optional fields are length-capped only. A cap is not decoration:
+  // without one, any of these is an unbounded write into the database.
+  for (const [name, v] of [
+    ["socialHandles", socialHandles],
+    ["incomeRange", incomeRange],
+    ["recruiter", recruiter],
+    ["comments", comments],
+    ["middleName", middleName],
+  ] as const) {
+    if (v.length > (name === "comments" ? 4000 : 200)) fields.push(name);
+  }
+
   if (fields.length) return { status: "error", error: "invalid", fields };
 
   const supabase = createAdminClient();
@@ -154,12 +213,28 @@ export async function submitApplication(
     .from("applications")
     .insert({
       first_name: firstName,
+      middle_name: middleName || null,
       last_name: lastName,
       email,
       phone,
+      street,
+      city,
       state,
+      zip,
+      work_type: workType,
+      self_employed_ok: selfEmployedRaw === "yes",
       licensed: licensedRaw === "yes",
+      actively_selling: activelySelling,
+      // NULL, not "", when the question did not apply. They are different facts.
+      agency_detail: activelySelling === "yes" ? agencyDetail : null,
+      sales_experience: salesExperience,
+      background,
+      why_us: whyUs,
+      social_handles: socialHandles || null,
+      income_range: incomeRange || null,
       heard: heardRaw || null,
+      recruiter: recruiter || null,
+      comments: comments || null,
       consent,
       ghl_status: "pending",
     })
@@ -203,6 +278,24 @@ export async function submitApplication(
     consent,
     licensed: licensedRaw === "yes",
     heard: heardRaw || undefined,
+    // The rest of the intake. A recruiter reads these before the first call,
+    // so they go to the CRM rather than only to the database. `undefined`
+    // rather than "" for anything unanswered, so the webhook receives no key
+    // at all instead of an empty one that reads like a blank answer.
+    address: street,
+    city,
+    postal_code: zip,
+    work_type: workType,
+    self_employed_ok: selfEmployedRaw === "yes",
+    actively_selling: activelySelling,
+    agency_detail: activelySelling === "yes" ? agencyDetail : undefined,
+    sales_experience: salesExperience,
+    background,
+    why_us: whyUs,
+    social_handles: socialHandles || undefined,
+    income_range: incomeRange || undefined,
+    recruiter: recruiter || undefined,
+    comments: comments || undefined,
     submitted_at: new Date().toISOString(),
   } satisfies GhlPayload);
 

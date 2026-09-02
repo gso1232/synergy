@@ -59,6 +59,25 @@ export type GhlPayload = {
   consent?: boolean;
   licensed?: boolean;
   heard?: string;
+
+  /* ---- the /join full intake, 2026-09-02 ---------------------------------
+     A recruiter reads these before the first call, so they ride to the CRM
+     rather than sitting only in the database. All optional: the contact form
+     shares this type and sets none of them. */
+  address?: string;
+  city?: string;
+  postal_code?: string;
+  work_type?: string;
+  self_employed_ok?: boolean;
+  actively_selling?: string;
+  agency_detail?: string;
+  sales_experience?: string;
+  background?: string;
+  why_us?: string;
+  social_handles?: string;
+  income_range?: string;
+  recruiter?: string;
+  comments?: string;
   /** "en" | "es" — so the CRM can route to a bilingual agent. */
   locale?: string;
   /** ISO 8601, set server-side. Never trust a client clock. */

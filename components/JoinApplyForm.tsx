@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useFormState, useFormStatus } from "react-dom";
 import { useTranslations } from "next-intl";
 import { submitApplication, type ApplyState } from "@/app/[locale]/(site)/join/actions";
@@ -112,6 +114,9 @@ function Fields({
   describedBy?: string;
 }) {
   const { pending } = useFormStatus();
+  /* Drives the conditional agency question below. Local state rather than a
+     form library: one select deciding whether one textarea exists. */
+  const [selling, setSelling] = useState("");
   const bad = (name: string) =>
     invalid.has(name) ? ({ "aria-invalid": true, "aria-describedby": describedBy } as const) : {};
 
@@ -119,7 +124,9 @@ function Fields({
     <fieldset disabled={pending} className="join-apply-fieldset">
       <legend className="sr-only">{t("apply.legend")}</legend>
 
-      {/* Their two-up pairing: first + last on one row. */}
+      {/* Their two-up pairing: first + last on one row, with middle between
+          them. Middle is the ONLY name part that is optional, which is why it
+          carries the optional marker and no `required`. */}
       <div className="join-field-pair">
         <div className="join-field">
           <label className="join-label" htmlFor="ja-first">
@@ -151,6 +158,22 @@ function Fields({
             {...bad("lastName")}
           />
         </div>
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-middle">
+          {t("apply.middleName")}{" "}
+          <span className="join-optional">{t("apply.optional")}</span>
+        </label>
+        <input
+          id="ja-middle"
+          name="middleName"
+          type="text"
+          autoComplete="additional-name"
+          maxLength={200}
+          className={FIELD}
+          {...bad("middleName")}
+        />
       </div>
 
       <div className="join-field-pair">
@@ -215,6 +238,118 @@ function Fields({
         </select>
       </div>
 
+      {/* ---- ADDRESS ------------------------------------------------------
+          Street, city and ZIP were never asked before; only `state` was, and
+          only because it routes a recruiter. A licence is issued against a real
+          address, so the full one is asked once here rather than chased later
+          over email. State stays where it is, directly above, so the address
+          reads in postal order. */}
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-street">
+          {t("apply.street")}
+        </label>
+        <input
+          id="ja-street"
+          name="street"
+          type="text"
+          autoComplete="street-address"
+          required
+          maxLength={200}
+          className={FIELD}
+          {...bad("street")}
+        />
+      </div>
+
+      <div className="join-field-pair">
+        <div className="join-field">
+          <label className="join-label" htmlFor="ja-city">
+            {t("apply.city")}
+          </label>
+          <input
+            id="ja-city"
+            name="city"
+            type="text"
+            autoComplete="address-level2"
+            required
+            maxLength={100}
+            className={FIELD}
+            {...bad("city")}
+          />
+        </div>
+        <div className="join-field">
+          <label className="join-label" htmlFor="ja-zip">
+            {t("apply.zip")}
+          </label>
+          {/* inputMode numeric, not type=number: a ZIP is a string of digits,
+              and type=number strips leading zeros, which breaks every ZIP that
+              starts with one. */}
+          <input
+            id="ja-zip"
+            name="zip"
+            type="text"
+            inputMode="numeric"
+            autoComplete="postal-code"
+            required
+            maxLength={10}
+            className={FIELD}
+            {...bad("zip")}
+          />
+        </div>
+      </div>
+
+      {/* ---- THE WORK ------------------------------------------------------ */}
+      <fieldset className="join-radiogroup">
+        <legend className="join-label">{t("apply.workType")}</legend>
+        <div className="join-radio-row">
+          {(["part_time", "full_time", "either"] as const).map((v, i) => (
+            <div key={v} className="join-radio">
+              <input
+                id={`ja-work-${v}`}
+                name="workType"
+                type="radio"
+                value={v}
+                required={i === 0}
+                className="join-radio-input"
+                {...(i === 0 ? bad("workType") : {})}
+              />
+              <label htmlFor={`ja-work-${v}`}>{t(`apply.workTypeOptions.${v}`)}</label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* 🔴 THE 1099 QUESTION IS NOT SMALL PRINT. Every agent here is an
+          independent contractor, and someone who answers no to this is not a
+          fit no matter how the rest of the form reads. It is asked plainly and
+          early rather than discovered on a first call. */}
+      <fieldset className="join-radiogroup">
+        <legend className="join-label">{t("apply.selfEmployed")}</legend>
+        <div className="join-radio-row">
+          <div className="join-radio">
+            <input
+              id="ja-se-yes"
+              name="selfEmployed"
+              type="radio"
+              value="yes"
+              required
+              className="join-radio-input"
+              {...bad("selfEmployed")}
+            />
+            <label htmlFor="ja-se-yes">{t("apply.selfEmployedYes")}</label>
+          </div>
+          <div className="join-radio">
+            <input
+              id="ja-se-no"
+              name="selfEmployed"
+              type="radio"
+              value="no"
+              className="join-radio-input"
+            />
+            <label htmlFor="ja-se-no">{t("apply.selfEmployedNo")}</label>
+          </div>
+        </div>
+      </fieldset>
+
       {/* 🔴 A RADIOGROUP, NOT TWO LOOSE CHECKBOXES. Theirs is a radio pair
           named `lic`, and a fieldset+legend is what makes a two-option choice
           announce as one control with a name — a screen reader reads
@@ -264,12 +399,191 @@ function Fields({
         </select>
       </div>
 
-      {/* 🔴 CONSENT — BUILT, VALUE STORED, WORDING STILL PENDING. See the header
-          note. The label renders the placeholder string so the gap is VISIBLE on
-          the page rather than being an empty checkbox nobody notices. */}
+      {/* ---- ABOUT YOU ----------------------------------------------------
+          Four written answers. These are the part of the application a
+          recruiter actually reads, so they are textareas with real room rather
+          than single-line inputs that make a considered answer feel unwelcome. */}
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-selling">
+          {t("apply.activelySelling")}
+        </label>
+        <select
+          id="ja-selling"
+          name="activelySelling"
+          value={selling}
+          onChange={(e) => setSelling(e.target.value)}
+          required
+          className={FIELD}
+          {...bad("activelySelling")}
+        >
+          <option value="" disabled>
+            {t("apply.statePlaceholder")}
+          </option>
+          {(["yes", "no", "not_licensed"] as const).map((v) => (
+            <option key={v} value={v}>
+              {t(`apply.activelySellingOptions.${v}`)}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* 🔴 SHOWN ONLY WHEN THE ANSWER ABOVE IS "yes", AND THAT IS THE WHOLE
+          POINT. The reference marks this Required with no condition, which taken
+          literally blocks every applicant who has never been licensed from
+          finishing the form at all. It appears, and is required, only when it
+          has an answer. The server applies the same condition. */}
+      {selling === "yes" ? (
+        <div className="join-field">
+          <label className="join-label" htmlFor="ja-agency">
+            {t("apply.agencyDetail")}
+          </label>
+          <textarea
+            id="ja-agency"
+            name="agencyDetail"
+            rows={4}
+            required
+            maxLength={4000}
+            className={FIELD}
+            {...bad("agencyDetail")}
+          />
+          <p className="join-help">{t("apply.agencyDetailNote")}</p>
+        </div>
+      ) : null}
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-sales">
+          {t("apply.salesExperience")}
+        </label>
+        <textarea
+          id="ja-sales"
+          name="salesExperience"
+          rows={3}
+          required
+          maxLength={4000}
+          className={FIELD}
+          {...bad("salesExperience")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-background">
+          {t("apply.background")}
+        </label>
+        <textarea
+          id="ja-background"
+          name="background"
+          rows={3}
+          required
+          maxLength={4000}
+          className={FIELD}
+          {...bad("background")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-why">
+          {t("apply.whyUs")}
+        </label>
+        <textarea
+          id="ja-why"
+          name="whyUs"
+          rows={3}
+          required
+          maxLength={4000}
+          className={FIELD}
+          {...bad("whyUs")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-social">
+          {t("apply.socialHandles")}{" "}
+          <span className="join-optional">{t("apply.optional")}</span>
+        </label>
+        <input
+          id="ja-social"
+          name="socialHandles"
+          type="text"
+          maxLength={200}
+          className={FIELD}
+          {...bad("socialHandles")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-income">
+          {t("apply.incomeRange")}{" "}
+          <span className="join-optional">{t("apply.optional")}</span>
+        </label>
+        <input
+          id="ja-income"
+          name="incomeRange"
+          type="text"
+          maxLength={200}
+          className={FIELD}
+          {...bad("incomeRange")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-recruiter">
+          {t("apply.recruiter")}{" "}
+          <span className="join-optional">{t("apply.optional")}</span>
+        </label>
+        <input
+          id="ja-recruiter"
+          name="recruiter"
+          type="text"
+          maxLength={200}
+          className={FIELD}
+          {...bad("recruiter")}
+        />
+      </div>
+
+      <div className="join-field">
+        <label className="join-label" htmlFor="ja-comments">
+          {t("apply.comments")}{" "}
+          <span className="join-optional">{t("apply.optional")}</span>
+        </label>
+        <textarea
+          id="ja-comments"
+          name="comments"
+          rows={3}
+          maxLength={4000}
+          className={FIELD}
+          {...bad("comments")}
+        />
+      </div>
+
+      {/* 🔴 THE CONSENT NAMES SYNERGY, AND THE REASON IS NOT STYLE.
+
+          The wording was supplied from solidfinancialplan.com/join-us, which
+          is a COMPETITOR the client is deliberately out-building. Their form is
+          the structural reference; their company name is not ours to publish.
+
+          An SMS consent disclosure exists to state which party the person is
+          authorising to text them. Shipping a competitor's name in that
+          sentence would be wrong on every axis at once: the applicant would be
+          consenting to a company that is not receiving their data, Synergy
+          would hold no valid consent for the messages it actually intends to
+          send, and a competitor's name would sit in the legal copy of a
+          recruiting page aimed at their agents.
+
+          So the mechanics TCPA turns on are kept word for word from the
+          source — the one-message-per-week cap, the HELP number, the STOP
+          keyword, the rates notice — and the entity is Synergy Insurance Group.
+
+          ⚠️ THE CLOSING TERMS AND PRIVACY CLAUSE IS DROPPED, NOT RELOCATED. The
+          source ends "you agree to [their] Terms of Use and Privacy Policy".
+          Synergy has published neither (see the UNBUILT block in routes.ts), so
+          the clause would point at two documents nobody can read. It returns,
+          with two links, on the day those pages ship.
+
+          🔴 STILL LEGAL TEXT, STILL ADAPTED RATHER THAN AUTHORED. Whoever
+          signs off compliance should read it before it collects a consent. */}
       <div className="join-consent">
         <input id="ja-consent" name="consent" type="checkbox" className="join-check" />
-        <label htmlFor="ja-consent">{t("apply.consentPlaceholder")}</label>
+        <label htmlFor="ja-consent">{t("apply.consent")}</label>
       </div>
 
       <SubmitRow label={t("apply.submit")} pendingLabel={t("apply.submitting")} />

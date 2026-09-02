@@ -715,7 +715,42 @@
       "errorInvalid": "Some details need checking. The fields marked below are the ones to look at.",
       "errorThrottled": "That is several attempts in a short time. Wait a few minutes and try again.",
       "errorUnavailable": "This form cannot send right now. Please call the office on the number above and we will take your details by phone.",
-      "errorFailed": "Something went wrong sending that and it was not saved. Please try again, or call the office on the number above."
+      "errorFailed": "Something went wrong sending that and it was not saved. Please try again, or call the office on the number above.",
+      "optional": "Optional",
+      "groupName": "Name",
+      "middleName": "Middle name",
+      "groupAddress": "Address",
+      "street": "Street address",
+      "city": "City",
+      "zip": "ZIP code",
+      "groupWork": "The work",
+      "workType": "Are you looking for part-time or full-time?",
+      "workTypeOptions": {
+        "part_time": "Part-time",
+        "full_time": "Full-time",
+        "either": "Either one"
+      },
+      "selfEmployed": "Are you OK being self-employed and paid on a 1099?",
+      "selfEmployedYes": "Yes",
+      "selfEmployedNo": "No",
+      "licensedFull": "Do you currently hold a Life and Health insurance license?",
+      "activelySelling": "If you are licensed, are you actively selling insurance?",
+      "activelySellingOptions": {
+        "yes": "Yes, I am selling now",
+        "no": "No, not right now",
+        "not_licensed": "I am not licensed yet"
+      },
+      "agencyDetail": "Tell us about the agency or IMO you work with now, or worked with before. Why do you want to switch? Did you sign a contract with them, and have you given notice?",
+      "agencyDetailNote": "Asked because you said you are actively selling.",
+      "groupBackground": "About you",
+      "salesExperience": "Do you have any prior sales experience? Please describe it.",
+      "background": "Briefly describe your professional background.",
+      "whyUs": "Why are you interested in working with Synergy?",
+      "socialHandles": "Facebook, Instagram, TikTok or X handle",
+      "incomeRange": "What kind of income are you used to making?",
+      "recruiter": "Team leader or recruiter name",
+      "comments": "Anything else you want us to know",
+      "consent": "By clicking “submit”, you give consent to Synergy Insurance Group to send SMS related to our latest offers and services. You may receive up to 1 message per week. For HELP, text us at 407-434-0400. To unsubscribe, send STOP. Standard message and data rates may apply."
     },
     "range": {
       "eyebrow": "THE PRODUCTS",
@@ -1498,5 +1533,9 @@
     "youtube": "Synergy on YouTube",
     "instagram": "Synergy on Instagram",
     "facebook": "Synergy on Facebook"
+  },
+  "video": {
+    "title": "Meet Synergy Insurance Group in 3 minutes",
+    "playAria": "Play the Synergy Insurance Group film, 3 minutes 22 seconds"
   }
 }

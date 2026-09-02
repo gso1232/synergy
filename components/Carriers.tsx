@@ -31,6 +31,24 @@ type Carrier = {
  * single-color dark-on-light mark; multi-color marks must be supplied
  * already white/reversed.
  */
+/* 🔴 FOUR CARRIERS REMOVED FROM EVERY BANNER, 2026-09-02, ON INSTRUCTION:
+   Global Atlantic (c6), Lincoln Financial (c9), Nassau (c10) and American
+   National (c15).
+
+   THIS ARRAY IS THE ONLY PLACE THEY HAD TO GO. CarrierStrip (both marquees on
+   the homepage) and TheEngine both map straight off APPOINTMENTS, so deleting
+   four lines here removes them from every surface at once and cannot leave one
+   banner disagreeing with another.
+
+   ⚠️ THE ASSETS AND THE NAMES ARE LEFT IN PLACE. The four logo files, their
+   entries in lib/carrierLogos.ts and their `carriers.names.*` strings in both
+   message files are all untouched, so restoring any of them is putting its line
+   back here and nothing else. Deleting them would make a reversal a hunt.
+
+   🟡 THE AGENT PORTAL WAS CHECKED AND DOES NOT LIST THESE FOUR. Its carrier
+   contact list is separate data. If the reason for this change is that Synergy
+   is no longer appointed with them, that list is worth a look too — but it is
+   not a banner, so it was not touched here. */
 export const APPOINTMENTS: ReadonlyArray<{
   key: string;
   src?: string;
@@ -41,11 +59,8 @@ export const APPOINTMENTS: ReadonlyArray<{
   { key: "c3" }, // Americo              → /carriers/americo.svg
   { key: "c4" }, // American Amicable    → /carriers/american-amicable.svg
   { key: "c5" }, // North American       → /carriers/north-american.svg
-  { key: "c6" }, // Global Atlantic      → /carriers/global-atlantic.svg
   { key: "c7" }, // Athene               → /carriers/athene.svg
   { key: "c8" }, // Corebridge           → /carriers/corebridge.svg (multi-color: never invert)
-  { key: "c9" }, // Lincoln Financial    → /carriers/lincoln-financial.svg
-  { key: "c10" }, // Nassau              → /carriers/nassau.svg
   { key: "c11" }, // Foresters           → /carriers/foresters.svg
   { key: "c12" }, // Liberty Bankers     → /carriers/liberty-bankers.svg
   // 2026-07-30 — the 9 formerly held-back carriers. Ziad confirmed he is
@@ -54,7 +69,6 @@ export const APPOINTMENTS: ReadonlyArray<{
   // one file per carrier.)
   { key: "c13" }, // Aetna               → /carriers/aetna.svg
   { key: "c14" }, // Aflac               → /carriers/aflac.png
-  { key: "c15" }, // American National    → /carriers/american-national.svg
   { key: "c16" }, // Columbus Life       → /carriers/columbus-life.svg
   { key: "c17" }, // Ethos               → /carriers/ethos.svg
   { key: "c18" }, // F&G                 → /carriers/fg.svg
