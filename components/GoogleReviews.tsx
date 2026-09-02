@@ -296,9 +296,9 @@ function ReviewCard({ review }: { review: Review }) {
         "md:w-[calc((100%-3rem)/3)]",
         /* ink/[0.12], not /10: the card is white on a cream that is only
    a shade off white, so this hairline is the whole boundary. */
-        "rounded-[4px] border border-ink/[0.12] bg-white p-6 sm:p-7",
+        "rounded-[4px] border border-royal/25 bg-white p-6 sm:p-7",
         "transition-[transform,box-shadow,border-color] duration-300 ease-out-expo",
-        "hover:-translate-y-1 hover:border-ink/15 hover:shadow-[0_14px_34px_-14px_rgba(13,27,42,0.28)]",
+        "hover:-translate-y-1 hover:border-royal/45 hover:shadow-[0_1px_2px_rgba(0,32,80,0.05),0_10px_24px_-16px_rgba(0,32,80,0.20)]",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
       ].join(" ")}
     >
@@ -424,7 +424,7 @@ export default function GoogleReviews() {
             </p>
             <h2
               id="google-reviews-heading"
-              className="mt-2.5 font-display text-[clamp(24px,2.6vw,34px)] font-medium leading-[1.12] tracking-[-0.015em] text-ink"
+              className="mt-2.5 font-display text-[clamp(24px,2.6vw,34px)] font-semibold leading-[1.12] tracking-[-0.015em] text-navy"
             >
               {t("heading")}
             </h2>

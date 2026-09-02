@@ -75,7 +75,7 @@ export default function BlogCard({
         </div>
       )}
 
-      <h2 className="blog-card-title font-display text-ink">{article.title}</h2>
+      <h2 className="blog-card-title font-display text-navy">{article.title}</h2>
       <p className="blog-card-excerpt text-ink">{article.excerpt}</p>
 
       {/* CATEGORY + READ TIME, which is the whole of fflsynergy's card meta.

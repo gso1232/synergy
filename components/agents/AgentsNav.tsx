@@ -206,7 +206,7 @@ export default function AgentsNav({
                 </span>
 
                 {isOpen ? (
-                  <ul className="absolute left-0 top-full z-40 mt-px min-w-[15rem] rounded-lg border border-ink/[0.12] bg-white py-1.5 shadow-[0_8px_24px_rgba(26,26,26,0.10)]">
+                  <ul className="absolute left-0 top-full z-40 mt-px min-w-[15rem] rounded-lg border border-ink/[0.12] bg-white py-1.5 shadow-[0_8px_24px_rgba(11,31,58,0.10)]">
                     {item.children.map((child) => (
                       <li key={child.slug}>
                         <Link

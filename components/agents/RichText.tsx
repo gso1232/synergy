@@ -59,7 +59,7 @@ function GapChip({ text }: { text: string }) {
       className="mx-0.5 inline-flex items-baseline gap-1 rounded border border-dashed border-gold-deep px-1.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-gold-deep"
       style={{
         backgroundImage:
-          "repeating-linear-gradient(135deg, rgba(125,100,31,0.08) 0 6px, rgba(125,100,31,0) 6px 12px)",
+          "repeating-linear-gradient(135deg, rgba(0, 102, 204,0.08) 0 6px, rgba(0, 102, 204,0) 6px 12px)",
       }}
     >
       {text.replace(/^\[|\]$/g, "")}

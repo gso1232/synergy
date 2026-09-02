@@ -68,7 +68,7 @@ export default async function AgentsIndexPage({
     <section aria-labelledby="agents-h">
       <h1
         id="agents-h"
-        className="font-display text-[clamp(28px,3.4vw,38px)] font-medium leading-[1.12] tracking-[-0.015em] text-ink"
+        className="font-display text-[clamp(28px,3.4vw,38px)] font-semibold leading-[1.12] tracking-[-0.015em] text-navy"
       >
         {t("indexHeading")}
       </h1>
@@ -113,9 +113,9 @@ export default async function AgentsIndexPage({
               <li key={page.id}>
                 <Link
                   href={`/${locale}/agents/${target.slug}`}
-                  className="group flex h-full flex-col rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] transition-colors duration-200 hover:border-gold-deep/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none sm:p-6"
+                  className="group flex h-full flex-col rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(11,31,58,0.04)] transition-colors duration-200 hover:border-gold-deep/45 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none sm:p-6"
                 >
-                  <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink">
+                  <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy">
                     {page.title}
                   </h2>
                   {page.subtitle ? (

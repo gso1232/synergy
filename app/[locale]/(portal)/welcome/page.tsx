@@ -49,7 +49,7 @@ export default async function PortalOverviewPage({
 
   return (
     <div>
-      <h1 className="max-w-[18ch] font-display text-[clamp(30px,4.2vw,44px)] font-medium leading-[1.08] tracking-[-0.02em] text-ink">
+      <h1 className="max-w-[18ch] font-display text-[clamp(30px,4.2vw,44px)] font-semibold leading-[1.08] tracking-[-0.02em] text-navy">
         {t("heading")}
       </h1>
       <p className="mt-4 max-w-[34em] text-[17px] leading-[1.6] text-ink/75">{t("subhead")}</p>
@@ -60,7 +60,7 @@ export default async function PortalOverviewPage({
           className="mt-5 inline-flex max-w-[34em] items-start gap-2 rounded-lg border border-dashed border-gold-deep px-3.5 py-2.5 text-[14px] leading-[1.5] text-ink/75"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(135deg, rgba(125,100,31,0.06) 0 6px, rgba(125,100,31,0) 6px 12px)",
+              "repeating-linear-gradient(135deg, rgba(0, 102, 204,0.06) 0 6px, rgba(0, 102, 204,0) 6px 12px)",
           }}
         >
           <svg aria-hidden="true" viewBox="0 0 12 12" className="mt-[3px] h-3 w-3 shrink-0 fill-gold-deep">

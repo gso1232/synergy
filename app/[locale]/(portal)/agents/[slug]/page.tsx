@@ -115,7 +115,7 @@ export default async function AgentCmsPage({
       <section aria-labelledby="page-h">
         <h1
           id="page-h"
-          className="font-display text-[clamp(28px,3.4vw,38px)] font-medium leading-[1.12] tracking-[-0.015em] text-ink"
+          className="font-display text-[clamp(28px,3.4vw,38px)] font-semibold leading-[1.12] tracking-[-0.015em] text-navy"
         >
           {page.title}
         </h1>
@@ -211,8 +211,8 @@ function PasswordGate({
     : null;
 
   return (
-    <div className="max-w-[34em] rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] sm:p-6">
-      <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink">
+    <div className="max-w-[34em] rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(11,31,58,0.04)] sm:p-6">
+      <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy">
         {t("gate.heading")}
       </h2>
       <p className="mt-2.5 text-[15px] leading-[1.6] text-ink/75">{t("gate.body")}</p>

@@ -418,15 +418,18 @@ export default function ImpactStats() {
               }
               className={`flex flex-1 flex-col items-center justify-center px-8 py-12 text-center sm:px-[60px] md:py-[60px] ${
                 s.feature
-                  ? "bg-navy-soft text-cream"
-                  : /* The hairline is the reference's #d8d8d8. It sets only
-                       left+bottom because its three columns share edges; a
-                       four-sided border on cards that touch draws the same
-                       grid, and survives the cards separating on a phone. */
-                    "border border-[#d8d8d8] bg-white text-ink md:my-8"
+                  ? "bg-navy text-white"
+                  : /* 🔴 ROYAL AT 25%, NOT THE REFERENCE'S GREY #d8d8d8. The
+                       brief retires grey from the design entirely, so the
+                       hairline that separates these white cards is a tint of
+                       the brand blue instead. It still sets all four sides
+                       rather than the reference's left+bottom pair, because
+                       the cards separate on a phone where shared edges do not
+                       exist. */
+                    "border border-royal/25 bg-white text-ink md:my-8"
               }`}
             >
-              <span className={`mb-5 inline-flex ${s.feature ? "text-cream" : "text-navy-soft"}`}>
+              <span className={`mb-5 inline-flex ${s.feature ? "text-white" : "text-royal"}`}>
                 <Icon />
               </span>
 
@@ -440,7 +443,7 @@ export default function ImpactStats() {
               {t(`${s.key}u`) ? (
                 <p
                   className={`mt-1 text-[12px] font-bold uppercase leading-[1.3] tracking-[0.4px] ${
-                    s.feature ? "text-cream/80" : "text-ink/75"
+                    s.feature ? "text-white/80" : "text-ink/75"
                   }`}
                 >
                   {t(`${s.key}u`)}

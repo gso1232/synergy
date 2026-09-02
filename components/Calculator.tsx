@@ -241,7 +241,7 @@ export default function Calculator({
             and a whisper of shadow give it depth against the page without
             reading as a heavy panel — polish, not a new surface. */}
         <FadeUp index={1}>
-          <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-5 shadow-[0_1px_2px_rgba(13,27,42,0.04),0_12px_32px_-20px_rgba(13,27,42,0.18)] sm:p-8 lg:p-12">
+          <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-5 shadow-[0_1px_2px_rgba(0,32,80,0.04),0_12px_32px_-20px_rgba(0,32,80,0.18)] sm:p-8 lg:p-12">
             {/* Two equal columns, exactly as theirs */}
             <div className="grid gap-5 lg:grid-cols-2">
               {/* INPUTS — first in the DOM and first on the page, at every width.

@@ -162,7 +162,7 @@ export default function Carriers() {
         </p>
         <h2
           id="carriers-heading"
-          className="mt-3 font-display font-medium text-[clamp(28px,3.4vw,44px)] leading-[1.06] tracking-[-0.02em] text-ink"
+          className="mt-3 font-display font-semibold text-[clamp(28px,3.4vw,44px)] leading-[1.06] tracking-[-0.02em] text-navy"
         >
           {t("headline")}
         </h2>

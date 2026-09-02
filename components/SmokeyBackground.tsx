@@ -135,7 +135,7 @@ const hexToRgb = (hex: string): [number, number, number] => [
 
 export default function SmokeyBackground({
   /** The smoke. Synergy gold. */
-  color = "#C9A84C",
+  color = "#D4A017",
   /**
    * 🔴 THE FIELD IS NAVY #0D1B2A NOW, NOT CREAM (2026-08-03). The client asked
    * for the login area to be dark navy behind the glassy card.
@@ -150,7 +150,7 @@ export default function SmokeyBackground({
    * field was light. All of it is re-derived — see `.auth-card` in globals.css
    * and the notes in page.tsx.
    */
-  base = "#0D1B2A",
+  base = "#002050",
   /**
    * 🔴 A NAVY VEIL OVER THE SMOKE, AND IT IS A CONTRAST FIX, NOT A LOOK.
    *
@@ -394,7 +394,7 @@ export default function SmokeyBackground({
           what keeps cream legal over the brightest gold the smoke can reach. */}
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: `rgba(13, 27, 42, ${veil})` }}
+        style={{ backgroundColor: `rgba(0, 32, 80, ${veil})` }}
       />
     </div>
   );

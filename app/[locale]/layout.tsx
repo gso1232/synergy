@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, IBM_Plex_Sans, Be_Vietnam_Pro } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import {
@@ -50,85 +50,53 @@ import "../globals.css";
  * face thins its own hairlines as headings scale up — which is most of why it
  * stays comfortable at the hero's clamp() ceiling.
  */
-const display = Fraunces({
-  subsets: ["latin"],
-  display: "swap",
-  adjustFontFallback: true,
-  variable: "--font-display",
-});
-
 /**
- * IBM Plex Sans — body, UI, labels, AND the data numerals.
+ * MONTSERRAT — THE WHOLE SITE, 2026-09-01. One family, every slot.
  *
- * 🔴 REPLACED OVERPASS (2026-08-03), AND THE REASON IS THE FIGURES, NOT TASTE.
+ * =============================================================================
+ * WHAT THIS REPLACED. Three families, each chosen for a documented reason:
  *
- * The deciding property is TABULAR FIGURES, and it is not a preference — this
- * site's most persuasive element is a currency figure bound to two sliders, and
- * `components/Calculator.tsx` spends `tabular-nums` in eight places. That class
- * emits `font-variant-numeric: tabular-nums`, which is a REQUEST: a face
- * without the `tnum` feature drops it silently and every digit keeps its
- * natural width, so the figure shifts sideways on every slider drag.
+ *   Fraunces        display / headings, a high-contrast serif picked for
+ *                   "more relaxed, more aesthetically pleasing"
+ *   IBM Plex Sans   body, UI, labels AND the data numerals
+ *   Be Vietnam Pro  the hero only, matched to familyfirstlife.com's poster
  *
- * IBM Plex Sans's figures are TABULAR NATIVELY — not via the feature, but by
- * construction. Measured at 1000px/700, every digit 0-9 set ten times returns
- * the same 600px advance, spread 0.00px, with and without the request. That
- * means a future component that forgets `tabular-nums` still renders aligned,
- * which is the failure mode that eliminated the first candidate.
+ * All three are gone on instruction: "I would like to use Montserrat throughout
+ * the website". The three CSS VARIABLES are kept and all now resolve to
+ * Montserrat (see the aliases in app/globals.css), so `font-display`,
+ * `font-body` and `font-hero` still work at ~500 call sites and none of them had
+ * to be touched. The slots stay separate so a second family can be reintroduced
+ * to any one of them later without another sweep.
  *
- * (For the record, so nobody "improves" this later: DM Sans was the leading
- * alternative and FAILS this outright — `1111111111` measures 364px against
- * `0000000000` at 704px, a 340px spread that `tabular-nums` does not change
- * because the feature is absent from the font. Overpass, the face being
- * replaced here, passed — its spread collapses 260.8px -> 0.00px when the
- * feature is requested — so this swap is a lateral move on that axis, not a
- * rescue. Nothing was broken; Plex is simply the stronger guarantee.)
+ * ONE FAMILY IS ALSO ONE DOWNLOAD. The site was pulling three; it now pulls one.
  *
- * THE OTHER TWO SLOTS ARE UNCHANGED ON PURPOSE. Kufam keeps the display slot
- * and its "never above 500" ceiling; Inter keeps the VEX-spec hero. This was a
- * body/data swap, scoped deliberately: `.cap-display` never had to be
- * re-derived and the display/body contrast that separates headings from copy
- * survives.
+ * =============================================================================
+ * ⚠️ THE FIGURES ARE THE RISK IN THIS SWAP, AND THEY WERE TESTED, NOT ASSUMED.
  *
- * 🔴 IF YOU CHANGE THIS FACE, `.cap-body` IN globals.css MUST BE RE-DERIVED IN
- * THE SAME COMMIT. Those trim values are computed from the LOADED font's
- * ascent/descent/cap-height and are wrong the instant the face changes. The
- * derivation, and Plex's numbers, are written out at that rule.
+ * IBM Plex Sans was chosen over Overpass specifically for TABULAR FIGURES:
+ * components/Calculator.tsx binds a currency figure to two sliders and spends
+ * `tabular-nums` in eight places. That class emits `font-variant-numeric:
+ * tabular-nums`, which is a REQUEST — a face without the `tnum` feature drops it
+ * silently and every digit keeps its natural width, so the figure jitters
+ * sideways on every drag. See the note in components/Calculator.tsx.
+ *
+ * Montserrat was measured in the built page rather than trusted: two digit
+ * strings of equal length were rendered with and without `tabular-nums` and
+ * their widths compared. The result is recorded in the commit for this change.
+ *
+ * =============================================================================
+ * WEIGHTS. 400 regular body, 500 medium nav, 600 semibold subheads and buttons,
+ * 700 bold headings, 800 for the hero buttons which genuinely set
+ * `font-extrabold`. Loading 800 rather than letting the browser synthesise it
+ * from 600 matters most at 13px uppercase, which is exactly where a faked bold
+ * thickens stems unevenly.
  */
-const body = IBM_Plex_Sans({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
   adjustFontFallback: true,
   variable: "--font-body",
-});
-
-/**
- * Be Vietnam Pro — the HERO ONLY, via `font-hero`.
- *
- * 🔴 REPLACED INTER (2026-08-24). The homepage hero was rebuilt to match
- * familyfirstlife.com's, on the client's instruction, and that layout's whole
- * character is its typeface: a geometric sans set very heavy and very tight,
- * which is what makes "Protect What Matters Most" read as a poster rather than
- * a sentence. Measured off the reference: 44px/700 for the headline, 30px/700
- * with +1px tracking for the second line, 21px/600 with +1.3px for the product
- * row, 13px/800 uppercase with +0.4px for the buttons. Inter set to those
- * numbers is visibly a different design.
- *
- * THIS SLOT ALREADY EXISTED AND IS STILL SCOPED THE SAME WAY. `--font-hero` is
- * referenced by exactly one element — the hero <section> — so nothing else on
- * the site pays for this font, and the rest stays on Fraunces / IBM Plex Sans.
- * Swapping the family inside the existing slot is why this change costs one
- * font rather than a fourth one.
- *
- * 800 is loaded because the buttons genuinely use it; dropping it would have
- * the browser synthesise a fake bold from 600 and thicken the letterforms
- * unevenly at 13px, which is exactly where it shows.
- */
-const hero = Be_Vietnam_Pro({
-  subsets: ["latin"],
-  weight: ["400", "600", "700", "800"],
-  display: "swap",
-  variable: "--font-hero",
 });
 
 export function generateStaticParams() {
@@ -215,7 +183,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      className={`${display.variable} ${body.variable} ${hero.variable}`}
+      className={montserrat.variable}
       // 🔴 NO `suppressHydrationWarning`, AND ITS ABSENCE TRAVELS AS A PAIR
       // WITH RouteTheme. DO NOT ADD IT BACK ALONE.
       //

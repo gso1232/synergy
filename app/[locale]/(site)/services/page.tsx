@@ -268,7 +268,7 @@ export default async function ServicesPage({
             <FadeUp>
               <h2
                 id="services-products"
-                className="sem-display font-display text-ink"
+                className="sem-display font-display text-navy"
               >
                 {t("products.heading")}
               </h2>
@@ -333,7 +333,7 @@ export default async function ServicesPage({
         <section aria-labelledby="services-essay" className="sem-shell sem-pad-t">
           <div className="sem-inner">
             <FadeUp>
-              <h2 id="services-essay" className="sem-h2 font-display text-ink">
+              <h2 id="services-essay" className="sem-h2 font-display text-navy">
                 {t("essay.heading")}
               </h2>
             </FadeUp>
@@ -388,7 +388,7 @@ export default async function ServicesPage({
         <section aria-labelledby="services-cta" className="sem-shell sem-pad-t">
           <div className="sem-inner">
             <FadeUp>
-              <h2 id="services-cta" className="sem-h2 font-display text-ink">
+              <h2 id="services-cta" className="sem-h2 font-display text-navy">
                 {t("cta.heading")}
               </h2>
               <p className="sem-body mt-6 max-w-[46ch] text-ink">

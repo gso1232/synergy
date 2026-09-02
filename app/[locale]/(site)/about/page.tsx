@@ -351,7 +351,7 @@ export default async function AboutPage({
           the same structure the gradient had, with a flat surface instead.
 
           ⚠️ `.about-gradient` IS RETIRED, NOT DELETED. It and the whole
-          navy-lift #1C3A5A derivation are commented out in globals.css
+          navy-lift #002050 derivation are commented out in globals.css
           directly above `.about-page`. Swapping this one class name back is
           the entire restore.
 
@@ -796,7 +796,7 @@ export default async function AboutPage({
                   <p className="sem-eyebrow text-ink">{t("trust.eyebrow")}</p>
                   <h2
                     id="about-trust"
-                    className="sem-h2 mt-[clamp(12px,1.1vw,16.4px)] font-display text-ink"
+                    className="sem-h2 mt-[clamp(12px,1.1vw,16.4px)] font-display text-navy"
                   >
                     {t("trust.headline")}
                   </h2>
@@ -959,7 +959,7 @@ export default async function AboutPage({
             The entrance reveal is FadeUp and is OURS — the reference has no
             fade at all on this section (opacity measured 1/1/1 throughout).
 
-            OURS: gold #C9A84C numeral + cream word, per the brief.
+            OURS: gold #D4A017 numeral + cream word, per the brief.
 
             🟡 THE THREE IMAGES ARE LICENSED STOCK AND PROVISIONAL — see
             VALUE_IMAGES above.
@@ -1005,8 +1005,8 @@ export default async function AboutPage({
                         aria-hidden — a screen reader reading "I" before
                         "Integrity" hears a pronoun — so the accessible name of
                         this heading is the word alone. */}
-                    <h3 className="sem-eyebrow font-display text-ink">
-                      {/* 🔴 gold-deep #7D641F, NOT gold #C9A84C.
+                    <h3 className="sem-eyebrow font-display text-navy">
+                      {/* 🔴 gold-deep #0066CC, NOT gold #D4A017.
                           gold on cream is 2.09:1. There is a real argument
                           that these numerals are pure decoration and therefore
                           exempt from 1.4.3 — they are aria-hidden, they are
@@ -1137,7 +1137,7 @@ export default async function AboutPage({
                   <FadeUp index={1}>
                     <h2
                       id="about-founder"
-                      className="sem-h2 font-display text-ink"
+                      className="sem-h2 font-display text-navy"
                     >
                       {t("founder.headline")}
                     </h2>
@@ -1152,7 +1152,7 @@ export default async function AboutPage({
         ================================================================= */}
 
         {/* §9 is the site-wide <Footer />, mounted in app/[locale]/layout.tsx
-            inside <SmoothScroll>. It is already bg-navy #0D1B2A, exactly where
+            inside <SmoothScroll>. It is already bg-navy #002050, exactly where
             this gradient lands, so there is no seam and nothing to build. */}
         {/* 🔴 THE TRAILING SPACER IS GONE, AND IT WAS DOING TWO BAD THINGS.
             It was `h-[clamp(64px,8.6vw,131.2px)]` — 130.8 / 69.2 / 64px of

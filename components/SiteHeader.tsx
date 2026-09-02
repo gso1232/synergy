@@ -758,7 +758,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
           {/* The wordmark follows the surface. `light` is the wordmark
               recoloured to ink, which is right on cream and unreadable on the
               dark bar; `dark` is the gold artwork exactly as supplied — the
-              same variant the footer already uses on the same #0D1B2A. Nothing
+              same variant the footer already uses on the same #002050. Nothing
               is recoloured for this and no mark is invented.
 
               🔴 SUPERSEDED — THE HEADER NOW RENDERS THE SUPPLIED LOCKUP.
@@ -770,7 +770,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
               below are why that swap is a trade, not a pure upgrade.
 
               1. IT HAS NO LIGHT VARIANT, AND CANNOT HAVE ONE. <Logo> recolours
-                 its wordmark to ink #1A1A1A on light surfaces, for the reason
+                 its wordmark to ink #0B1F3A on light surfaces, for the reason
                  written above: gold type on cream is 2.09:1. This lockup bakes
                  the gold gradient (#FCE79A -> #A9790F) into the file, so the
                  same wordmark now ships on BOTH surfaces. That is legal —

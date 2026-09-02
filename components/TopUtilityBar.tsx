@@ -140,7 +140,7 @@ export default function TopUtilityBar() {
   const tSocial = useTranslations("social");
 
   return (
-    <div className="top-utility-bar bg-[#EDEDED] text-ink">
+    <div className="top-utility-bar border-b border-royal/20 bg-white text-ink">
       {/* 🔴 A GRID WITH THREE EQUAL TRACKS, NOT flex + fixed side widths. The
             first attempt gave each side a hard 220px, which was narrower than
             "Agent Login | Apply to Work with Synergy" and wrapped it onto two

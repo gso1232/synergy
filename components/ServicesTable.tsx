@@ -62,7 +62,7 @@ export default function ServicesTable({
   return (
     <section aria-labelledby={headingId} className="sem-shell sem-pad-t">
       <div className="sem-inner">
-        <h2 id={headingId} className="sem-h2 font-display text-ink">
+        <h2 id={headingId} className="sem-h2 font-display text-navy">
           {heading}
         </h2>
         <p className="sem-body mt-6 max-w-[46ch] text-ink">{intro}</p>
@@ -98,7 +98,7 @@ export default function ServicesTable({
         <ul className="mt-[clamp(32px,4.3vw,65.6px)] space-y-8 lg:hidden">
           {rows.map((r) => (
             <li key={r.key} className="services-card">
-              <h3 className="sem-eyebrow font-display text-ink">{r.product}</h3>
+              <h3 className="sem-eyebrow font-display text-navy">{r.product}</h3>
               <dl className="mt-4">
                 {r.cells.map((c, i) => (
                   <div key={columns[i + 1]} className="services-card-row">

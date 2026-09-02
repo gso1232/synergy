@@ -150,7 +150,7 @@ export default function ServicesSequence({
                     className="object-cover object-center"
                   />
                 </div>
-                <h3 className="sem-h3 font-display text-ink">{it.heading}</h3>
+                <h3 className="sem-h3 font-display text-navy">{it.heading}</h3>
                 <p className="sem-body mt-6 text-ink">{it.body}</p>
               </li>
             ))}

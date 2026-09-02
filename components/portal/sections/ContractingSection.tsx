@@ -70,7 +70,7 @@ export default async function ContractingSection({ locale }: { locale: string })
       </PortalStepList>
 
       <div className="mt-8 rounded-xl border border-ink/[0.10] bg-white p-5 sm:p-6">
-        <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink">
+        <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy">
           {t("contracting.after.heading")}
         </h2>
         <p className="mt-2.5 max-w-[32em] text-[15px] leading-[1.6] text-ink/75">

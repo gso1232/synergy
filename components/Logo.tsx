@@ -22,7 +22,7 @@ export default function Logo({ variant = "dark", className }: LogoProps) {
   const blue = `blue-${uid}`;
   const heartGrad = `heartGrad-${uid}`;
   const innerClip = `innerClip-${uid}`;
-  const wordmarkFill = variant === "light" ? "#1A1A1A" : `url(#${goldText})`;
+  const wordmarkFill = variant === "light" ? "#0B1F3A" : `url(#${goldText})`;
 
   return (
     <svg

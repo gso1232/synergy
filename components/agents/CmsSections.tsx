@@ -65,9 +65,9 @@ function SectionLinks({ links, locale }: { links: PageSection["links"]; locale: 
 /** A section with no step number — a card, not a list item. */
 function PlainSection({ section, locale }: { section: PageSection; locale: string }) {
   return (
-    <div className="rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(26,26,26,0.04)] sm:p-6">
+    <div className="rounded-xl border border-ink/[0.10] bg-white p-5 shadow-[0_1px_2px_rgba(11,31,58,0.04)] sm:p-6">
       {section.heading ? (
-        <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink">
+        <h2 className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy">
           {section.heading}
         </h2>
       ) : null}

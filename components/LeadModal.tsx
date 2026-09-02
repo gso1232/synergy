@@ -55,7 +55,7 @@ export default function LeadModal({
         // outside the inner content, land here).
         if (e.target === ref.current) onClose();
       }}
-      className="lead-dialog m-auto w-[min(92vw,460px)] rounded-[14px] bg-cream p-0 text-ink shadow-[0_24px_80px_rgba(13,27,42,0.35)] backdrop:bg-[rgba(13,27,42,0.55)]"
+      className="lead-dialog m-auto w-[min(92vw,460px)] rounded-[14px] bg-cream p-0 text-ink shadow-[0_1px_2px_rgba(0,32,80,0.04),0_8px_20px_-14px_rgba(0,32,80,0.18)] backdrop:bg-[rgba(0,32,80,0.55)]"
     >
       <div className="relative p-7 sm:p-8">
         <button
@@ -78,7 +78,7 @@ export default function LeadModal({
           <div className="py-6">
             <h2
               id={titleId}
-              className="font-display font-medium text-[27px] leading-[1.1] tracking-[-0.015em] text-ink"
+              className="font-display font-semibold text-[27px] leading-[1.1] tracking-[-0.015em] text-navy"
             >
               {t("successTitle")}
             </h2>
@@ -97,7 +97,7 @@ export default function LeadModal({
           <>
             <h2
               id={titleId}
-              className="pr-8 font-display font-medium text-[27px] leading-[1.1] tracking-[-0.015em] text-ink"
+              className="pr-8 font-display font-semibold text-[27px] leading-[1.1] tracking-[-0.015em] text-navy"
             >
               {t("title")}
             </h2>

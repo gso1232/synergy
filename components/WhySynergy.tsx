@@ -176,7 +176,7 @@ export default function WhySynergy() {
           <FadeUp>
             <h2
               id="why-heading"
-              className="font-display font-medium text-[clamp(26px,2.35vw,34px)] leading-[1.2] tracking-[-0.01em] text-ink"
+              className="font-display font-semibold text-[clamp(26px,2.35vw,34px)] leading-[1.2] tracking-[-0.01em] text-navy"
             >
               {t("headline")}
             </h2>
@@ -193,7 +193,7 @@ export default function WhySynergy() {
               <FadeUp key={p} index={i}>
                 <article className="rounded-[4px] border-[0.8px] border-ink/80 p-6">
                   <div className="flex items-start justify-between gap-3">
-                    <h3 className="font-display font-normal text-[20px] leading-[1.45] tracking-[-0.016em] text-ink">
+                    <h3 className="font-display font-semibold text-[20px] leading-[1.45] tracking-[-0.016em] text-navy">
                       {t(`points.${p}.title`)}
                     </h3>
                     {/* Their 24px mark, drawn in our tokens rather than copied */}

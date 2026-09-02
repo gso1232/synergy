@@ -79,15 +79,20 @@ export default function CtaPair({
   const base =
     "inline-flex h-12 items-center justify-center rounded-full px-7 text-[14px] font-medium transition-transform duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
+  /* 🔴 PRIMARY IS ROYAL #0066CC WITH A NAVY HOVER, 2026-09-01, PER THE BRAND
+     BRIEF. It was `bg-navy text-cream hover:bg-navy-lift`, which broke twice
+     over in the rebrand: navy is no longer the button colour, and `navy-lift`
+     now holds the same #002050 as `navy`, so that hover had stopped changing
+     anything at all. White on #0066CC measures 5.56:1. */
   const primary =
     variant === "photo"
-      ? `${base} bg-white text-navy shadow-[0_2px_18px_rgba(13,27,42,0.28)] focus-visible:outline-gold-pale`
-      : `${base} bg-navy text-cream hover:bg-navy-lift focus-visible:outline-gold-deep`;
+      ? `${base} bg-white text-navy focus-visible:outline-gold-pale`
+      : `${base} bg-royal text-white hover:bg-navy focus-visible:outline-gold-deep`;
 
   const secondary =
     variant === "photo"
       ? `${base} border border-white/80 bg-navy text-white focus-visible:outline-gold-pale`
-      : `${base} border border-navy/70 text-navy hover:bg-navy/[0.06] focus-visible:outline-gold-deep`;
+      : `${base} border border-navy bg-white text-navy hover:bg-navy hover:text-white focus-visible:outline-gold-deep`;
 
   return (
     <div className={`flex flex-wrap items-center gap-3 ${className}`}>

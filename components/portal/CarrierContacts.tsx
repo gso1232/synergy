@@ -45,7 +45,7 @@ export default async function CarrierContacts({ locale }: { locale: string }) {
         return (
           <div
             key={carrier.key}
-            className="rounded-xl border border-ink/[0.10] bg-white p-4 shadow-[0_1px_2px_rgba(26,26,26,0.04)]"
+            className="rounded-xl border border-ink/[0.10] bg-white p-4 shadow-[0_1px_2px_rgba(11,31,58,0.04)]"
           >
             <dt className="flex items-center gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-ink/[0.08] bg-cream p-1">

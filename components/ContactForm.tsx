@@ -75,7 +75,7 @@ const products = ["p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8"] as const;
    🔴 THAT FIX IS LOAD-BEARING NOW. It was unreachable while the fieldset was
    `disabled` (no field could take focus), which is why the accessibility sweep
    could not see it. With the form live these rings are on screen for real, and
-   the global rule gives them gold-deep #7D641F at 5.65:1 on the white field.
+   the global rule gives them gold-deep #0066CC at 5.65:1 on the white field.
 
    `focus:border-gold-deep` is KEPT — the field's own affordance, not the focus
    indicator, and at 5.65:1 it reinforces rather than replaces.

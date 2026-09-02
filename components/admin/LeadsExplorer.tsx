@@ -122,7 +122,7 @@ export default function LeadsExplorer({ leads }: { leads: Lead[] }) {
       <div className="min-w-0">
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <div className="min-w-0">
-            <h3 className="font-display text-[clamp(20px,1.7vw,26px)] leading-tight text-ink">
+            <h3 className="font-display text-[clamp(20px,1.7vw,26px)] leading-tight text-navy">
               {selected.name}
             </h3>
           </div>

@@ -147,7 +147,7 @@ export default function WhatWeCover() {
             as="h2"
             id="cover-heading"
             text={t("heading")}
-            className="mt-2.5 font-display font-medium text-[clamp(25px,2.6vw,34px)] leading-[1.06] tracking-[-0.02em] text-white"
+            className="mt-2.5 font-display font-semibold text-[clamp(25px,2.6vw,34px)] leading-[1.06] tracking-[-0.02em] text-white"
           />
           <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.55] text-white">
             {t("subhead")}
@@ -207,7 +207,7 @@ export default function WhatWeCover() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white">
                 {t(`cards.${key}.eyebrow`)}
               </p>
-              <h3 className="mt-3 font-display font-medium text-[31px] leading-[1.08] tracking-[-0.015em] text-white">
+              <h3 className="mt-3 font-display font-semibold text-[31px] leading-[1.08] tracking-[-0.015em] text-white">
                 {t(`cards.${key}.name`)}
               </h3>
               <p className="mt-3 text-[16px] leading-[1.6] text-white">

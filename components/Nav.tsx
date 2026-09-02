@@ -97,7 +97,7 @@ export default function Nav() {
                 </button>
                 {/* Dropdown — opens on hover and keyboard focus-within */}
                 <div className="invisible absolute left-0 top-full pt-3 opacity-0 transition-[opacity,transform] duration-200 group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 motion-safe:translate-y-1">
-                  <ul className="min-w-[220px] overflow-hidden rounded-[10px] border border-ink/10 bg-cream py-2 shadow-[0_16px_40px_rgba(13,27,42,0.16)]">
+                  <ul className="min-w-[220px] overflow-hidden rounded-[10px] border border-ink/10 bg-cream py-2 shadow-[0_16px_40px_rgba(0,32,80,0.16)]">
                     {SERVICES.map((s) => (
                       <li key={s}>
                         <a

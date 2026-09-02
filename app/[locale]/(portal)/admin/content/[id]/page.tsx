@@ -85,7 +85,7 @@ export default async function CmsPageEditor({
         </Link>
       </p>
 
-      <h1 className="mt-2 font-display text-[clamp(24px,2.6vw,32px)] font-medium leading-[1.15] text-ink">
+      <h1 className="mt-2 font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.15] text-navy">
         {page.title}
       </h1>
       <p className="mt-1 font-mono text-[12px] text-ink/70">
@@ -114,7 +114,7 @@ export default async function CmsPageEditor({
 
       {/* ================= PAGE SETTINGS ================= */}
       <section aria-labelledby="cms-settings" className="mt-8">
-        <h2 id="cms-settings" className="font-display text-[18px] font-medium text-ink">
+        <h2 id="cms-settings" className="font-display text-[18px] font-semibold text-navy">
           {t("cms.settingsHeading")}
         </h2>
 
@@ -172,7 +172,7 @@ export default async function CmsPageEditor({
                 type="checkbox"
                 name="is_published"
                 defaultChecked={page.is_published}
-                className="mt-0.5 h-4 w-4 accent-[#7D641F]"
+                className="mt-0.5 h-4 w-4 accent-[#0066CC]"
               />
               <span>
                 {t("cms.field.published")}
@@ -185,7 +185,7 @@ export default async function CmsPageEditor({
                 type="checkbox"
                 name="is_password_protected"
                 defaultChecked={page.is_password_protected}
-                className="mt-0.5 h-4 w-4 accent-[#7D641F]"
+                className="mt-0.5 h-4 w-4 accent-[#0066CC]"
               />
               <span>
                 {t("cms.field.protected")}
@@ -222,7 +222,7 @@ export default async function CmsPageEditor({
 
       {/* ================= SECTIONS ================= */}
       <section aria-labelledby="cms-sections" className="mt-10">
-        <h2 id="cms-sections" className="font-display text-[18px] font-medium text-ink">
+        <h2 id="cms-sections" className="font-display text-[18px] font-semibold text-navy">
           {t("cms.sectionsHeading")}
         </h2>
         <p className="mt-1 max-w-[70ch] text-[14px] leading-[1.5] text-ink/80">
@@ -338,7 +338,7 @@ export default async function CmsPageEditor({
 
                 {/* ---- links on this section ---- */}
                 <div className="mt-5 border-t border-ink/15 pt-4">
-                  <h3 className="text-[13px] font-semibold text-ink">{t("cms.linksHeading")}</h3>
+                  <h3 className="text-[13px] font-semibold text-navy">{t("cms.linksHeading")}</h3>
 
                   {s.links.length === 0 ? (
                     <p className="mt-2 text-[13px] text-ink/70">{t("cms.noLinks")}</p>
@@ -401,7 +401,7 @@ export default async function CmsPageEditor({
         <form action={createSection} className="mt-6 rounded-lg border border-dashed border-ink/30 bg-white p-5">
           <input type="hidden" name="locale" value={locale} />
           <input type="hidden" name="page_id" value={page.id} />
-          <h3 className="font-display text-[16px] font-medium text-ink">{t("cms.addSectionHeading")}</h3>
+          <h3 className="font-display text-[16px] font-semibold text-navy">{t("cms.addSectionHeading")}</h3>
 
           <div className="mt-3 grid gap-4 sm:grid-cols-[7rem_1fr]">
             <div>
@@ -424,7 +424,7 @@ export default async function CmsPageEditor({
 
       {/* ================= DANGER ZONE ================= */}
       <section aria-labelledby="cms-delete" className="mt-12 border-t border-ink/15 pt-6">
-        <h2 id="cms-delete" className="font-display text-[18px] font-medium text-ink">
+        <h2 id="cms-delete" className="font-display text-[18px] font-semibold text-navy">
           {t("cms.deleteHeading")}
         </h2>
         {/* 🔴 NO CONFIRMATION DIALOG, AND THE WARNING SAYS SO. `confirm()` needs

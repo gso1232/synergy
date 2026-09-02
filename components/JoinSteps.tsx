@@ -52,7 +52,7 @@ function StepRow({
             {num}
           </span>
           <div className="lg:col-span-9 lg:col-start-4">
-            <h3 className="sem-h3 font-display text-ink">{step.heading}</h3>
+            <h3 className="sem-h3 font-display text-navy">{step.heading}</h3>
             <p className="sem-body mt-4 max-w-[60ch] text-ink">{step.body}</p>
           </div>
         </div>
@@ -77,7 +77,7 @@ export default function JoinSteps({
     <section aria-labelledby={headingId} className="sem-shell sem-pad-y">
       <div className="sem-inner">
         <FadeUp>
-          <h2 id={headingId} className="sem-h2 font-display text-ink">
+          <h2 id={headingId} className="sem-h2 font-display text-navy">
             {heading}
           </h2>
           {tagline ? <p className="sem-body mt-3 text-ink/80">{tagline}</p> : null}

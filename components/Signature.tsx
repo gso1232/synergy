@@ -172,7 +172,7 @@ export default function Signature({
   // it will land on a light surface (the page is cream now), and gold there is
   // 2.09:1. Defaulting to the value that is legal on the surface this component
   // actually gets used on is the safer failure.
-  color = "#0D1B2A",
+  color = "#002050",
   className,
   onDone,
 }: SignatureProps) {

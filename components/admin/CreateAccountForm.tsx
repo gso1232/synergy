@@ -189,7 +189,7 @@ export default function CreateAccountForm({ locale }: { locale: string }) {
           credential that belongs to somebody else.
           ================================================================== */}
       <div className="mt-6 border-t border-ink/15 pt-5">
-        <h3 className="mb-1 font-display text-[16px] text-ink">{t("createAccount.pwTitle")}</h3>
+        <h3 className="mb-1 font-display text-[16px] text-navy">{t("createAccount.pwTitle")}</h3>
         <p className="mb-3 max-w-[60ch] text-[14px] leading-[1.5] text-ink/80">
           {t("createAccount.pwBody")}
         </p>
@@ -261,7 +261,7 @@ export default function CreateAccountForm({ locale }: { locale: string }) {
 
       {/* ---------- RE-ISSUE A LINK FOR AN EXISTING ACCOUNT ---------- */}
       <div className="mt-6 border-t border-ink/15 pt-5">
-        <h3 className="mb-1 font-display text-[16px] text-ink">{t("createAccount.existingTitle")}</h3>
+        <h3 className="mb-1 font-display text-[16px] text-navy">{t("createAccount.existingTitle")}</h3>
         <p className="mb-3 text-[14px] leading-[1.5] text-ink/80">{t("createAccount.existingBody")}</p>
 
         {linkState !== createState ? <Feedback state={linkState} t={t} /> : null}

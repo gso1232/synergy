@@ -37,7 +37,7 @@ function Card({
         <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-gold">
           {label}
         </p>
-        <h3 className="mt-2 font-display font-medium text-[29px] leading-[1.12] tracking-[-0.015em] text-white">
+        <h3 className="mt-2 font-display font-semibold text-[29px] leading-[1.12] tracking-[-0.015em] text-white">
           {title}
         </h3>
         <p className="mt-2 max-w-[44ch] text-[15px] leading-[1.55] text-white/85">
@@ -71,7 +71,7 @@ export default function TwoWaysIn() {
         <FadeUp>
           <h2
             id="two-ways-heading"
-            className="text-center font-display font-medium text-[clamp(30px,3.9vw,48px)] leading-[1.06] tracking-[-0.02em] text-ink"
+            className="text-center font-display font-semibold text-[clamp(30px,3.9vw,48px)] leading-[1.06] tracking-[-0.02em] text-navy"
           >
             {t("heading")}
           </h2>

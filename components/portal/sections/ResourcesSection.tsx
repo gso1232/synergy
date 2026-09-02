@@ -18,7 +18,7 @@ export default async function ResourcesSection({ locale }: { locale: string }) {
       <section aria-labelledby="carriers-h">
         <h2
           id="carriers-h"
-          className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink"
+          className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy"
         >
           {t("resources.carriersHeading")}
         </h2>
@@ -33,7 +33,7 @@ export default async function ResourcesSection({ locale }: { locale: string }) {
       <section aria-labelledby="docs-h" className="mt-12">
         <h2
           id="docs-h"
-          className="font-display text-[clamp(19px,1.6vw,21px)] font-medium leading-[1.25] text-ink"
+          className="font-display text-[clamp(19px,1.6vw,21px)] font-semibold leading-[1.25] text-navy"
         >
           {t("resources.docsHeading")}
         </h2>

@@ -105,7 +105,7 @@ export default function AgentsManager({
           action={formAction}
           className="mb-6 rounded border border-ink/20 bg-white p-5"
         >
-          <h3 className="mb-4 font-display text-[18px] text-ink">
+          <h3 className="mb-4 font-display text-[18px] text-navy">
             {editing ? t("agents.form.editTitle") : t("agents.form.createTitle")}
           </h3>
 

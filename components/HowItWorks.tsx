@@ -182,7 +182,7 @@ export default function HowItWorks() {
         <div className="mt-6 md:col-span-10 md:col-start-3 md:mt-0">
           <h2
             id="hiw-heading"
-            className="cap-trim cap-display font-display font-medium text-[clamp(20px,2.35vw,34px)] leading-[1.2] tracking-[-0.0162em] text-ink"
+            className="cap-trim cap-display font-display font-semibold text-[clamp(20px,2.35vw,34px)] leading-[1.2] tracking-[-0.0162em] text-navy"
           >
             {t("headline")}
           </h2>
@@ -273,7 +273,7 @@ export default function HowItWorks() {
                     "Instant state" has to mean the copy is simply there. */}
                 {reduce ? (
                   <div className="hiw-glass relative flex flex-col gap-12 rounded-[4px] p-8">
-                    <h3 className="font-display font-normal text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
+                    <h3 className="font-display font-semibold text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
                       {t(`steps.${step.key}.title`)}
                     </h3>
                     <p className="text-[clamp(16px,1.3vw,20px)] leading-[1.45] text-cream">
@@ -298,7 +298,7 @@ export default function HowItWorks() {
                       delay: threeAcross ? i * STAGGER : 0,
                     }}
                   >
-                    <h3 className="font-display font-normal text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
+                    <h3 className="font-display font-semibold text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
                       {t(`steps.${step.key}.title`)}
                     </h3>
                     <p className="text-[clamp(16px,1.3vw,20px)] leading-[1.45] text-cream">

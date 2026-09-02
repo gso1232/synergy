@@ -68,7 +68,7 @@ function ActionButton({
 }
 
 const BADGE: Record<string, string> = {
-  pending: "bg-[#7D641F]/15 text-[#5E4A14]",
+  pending: "bg-[#0066CC]/15 text-[#5E4A14]",
   unverified: "bg-ink/10 text-ink/70",
   active: "bg-[#1B5E3A]/15 text-[#14502F]",
   rejected: "bg-[#8A2A1A]/12 text-[#7A2416]",

@@ -62,7 +62,7 @@ export default function PortalPlaceholder({
          no contrast obligation of its own. */
       style={{
         backgroundImage:
-          "repeating-linear-gradient(135deg, rgba(125,100,31,0.06) 0 6px, rgba(125,100,31,0) 6px 12px)",
+          "repeating-linear-gradient(135deg, rgba(0, 102, 204,0.06) 0 6px, rgba(0, 102, 204,0) 6px 12px)",
       }}
     >
       <p className="flex items-center gap-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-gold-deep">

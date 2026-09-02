@@ -175,7 +175,7 @@ export default function Consultation() {
           {/* BOTTOM — the display line, pinned by space-between */}
           <h2
             id="consult-heading"
-            className="cap-trim cap-display max-w-[85%] font-display text-[clamp(21px,0.96rem+1.36vw,34px)] font-normal leading-[1.2] tracking-[-0.016em] text-cream"
+            className="cap-trim cap-display max-w-[85%] font-display text-[clamp(21px,0.96rem+1.36vw,34px)] font-semibold leading-[1.2] tracking-[-0.016em] text-cream"
           >
             {t("headline")}
           </h2>

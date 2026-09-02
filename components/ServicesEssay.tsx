@@ -77,7 +77,7 @@ export default function ServicesEssay({
                 className="essay-block"
                 data-active={i === active ? "true" : undefined}
               >
-                <h3 className="sem-h3 font-display text-ink">{b.heading}</h3>
+                <h3 className="sem-h3 font-display text-navy">{b.heading}</h3>
                 <p className="sem-body mt-6 text-ink">{b.body}</p>
               </li>
             ))}

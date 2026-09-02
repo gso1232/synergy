@@ -363,7 +363,7 @@ export default function TheEngine() {
               ceiling goes to their 56. */}
           <h2
             id="engine-heading"
-            className="mt-4 font-display text-[clamp(30px,3.65vw,56px)] font-normal leading-[1.04] tracking-[-0.013em] text-ink"
+            className="mt-4 font-display text-[clamp(30px,3.65vw,56px)] font-semibold leading-[1.04] tracking-[-0.013em] text-navy"
           >
             {t("headline")}
           </h2>
@@ -594,7 +594,7 @@ export default function TheEngine() {
                     <span className="block border-b border-gold-deep/80 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-deep">
                       {te("cardKicker")}
                     </span>
-                    <h3 className="mt-2.5 font-display text-[clamp(17px,1.2vw,19px)] font-normal leading-[1.25] text-ink">
+                    <h3 className="mt-2.5 font-display text-[clamp(17px,1.2vw,19px)] font-semibold leading-[1.25] text-navy">
                       {tw(`rows.${k}.title`)}
                     </h3>
                     <p className="mt-1.5 text-[15px] leading-[1.5] text-ink/80">

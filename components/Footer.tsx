@@ -583,7 +583,7 @@ export default function Footer() {
 
    Its structure, measured at 1536 / 1400 / 768 / 390:
 
-     footer      background #252525 (ours: navy #0D1B2A), colour #F8F4EE, flex
+     footer      background #252525 (ours: navy #002050), colour #F8F4EE, flex
                  column, section spacers of 112px top and bottom
      container   a TWELVE-COLUMN grid, column gap 32, every child placed:
                    mission 1/3 · contact 4/4 · nav 9/2 · legal 11/2
@@ -599,13 +599,13 @@ export default function Footer() {
    Three deliberate deviations, all forced by contrast — on their own #252525,
    column headings, link hover and the © line all measure 2.56:1 against a
    required 4.5. On our navy those became cream at 70% (8.26:1), and hover went
-   to gold-pale #EFE1B0 (13.31:1) rather than fading.
+   to gold-pale #D4A017 (13.31:1) rather than fading.
 
-   Its AA table on flat navy #0D1B2A:
+   Its AA table on flat navy #002050:
      column headings      cream 70% #B2B3B3    8.26 : 1
      nav / contact links  #F8F4EE             15.87 : 1
      copyright            cream 70%            8.26 : 1
-     link hover           #EFE1B0             13.31 : 1
+     link hover           #D4A017             13.31 : 1
 
    `cap-trim cap-body` on the links is load-bearing, not decorative: reyou lay
    their footer links out on the CAP BAND, not the line box, which is what makes

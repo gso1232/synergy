@@ -127,7 +127,7 @@ function ctaProps(dest: CtaDest, locale: string) {
    REFERENCE: the Indonesia/Dubai travel cards — full image, gradient at the
    bottom, title + sub-line, a clean text action with an arrow. THE STRUCTURE IS
    THEIRS; THE COLOURS ARE NOT. Their cards are saturated tourism-brand
-   gradients; ours is navy #0D1B2A at graduated alpha, which is the same scrim
+   gradients; ours is navy #002050 at graduated alpha, which is the same scrim
    colour the hero, /about, /join and the footer already use.
 
    🟡 ONE HONEST DIVERGENCE FROM THE REFERENCE, FLAGGED RATHER THAN HIDDEN.
@@ -278,7 +278,10 @@ export default function WhoWeServe() {
             role="tablist"
             aria-label={t("tablistLabel")}
             onKeyDown={onKeyDown}
-            className="relative grid grid-cols-2 rounded-full bg-[#ECE9E2] p-[7px]"
+            /* The tab rail was grey #ECE9E2. "Please do not use gray backgrounds":
+               it is a 7% tint of the brand blue now, which still reads as a
+               track behind the moving pill without introducing a grey. */
+            className="relative grid grid-cols-2 rounded-full bg-royal/[0.07] p-[7px]"
           >
             <span
               aria-hidden="true"
@@ -359,7 +362,7 @@ export default function WhoWeServe() {
                        they are what keeps the crop aspect inside what a single
                        1600x1600 source can serve sharp at 2x — see the note on
                        `.who-card-scrim` in globals.css. */
-                    className="group relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_18px_44px_-18px_rgba(13,27,42,0.45)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:min-h-[560px] lg:min-h-[680px] lg:p-[38px]"
+                    className="group relative isolate flex min-h-[460px] flex-col justify-end overflow-hidden rounded-[24px] p-7 transition-[transform,box-shadow] duration-300 hover:-translate-y-1.5 hover:shadow-[0_1px_2px_rgba(0,32,80,0.05),0_10px_24px_-16px_rgba(0,32,80,0.20)] motion-reduce:transition-none motion-reduce:hover:translate-y-0 md:min-h-[560px] lg:min-h-[680px] lg:p-[38px]"
                   >
                     {/* THE PHOTOGRAPH.
                         🔴 `sizes` DECLARES THE CARD'S LARGER SIDE, NOT ITS
@@ -403,7 +406,7 @@ export default function WhoWeServe() {
                         at 64px a three-line title plus three bullets plus the
                         action needed a scrim so tall the image stopped
                         reading. */}
-                    <h3 className="font-display font-medium text-[clamp(30px,3.2vw,46px)] leading-[1.02] tracking-[-0.025em] text-cream">
+                    <h3 className="font-display font-semibold text-[clamp(30px,3.2vw,46px)] leading-[1.02] tracking-[-0.025em] text-cream">
                       {t(`${tab}.c${n}.title`)}
                     </h3>
 
@@ -411,7 +414,7 @@ export default function WhoWeServe() {
                       {BULLETS.map((b) => (
                         <li key={b} className="flex gap-3">
                           {/* Gold-pale, not gold: on the scrim's darkest floor
-                              gold #C9A84C is legal, but these dots also sit
+                              gold #D4A017 is legal, but these dots also sit
                               over the LIGHTEST composited pixel measured in the
                               copy band, where gold drops under 3:1. gold-pale
                               clears at both ends. */}

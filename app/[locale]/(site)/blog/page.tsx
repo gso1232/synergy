@@ -165,7 +165,7 @@ export default async function BlogIndexPage({
           The 60% MEASURE is kept, as a max-width on the sub.
 
           🔴 OPACITY 0.6 IS NOT REPRODUCED EITHER, and this one is a contrast
-          failure rather than a taste call. Ink #1A1A1A at 0.6 over cream
+          failure rather than a taste call. Ink #0B1F3A at 0.6 over cream
           #F8F4EE measures 3.1:1 — under AA for body text, and this is a resting
           state, not a transient. The sub takes full-strength ink.
       ===================================================================== */}

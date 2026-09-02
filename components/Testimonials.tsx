@@ -167,7 +167,7 @@ export default function Testimonials() {
                   cy="25"
                   r="24"
                   fill="none"
-                  stroke="#7D641F"
+                  stroke="#0066CC"
                   strokeWidth="2"
                   className="t-ring"
                   style={{ ["--t-dur" as string]: `${HOLD_MS}ms` }}
@@ -196,7 +196,7 @@ export default function Testimonials() {
               ) : null}
               <h2
                 id="testimonials-heading"
-                className="font-display text-[clamp(18px,1.95vw,30px)] font-medium leading-[1.2] tracking-[-0.015em] text-ink"
+                className="font-display text-[clamp(18px,1.95vw,30px)] font-semibold leading-[1.2] tracking-[-0.015em] text-navy"
               >
                 {t("headline")}
               </h2>

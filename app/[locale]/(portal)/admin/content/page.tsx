@@ -50,7 +50,7 @@ export default async function CmsListPage({
 
   return (
     <AdminSubShell locale={locale} userLabel={user?.email ?? ""} current="cms">
-      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-medium leading-[1.15] text-ink">
+      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.15] text-navy">
         {t("cms.heading")}
       </h1>
       <p className="mt-2 max-w-[70ch] text-[15px] leading-[1.55] text-ink/80">{t("cms.intro")}</p>
@@ -66,7 +66,7 @@ export default async function CmsListPage({
 
       {/* ---------- THE PAGES ---------- */}
       <section aria-labelledby="cms-pages" className="mt-8">
-        <h2 id="cms-pages" className="font-display text-[18px] font-medium text-ink">
+        <h2 id="cms-pages" className="font-display text-[18px] font-semibold text-navy">
           {t("cms.pagesHeading")}
         </h2>
 
@@ -125,7 +125,7 @@ export default async function CmsListPage({
           `is_published: false`, so it cannot appear in an agent's nav
           mid-sentence. Publishing is a separate, deliberate act in the editor. */}
       <section aria-labelledby="cms-new" className="mt-10">
-        <h2 id="cms-new" className="font-display text-[18px] font-medium text-ink">
+        <h2 id="cms-new" className="font-display text-[18px] font-semibold text-navy">
           {t("cms.newHeading")}
         </h2>
         <p className="mt-1 max-w-[70ch] text-[14px] leading-[1.5] text-ink/80">

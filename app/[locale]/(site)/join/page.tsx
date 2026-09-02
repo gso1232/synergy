@@ -252,7 +252,7 @@ export default async function JoinPage({
           <FadeUp>
             <h2
               id="join-opening-phrase"
-              className="join-opening-phrase sem-display font-display text-ink"
+              className="join-opening-phrase sem-display font-display text-navy"
             >
               {t("opening.phrase")}
             </h2>
@@ -288,7 +288,7 @@ export default async function JoinPage({
                   with. */}
               {(["1", "2", "3"] as const).map((n) => (
                 <div key={n} className="join-copy-q">
-                  <h3 className="sem-h3 font-display text-ink">
+                  <h3 className="sem-h3 font-display text-navy">
                     {t(`opening.q${n}`)}
                   </h3>
                   <p className="sem-body mt-5 text-ink">{t(`opening.a${n}`)}</p>
@@ -311,7 +311,7 @@ export default async function JoinPage({
             <FadeUp className="join-offer-rail">
               <h2
                 id="join-offer-heading"
-                className="sem-h2 font-display text-ink"
+                className="sem-h2 font-display text-navy"
               >
                 {t("offer.heading")}
               </h2>
@@ -341,7 +341,7 @@ export default async function JoinPage({
                     >
                       {t(`offer.${k}.numeral`)}
                     </p>
-                    <h3 className="sem-h3 mt-3 font-display text-ink">
+                    <h3 className="sem-h3 mt-3 font-display text-navy">
                       {t(`offer.${k}.label`)}
                     </h3>
                     <p className="sem-body mt-5 text-ink">
@@ -396,7 +396,7 @@ export default async function JoinPage({
               <p className="sem-eyebrow text-ink/70">{t("range.eyebrow")}</p>
               <h2
                 id="join-range-heading"
-                className="sem-h2 mt-4 font-display text-ink"
+                className="sem-h2 mt-4 font-display text-navy"
               >
                 {t("range.heading")}
               </h2>
@@ -466,7 +466,7 @@ export default async function JoinPage({
               <p className="sem-eyebrow text-ink/70">{t("apply.eyebrow")}</p>
               <h2
                 id="join-apply-heading"
-                className="sem-h2 mt-4 font-display text-ink"
+                className="sem-h2 mt-4 font-display text-navy"
               >
                 {t("apply.heading")}
               </h2>

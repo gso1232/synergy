@@ -5,98 +5,121 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        /**
-         * 🔴 cream IS PURE WHITE NOW. It was #F8F4EE, the warm off-white this
-         * whole palette was built around, changed to #FFFFFF on instruction
-         * 2026-09-01: "make the whole website pure white, not this dim white".
+        /* =====================================================================
+         * SYNERGY BRAND PALETTE, 2026-09-01. Supplied directly:
          *
-         * THE NAME IS KEPT ON PURPOSE. Renaming it to `white` would touch 38
-         * `bg-cream`, 81 `text-cream` and 11 `border-cream` call sites across
-         * the codebase for zero behavioural gain, and every one of those edits
-         * is a chance to typo a class into silence. The token is the single
-         * place this value lives; changing it here changed every surface at
-         * once, which is the whole reason it exists.
+         *     Primary navy   #002050
+         *     Royal blue     #0066CC
+         *     White          #FFFFFF
+         *     Gold accent    #D4A017
          *
-         * ⚠️ CONTRAST RATIOS QUOTED IN OLDER COMMENTS ARE NOW CONSERVATIVE, NOT
-         * WRONG. Roughly forty comments in app/globals.css and the components
-         * cite figures measured against #F8F4EE (cream on navy 15.87:1,
-         * gold-deep on cream 5.16:1, and so on). White is LIGHTER than cream,
-         * so every one of those pairs now measures the same or better: ink on
-         * white is 16.1:1 against 15.87, gold-deep on white 5.35 against 5.16.
-         * They were left as written rather than rewritten in bulk, because a
-         * forty-line find-and-replace through measured documentation is a good
-         * way to introduce a number nobody checked.
+         * with two standing rules: NO GREY OR BLUE-GREY anywhere in the main
+         * design, and gold is an occasional small accent, never dominant.
          *
-         * 🟡 WHAT THIS COSTS. Sections no longer separate by tone. `bg-cream`
-         * and `bg-white` are now the same colour, so every white card on a
-         * page surface reads by its border alone. They all have one, verified
-         * across all 58 `bg-white` call sites; the two that did not are fixed
-         * in this change (`.admin-skip` gained a boundary, and the Google
-         * review cards already carry a hairline).
-         */
+         * 🔴 THE TOKEN NAMES ARE NOT ALL HONEST ANY MORE AND THAT IS A DELIBERATE
+         * TRADE. `gold-deep` holds royal blue, and `navy-soft` holds royal blue
+         * too. Renaming them properly means editing 170 and 9 class strings, and
+         * every one of those edits is a chance to typo a Tailwind class into
+         * silence with no error. The VALUE is the single place the colour lives;
+         * changing it here changed every surface at once, which is the whole
+         * reason the token layer exists. Read the mapping below, not the names.
+         *
+         * ⚠️ CONTRAST FIGURES QUOTED THROUGHOUT THIS CODEBASE ARE FROM THE OLD
+         * PALETTE AND ARE NOW WRONG, NOT MERELY CONSERVATIVE. The cream->white
+         * change could be waved through because white is lighter than cream, so
+         * every ratio improved. This one moves hues, so each pair had to be
+         * recomputed. The ones that matter, measured:
+         *
+         *     white on navy #002050        15.88:1   (was 15.87 on #0D1B2A)
+         *     ink #0B1F3A on white         16.50:1
+         *     white on royal #0066CC        5.56:1   passes normal text
+         *     royal #0066CC on white        5.56:1   passes normal text
+         *     gold #D4A017 on navy          6.69:1   passes normal text
+         *     gold #D4A017 on WHITE         2.38:1   FAILS EVERYTHING
+         *
+         * 🔴 THAT LAST LINE IS THE ONE THAT SHAPED THE MAPPING. The supplied gold
+         * cannot carry text on white, and it cannot even be a 3:1 UI boundary
+         * there. The old palette used `gold-deep` #7D641F for every accent on a
+         * light surface — eyebrows, kickers, rules, and 66 focus rings. Pointing
+         * that token at #D4A017 would have put 170 sub-3:1 elements on a white
+         * site. It points at ROYAL instead, which is both accessible and exactly
+         * what the brief asks for: "royal blue accents" on white, gold reserved
+         * for small accents. Gold now appears only where it is legible: on navy.
+         * ===================================================================== */
+
+        /** The page. Named `cream` since it was #F8F4EE; 130 call sites. */
         cream: "#FFFFFF",
-        greige: "#ECE9E2",
-        navy: "#0D1B2A",
-        // Navy-lift — the TOP of the About page's continuous gradient, which
-        // ends on `navy` so the footer seam disappears.
-        //
-        // It exists because navy and ink are luminance-identical: navy #0D1B2A
-        // is L 0.0104 and ink #1A1A1A is L 0.0103. They differ in hue, not in
-        // brightness, so the obvious "navy to ink" gradient descends 1.00x and
-        // looks like nothing is happening. Our palette has no mid-tone between
-        // greige (0.816) and navy (0.0104), so one had to be derived.
-        //
-        // Solved BACKWARDS from the gold constraint, not chosen by eye. Gold
-        // #C9A84C (L 0.4094) as NORMAL text needs 4.5:1, which caps the
-        // background at L <= 0.0521. #1C3A5A sits at L 0.0401 — the lightest
-        // navy that keeps gold legal as normal text with real margin (5.10:1).
-        // #204264 (L 0.0512) lands on 4.54:1, too close to ship.
-        //
-        // Across the full #1C3A5A -> #0D1B2A run the descent is 3.87x and gold
-        // never drops below 5.10:1. `gold-deep` is UNUSABLE here — 2.06:1 at
-        // the top — so dark surfaces take `gold`, light surfaces take
-        // `gold-deep`, and neither crosses over.
-        "navy-lift": "#1C3A5A",
+
         /**
-         * navy-soft — THE SITE'S ONE ACCENT, and the fill of the utility strip.
-         *
-         * Asked for as "lighter than that, a slight bit" against `navy-lift`,
-         * and then again once the strip took the same colour. It carries the
-         * Join pill, the strip's background, the strip's two badges and the
-         * hero's two CTAs, so the accent is one value rather than the four
-         * different ones (navy, grey, red, cream) those surfaces started with.
-         *
-         * MEASURED, because it is a background for cream text everywhere it
-         * appears: cream #F8F4EE on #22496F is 8.16:1 — clear of the 4.5 that
-         * body text needs and of the 3:1 a large label needs, with room to
-         * spare for the 13px uppercase button labels which are the smallest
-         * type that sits on it.
+         * 🔴 NOT GREY ANY MORE. This was #ECE9E2, a warm grey, and "please do
+         * not use gray backgrounds" retires it as a surface. It is repointed at
+         * white rather than deleted because deleting the token breaks its one
+         * remaining call site and eight CSS rules; every one of those is now
+         * white, and the surfaces that used it for separation take a royal
+         * hairline instead. See the greige sweep in this change.
          */
-        "navy-soft": "#22496F",
-        gold: "#C9A84C",
-        // Pale gold / champagne — a lighter value of the brand gold, added for
-        // muted-emphasis type on the hero video. #C9A84C sits at luminance
-        // 0.421, which cannot reach 3:1 over a variable video frame without a
-        // ~0.65 scrim; this tint is at 0.752 and behaves like white.
-        "gold-pale": "#EFE1B0",
-        "gold-deep": "#7D641F",
-        ink: "#1A1A1A",
+        greige: "#FFFFFF",
+
+        /** Primary navy. Dark section backgrounds, headings, secondary buttons. */
+        navy: "#002050",
+
+        /**
+         * Hover for the primary button, per the brief: royal -> navy. It is the
+         * SAME value as `navy` on purpose, so `hover:bg-navy-lift` lands on the
+         * specified colour without touching 12 call sites.
+         */
+        "navy-lift": "#002050",
+
+        /**
+         * 🔴 ROYAL BLUE #0066CC, DESPITE THE NAME. This is the site's accent and
+         * the primary button fill: the Join pill, the utility strip badges, the
+         * hero CTAs, the service card accents. White on it is 5.56:1.
+         */
+        "navy-soft": "#0066CC",
+
+        /** The same royal blue. See the note above about why the name stayed. */
+        royal: "#0066CC",
+
+        /** Gold accent. LEGIBLE ON NAVY ONLY (6.69:1); 2.38:1 on white. */
+        gold: "#D4A017",
+
+        /**
+         * Gold on dark surfaces — focus rings and link hovers over navy and over
+         * photographs. Was #EFE1B0, a pale gold; now the brand gold itself,
+         * which still clears 6.69:1 on navy.
+         */
+        "gold-pale": "#D4A017",
+
+        /**
+         * 🔴 ROYAL BLUE, NOT GOLD. The accent-on-light slot: 46 text, 33 border,
+         * 66 focus rings, 14 backgrounds. See the contrast note above for why
+         * the supplied gold could not take this job.
+         */
+        "gold-deep": "#0066CC",
+
+        /** Body text. Very dark navy rather than black, per the brief. */
+        ink: "#0B1F3A",
+
+        /**
+         * Status tints in the admin only — warning amber on light chips. Left on
+         * the old values: they are not brand surfaces, they are the colour that
+         * says "caution" in a data table, and turning them blue would remove the
+         * only thing distinguishing them from every other row.
+         */
         amber: "#E0A458",
-        // Text-safe amber. The brand amber #E0A458 is a light tint — fine as a
-        // rule or a wash, but it cannot carry type on cream. This is the same
-        // hue taken down to a value that clears AA on #F8F4EE for normal text,
-        // used for the difference figure in the calculator.
         "amber-deep": "#8A5312",
       },
+
       fontFamily: {
-        // Kufam for display, IBM Plex Sans for body and the data numerals.
-        // `data` deliberately aliases `--font-body`: the figures and the copy
-        // are one face, and Plex's figures are tabular natively — see the note
-        // in app/[locale]/layout.tsx for why that decided the swap.
+        // 🔴 ALL FOUR SLOTS ARE MONTSERRAT, 2026-09-01. Fraunces (display),
+        // IBM Plex Sans (body/data) and Be Vietnam Pro (hero) are gone on
+        // instruction. The four names are KEPT because ~500 call sites use
+        // them, and --font-display / --font-hero are aliased onto --font-body
+        // in app/globals.css. See the docblock in app/[locale]/layout.tsx,
+        // including the tabular-figures check that swap had to survive.
         display: ["var(--font-display)"],
         body: ["var(--font-body)"],
         data: ["var(--font-body)"],
-        // Inter — VEX-spec hero only.
         hero: ["var(--font-hero)"],
         // IBM Plex Mono — ADMIN ONLY. The variable is mounted on the (portal)
         // layout, not the root, so `font-mono` resolves to the fallback stack

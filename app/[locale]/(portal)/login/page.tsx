@@ -120,7 +120,7 @@ export default async function LoginPage({
         <LogoLockup className="h-14 w-auto" />
       </div>
 
-      {/* THE GLASS CARD. `.auth-card` is rgba(13,27,42,0.82) + backdrop-blur —
+      {/* THE GLASS CARD. `.auth-card` is rgba(0, 32, 80,0.82) + backdrop-blur —
           glassy, but opaque enough that cream text clears AA over the brightest
           blob (measured). Centred, one column at every width. */}
       <div className="auth-card relative z-10 w-full max-w-[420px] rounded-2xl p-7 text-center sm:p-9">

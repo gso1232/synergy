@@ -72,7 +72,7 @@ export default async function SiteContentPage({
 
   return (
     <AdminSubShell locale={locale} userLabel={user?.email ?? ""} current="siteContent">
-      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-medium leading-[1.15] text-ink">Site content</h1>
+      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.15] text-navy">Site content</h1>
       <p className="mt-2 max-w-[70ch] text-[15px] leading-[1.55] text-ink/80">
         Edit the words on the public website. Changes go live within a few
         seconds — there is no deploy to wait for. Clearing a box puts the

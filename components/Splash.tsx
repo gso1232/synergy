@@ -116,7 +116,7 @@ const FAILSAFE = 5000; // ms — lift regardless, so a blocked font or a stalled
  * .otf fetch, the opentype.js path, the viewBox, the group timings and the
  * `useReducedMotion` fallback are all untouched by either value.
  */
-const SIGNATURE_INK = "#7D641F";
+const SIGNATURE_INK = "#0066CC";
 /** const SIGNATURE_INK = "#0D1B2A"; // navy — the 15.87:1 alternative */
 
 /**

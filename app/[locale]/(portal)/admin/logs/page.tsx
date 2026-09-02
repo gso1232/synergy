@@ -89,7 +89,7 @@ export default async function AdminLogsPage({
 
   return (
     <AdminSubShell locale={locale} userLabel={user?.email ?? ""} current="logs">
-      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-medium leading-[1.15] text-ink">
+      <h1 className="font-display text-[clamp(24px,2.6vw,32px)] font-semibold leading-[1.15] text-navy">
         {t("logs.heading")}
       </h1>
       <p className="mt-2 max-w-[70ch] text-[15px] leading-[1.55] text-ink/80">{t("logs.intro")}</p>
