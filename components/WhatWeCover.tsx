@@ -1,11 +1,14 @@
 "use client";
 
+import { useRef } from "react";
+import Image from "next/image";
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { routeHref } from "@/routes";
 import FadeUp from "./FadeUp";
 import RevealText from "./RevealText";
 import CtaPair from "./CtaPair";
+import { useParallax } from "./useParallax";
 
 // Three products (Final Expense dropped): Term (protect now), IUL (grow),
 // Tax-Free Retirement (the only card carrying the ITIN "No SSN required" line).
@@ -21,12 +24,15 @@ export default function WhatWeCover() {
   const tNav = useTranslations("nav");
   const locale = useLocale();
   const reduce = useReducedMotion();
+  const sectionRef = useRef<HTMLElement>(null);
+  const bgRef = useRef<HTMLDivElement>(null);
 
   // Scroll-driven parallax: the background travels at a different rate than the
   // content as the section passes through the viewport. The implementation now
   // lives in useParallax and is shared with Testimonials — same tween, same
   // ±16 / scrub:true, so the two sections cannot drift apart. Disabled entirely
   // under reduced motion; the background then sits static.
+  useParallax(sectionRef, bgRef, { reduce });
 
   /**
    * THE CARD ENTRANCE — OPTION 4, approved 2026-08-03, chosen from four
@@ -69,33 +75,55 @@ export default function WhatWeCover() {
 
   return (
     <section
+      ref={sectionRef}
       aria-labelledby="cover-heading"
-      /* 🔴 WHITE, AND THE PHOTOGRAPH IS GONE, 2026-09-01, ON INSTRUCTION.
-         This was a full-bleed parallax photograph (`coverage-family-meadow.jpg`)
-         under a nine-stop veil, with three translucent navy `.cover-card`
-         tiles floating on it. The brand brief asks for white service cards
-         with thin blue borders and navy headings, and "most of the website to
-         stay white" — none of which survives a dark photo section.
+      /* 🔴 THE PHOTOGRAPH IS BACK AND THE CARDS ARE NOT, 2026-09-01.
+         This section was stripped to a flat white surface earlier today so the
+         tiles could become the brief's white-card-with-a-blue-hairline. That
+         worked, and the photograph was then asked for again — WITHOUT reverting
+         the cards. So this is the hybrid: the parallax scene and its veil are
+         restored exactly as they were, and the five tiles stay white with a
+         royal border.
 
-         WHAT WENT WITH IT, all of it recoverable:
-           · the `cover-photo-layer` / `cover-veil` markup, commented out below
-           · `useParallax(sectionRef, bgRef)` and both refs
-           · the `cover-scene` focus-ring hook, which existed only because a
-             flat ring could not clear 3:1 on the cleared middle third of the
-             veil. On white it can, so the global ring is correct here now.
-           · CtaPair's `variant="photo"`, which paints opaque pills so contrast
-             does not depend on the pixels behind them. On white the `cream`
-             variant is right: royal primary, outlined navy secondary.
+         ⚠️ THAT SPLIT DECIDES THE TEXT COLOURS, AND IT IS NOT A STYLE CHOICE.
+         Everything OUTSIDE a card sits on the photograph and must be white —
+         the eyebrow, the heading, the subhead, the closing line, and CtaPair's
+         `photo` variant, which paints opaque pills so contrast never depends on
+         the pixels behind them. Everything INSIDE a card sits on white and must
+         be navy/ink. Setting either group to the other is not a slightly worse
+         look, it is unreadable.
 
-         The IMAGE FILE and every `.cover-*` rule in globals.css are untouched
-         on disk, so restoring this is uncommenting the block below and putting
-         four class strings back. */
-      className="relative bg-white"
+         `cover-scene` comes back with the photo: it scopes the two-tone focus
+         ring in globals.css to controls over the image, because a flat ring
+         cannot clear 3:1 on the cleared middle third of `.cover-veil`. */
+      className="cover-scene relative overflow-hidden bg-navy"
     >
+      {/* Full-bleed parallax photograph */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        {/* `cover-photo-layer` rebuilds this layer below 1024px; the desktop
+            geometry here (`top-[-30%] h-[160%]`) is sized to absorb the +/-16
+            yPercent parallax travel. The full derivation of the geometry and of
+            the `sizes` figures is in git history for this file. */}
+        <div
+          ref={bgRef}
+          className="cover-photo-layer absolute inset-x-0 top-[-30%] h-[160%] will-change-transform"
+        >
+          <Image
+            src="/synergy/coverage-family-meadow.jpg"
+            alt=""
+            fill
+            priority
+            sizes="(max-width: 630px) 600px, 100vw"
+            className="cover-photo object-cover object-[center_40%]"
+          />
+        </div>
+        <div className="cover-veil absolute inset-0" />
+      </div>
+
       <div className="relative z-10 mx-auto max-w-[1500px] px-6 py-16 md:px-8 lg:py-20">
         {/* Heading block — deliberately small so the cards below lead */}
         <FadeUp className="mx-auto max-w-[44ch] text-center">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-royal">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
             {t("eyebrow")}
           </p>
           {/* The section heading reveals word-by-word under a mask. It keeps
@@ -106,9 +134,9 @@ export default function WhatWeCover() {
             as="h2"
             id="cover-heading"
             text={t("heading")}
-            className="mt-2.5 font-display font-semibold text-[clamp(25px,2.6vw,34px)] leading-[1.06] tracking-[-0.02em] text-navy"
+            className="mt-2.5 font-display font-semibold text-[clamp(25px,2.6vw,34px)] leading-[1.06] tracking-[-0.02em] text-white"
           />
-          <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.55] text-ink">
+          <p className="mx-auto mt-3 max-w-[40ch] text-[15px] leading-[1.55] text-white">
             {t("subhead")}
           </p>
           {/* THE SHARED CTA PAIR — see components/CtaPair.tsx. Was a
@@ -123,7 +151,7 @@ export default function WhatWeCover() {
               shared `cta` namespace. */}
           <CtaPair
             locale={locale}
-            variant="cream"
+            variant="photo"
             quoteLabel={tCta("quote")}
             secondary={{
               kind: "tel",
@@ -195,7 +223,7 @@ export default function WhatWeCover() {
 
         {/* Closing statement — the one large line, per the reference */}
         <FadeUp className="mx-auto mt-8 max-w-[24ch] text-center">
-          <p className="font-display font-semibold text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.02em] text-navy">
+          <p className="font-display font-semibold text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.02em] text-white">
             {t("closingLine")}
           </p>
         </FadeUp>
