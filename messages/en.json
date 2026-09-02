@@ -1325,10 +1325,10 @@
     "signOut": "Sign out"
   },
   "portal": {
-    "metaTitle": "Agent Portal — Synergy Insurance Group",
+    "metaTitle": "Agent Portal, Synergy Insurance Group",
     "metaDescription": "Licensing, contracting and carrier reference for Synergy agents.",
     "heading": "Welcome to the Synergy Insurance Portal",
-    "subhead": "Everything you need to get licensed, get contracted and get appointed with our carriers. The sections run in order — each one assumes the one above it is done.",
+    "subhead": "Everything you need to get licensed, get contracted and get appointed with our carriers. The sections run in order, and each one assumes the one above it is done.",
     "signedInAs": "Signed in as {email}",
     "signOut": "Sign out",
     "back": "Back to site",
@@ -1342,90 +1342,90 @@
     },
     "placeholder": {
       "label": "Needs Synergy detail",
-      "note": "Marked gap — not finished copy."
+      "note": "Marked gap, not finished copy."
     },
     "licensing": {
       "heading": "Licensing checklist",
-      "intro": "Your route to a resident insurance licence. Take these in order — each step depends on the one before it.",
+      "intro": "The route to a resident insurance licence, in order. Each step needs the one above it finished, so work down rather than around.",
       "stepLabel": "Step {n}",
       "s1": {
-        "heading": "Check what your resident state requires",
-        "body": "Licensing is set state by state. Study hours, the exam itself, the fees and whether you need fingerprints all differ. Confirm your own state's rules before you spend anything.",
-        "link1": "NIPR — licensing requirements by state",
-        "link2": "Prepare2Pass — state requirement detail"
+        "heading": "Find out what your state asks for",
+        "body": "Licensing is set state by state. Study hours, the exam, the fees and whether fingerprints are needed all change depending on where you live. Check your own state before you spend anything, because the answer for a neighbouring state may not be the answer for yours.",
+        "link1": "NIPR: licensing requirements by state",
+        "link2": "Prepare2Pass: state requirement detail"
       },
       "s2": {
         "heading": "Enrol in a pre-licensing course",
-        "body": "Register on a desktop or laptop rather than a phone. These enrolment forms are long and they routinely fail on mobile browsers, and a half-completed registration is a problem you have to unpick before you can start studying."
+        "body": "Use a laptop or desktop, not a phone. These enrolment forms are long and they fail often on mobile browsers, and a registration that stopped halfway has to be untangled before you can start studying."
       },
       "s3": {
-        "heading": "Book the state exam while you are still studying",
-        "body": "About two-thirds of the way through the course, book your exam. A booked date is a deadline, and a deadline is what gets a course finished. Check your testing provider, your nearest centre and whether a background check is required.",
-        "link1": "Xcel Solutions — exam and licensing requirements"
+        "heading": "Book the exam before you finish studying",
+        "body": "Around two thirds of the way through the course, book the date. A booked date is a deadline, and a deadline is what gets a course finished. While you are booking, check which testing provider your state uses, where your nearest centre is, and whether a background check applies to you.",
+        "link1": "Xcel Solutions: exam and licensing requirements"
       },
       "s4": {
-        "heading": "Send us your exam date",
-        "body": "Forward the confirmation from the testing provider, or send a screenshot of the booking. Put “Exam date confirmed” and your name in the subject line so it is filed against your record."
+        "heading": "Send Synergy your exam date",
+        "body": "Forward the confirmation from the testing provider, or send a screenshot of the booking. Include your full name so it can be filed against your record. Knowing your date is what lets the Orlando office line up the next stage before you need it."
       },
       "s5": {
-        "heading": "Tell us the moment you pass",
-        "body": "Let the admin team and your team leader know as soon as you have your result. That is what starts the contracting stage, and nothing moves until we hear from you."
+        "heading": "Tell us the day you pass",
+        "body": "Let the admin team and your team leader know as soon as you have the result. Passing is what starts contracting, and nothing moves until somebody here knows it happened."
       },
       "s6": {
-        "heading": "Get fingerprinted, if your state asks for it",
-        "body": "Some states run a background check before they will issue a licence. If yours does, book it as early as you can — results often take longer to come back than the exam result does. The state links in step one tell you whether it applies and who is approved to take them."
+        "heading": "Get fingerprinted if your state requires it",
+        "body": "Some states run a background check before they will issue a licence. If yours does, book it as early as you can, because results routinely take longer to come back than the exam result does. The state links in step one tell you whether it applies to you and who is approved to take them."
       },
       "s7": {
-        "heading": "Apply for your resident licence",
-        "body": "The testing centre usually explains how to apply once you have passed. Fees and additional checks vary, so call your state Department of Insurance if anything is unclear. Contracting cannot begin until the licence is issued and your producer number exists.",
-        "link1": "NIPR — apply for a licence",
-        "link2": "Sircon — individual licensing"
+        "heading": "Apply for the licence",
+        "body": "The testing centre usually explains how to apply once you have passed. Fees and extra checks vary by state, so call your state Department of Insurance if anything reads as unclear. Contracting cannot begin until the licence is issued and your producer number exists.",
+        "link1": "NIPR: apply for a licence",
+        "link2": "Sircon: individual licensing"
       },
       "s8": {
         "heading": "Collect your National Producer Number",
-        "body": "There is nothing to apply for. Your NPN is created automatically when your state reports the approved licence to the national registry. Chase your state department daily if it is slow, then look the number up here once it lands.",
-        "link1": "NIPR — look up your NPN"
+        "body": "There is nothing to apply for. The NPN is created for you when your state reports the approved licence to the national registry. If it is slow, chase your state department rather than waiting, then look the number up once it appears.",
+        "link1": "NIPR: look up your NPN"
       },
-      "done": "Licensed. Work through the contracting checklist next."
+      "done": "Licensed. Contracting is next."
     },
     "contracting": {
       "heading": "New agent checklist",
-      "intro": "Getting appointed with carriers. In order again — the document step assumes everything above it is finished.",
+      "intro": "Getting appointed with carriers. In order again, and the document step assumes everything above it is done.",
       "stepLabel": "Step {n}",
       "c1": {
         "heading": "Buy errors and omissions cover",
-        "body": "Buy E&O from whichever provider you prefer, and shop around. Two conditions are not negotiable.",
+        "body": "Buy E and O from whichever provider you prefer, and it is worth comparing a few. Two conditions are not flexible.",
         "rule1": "Cover of at least $1M per claim and $3M in aggregate.",
         "rule2": "The policy must start on the first of the current month. If today is 12 April, the start date is 1 April. A policy that begins on the first of next month stops contracting and onboarding until that date arrives."
       },
       "c2": {
-        "heading": "Complete an anti-money-laundering course",
-        "body": "Every carrier wants a current AML certificate before it will appoint you. The course runs about an hour, costs very little, and the certificate lasts two years. One certificate from a recognised provider is normally accepted widely, although a few carriers insist on their own version. Keep the completion certificate — it is attached in the next step.",
-        "provider": "WebCE — AML training, course #206954"
+        "heading": "Complete AML training",
+        "body": "Every carrier wants a current anti-money-laundering certificate before it will appoint you. The course takes about an hour, costs very little, and the certificate lasts two years. One certificate from a recognised provider is usually accepted across carriers, though a few insist on their own. Keep the completion certificate, because it is one of the documents in the next step.",
+        "provider": "WebCE: AML training, course #206954"
       },
       "c3": {
-        "heading": "Send your documents in one email",
-        "body": "Attach all five items to a single message. Use the subject line “Ready to contract” followed by your name. Documents sent separately get processed separately, which is slower for you.",
+        "heading": "Send your contracting documents",
+        "body": "Send all five items together in one message with your full name on it. Documents that arrive separately are processed separately, which slows your own start date rather than anybody else.",
         "doc1": "Resident insurance licence",
         "doc2": "National Producer Number, as it appears on NIPR",
-        "doc3": "Driver's licence",
+        "doc3": "Driver license",
         "doc4": "E&O certificate",
         "doc5": "AML completion certificate"
       },
       "c4": {
-        "heading": "Prepare a voided check — but do not email it",
-        "body": "Carriers set up payment to you directly, which is why they need your banking details. Save a PDF of a voided check ready for the onboarding call. A voided check is strongly preferred. Failing that, a letter on bank letterhead signed by a bank representative showing your routing number, account number and personal details will do, as will a direct-deposit printout that shows your name, routing number and account number.",
+        "heading": "Get your banking details ready",
+        "body": "Carriers pay you directly, which is why they need your banking details. Have a PDF of a voided check saved before the onboarding call. A voided check is much the simplest. If you do not have one, a letter on bank letterhead signed by a bank representative showing your routing number, account number and personal details works, and so does a direct-deposit printout showing your name, routing number and account number.",
         "warn": "Do not send this by email. Bring it to the onboarding call."
       },
       "c5": {
-        "heading": "Have these ready for the onboarding call",
-        "body": "The call is held over video. Have the following to hand so it can be finished in one sitting.",
-        "item1": "Your bank's name, address and phone number — any branch is fine.",
-        "item2": "Your beneficiary's full name, Social Security number and email address. The beneficiary must be over 18 and legally present in the United States."
+        "heading": "The onboarding call",
+        "body": "Have the following ready so the call can be finished in one sitting rather than booked twice.",
+        "item1": "The name, address and phone number of your bank. Any branch is fine.",
+        "item2": "The full name, Social Security number and email address of your beneficiary. The beneficiary needs to be over 18 and legally present in the United States."
       },
       "c6": {
-        "heading": "Finish the required product training",
-        "body": "Indexed universal life and annuity carriers will not appoint you until the product training is complete. Do it straight after onboarding and send the admin team a screenshot of your completion screen."
+        "heading": "Finish carrier product training",
+        "body": "Indexed universal life and annuity carriers will not appoint you until their product training is done. Take it straight after onboarding and send the admin team a screenshot of the completion screen."
       },
       "after": {
         "heading": "After you send your documents",
@@ -1453,18 +1453,18 @@
       "stepCount": "{count} steps",
       "gapCount": "{count} to come",
       "licensing": "Get your resident insurance licence, from checking your state rules to collecting your producer number.",
-      "contracting": "Get appointed with carriers — cover, certificates, documents and the onboarding call.",
+      "contracting": "Get appointed with carriers: cover, certificates, documents and the onboarding call.",
       "resources": "Service lines and agent portals for the carriers Synergy is appointed with.",
       "training": "Bootcamps and product training for new agents."
     },
     "gaps": {
-      "prelicensing": "Where a Synergy agent enrols for pre-licensing study — the provider, the enrolment link, and anything Synergy covers.",
+      "prelicensing": "Where a Synergy agent enrols for pre-licensing study: the provider, the enrolment link, and anything Synergy covers.",
       "examEmail": "The address a new agent sends their exam date to.",
       "docsEmail": "The address a new agent sends their contracting documents to.",
-      "training": "Where Synergy’s required IUL and annuity product training lives, and where a completion screenshot goes.",
+      "training": "Where the required IUL and annuity product training lives, and where a completion screenshot goes.",
       "callback": "How long an agent should expect to wait for the onboarding call.",
-      "documents": "Synergy’s own agent documents, if any exist — onboarding and contracting guides, trackers, scripts.",
-      "bootcamp": "Synergy’s own bootcamp or training destination — where it runs, how an agent joins, and whether there is a Spanish session."
+      "documents": "Agent documents belonging to Synergy, if any exist: onboarding and contracting guides, trackers, scripts.",
+      "bootcamp": "The Synergy bootcamp or training destination: where it runs, how an agent joins, and whether there is a Spanish session."
     }
   },
   "agents": {

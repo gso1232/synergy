@@ -1331,66 +1331,66 @@
     },
     "licensing": {
       "heading": "",
-      "intro": "",
+      "intro": "La ruta hacia una licencia de seguros en su estado, en orden. Cada paso necesita que el anterior esté terminado, así que avance de arriba hacia abajo.",
       "stepLabel": "",
       "s1": {
-        "heading": "",
-        "body": "",
+        "heading": "Averigüe qué pide su estado",
+        "body": "La licencia se define estado por estado. Las horas de estudio, el examen, las tarifas y si se requieren huellas digitales cambian según dónde viva. Verifique su propio estado antes de gastar nada, porque la respuesta de un estado vecino puede no ser la suya.",
         "link1": "",
         "link2": ""
       },
       "s2": {
-        "heading": "",
-        "body": ""
+        "heading": "Inscríbase en un curso de pre-licencia",
+        "body": "Use una computadora, no el teléfono. Estos formularios de inscripción son largos y fallan con frecuencia en navegadores móviles, y un registro que se quedó a medias hay que desenredarlo antes de poder empezar a estudiar."
       },
       "s3": {
-        "heading": "",
-        "body": "",
+        "heading": "Reserve el examen antes de terminar de estudiar",
+        "body": "Cuando lleve unas dos terceras partes del curso, reserve la fecha. Una fecha reservada es una fecha límite, y una fecha límite es lo que hace que un curso se termine. Al reservar, confirme qué proveedor de examen usa su estado, dónde está su centro más cercano y si le aplica una verificación de antecedentes.",
         "link1": ""
       },
       "s4": {
-        "heading": "",
-        "body": ""
+        "heading": "Envíe a Synergy la fecha de su examen",
+        "body": "Reenvíe la confirmación del proveedor del examen, o envíe una captura de la reserva. Incluya su nombre completo para que quede archivada en su expediente. Saber su fecha es lo que permite a la oficina de Orlando preparar la siguiente etapa antes de que la necesite."
       },
       "s5": {
-        "heading": "",
-        "body": ""
+        "heading": "Avísenos el día que apruebe",
+        "body": "Informe al equipo administrativo y a su líder de equipo en cuanto tenga el resultado. Aprobar es lo que inicia la contratación, y nada avanza hasta que alguien aquí lo sepa."
       },
       "s6": {
-        "heading": "",
-        "body": ""
+        "heading": "Tome sus huellas digitales si su estado lo exige",
+        "body": "Algunos estados hacen una verificación de antecedentes antes de emitir la licencia. Si el suyo lo hace, agéndela lo antes posible, porque los resultados suelen tardar más que los del examen. Los enlaces del paso uno indican si le aplica y quién está autorizado a tomarlas."
       },
       "s7": {
-        "heading": "",
-        "body": "",
+        "heading": "Solicite la licencia",
+        "body": "El centro de examen suele explicar cómo solicitarla una vez que aprueba. Las tarifas y las verificaciones adicionales varían por estado, así que llame al Departamento de Seguros de su estado si algo no queda claro. La contratación no puede comenzar hasta que la licencia esté emitida y exista su número de productor.",
         "link1": "",
         "link2": ""
       },
       "s8": {
-        "heading": "",
-        "body": "",
+        "heading": "Obtenga su National Producer Number",
+        "body": "No hay nada que solicitar. El NPN se crea automáticamente cuando su estado reporta la licencia aprobada al registro nacional. Si tarda, insista con el departamento de su estado en lugar de esperar, y luego busque el número cuando aparezca.",
         "link1": ""
       },
-      "done": ""
+      "done": "Con licencia. Sigue la contratación."
     },
     "contracting": {
       "heading": "",
-      "intro": "",
+      "intro": "Nombramiento con las aseguradoras. En orden otra vez, y el paso de documentos supone que todo lo anterior está hecho.",
       "stepLabel": "",
       "c1": {
-        "heading": "",
-        "body": "",
+        "heading": "Contrate su cobertura de errores y omisiones",
+        "body": "Contrate su póliza E and O con el proveedor que prefiera, y vale la pena comparar algunos. Dos condiciones no son flexibles.",
         "rule1": "",
         "rule2": ""
       },
       "c2": {
-        "heading": "",
-        "body": "",
+        "heading": "Complete la capacitación AML",
+        "body": "Toda aseguradora pide un certificado vigente contra el lavado de dinero antes de nombrarlo. El curso toma alrededor de una hora, cuesta muy poco y el certificado dura dos años. Un certificado de un proveedor reconocido suele aceptarse en varias aseguradoras, aunque algunas exigen el suyo propio. Guarde el certificado, porque es uno de los documentos del siguiente paso.",
         "provider": ""
       },
       "c3": {
-        "heading": "",
-        "body": "",
+        "heading": "Envíe sus documentos de contratación",
+        "body": "Envíe los cinco documentos juntos en un solo mensaje, con su nombre completo. Los documentos que llegan por separado se procesan por separado, lo cual retrasa su propia fecha de inicio.",
         "doc1": "",
         "doc2": "",
         "doc3": "",
@@ -1398,19 +1398,19 @@
         "doc5": ""
       },
       "c4": {
-        "heading": "",
-        "body": "",
+        "heading": "Tenga listos sus datos bancarios",
+        "body": "Las aseguradoras le pagan directamente, por eso necesitan sus datos bancarios. Tenga guardado un PDF de un cheque anulado antes de la llamada de incorporación. Un cheque anulado es lo más sencillo. Si no tiene uno, sirve una carta en papel membretado del banco firmada por un representante que muestre su número de ruta, número de cuenta y datos personales, y también sirve un comprobante de depósito directo que muestre su nombre, número de ruta y número de cuenta.",
         "warn": ""
       },
       "c5": {
-        "heading": "",
-        "body": "",
+        "heading": "La llamada de incorporación",
+        "body": "Tenga lo siguiente a la mano para que la llamada se complete de una sola vez y no haya que agendarla dos veces.",
         "item1": "",
-        "item2": ""
+        "item2": "El nombre completo, número de Seguro Social y correo electrónico de su beneficiario. El beneficiario debe ser mayor de 18 años y estar legalmente presente en los Estados Unidos."
       },
       "c6": {
-        "heading": "",
-        "body": ""
+        "heading": "Termine la capacitación de producto",
+        "body": "Las aseguradoras de vida universal indexada y de anualidades no lo nombrarán hasta que complete su capacitación de producto. Tómela justo después de la incorporación y envíe al equipo administrativo una captura de la pantalla de finalización."
       },
       "after": {
         "heading": "",
