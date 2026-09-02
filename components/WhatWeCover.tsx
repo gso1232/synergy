@@ -228,7 +228,7 @@ export default function WhatWeCover() {
 
         {/* Closing statement — the one large line, per the reference */}
         <FadeUp className="mx-auto mt-8 max-w-[24ch] text-center">
-          <p className="font-display font-medium text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.02em] text-white">
+          <p className="font-display font-semibold text-[clamp(32px,4vw,52px)] leading-[1.06] tracking-[-0.02em] text-white">
             {t("closingLine")}
           </p>
         </FadeUp>

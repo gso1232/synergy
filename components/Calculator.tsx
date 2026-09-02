@@ -228,7 +228,7 @@ export default function Calculator({
           </p>
           <Heading
             id="calc-heading"
-            className="mt-3 font-display font-medium text-[clamp(30px,4.4vw,64px)] leading-[1.05] tracking-[-0.025em] text-ink"
+            className="mt-3 font-display font-semibold text-[clamp(30px,4.4vw,64px)] leading-[1.05] tracking-[-0.025em] text-navy"
           >
             {t("sectionHeadline")}
           </Heading>
