@@ -236,11 +236,11 @@ export default function WhoWeServe() {
       // Asymmetric on purpose: the bottom is trimmed so the boundary into Why
       // Synergy lands on the same ~160px ink-to-ink rhythm as the rest of the
       // page instead of the 232px it was.
-      className="py-14 pb-10 lg:py-20 lg:pb-14"
+      className="py-[var(--section-y)]"
     >
       {/* 1620 cap with slim padding puts the grid at ~97% of viewport, against
           BeeToGreen's 95.6% — the cards get the extra width. */}
-      <div className="mx-auto max-w-[1620px] px-4 md:px-5">
+      <div className="mx-auto max-w-[1620px] px-[var(--gutter)]">
         {/* 🔴 THE BIG HEADING WAS REMOVED ON INSTRUCTION (2026-08-02). The block
             is now just the eyebrow and the tabs beneath it — no headline.
 

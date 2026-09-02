@@ -102,7 +102,7 @@ export default function Consultation() {
       // or two before the photograph paints, and matches its darkest corner so
       // there is no flash. The section owns overflow-hidden because the
       // parallax box is 130% of its height.
-      className="relative overflow-hidden bg-navy py-16 md:py-20 lg:py-28"
+      className="relative overflow-hidden bg-navy py-[var(--section-y)]"
     >
       <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
         <div
@@ -127,8 +127,8 @@ export default function Consultation() {
       {/* max-w matches every other section on this page. Theirs has no cap, so
           above a ~1684px viewport our panel stops growing where theirs would
           keep going — the only place the two diverge on width. */}
-      <div className="relative mx-auto max-w-[1620px] px-5 md:px-8">
-        <div className="consult-glass flex flex-col justify-between gap-8 rounded-[8px] p-6 md:aspect-[4/3] md:gap-10 md:p-8 lg:w-[calc(50%-16px)] lg:gap-16 lg:p-16">
+      <div className="relative mx-auto max-w-[1620px] px-[var(--gutter)]">
+        <div className="consult-glass flex flex-col justify-between gap-8 rounded-[8px] p-[var(--card-p-lg)] md:aspect-[4/3] md:gap-10 lg:w-[calc(50%-16px)] lg:gap-16">
           {/* TOP BLOCK — paragraph, then the CTA under it, exactly as theirs */}
           <div>
             <p className="max-w-none text-[clamp(16px,0.92rem+0.383vw,20px)] leading-[1.45] text-cream lg:max-w-[24rem]">

@@ -219,7 +219,7 @@ export default function Calculator({
   ] as const;
 
   return (
-    <section aria-labelledby="calc-heading" className="py-14 lg:py-20">
+    <section aria-labelledby="calc-heading" className="py-[var(--section-y)]">
       <div className="mx-auto max-w-[1620px] px-5 md:px-8">
         {/* HEADER — centred, like theirs */}
         <FadeUp className="mx-auto max-w-[62ch] pb-8 text-center">
@@ -241,7 +241,7 @@ export default function Calculator({
             and a whisper of shadow give it depth against the page without
             reading as a heavy panel — polish, not a new surface. */}
         <FadeUp index={1}>
-          <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-5 shadow-[0_1px_2px_rgba(0,32,80,0.04),0_12px_32px_-20px_rgba(0,32,80,0.18)] sm:p-8 lg:p-12">
+          <div className="rounded-[20px] border border-ink/[0.06] bg-greige p-[var(--card-p)] shadow-[0_1px_2px_rgba(0,32,80,0.04),0_12px_32px_-20px_rgba(0,32,80,0.18)]">
             {/* Two equal columns, exactly as theirs */}
             <div className="grid gap-5 lg:grid-cols-2">
               {/* INPUTS — first in the DOM and first on the page, at every width.
@@ -264,7 +264,7 @@ export default function Calculator({
                   result, so `lg:order-1`/`lg:order-2` were restating the
                   natural grid flow and the two columns still land left/right
                   exactly as before. */}
-              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8">
+              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-[var(--card-p)]">
                 <div className="flex h-full flex-col justify-center gap-8">
                   <Slider
                     id={`${uid}-monthly`}
@@ -336,7 +336,7 @@ export default function Calculator({
               {/* RESULT — second in the DOM, and now second on the page too.
                   See the note on the inputs card above for why the `order-1` /
                   `lg:order-2` pair was removed rather than re-pointed. */}
-              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-6 sm:p-8">
+              <div className="rounded-[16px] border border-ink/[0.06] bg-white p-[var(--card-p)]">
                 <div className="flex h-full min-w-0 flex-col items-center justify-center gap-1.5 rounded-[14px] bg-navy px-6 py-9 text-center">
                   <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-pale">
                     {t("resultCaption")}

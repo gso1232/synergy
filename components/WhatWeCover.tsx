@@ -187,7 +187,7 @@ export default function WhatWeCover() {
         <div className="cover-veil absolute inset-0" />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-[1500px] px-6 py-16 md:px-8 lg:py-20">
+      <div className="relative z-10 mx-auto max-w-[1500px] px-[var(--gutter)] py-[var(--section-y)]">
         {/* Heading block — deliberately small so the cards below lead */}
         <FadeUp className="mx-auto max-w-[44ch] text-center">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white">
@@ -263,7 +263,7 @@ export default function WhatWeCover() {
               it deepens on hover so the tile still answers the pointer. No
               fill change and no blur, per "minimal shadows and no heavy
               effects". */
-              className="group flex min-h-[360px] flex-col rounded-[4px] border border-royal/30 bg-white p-10 transition-[transform,border-color] duration-300 ease-out-expo hover:-translate-y-1 hover:border-royal motion-reduce:hover:translate-y-0"
+              className="group flex min-h-[360px] flex-col rounded-[4px] border border-royal/30 bg-white p-[var(--card-p)] transition-[transform,border-color] duration-300 ease-out-expo hover:-translate-y-1 hover:border-royal motion-reduce:hover:translate-y-0"
             >
               <span className="mb-5 inline-flex text-royal">
                 <CardIcon name={key} />

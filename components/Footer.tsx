@@ -438,7 +438,7 @@ export default function Footer() {
       </div>
 
       {/* `pb` reads the SAME --reveal the scrim does. They must not drift. */}
-      <div className="mx-auto max-w-content px-6 pb-[var(--reveal)] pt-[clamp(72px,9vw,132px)] sm:px-8 lg:px-10">
+      <div className="mx-auto max-w-content px-[var(--gutter)] pb-[var(--reveal)] pt-[clamp(72px,9vw,132px)]">
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-x-8">
           {/* BRAND — logo, tagline, blurb. The reference's newsletter block
               folded into this column, which is why it is this wide. */}
@@ -640,7 +640,7 @@ export default function FooterNavy() {
     <footer className="bg-navy text-cream">
       <h2 className="sr-only">{t("srTitle")}</h2>
 
-      <div className="mx-auto max-w-[1620px] px-5 pb-12 pt-16 md:px-8 md:pb-16 md:pt-20 lg:pb-8 lg:pt-28">
+      <div className="mx-auto max-w-[1620px] px-[var(--gutter)] pb-12 pt-16 md:pb-16 md:pt-20 lg:pb-8 lg:pt-28">
         <div className="grid grid-cols-12 gap-x-4 gap-y-8 md:gap-x-6 lg:gap-x-8 lg:gap-y-0">
           <div className="col-span-12 lg:col-span-3">
             <h3 className={headingClass}>{t("missionTitle")}</h3>

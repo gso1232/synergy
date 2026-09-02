@@ -141,7 +141,7 @@ export default function HowItWorks() {
       // opens on 80, so both boundaries are 160px ink-to-ink — identical to
       // every other seam on the page, and all three sections are bg-cream so
       // there is no visible join.
-      className="px-5 py-14 md:px-8 lg:py-20"
+      className="px-[var(--gutter)] py-[var(--section-y)]"
     >
       {/* No max-width cap, matching theirs and matching Why Synergy directly
           above — the container is the viewport minus 32px each side at md+.
@@ -272,7 +272,7 @@ export default function HowItWorks() {
                     no hidden initial state waiting on an IntersectionObserver.
                     "Instant state" has to mean the copy is simply there. */}
                 {reduce ? (
-                  <div className="hiw-glass relative flex flex-col gap-12 rounded-[4px] p-8">
+                  <div className="hiw-glass relative flex flex-col gap-12 rounded-[4px] p-[var(--card-p)]">
                     <h3 className="font-display font-semibold text-[clamp(18px,1.7vw,26px)] leading-[1.3] tracking-[-0.0162em] text-cream">
                       {t(`steps.${step.key}.title`)}
                     </h3>
@@ -282,7 +282,7 @@ export default function HowItWorks() {
                   </div>
                 ) : (
                   <motion.div
-                    className="hiw-glass relative flex flex-col gap-12 rounded-[4px] p-8"
+                    className="hiw-glass relative flex flex-col gap-12 rounded-[4px] p-[var(--card-p)]"
                     // Their yPercent: 50 is 50% of the panel's OWN height,
                     // which is what a percentage y resolves to here too.
                     initial={{ opacity: 0, y: "50%" }}

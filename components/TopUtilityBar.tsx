@@ -155,7 +155,7 @@ export default function TopUtilityBar() {
           right-hand one overflows rather than wraps. Space-between with the
           spacer dropped puts language hard left and the two utility links hard
           right, which is the only arrangement that fits the real strings. */}
-      <div className="mx-auto flex h-9 max-w-[1400px] items-center justify-between gap-2 px-4 text-[12px] card:grid card:h-10 card:grid-cols-[1fr_auto_1fr] card:px-6 card:text-[14px]">
+      <div className="mx-auto flex h-9 max-w-[1400px] items-center justify-between gap-2 px-[var(--gutter)] text-[12px] card:grid card:h-10 card:grid-cols-[1fr_auto_1fr] card:text-[14px]">
         {/* LEFT — the socials, which is the column the reference uses for them.
             It was an empty spacer until 2026-09-01; see the note at the top of
             this file for why it was empty and why it is not any more.

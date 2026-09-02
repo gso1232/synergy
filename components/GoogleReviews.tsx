@@ -296,7 +296,7 @@ function ReviewCard({ review }: { review: Review }) {
         "md:w-[calc((100%-3rem)/3)]",
         /* ink/[0.12], not /10: the card is white on a cream that is only
    a shade off white, so this hairline is the whole boundary. */
-        "rounded-[4px] border border-royal/25 bg-white p-6 sm:p-7",
+        "rounded-[4px] border border-royal/25 bg-white p-[var(--card-p)]",
         "transition-[transform,box-shadow,border-color] duration-300 ease-out-expo",
         "hover:-translate-y-1 hover:border-royal/45 hover:shadow-[0_1px_2px_rgba(0,32,80,0.05),0_10px_24px_-16px_rgba(0,32,80,0.20)]",
         "motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -415,7 +415,7 @@ export default function GoogleReviews() {
        hairline below is what separates them from a surface only a shade darker
        than they are. */
     <section aria-labelledby="google-reviews-heading">
-      <div className="mx-auto w-full max-w-content px-5 py-16 md:px-7 lg:py-20">
+      <div className="mx-auto w-full max-w-content px-[var(--gutter)] py-[var(--section-y)]">
         {/* ---------- Header ---------- */}
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-[46ch]">

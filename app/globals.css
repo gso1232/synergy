@@ -57,6 +57,56 @@
                                       greige, 2.29:1 over the veiled hero.
 --------------------------------------------------------------------------- */
 :root {
+
+  /* =========================================================================
+     THE SPACING SCALE, 2026-09-01. Asked for directly: "enough white space so
+     the sections do not feel crowded. Headings, text, buttons, cards, and
+     logos should all have consistent spacing."
+
+     🔴 WHAT WAS ACTUALLY THERE, measured on the built page rather than read
+     off the source. Six sections doing the same job with six different
+     rhythms:
+
+       CarrierStrip    py-16 lg:py-20      64 -> 80
+       WhatWeCover     py-16 lg:py-20      64 -> 80
+       GoogleReviews   py-16 lg:py-20      64 -> 80
+       HowItWorks      py-14 lg:py-20      56 -> 80
+       Consultation    py-16 md:20 lg:28   64 -> 80 -> 112
+       WhoWeServe      py-14 pb-10 ...     56/40 -> 80/56   ASYMMETRIC
+
+     and five different side gutters across the same page: px-4, px-5, px-6,
+     px-7, px-8. Nothing chose those; they accumulated one section at a time.
+
+     Three values replace all of it. They are clamps rather than breakpoint
+     steps so the rhythm moves continuously with the viewport instead of
+     jumping at 1024, which is where the old values disagreed most.
+
+     ⚠️ TWO COMPOSITIONS ARE DELIBERATELY EXEMPT. The hero's 900px centred
+     column and the impact band's 60px card padding are measured layouts
+     cloned from a reference and signed off as they are; folding them into
+     this scale would silently redesign them. They set their own values and
+     that is intentional, not an oversight.
+     ========================================================================= */
+
+  /* Vertical rhythm for every standard section. Was 56-112; now one ramp. */
+  --section-y: clamp(64px, 6.4vw, 100px);
+
+  /* One side gutter for the whole page. Was five values. */
+  --gutter: clamp(20px, 2.2vw, 32px);
+
+  /* Card padding. TWO sizes on purpose, and only two: the standard tile, and
+     the large feature panel (the consultation block). Before this there were
+     four undocumented values on the homepage alone (32, 40, 60, 64) and no way
+     to tell which was intentional. */
+  --card-p: clamp(28px, 2.6vw, 40px);
+  --card-p-lg: clamp(36px, 4.2vw, 64px);
+
+  /* 🔴 THE HEADER ROW USES --gutter TOO, so the logo sits on the same vertical
+     line as the content below it. It was deriving its inset from the retired
+     hero-card geometry (`--hero-gutter + --copy-inset`), which no longer
+     corresponds to anything on the page. */
+  --nav-inset: var(--gutter);
+
   /* 🔴 THREE SLOTS, ONE FAMILY, 2026-09-01. `--font-body` is set by next/font
      on <html> (see app/[locale]/layout.tsx); these two alias onto it so
      `font-display` and `font-hero` keep resolving at their ~500 existing call
@@ -2843,19 +2893,30 @@ input[type="range"].slider:focus-visible::-moz-range-thumb {
    we do not have a licence measurement for.
 --------------------------------------------------------------------------- */
 .sem-shell {
-  padding-inline: clamp(19.07px, 1.93vw + 11.54px, 41px);
+  /* 🔴 --gutter, NOT THE REFERENCE'S OWN INSET. This was
+     clamp(19.07px, 1.93vw + 11.54px, 41px), measured off the site /services
+     was cloned from. It made /services the only page on this site whose
+     content started on a different vertical line from every other page, which
+     is exactly what "consistent spacing" rules out. */
+  padding-inline: var(--gutter);
 }
 .sem-inner {
   max-width: 1476px;
   margin-inline: auto;
 }
 
-/* Vertical section rhythm — their `.padding-section-large`, 131.2px at 1526. */
+/* Vertical section rhythm.
+   🔴 --section-y, NOT THE REFERENCE'S 131.2px. These two carried
+   clamp(64px, 8.6vw, 131.2px), cloned from the site /services was modelled on.
+   They agreed with the rest of this site at mobile (both land on 64) and
+   diverged on desktop: 131 here against 98 everywhere else, so scrolling from
+   the homepage to /services changed the page's rhythm with no reason a reader
+   could see. Both now read the one scale. */
 .sem-pad-y {
-  padding-block: clamp(64px, 8.6vw, 131.2px);
+  padding-block: var(--section-y);
 }
 .sem-pad-t {
-  padding-top: clamp(64px, 8.6vw, 131.2px);
+  padding-top: var(--section-y);
 }
 
 :root {
