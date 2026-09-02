@@ -77,7 +77,7 @@ export default function CtaPair({
   className?: string;
 }) {
   const base =
-    "inline-flex h-12 items-center justify-center rounded-full px-7 text-[14px] font-medium transition-transform duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+    "inline-flex h-12 items-center justify-center rounded-full px-7 text-[14px] font-semibold transition-transform duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
 
   /* 🔴 PRIMARY IS ROYAL #0066CC WITH A NAVY HOVER, 2026-09-01, PER THE BRAND
      BRIEF. It was `bg-navy text-cream hover:bg-navy-lift`, which broke twice

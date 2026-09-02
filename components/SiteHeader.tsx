@@ -935,7 +935,7 @@ export default function SiteHeader({ isAdmin = false }: { isAdmin?: boolean }) {
             aria-current={
               isCurrentRoute(pathname, locale, "contact") ? "page" : undefined
             }
-            className="hidden items-center gap-2 border-2 border-navy-soft px-6 py-3 text-[13px] font-extrabold uppercase leading-none tracking-[0.4px] text-navy-soft transition-colors duration-200 hover:bg-navy-soft hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none card:inline-flex"
+            className="hidden items-center gap-2 border-2 border-navy-soft px-6 py-3 text-[13px] font-semibold uppercase leading-none tracking-[0.4px] text-navy-soft transition-colors duration-200 hover:bg-navy-soft hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-deep motion-reduce:transition-none card:inline-flex"
           >
             {t("quoteCta")}
             <svg

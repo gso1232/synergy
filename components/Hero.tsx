@@ -78,7 +78,7 @@ import heroPhoto from "../public/hero-porch-family.jpg";
  * the same height.
  */
 const BTN =
-  "inline-flex items-center justify-center gap-2 px-5 py-[17px] sm:px-[50px] text-[13px] font-extrabold uppercase leading-[13px] tracking-[0.4px] text-white transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none";
+  "inline-flex items-center justify-center gap-2 px-5 py-[17px] sm:px-[50px] text-[13px] font-semibold uppercase leading-[13px] tracking-[0.4px] text-white transition-colors duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none";
 
 function Chevron() {
   return (
@@ -92,9 +92,21 @@ function Chevron() {
   );
 }
 
+/**
+ * 🔴 GOLD, NOT GREEN. These five ticks were #3DD35F, a green that belongs to no
+ * part of the Synergy palette and was the most conspicuous off-brand colour on
+ * the site — five of them, in the hero, above the fold.
+ *
+ * Gold is the right answer rather than navy or royal, and the reason is the
+ * surface: this sits on the hero photograph under a navy scrim, where navy and
+ * royal both disappear. Gold measures 6.69:1 on navy. It is also exactly the
+ * job the brief reserves gold for — "occasionally as a small accent, but not
+ * as the dominant colour" — and five 16px ticks is the smallest accent on the
+ * page.
+ */
 function Tick() {
   return (
-    <span aria-hidden="true" className="ml-1.5 text-[#3DD35F]">
+    <span aria-hidden="true" className="ml-1.5 text-gold">
       ✓
     </span>
   );

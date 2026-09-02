@@ -18,6 +18,73 @@ import { useParallax } from "./useParallax";
    beneath at desktop. */
 const CARDS = ["term", "iul", "taxfree", "health", "medicare"] as const;
 
+
+/**
+ * 🔴 THE CARDS HAD NO ICON AT ALL UNTIL 2026-09-01, AND THE BRIEF ASKS FOR ONE.
+ * "For the Services section ... White background, Navy headings, Royal blue
+ * accents, Blue icons, Thin blue borders." Four of those five landed in the
+ * rebrand; the icons were simply missing, and an audit of the built page found
+ * it rather than a reading of the spec.
+ *
+ * One line weight (1.6), one 28px box, one colour (`currentColor`, set to royal
+ * on the card), and no fill. That uniformity is the point: five icons drawn at
+ * five different weights read as clip-art, and the brief asks for "simple and
+ * modern". They are `aria-hidden` because the card already carries its name as
+ * a heading, so a screen reader gains nothing and loses nothing.
+ */
+const CARD_ICONS: Record<(typeof CARDS)[number], JSX.Element> = {
+  // Term Life — a shield, the plainest "cover for a period" mark there is.
+  term: (
+    <path d="M14 3.2 5 6.4v6.1c0 5.4 3.7 9.6 9 11.3 5.3-1.7 9-5.9 9-11.3V6.4l-9-3.2Z" />
+  ),
+  // IUL — a rising line over a floor, which is literally what an indexed
+  // policy is: market-linked growth with a floor under it.
+  iul: (
+    <>
+      <path d="M4 21h20" />
+      <path d="M5.5 16.5 11 11l4 4 6.5-7.5" />
+      <path d="M21.5 7.5H17m4.5 0V12" />
+    </>
+  ),
+  // Tax-Free Retirement — a nest egg on a base.
+  taxfree: (
+    <>
+      <path d="M14 3.6c3.4 3 5.6 6.6 5.6 10.1a5.6 5.6 0 0 1-11.2 0C8.4 10.2 10.6 6.6 14 3.6Z" />
+      <path d="M6.5 24.4h15" />
+    </>
+  ),
+  // Health — a cross inside a rounded square, the universal care mark.
+  health: (
+    <>
+      <rect x="4" y="4" width="20" height="20" rx="5" />
+      <path d="M14 9.5v9M9.5 14h9" />
+    </>
+  ),
+  // Medicare — a person under a shield: cover that follows an individual.
+  medicare: (
+    <>
+      <path d="M14 3.6 6 6.4v5.4c0 4.8 3.3 8.6 8 10.1 4.7-1.5 8-5.3 8-10.1V6.4l-8-2.8Z" />
+      <circle cx="14" cy="11" r="2.4" />
+      <path d="M9.9 18.2c.7-2 2.2-3.1 4.1-3.1s3.4 1.1 4.1 3.1" />
+    </>
+  ),
+};
+
+function CardIcon({ name }: { name: (typeof CARDS)[number] }) {
+  return (
+    <svg
+      viewBox="0 0 28 28"
+      aria-hidden="true"
+      focusable="false"
+      className="h-7 w-7 shrink-0 fill-none stroke-current stroke-[1.6]"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      {CARD_ICONS[name]}
+    </svg>
+  );
+}
+
 export default function WhatWeCover() {
   const t = useTranslations("whatWeCover");
   const tCta = useTranslations("cta");
@@ -198,6 +265,9 @@ export default function WhatWeCover() {
               effects". */
               className="group flex min-h-[360px] flex-col rounded-[4px] border border-royal/30 bg-white p-10 transition-[transform,border-color] duration-300 ease-out-expo hover:-translate-y-1 hover:border-royal motion-reduce:hover:translate-y-0"
             >
+              <span className="mb-5 inline-flex text-royal">
+                <CardIcon name={key} />
+              </span>
               <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-royal">
                 {t(`cards.${key}.eyebrow`)}
               </p>
